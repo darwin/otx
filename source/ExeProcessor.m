@@ -2123,7 +2123,7 @@ methodInfo_compare(
 			strncpy(outCString, "inout ", 7);
 			break;
 		case 'o':
-			strncpy(outCString, "out ", 4);
+			strncpy(outCString, "out ", 5);
 			break;
 		case 'O':
 			strncpy(outCString, "bycopy ", 8);
