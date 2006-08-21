@@ -126,6 +126,7 @@
 			E17A94290A9A39B700E4282D /* PBXTextBookmark */ = E17A94290A9A39B700E4282D /* PBXTextBookmark */;
 			E17A942A0A9A39B700E4282D /* PBXTextBookmark */ = E17A942A0A9A39B700E4282D /* PBXTextBookmark */;
 			E17A942B0A9A39B700E4282D /* PBXTextBookmark */ = E17A942B0A9A39B700E4282D /* PBXTextBookmark */;
+			E17A94310A9A3F3E00E4282D /* PBXTextBookmark */ = E17A94310A9A3F3E00E4282D /* PBXTextBookmark */;
 		};
 		sourceControlManager = E1C3BA5209A957E100B38A4D /* Source Control */;
 		userBuildSettings = {
@@ -392,6 +393,16 @@
 		vrLoc = 0;
 	};
 	E17A942B0A9A39B700E4282D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1167F1C09C8086900E7398D /* StolenDefs.h */;
+		name = "StolenDefs.h: 22";
+		rLen = 0;
+		rLoc = 647;
+		rType = 0;
+		vrLen = 747;
+		vrLoc = 350;
+	};
+	E17A94310A9A3F3E00E4282D /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = E1167F1C09C8086900E7398D /* StolenDefs.h */;
 		name = "StolenDefs.h: 22";

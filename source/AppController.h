@@ -1,9 +1,9 @@
 #import <Cocoa/Cocoa.h>
 #import <Kernel/mach-o/loader.h>
 
-#define	kOutputTextTag		100
-#define	kOutputFileBaseTag	200
-#define	kOutputFileExtTag	201
+#define kOutputTextTag		100
+#define kOutputFileBaseTag	200
+#define kOutputFileExtTag	201
 
 // ============================================================================
 

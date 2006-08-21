@@ -1,4 +1,4 @@
-#define	EntabOutputKey			@"EntabOutput"
+#define EntabOutputKey			@"EntabOutput"
 #define ShowCharAsBoolKey		@"ShowCharAsBool"
 #define ShowDataSectionKey		@"ShowDataSection"
 #define ShowIvarTypesKey		@"ShowIvarTypes"

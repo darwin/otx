@@ -15,7 +15,7 @@
 #import "ExeProcessor.h"
 #import "UserDefaultKeys.h"
 
-#define	MAXLINE	1024	// for the md5 pipe only
+#define MAXLINE	1024	// for the md5 pipe only
 
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 // Comparison functions for qsort.

@@ -35,4 +35,4 @@ cf_string_object;
 // (__DATA,__const) section. This makes it possible to identify both
 // NSString's and CFString's. I can't find any documentation about the
 // 1992 date, but it is assumed to be the date of birth of NSStrings.
-#define	typeid_NSString		0x000007c8
+#define typeid_NSString		0x000007c8

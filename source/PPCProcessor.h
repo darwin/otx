@@ -4,13 +4,13 @@
 // The various macros defined in that file get their names from the field
 // naming conventions given in the PowerPC Programming Environments Manual
 // available at http://www.freescale.com
-#define	RT(x)	(((x) >> 21) & 0x1f)		// bits 21 - 25
-#define	RA(x)	(((x) >> 16) & 0x1f)		// bits 16 - 20
-#define	RB(x)	(((x) >> 11) & 0x1f)		// bits 11 - 15
+#define RT(x)	(((x) >> 21) & 0x1f)		// bits 21 - 25
+#define RA(x)	(((x) >> 16) & 0x1f)		// bits 16 - 20
+#define RB(x)	(((x) >> 11) & 0x1f)		// bits 11 - 15
 #define MB(x)	(((x) >> 6) & 0x1f)			// bits 6 - 10
 #define ME(x)	(((x) >> 1) & 0x1f)			// bits 1 - 5
-#define	BO(x)	RT((x))
-#define	RS(x)	RT((x))
+#define BO(x)	RT((x))
+#define RS(x)	RT((x))
 
 // otool masks the entire instruction with 0xfc000000, rather than accessing
 // the primary opcode field directly. Maybe this is to help each case in a

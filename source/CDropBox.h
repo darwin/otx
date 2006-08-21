@@ -1,6 +1,6 @@
 #import "AppController.h"
 
-#define	kBorderWidth	6
+#define kBorderWidth	6
 
 @interface CDropBox : NSBox
 {
