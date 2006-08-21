@@ -29,7 +29,7 @@
 	if ([theFiles count] != 1)
 		return NSDragOperationNone;
 
-    NSDragOperation	theSourceDragMask	=
+	NSDragOperation	theSourceDragMask	=
 		[sender draggingSourceOperationMask];
 
 	// bail if modifier keys pressed.

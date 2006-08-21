@@ -2545,7 +2545,7 @@ methodInfo_compare(
 
 	for (i = 0; i < mNumObjcSects; i++)
 	{
-	    if (addr >= mObjcSects[i].s.addr &&
+		if (addr >= mObjcSects[i].s.addr &&
 			addr < mObjcSects[i].s.addr + mObjcSects[i].size)
 		{
 			left = mObjcSects[i].size -
@@ -2572,7 +2572,7 @@ methodInfo_compare(
 				swap_objc_symtab(outSymTab);
 
 			return true;
-	    }
+		}
 	}
 
 	return false;
@@ -2584,11 +2584,11 @@ methodInfo_compare(
 - (BOOL)getObjcClass: (objc_class*)outClass
 			 fromDef: (UInt32)inDef;
 {
-    UInt32	i;
+	UInt32	i;
 
 	for (i = 0; i < mNumObjcSects; i++)
 	{
-	    if (inDef >= mObjcSects[i].s.addr &&
+		if (inDef >= mObjcSects[i].s.addr &&
 			inDef < mObjcSects[i].s.addr + mObjcSects[i].size)
 		{
 			*outClass	= *(objc_class*)(mObjcSects[i].contents +
@@ -2598,7 +2598,7 @@ methodInfo_compare(
 				swap_objc_class(outClass);
 
 			return true;
-	    }
+		}
 	}
 
 	return false;
@@ -2610,11 +2610,11 @@ methodInfo_compare(
 - (BOOL)getObjcCategory: (objc_category*)outCat
 				fromDef: (UInt32)inDef;
 {
-    UInt32	i;
+	UInt32	i;
 
 	for (i = 0; i < mNumObjcSects; i++)
 	{
-	    if (inDef >= mObjcSects[i].s.addr &&
+		if (inDef >= mObjcSects[i].s.addr &&
 			inDef < mObjcSects[i].s.addr + mObjcSects[i].size)
 		{
 			*outCat	= *(objc_category*)(mObjcSects[i].contents +
@@ -2624,7 +2624,7 @@ methodInfo_compare(
 				swap_objc_category(outCat);
 
 			return true;
-	    }
+		}
 	}
 
 	return false;
@@ -2695,7 +2695,7 @@ methodInfo_compare(
 				swap_objc_method_list(outList);
 
 			return true;
-	    }
+		}
 	}
 
 	return false;

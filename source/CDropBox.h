@@ -4,7 +4,7 @@
 
 @interface CDropBox : NSBox
 {
-    IBOutlet struct AppController*	mController;
+	IBOutlet struct AppController*	mController;
 
 	BOOL	mDragHilite;
 }

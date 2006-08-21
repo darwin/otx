@@ -11,7 +11,7 @@
 {
 // main window
 	IBOutlet NSWindow*				mMainWindow;
-    IBOutlet NSDrawer*				mProgDrawer;
+	IBOutlet NSDrawer*				mProgDrawer;
 	IBOutlet NSPopUpButton*			mArchPopup;
 	IBOutlet NSTextField*			mOutputText;
 	IBOutlet NSTextField*			mPathText;

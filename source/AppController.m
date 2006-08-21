@@ -318,7 +318,7 @@
 
 - (BOOL)validateMenuItem: (id<NSMenuItem>)menuItem
 {
-    if ([menuItem action] == @selector(processFile:))
+	if ([menuItem action] == @selector(processFile:))
 	{
 		NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
 
@@ -331,7 +331,7 @@
 		return mFileIsValid;
 	}
 
-    return true;
+	return true;
 }
 
 #pragma mark -
@@ -686,7 +686,7 @@
 
 	[theOldViewItem setObject: mPrefsViews[mPrefsCurrentViewIndex]
 		forKey: NSViewAnimationTargetKey];
-    [theOldViewItem setObject: NSViewAnimationFadeOutEffect
+	[theOldViewItem setObject: NSViewAnimationFadeOutEffect
 		forKey: NSViewAnimationEffectKey];
 
 	// Create dictionary for new view.
@@ -695,7 +695,7 @@
 
 	[theNewViewItem setObject: mPrefsViews[theNewIndex]
 		forKey: NSViewAnimationTargetKey];
-    [theNewViewItem setObject: NSViewAnimationFadeInEffect
+	[theNewViewItem setObject: NSViewAnimationFadeInEffect
 		forKey: NSViewAnimationEffectKey];
 
 	// Create animation.

@@ -17,9 +17,9 @@ section_info;
 // http://darwinsource.opendarwin.org/10.4.6.x86/objc4-274/runtime/objc-private.h
 typedef struct
 {
-    objc_class*		isa;
-    char*			chars;
-    unsigned int	length;
+	objc_class*		isa;
+	char*			chars;
+	unsigned int	length;
 }
 objc_string_object;
 

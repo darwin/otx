@@ -475,8 +475,8 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>E14D8C660A9815910031A5A6</string>
-				<string>E14D8C670A9815910031A5A6</string>
+				<string>E17A942E0A9A39E700E4282D</string>
+				<string>E17A942F0A9A39E700E4282D</string>
 				<string>1C9437FD063B20B00039CFAC</string>
 				<string>1C9437FE063B20B00039CFAC</string>
 				<string>1C9437FF063B20B00039CFAC</string>
@@ -494,7 +494,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>177730042.54372001</real>
+	<real>177879272.04027399</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>1</integer>
 	<key>ToolbarIsVisible</key>
@@ -509,7 +509,7 @@
 	<integer>0</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>E11F52140A05BDE500B4462E</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Volumes/Venus/Dev/otx/project/trunk/otx.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -869,12 +869,14 @@
 							<key>Dock</key>
 							<array>
 								<dict>
+									<key>BecomeActive</key>
+									<true/>
 									<key>ContentConfiguration</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>ExeProcessor.m</string>
+										<string>StolenDefs.h</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
@@ -895,8 +897,6 @@
 							<string>402pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -932,8 +932,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>E1F6044A0A8E7FD700EFEDB4</string>
-				<string>E1F6044B0A8E7FD700EFEDB4</string>
+				<string>E17A942C0A9A39B700E4282D</string>
+				<string>E17A942D0A9A39B700E4282D</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
