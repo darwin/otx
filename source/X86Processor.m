@@ -188,7 +188,7 @@
 			break;
 		}
 
-		case 0x3c:	// cmpb	imm,al
+		case 0x3c:	// cmpb	imm8,al
 		{
 			UInt8	imm;
 
@@ -233,7 +233,7 @@
 		{
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			// We only want cmpb
+			// In immediate group 1 we only want cmpb
 			if (OPEXT(modRM) != 7)
 				break;
 
@@ -349,10 +349,8 @@
 		case 0x8d:	// leal
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			if (!mRegInfos[REG2(modRM)].isValid)
-				break;
-
-			if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
+			if (mRegInfos[REG2(modRM)].isValid	&&
+				mRegInfos[REG2(modRM)].classPtr)	// address relative to class
 			{
 				objc_ivar	theIvar	= {0};
 
@@ -478,19 +476,40 @@
 		{
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			if (HAS_DISP8(modRM) && mRegInfos[REG2(modRM)].isValid)
+			if (mRegInfos[REG2(modRM)].isValid	&&
+				mRegInfos[REG2(modRM)].classPtr)
 			{
-				if (HAS_SIB(modRM))
-					break;
+				UInt8	immOffset = 4;
 
-				UInt8		theSymOffset;
+				if (HAS_DISP8(modRM))
+					immOffset	+= 2;
+
+				if (HAS_SIB(modRM))
+					immOffset	+= 2;
+
 				objc_ivar	theIvar	= {0};
 
-				sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
+				if (MOD(modRM) == MOD8)
+				{
+					UInt8	theSymOffset;
 
-				if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
-					theSymOffset))
-					break;
+					sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
+
+					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
+						theSymOffset))
+						break;
+				}
+				else if (MOD(modRM) == MOD32)
+				{
+					UInt32	theSymOffset;
+
+					sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
+					theSymOffset	= OSSwapInt32(theSymOffset);
+
+					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
+						theSymOffset))
+						break;
+				}
 
 				theSymPtr	= GetPointer(
 					(UInt32)theIvar.ivar_name, nil);
@@ -560,44 +579,54 @@
 		case 0xdd:	// fldll	
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			if (MOD(modRM) == MOD8)
+			if (mRegInfos[REG2(modRM)].isValid	&&
+				mRegInfos[REG2(modRM)].classPtr)	// address relative to class
 			{
-				if (!mRegInfos[REG2(modRM)].isValid)
-					break;
+				objc_ivar	theIvar	= {0};
 
-				if (mRegInfos[REG2(modRM)].classPtr)
+				if (MOD(modRM) == MOD8)
 				{
-					UInt8		theSymOffset;
-					objc_ivar	theIvar	= {0};
+					UInt8	theSymOffset;
 
 					sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
 
 					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
 						theSymOffset))
 						break;
-
-					theSymPtr	= GetPointer(
-						(UInt32)theIvar.ivar_name, nil);
-
-					if (theSymPtr)
-					{
-						if (mShowIvarTypes)
-						{
-							char	theTypeCString[200]	=	{0};
-
-							GetDescription(theTypeCString,
-								GetPointer((UInt32)theIvar.ivar_type, nil));
-							snprintf(mLineCommentCString,
-								MAX_COMMENT_LENGTH - 1, "(%s)%s",
-								theTypeCString, theSymPtr);
-						}
-						else
-							snprintf(mLineCommentCString,
-								MAX_COMMENT_LENGTH - 1, "%s",
-								theSymPtr);
-					}
 				}
-			}	// address relative to class
+				else if (MOD(modRM) == MOD32)
+				{
+					UInt32	theSymOffset;
+
+					sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
+					theSymOffset	= OSSwapInt32(theSymOffset);
+
+					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
+						theSymOffset))
+						break;
+				}
+
+				theSymPtr	= GetPointer(
+					(UInt32)theIvar.ivar_name, nil);
+
+				if (theSymPtr)
+				{
+					if (mShowIvarTypes)
+					{
+						char	theTypeCString[200]	=	{0};
+
+						GetDescription(theTypeCString,
+							GetPointer((UInt32)theIvar.ivar_type, nil));
+						snprintf(mLineCommentCString,
+							MAX_COMMENT_LENGTH - 1, "(%s)%s",
+							theTypeCString, theSymPtr);
+					}
+					else
+						snprintf(mLineCommentCString,
+							MAX_COMMENT_LENGTH - 1, "%s",
+							theSymPtr);
+				}
+			}
 			else
 			{
 				UInt8	immOffset = 4;
@@ -656,42 +685,52 @@
 
 			sscanf(&inLine->info.code[6], "%02hhx", &modRM);
 
-			if (MOD(modRM) == MOD8)		// address relative to self
+			if (mRegInfos[REG2(modRM)].isValid	&&
+				mRegInfos[REG2(modRM)].classPtr)		// address relative to self
 			{
-				if (!mRegInfos[REG2(modRM)].isValid)
-					break;
+				objc_ivar	theIvar	= {0};
 
-				if (mRegInfos[REG2(modRM)].classPtr)
+				if (MOD(modRM) == MOD8)
 				{
-					UInt8		theSymOffset;
-					objc_ivar	theIvar	= {0};
+					UInt8	theSymOffset;
 
 					sscanf(&inLine->info.code[8], "%02hhx", &theSymOffset);
 
 					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
 						theSymOffset))
 						break;
+				}
+				else if (MOD(modRM) == MOD32)
+				{
+					UInt32	theSymOffset;
 
-					theSymPtr	= GetPointer(
-						(UInt32)theIvar.ivar_name, nil);
+					sscanf(&inLine->info.code[8], "%08x", &theSymOffset);
+					theSymOffset	= OSSwapInt32(theSymOffset);
 
-					if (theSymPtr)
+					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
+						theSymOffset))
+						break;
+				}
+
+				theSymPtr	= GetPointer(
+					(UInt32)theIvar.ivar_name, nil);
+
+				if (theSymPtr)
+				{
+					if (mShowIvarTypes)
 					{
-						if (mShowIvarTypes)
-						{
-							char	theTypeCString[200]	=	{0};
+						char	theTypeCString[200]	=	{0};
 
-							GetDescription(theTypeCString,
-								GetPointer((UInt32)theIvar.ivar_type, nil));
+						GetDescription(theTypeCString,
+							GetPointer((UInt32)theIvar.ivar_type, nil));
 
-							snprintf(mLineCommentCString,
-								MAX_COMMENT_LENGTH - 1, "(%s)%s",
-								theTypeCString, theSymPtr);
-						}
-						else
-							snprintf(mLineCommentCString,
-								MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+						snprintf(mLineCommentCString,
+							MAX_COMMENT_LENGTH - 1, "(%s)%s",
+							theTypeCString, theSymPtr);
 					}
+					else
+						snprintf(mLineCommentCString,
+							MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
 				}
 			}
 			else	// absolute address
