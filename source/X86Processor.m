@@ -71,7 +71,6 @@
 	theInstLength	= nextAddy - thisAddy;
 
 	// Fetch the instruction.
-	unsigned char	theChar;
 	unsigned char	charData[14]		= {0};
 	char			formatString[50]	= {0};
 	char*			theMachPtr			= (char*)mMachHeader;
@@ -88,7 +87,7 @@
 		formatMarker	+= byteFormatLength;
 	}
 
-	snprintf(inLine->info.code, 20, formatString,
+	snprintf(inLine->info.code, 25, formatString,
 		charData[0], charData[1], charData[2], charData[3], charData[4],
 		charData[5], charData[6], charData[7], charData[8], charData[9],
 		charData[10], charData[11], charData[12], charData[13]);
@@ -483,6 +482,8 @@
 
 				if (HAS_DISP8(modRM))
 					immOffset	+= 2;
+				else if (HAS_DISP32(modRM))
+					immOffset	+= 8;
 
 				if (HAS_SIB(modRM))
 					immOffset	+= 2;
@@ -493,7 +494,7 @@
 				{
 					UInt8	theSymOffset;
 
-					sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
+					sscanf(&inLine->info.code[immOffset], "%02hhx", &theSymOffset);
 
 					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
 						theSymOffset))
@@ -503,12 +504,30 @@
 				{
 					UInt32	theSymOffset;
 
-					sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
+					sscanf(&inLine->info.code[immOffset], "%08x", &theSymOffset);
 					theSymOffset	= OSSwapInt32(theSymOffset);
 
 					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
 						theSymOffset))
-						break;
+					{
+						// Check for a four char code.
+						if (theSymOffset > 0x20202020 && theSymOffset < 0x7f7f7f7f)
+						{
+							char*	fcc	= (char*)&theSymOffset;
+
+							if (fcc[0] >= 0x20 && fcc[0] < 0x7f &&
+								fcc[1] >= 0x20 && fcc[1] < 0x7f &&
+								fcc[2] >= 0x20 && fcc[2] < 0x7f &&
+								fcc[3] >= 0x20 && fcc[3] < 0x7f)
+							{
+								if (!mSwapped)
+									theSymOffset	= OSSwapInt32(theSymOffset);
+
+								snprintf(mLineCommentCString,
+									10, "'%.4s'", fcc);
+							}
+						}
+					}
 				}
 
 				theSymPtr	= GetPointer(
@@ -686,7 +705,7 @@
 			sscanf(&inLine->info.code[6], "%02hhx", &modRM);
 
 			if (mRegInfos[REG2(modRM)].isValid	&&
-				mRegInfos[REG2(modRM)].classPtr)		// address relative to self
+				mRegInfos[REG2(modRM)].classPtr)	// address relative to self
 			{
 				objc_ivar	theIvar	= {0};
 
