@@ -275,14 +275,29 @@
 
 				if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
 				{
-					UInt8		theSymOffset;
 					objc_ivar	theIvar	= {0};
 
-					sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
+					if (MOD(modRM) == MOD8)
+					{
+						UInt8	theSymOffset;
 
-					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
-						theSymOffset))
-						break;
+						sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
+
+						if (!FindIvar(&theIvar,
+							mRegInfos[REG2(modRM)].classPtr, theSymOffset))
+							break;
+					}
+					else if (MOD(modRM) == MOD32)
+					{
+						UInt32	theSymOffset;
+
+						sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
+						theSymOffset	= OSSwapInt32(theSymOffset);
+
+						if (!FindIvar(&theIvar,
+							mRegInfos[REG2(modRM)].classPtr, theSymOffset))
+							break;
+					}
 
 					theSymPtr	= GetPointer(
 						(UInt32)theIvar.ivar_name, nil);
