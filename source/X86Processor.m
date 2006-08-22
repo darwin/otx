@@ -331,13 +331,48 @@
 
 			break;
 
-		case 0x8d:	// leal	imm32,r32
+		case 0x8d:	// leal
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
 			if (MOD(modRM) == MOD8)
-				break;
+			{
+				if (!mRegInfos[REG2(modRM)].isValid)
+					break;
 
-			if (REG2(modRM) == mCurrentThunk &&
+				if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
+				{
+					UInt8		theSymOffset;
+					objc_ivar	theIvar	= {0};
+
+					sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
+
+					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
+						theSymOffset))
+						break;
+
+					theSymPtr	= GetPointer(
+						(UInt32)theIvar.ivar_name, nil);
+
+					if (theSymPtr)
+					{
+						if (mShowIvarTypes)
+						{
+							char	theTypeCString[200]	=	{0};
+
+							GetDescription(theTypeCString,
+								GetPointer((UInt32)theIvar.ivar_type, nil));
+							snprintf(mLineCommentCString,
+								MAX_COMMENT_LENGTH - 1, "(%s)%s",
+								theTypeCString, theSymPtr);
+						}
+						else
+							snprintf(mLineCommentCString,
+								MAX_COMMENT_LENGTH - 1, "%s",
+								theSymPtr);
+					}
+				}
+			}
+			else if (REG2(modRM) == mCurrentThunk &&
 				mRegInfos[mCurrentThunk].isValid)
 			{
 				UInt32	imm;
