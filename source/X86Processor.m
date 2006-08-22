@@ -334,46 +334,57 @@
 		case 0x8d:	// leal
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			if (MOD(modRM) == MOD8)
-			{
-				if (!mRegInfos[REG2(modRM)].isValid)
-					break;
+			if (!mRegInfos[REG2(modRM)].isValid)
+				break;
 
-				if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
+			if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
+			{
+				objc_ivar	theIvar	= {0};
+
+				if (MOD(modRM) == MOD8)
 				{
-					UInt8		theSymOffset;
-					objc_ivar	theIvar	= {0};
+					UInt8	theSymOffset;
 
 					sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
 
 					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
 						theSymOffset))
 						break;
+				}
+				else if (MOD(modRM) == MOD32)
+				{
+					UInt32	theSymOffset;
 
-					theSymPtr	= GetPointer(
-						(UInt32)theIvar.ivar_name, nil);
+					sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
+					theSymOffset	= OSSwapInt32(theSymOffset);
 
-					if (theSymPtr)
+					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
+						theSymOffset))
+						break;
+				}
+
+				theSymPtr	= GetPointer(
+					(UInt32)theIvar.ivar_name, nil);
+
+				if (theSymPtr)
+				{
+					if (mShowIvarTypes)
 					{
-						if (mShowIvarTypes)
-						{
-							char	theTypeCString[200]	=	{0};
+						char	theTypeCString[200]	=	{0};
 
-							GetDescription(theTypeCString,
-								GetPointer((UInt32)theIvar.ivar_type, nil));
-							snprintf(mLineCommentCString,
-								MAX_COMMENT_LENGTH - 1, "(%s)%s",
-								theTypeCString, theSymPtr);
-						}
-						else
-							snprintf(mLineCommentCString,
-								MAX_COMMENT_LENGTH - 1, "%s",
-								theSymPtr);
+						GetDescription(theTypeCString,
+							GetPointer((UInt32)theIvar.ivar_type, nil));
+						snprintf(mLineCommentCString,
+							MAX_COMMENT_LENGTH - 1, "(%s)%s",
+							theTypeCString, theSymPtr);
 					}
+					else
+						snprintf(mLineCommentCString,
+							MAX_COMMENT_LENGTH - 1, "%s",
+							theSymPtr);
 				}
 			}
-			else if (REG2(modRM) == mCurrentThunk &&
-				mRegInfos[mCurrentThunk].isValid)
+			else if (REG2(modRM) == mCurrentThunk)
 			{
 				UInt32	imm;
 
