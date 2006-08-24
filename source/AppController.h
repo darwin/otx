@@ -13,6 +13,7 @@
 	IBOutlet NSWindow*				mMainWindow;
 	IBOutlet NSDrawer*				mProgDrawer;
 	IBOutlet NSPopUpButton*			mArchPopup;
+	IBOutlet NSButton*				mThinButton;
 	IBOutlet NSTextField*			mOutputText;
 	IBOutlet NSTextField*			mPathText;
 	IBOutlet NSTextField*			mProgText;
@@ -58,8 +59,9 @@
 - (IBAction)showMainWindow: (id)sender;
 - (IBAction)selectArch: (id)sender;
 - (IBAction)openExe: (id)sender;
-- (IBAction)processFile: (id)sender;
 - (IBAction)syncOutputText: (id)sender;
+- (IBAction)processFile: (id)sender;
+- (IBAction)thinFile: (id)sender;
 - (void)syncSaveButton;
 - (void)syncDescriptionText;
 - (void)newPackageFile: (NSURL*)inPackageFile;
@@ -73,6 +75,7 @@
 
 // alerts
 - (void)doOtoolAlertSheet;
+- (void)doLipoAlertSheet;
 - (void)doErrorAlertSheet;
 - (void)doDrillErrorAlert: (NSString*)inExePath;
 

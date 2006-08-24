@@ -10,6 +10,7 @@
                 showPrefs = id; 
                 switchPrefsViews = id; 
                 syncOutputText = id; 
+                thinFile = id; 
             }; 
             CLASS = AppController; 
             LANGUAGE = ObjC; 
@@ -29,6 +30,8 @@
                 mProgDrawer = NSDrawer; 
                 mProgText = NSTextField; 
                 mSaveButton = NSButton; 
+                mSaveMenuItem = NSMenuItem; 
+                mThinButton = NSButton; 
                 mTypeText = NSTextField; 
             }; 
             SUPERCLASS = NSObject; 

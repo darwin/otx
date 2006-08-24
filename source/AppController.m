@@ -313,6 +313,45 @@
 	[mProgDrawer openOnEdge: NSMinYEdge];	// Min Y = 'bottom'
 }
 
+//	thinFile:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+//	Use lipo to separate out the currently selected arch from a unibin.
+
+- (IBAction)thinFile: (id)sender
+{
+	NSString*	theThinOutputPath		= nil;
+
+	if (![[NSUserDefaults standardUserDefaults] boolForKey: UseExeDirKey])
+	{
+		NSSavePanel*	thePanel	= [NSSavePanel savePanel];
+		NSString*		theFileName	= [mExeName stringByAppendingString:
+			(mArchSelector == CPU_TYPE_POWERPC) ? @"_PPC" : @"_x86"];
+
+		[thePanel setTreatsFilePackagesAsDirectories: true];
+
+		if ([thePanel runModalForDirectory: nil
+			file: theFileName]	!= NSFileHandlingPanelOKButton)
+			return;
+
+		theThinOutputPath	= [thePanel filename];
+	}
+	else
+	{
+		theThinOutputPath	=
+			[[mOutputFilePath stringByDeletingPathExtension]
+				stringByAppendingString:
+				(mArchSelector == CPU_TYPE_POWERPC) ? @"_PPC" : @"_x86"];
+	}
+
+	NSString*	lipoString	= [NSString stringWithFormat:
+		@"lipo %@ -output %@ -thin %s", [mOFile path], theThinOutputPath,
+		(mArchSelector == CPU_TYPE_POWERPC) ? "ppc" : "i386"];
+
+	if (system([lipoString
+		cStringUsingEncoding: NSMacOSRomanStringEncoding]) != 0)
+		[self doLipoAlertSheet];
+}
+
 //	validateMenuItem
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
@@ -433,6 +472,7 @@
 	if (mArchSelector)
 		[mArchPopup selectItemWithTag: mArchSelector];
 
+	[mThinButton setEnabled: shouldEnableArch];
 	[mArchPopup setEnabled: shouldEnableArch];
 	[mArchPopup synchronizeTitleAndSelectedItem];
 }
@@ -594,6 +634,21 @@
 	[theAlert addButtonWithTitle: @"OK"];
 	[theAlert setMessageText: @"otool was not found."];
 	[theAlert setInformativeText: @"Please install otool and try again."];
+	[theAlert beginSheetModalForWindow: mMainWindow
+		modalDelegate: nil didEndSelector: nil contextInfo: nil];
+	[theAlert release];
+}
+
+//	doLipoAlertSheet
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
+- (void)doLipoAlertSheet
+{
+	NSAlert*	theAlert	= [[NSAlert alloc] init];
+
+	[theAlert addButtonWithTitle: @"OK"];
+	[theAlert setMessageText: @"lipo was not found."];
+	[theAlert setInformativeText: @"Please install lipo and try again."];
 	[theAlert beginSheetModalForWindow: mMainWindow
 		modalDelegate: nil didEndSelector: nil contextInfo: nil];
 	[theAlert release];

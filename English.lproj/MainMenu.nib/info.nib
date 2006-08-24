@@ -25,6 +25,10 @@
 	</array>
 	<key>IBOldestOS</key>
 	<integer>3</integer>
+	<key>IBOpenObjects</key>
+	<array>
+		<integer>21</integer>
+	</array>
 	<key>IBSystem Version</key>
 	<string>8F46</string>
 	<key>IBUserGuides</key>
