@@ -1,3 +1,4 @@
+#define DemangleCppNamesKey		@"DemangleCppNames"
 #define EntabOutputKey			@"EntabOutput"
 #define ShowCharAsBoolKey		@"ShowCharAsBool"
 #define ShowDataSectionKey		@"ShowDataSection"
