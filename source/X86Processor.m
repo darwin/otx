@@ -149,7 +149,6 @@
 	char*	theDummyPtr	= nil;
 	char*	theSymPtr	= nil;
 	UInt32	localAddy	= 0;
-	UInt32	ptrValue	= 0;
 	UInt8	modRM		= 0;
 	UInt8	opcode;
 
@@ -262,18 +261,25 @@
 			if (opcode == 0x81 && OPEXT(modRM) != 7)
 				break;
 
-			if (MOD(modRM) == MODimm && RM(modRM) == DISP32)
+			if (MOD(modRM) == MODimm)	// 1st addressing mode
 			{
-				sscanf(&inLine->info.code[4], "%08x", &localAddy);
-				localAddy	= OSSwapInt32(localAddy);
+				if (RM(modRM) == DISP32)
+				{
+					sscanf(&inLine->info.code[4], "%08x", &localAddy);
+					localAddy	= OSSwapInt32(localAddy);
+				}
 			}
 			else
 			{
-				if (!mRegInfos[REG2(modRM)].isValid)
-					break;
-
 				if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
 				{
+					if (!mRegInfos[REG2(modRM)].isValid)
+						break;
+
+					// Ignore the 4th addressing mode
+					if (MOD(modRM) == MODx)
+						break;
+
 					objc_ivar	theIvar	= {0};
 
 					if (MOD(modRM) == MOD8)
@@ -348,9 +354,15 @@
 		case 0x8d:	// leal
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			if (mRegInfos[REG2(modRM)].isValid	&&
-				mRegInfos[REG2(modRM)].classPtr)	// address relative to class
+			if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
 			{
+				if (!mRegInfos[REG2(modRM)].isValid)
+					break;
+
+				// Ignore the 1st and 4th addressing modes
+				if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
+					break;
+
 				objc_ivar	theIvar	= {0};
 
 				if (MOD(modRM) == MOD8)
@@ -475,9 +487,15 @@
 		{
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			if (mRegInfos[REG2(modRM)].isValid	&&
-				mRegInfos[REG2(modRM)].classPtr)
+			if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
 			{
+				if (!mRegInfos[REG2(modRM)].isValid)
+					break;
+
+				// Ignore the 1st and 4th addressing modes
+				if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
+					break;
+
 				UInt8	immOffset = 4;
 
 				if (HAS_DISP8(modRM))
@@ -494,7 +512,9 @@
 				{
 					UInt8	theSymOffset;
 
-					sscanf(&inLine->info.code[immOffset], "%02hhx", &theSymOffset);
+					// offset immediately precedes immediate value, subtract
+					// sizeof(UInt8) * 2
+					sscanf(&inLine->info.code[immOffset - 2], "%02hhx", &theSymOffset);
 
 					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
 						theSymOffset))
@@ -504,7 +524,9 @@
 				{
 					UInt32	theSymOffset;
 
-					sscanf(&inLine->info.code[immOffset], "%08x", &theSymOffset);
+					// offset immediately precedes immediate value, subtract
+					// sizeof(UInt32) * 2
+					sscanf(&inLine->info.code[immOffset - 8], "%08x", &theSymOffset);
 					theSymOffset	= OSSwapInt32(theSymOffset);
 
 					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
@@ -551,7 +573,7 @@
 							theSymPtr);
 				}
 			}
-			else
+			else	// absolute address
 			{
 				UInt8	immOffset = 4;
 
@@ -598,9 +620,15 @@
 		case 0xdd:	// fldll	
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			if (mRegInfos[REG2(modRM)].isValid	&&
-				mRegInfos[REG2(modRM)].classPtr)	// address relative to class
+			if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
 			{
+				if (!mRegInfos[REG2(modRM)].isValid)
+					break;
+
+				// Ignore the 1st and 4th addressing modes
+				if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
+					break;
+
 				objc_ivar	theIvar	= {0};
 
 				if (MOD(modRM) == MOD8)
@@ -646,7 +674,7 @@
 							theSymPtr);
 				}
 			}
-			else
+			else	// absolute address
 			{
 				UInt8	immOffset = 4;
 
@@ -704,9 +732,15 @@
 
 			sscanf(&inLine->info.code[6], "%02hhx", &modRM);
 
-			if (mRegInfos[REG2(modRM)].isValid	&&
-				mRegInfos[REG2(modRM)].classPtr)	// address relative to self
+			if (mRegInfos[REG2(modRM)].classPtr)	// address relative to self
 			{
+				if (!mRegInfos[REG2(modRM)].isValid)
+					break;
+
+				// Ignore the 1st and 4th addressing modes
+				if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
+					break;
+
 				objc_ivar	theIvar	= {0};
 
 				if (MOD(modRM) == MOD8)
@@ -795,8 +829,7 @@
 			break;
 	}	// switch (opcode)
 
-	if (!mLineCommentCString[0] &&
-		localAddy < mRAMFileSize + mTextOffset && localAddy > 0)
+	if (!mLineCommentCString[0])
 	{
 		UInt8	theType		= PointerType;
 		UInt32	theValue;
