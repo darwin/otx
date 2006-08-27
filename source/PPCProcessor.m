@@ -246,7 +246,7 @@
 			if (!mRegInfos[RA(theCode)].isValid || RA(theCode) == 0)
 				break;
 
-			if (mRegInfos[RA(theCode)].classPtr)
+			if (mRegInfos[RA(theCode)].classPtr)	// relative to a class
 			{	// search instance vars
 				objc_ivar	theIvar	= {0};
 
@@ -277,22 +277,23 @@
 
 				// class vars? haven't seen any...
 
-			}	// relative to a class
-			else
+			}
+			else	// absolute address
 			{
-				localAddy	= mRegInfos[RA(theCode)].intValue +
-					SIMM(theCode);
+				if (opcode == 0x18)	// ori		UIMM
+					localAddy	= mRegInfos[RA(theCode)].intValue |
+						UIMM(theCode);
+				else
+					localAddy	= mRegInfos[RA(theCode)].intValue +
+						SIMM(theCode);
 
-				if (localAddy < mRAMFileSize + mTextOffset && localAddy > 0)
+				UInt8	theType	= PointerType;
+				UInt32	theValue;
+
+				theSymPtr	= GetPointer(localAddy, &theType);
+
+				if (theSymPtr)
 				{
-					UInt8	theType	= PointerType;
-					UInt32	theValue;
-
-					theSymPtr	= GetPointer(localAddy, &theType);
-
-					if (!theSymPtr)
-						break;
-
 					switch (theType)
 					{
 						case DataGenericType:
@@ -437,8 +438,8 @@
 							snprintf(mLineCommentCString,
 								MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
 					}
-				}	// if (localAddy < mRAMFileSize && localAddy > 0)
-				else
+				}	// if (theSymPtr)
+				else	// test checking !theSymPtr instead
 				{	// Maybe it's a four-char code...
 					if ((opcode == 0x0e || opcode == 0x18) &&	// li | addi | ori
 						localAddy >= 0x20202020 && localAddy < 0x7f7f7f7f)
@@ -456,7 +457,7 @@
 								10, "'%.4s'", fcc);
 					}
 				}
-			}	// if (.classPtr)
+			}	// if !(.classPtr)
 
 			break;
 		}	// case 0x0e...
@@ -577,9 +578,7 @@
 		return;
 	}
 
-	UInt32			theNewValue;
-	RegisterInfo	theNewReg;
-
+	UInt32	theNewValue;
 	UInt32	theCode		= strtoul(
 		(const char*)inLine->info.code, nil, 16);
 
