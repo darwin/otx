@@ -12,10 +12,12 @@
 #import <sys/ptrace.h>
 #import <sys/syscall.h>
 
+#import "demangle.h"
+
 #import "ExeProcessor.h"
 #import "UserDefaultKeys.h"
 
-#define MAXLINE	1024	// for the md5 pipe only
+#define MAX_MD5_LINE	1024	// for the md5 pipe only
 
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 // Comparison functions for qsort.
@@ -146,6 +148,7 @@ methodInfo_compare(
 	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
 	mCharIsBool				= [theDefaults boolForKey: ShowCharAsBoolKey];
 	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
+	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
 
 	// Load exe into RAM.
 	NSData*	theData	= [NSData dataWithContentsOfURL: mOFile];
@@ -581,9 +584,9 @@ methodInfo_compare(
 	// loop thru symbols
 	for (i = 0; i < inSymPtr->nindirectsyms; i++)
 	{
+#if _OTX_DEBUG_DYSYMBOLS_
 		nlist	theSym		= theSyms[i];
 
-#if _OTX_DEBUG_DYSYMBOLS_
 		[self printSymbol: theSym];
 #endif
 	}
@@ -1302,6 +1305,39 @@ methodInfo_compare(
 		else if (strstr(ioLine->chars, "\n(__TEXT,__textcoal_nt)"))
 			mEndOfText	= mCoalTextNTSect.s.addr + mCoalTextNTSect.s.size;
 	}
+	else if (mDemangleCppNames)
+	{
+		char*	demString	=
+			PrepareNameForDemangling(ioLine->chars);
+
+		if (demString)
+		{
+			char*	cpName	= cplus_demangle(demString, DEMANGLE_OPTS);
+
+			free(demString);
+
+			if (cpName)
+			{
+				if (strlen(cpName) < MAX_LINE_LENGTH - 1)
+				{
+					free(ioLine->chars);
+					ioLine->length	= strlen(cpName) + 1;
+
+					// theCPName is null-terminated but has no \n. Allocate
+					// space for both...
+					ioLine->chars	= malloc(ioLine->length + 2);
+
+					// ...copy theCPName and terminate it...
+					strncpy(ioLine->chars, cpName, ioLine->length + 1);
+
+					// ...add \n and terminate it
+					strncat(ioLine->chars, "\n", 1);
+				}
+
+				free(cpName);
+			}
+		}
+	}
 }
 
 //	processCodeLine:
@@ -1317,18 +1353,18 @@ methodInfo_compare(
 
 	ChooseLine(ioLine);
 
-	UInt32	theOrigLength						= (*ioLine)->length;
-	char	addrSpaces[MAX_FIELD_SPACING]		= {0};
-	char	instSpaces[MAX_FIELD_SPACING]		= {0};
-	char	mnemSpaces[MAX_FIELD_SPACING]		= {0};
-	char	opSpaces[MAX_FIELD_SPACING]			= {0};
-	char	commentSpaces[MAX_FIELD_SPACING]	= {0};
-	char	theAddressCString[9]				= {0};
-	char	theMnemonicCString[20]				= {0};
-	char	theOrigCommentCString[1000]			= {0};
-	char	theCommentCString[1000]				= {0};
-	char	localOffsetString[9]				= {0};
-	BOOL	needNewLine							= false;
+	UInt32	theOrigLength								= (*ioLine)->length;
+	char	addrSpaces[MAX_FIELD_SPACING]				= {0};
+	char	instSpaces[MAX_FIELD_SPACING]				= {0};
+	char	mnemSpaces[MAX_FIELD_SPACING]				= {0};
+	char	opSpaces[MAX_FIELD_SPACING]					= {0};
+	char	commentSpaces[MAX_FIELD_SPACING]			= {0};
+	char	localOffsetString[9]						= {0};
+	char	theAddressCString[9]						= {0};
+	char	theMnemonicCString[20]						= {0};
+	char	theOrigCommentCString[MAX_COMMENT_LENGTH]	= {0};
+	char	theCommentCString[MAX_COMMENT_LENGTH]		= {0};
+	BOOL	needNewLine									= false;
 
 	mLineOperandsCString[0]	= 0;
 
@@ -1361,11 +1397,9 @@ methodInfo_compare(
 		theOrigCommentCString[theDestMarker++] = (*ioLine)->chars[theSrcMarker];
 	}
 
-	UInt32	thePPCCode		= strtoul(
-		(const char*)(*ioLine)->info.code, nil, 16);
 	char*	theCodeCString	= (*ioLine)->info.code;
-
-	SInt16	i	= mFieldWidths.instruction - strlen(theCodeCString);
+	SInt16	i				=
+		mFieldWidths.instruction - strlen(theCodeCString);
 
 	for (; i > 1; i--)
 		mnemSpaces[i - 2]	= 0x20;
@@ -1375,6 +1409,7 @@ methodInfo_compare(
 	for (; i > 1; i--)
 		opSpaces[i - 2]	= 0x20;
 
+	// Fill up commentSpaces based on operands field width.
 	if (mLineOperandsCString[0] && theOrigCommentCString[0])
 	{
 		i	= mFieldWidths.operands - strlen(mLineOperandsCString);
@@ -1471,7 +1506,7 @@ methodInfo_compare(
 					}
 				}
 			}
-		}
+		}	// if (theInfo != nil)
 
 		// Add or replace the method name if possible, else add '\n'.
 		if ((*ioLine)->prev && (*ioLine)->prev->info.isCode)	// prev line is code
@@ -1528,6 +1563,7 @@ methodInfo_compare(
 		UpdateRegisters(nil);
 	}
 
+	// Find a comment if necessary.
 	if (!theCommentCString[0])
 	{
 		CommentForLine(*ioLine);
@@ -1567,10 +1603,61 @@ methodInfo_compare(
 				strncpy(mLineOperandsCString, tempComment,
 					strlen(tempComment) + 1);
 
+			// Fill up commentSpaces based on operands field width.
 			SInt32	k	= mFieldWidths.operands - strlen(mLineOperandsCString);
 
 			for (; k > 1; k--)
 				commentSpaces[k - 2]	= 0x20;
+		}
+	}
+
+	// Demangle operands if necessary.
+	if (mLineOperandsCString[0] && mDemangleCppNames)
+	{
+		char*	demString	=
+			PrepareNameForDemangling(mLineOperandsCString);
+
+		if (demString)
+		{
+			char*	cpName	= cplus_demangle(demString, DEMANGLE_OPTS);
+
+			free(demString);
+
+			if (cpName)
+			{
+				if (strlen(cpName) < MAX_OPERANDS_LENGTH - 1)
+				{
+					bzero(mLineOperandsCString, strlen(mLineOperandsCString));
+					strncpy(mLineOperandsCString, cpName, strlen(cpName) + 1);
+				}
+
+				free(cpName);
+			}
+		}
+	}
+
+	// Demangle comment if necessary.
+	if (theCommentCString[0] && mDemangleCppNames)
+	{
+		char*	demString	=
+			PrepareNameForDemangling(theCommentCString);
+
+		if (demString)
+		{
+			char*	cpName	= cplus_demangle(demString, DEMANGLE_OPTS);
+
+			free(demString);
+
+			if (cpName)
+			{
+				if (strlen(cpName) < MAX_COMMENT_LENGTH - 1)
+				{
+					bzero(theCommentCString, strlen(theCommentCString));
+					strncpy(theCommentCString, cpName, strlen(cpName) + 1);
+				}
+
+				free(cpName);
+			}
 		}
 	}
 
@@ -1907,8 +1994,8 @@ methodInfo_compare(
 
 - (void)insertMD5
 {
-	char		md5Line[MAXLINE];
-	char		finalLine[MAXLINE];
+	char		md5Line[MAX_MD5_LINE];
+	char		finalLine[MAX_MD5_LINE];
 	NSString*	md5CommandString	= [NSString stringWithFormat:
 		@"md5 -q '%@'", [mOFile path]];
 	FILE*		md5Pipe				= popen([md5CommandString
@@ -1920,7 +2007,7 @@ methodInfo_compare(
 		return;
 	}
 
-	if (!fgets(md5Line, MAXLINE, md5Pipe))
+	if (!fgets(md5Line, MAX_MD5_LINE, md5Pipe))
 	{
 		perror("otx: unable to read from md5 pipe");
 		return;
@@ -1945,6 +2032,42 @@ methodInfo_compare(
 	strncpy(newLine->chars, finalLine, newLine->length + 1);
 
 	InsertLineAfter(newLine, mPlainLineListHead, &mPlainLineListHead);
+}
+
+//	prepareNameForDemangling:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+//	For cplus_demangle(), we must remove any extra leading underscores and
+//	any trailing colons. Caller owns the returned string.
+
+- (char*)prepareNameForDemangling: (char*)inName
+{
+	char*	preparedName	= nil;
+
+	// Bail if 1st char is not '_'.
+	if (strchr(inName, '_') != inName)
+		return nil;
+
+	// Find start of mangled name or bail.
+	char*	symString	= strstr(inName, "_Z");
+
+	if (!symString)
+		return nil;
+
+	// Find trailing colon.
+	UInt32	newSize		= strlen(symString);
+	char*	colonPos	= strrchr(symString, ':');
+
+	// Perform colonoscopy.
+	if (colonPos)
+		newSize	= colonPos - symString;
+
+	// Copy adjusted symbol into new string.
+	preparedName	= malloc(newSize + 1);
+
+	bzero(preparedName, newSize + 1);
+	strncpy(preparedName, symString, newSize);
+
+	return preparedName;
 }
 
 #pragma mark -
@@ -2047,11 +2170,6 @@ methodInfo_compare(
 
 			theValue	= (UInt32)ocString.chars;
 
-			if (mSwapped)
-				theValue	= OSSwapInt32(theValue);
-
-			thePtr	= GetPointer(theValue, nil);
-
 			break;
 		}
 		case OCClassType:
@@ -2061,11 +2179,6 @@ methodInfo_compare(
 			theValue	= (ocClass.name != 0) ?
 				(UInt32)ocClass.name : (UInt32)ocClass.isa;
 
-			if (mSwapped)
-				theValue	= OSSwapInt32(theValue);
-
-			thePtr	= GetPointer(theValue, nil);
-
 			break;
 		}
 		case OCModType:
@@ -2074,28 +2187,21 @@ methodInfo_compare(
 
 			theValue	= (UInt32)ocMod.name;
 
-			if (mSwapped)
-				theValue	= OSSwapInt32(theValue);
-
-			thePtr	= GetPointer(theValue, nil);
-
 			break;
 		}
 		case OCGenericType:
-		{
-			UInt32	theValue	= *(UInt32*)inObject;
-
-			if (mSwapped)
-				theValue	= OSSwapInt32(theValue);
-
-			thePtr	= GetPointer(theValue, nil);
+			theValue	= *(UInt32*)inObject;
 
 			break;
-		}
 
 		default:
 			break;
 	}
+
+	if (mSwapped)
+		theValue	= OSSwapInt32(theValue);
+
+	thePtr	= GetPointer(theValue, nil);
 
 	return thePtr;
 }
@@ -2484,8 +2590,7 @@ methodInfo_compare(
 	if (!theIvars)
 		return false;
 
-	objc_ivar	theIvar		= {0};
-	UInt32		numIvars	= theIvars->ivar_count;
+	UInt32	numIvars	= theIvars->ivar_count;
 
 	if (mSwapped)
 		numIvars	= OSSwapInt32(numIvars);
@@ -2537,8 +2642,7 @@ methodInfo_compare(
 			  andDefs: (void***)outDefs
 		   fromModule: (objc_module*)inModule;
 {
-	char*			theMachPtr	= (char*)mMachHeader;
-	unsigned long	addr		= (unsigned long)inModule->symtab;
+	unsigned long	addr	= (unsigned long)inModule->symtab;
 	unsigned long	i, left;
 
 	bzero(outSymTab, sizeof(objc_symtab));
@@ -2709,7 +2813,7 @@ methodInfo_compare(
 - (char*)getPointer: (UInt32)inAddr
 			outType: (UInt8*)dataType
 {
-	if (inAddr > mRAMFileSize + mTextOffset || inAddr == 0)
+	if (inAddr == 0)
 		return nil;
 
 	if (dataType)
@@ -2861,12 +2965,22 @@ methodInfo_compare(
 		if (mSwapped)
 			theValue	= OSSwapInt32(theValue);
 
-		if (theValue > 0 && theValue < mRAMFileSize + mTextOffset)
+		if (theValue != 0)
 		{
 			theType	= PointerType;
 
+			static	UInt32	recurseCount	= 0;
+
 			while (theType == PointerType)
 			{
+				recurseCount++;
+
+				if (recurseCount > 5)
+				{
+					theType	= DataGenericType;
+					break;
+				}
+
 				thePtr	= GetPointer(theValue, &theType);
 
 				if (!thePtr)
@@ -2877,6 +2991,8 @@ methodInfo_compare(
 
 				theValue	= *(UInt32*)thePtr;
 			}
+
+			recurseCount	= 0;
 		}
 
 		if (dataType)
@@ -3095,16 +3211,16 @@ methodInfo_compare(
 
 	while (theLine)
 	{
-		if (theLine->prev)					// if there's one behind us...
+		if (theLine->prev)				// if there's one behind us...
 		{
-			free(theLine->prev->chars);		// delete it
+			free(theLine->prev->chars);	// delete it
 			free(theLine->prev);
 		}
 
-		if (theLine->next)					// if there are more...
-			theLine	= theLine->next;		// jump to next one
+		if (theLine->next)				// if there are more...
+			theLine	= theLine->next;	// jump to next one
 		else
-		{									// this is last one, delete it
+		{								// this is last one, delete it
 			free(theLine->chars);
 			free(theLine);
 			theLine	= nil;
@@ -3148,6 +3264,8 @@ methodInfo_compare(
 		[self methodForSelector: CommentForSystemCallSel];
 	UpdateRegisters				= UpdateRegistersFuncType
 		[self methodForSelector: UpdateRegistersSel];
+	PrepareNameForDemangling	= PrepareNameForDemanglingFuncType
+		[self methodForSelector: PrepareNameForDemanglingSel];
 	InsertLineBefore			= InsertLineBeforeFuncType
 		[self methodForSelector: InsertLineBeforeSel];
 	InsertLineAfter				= InsertLineAfterFuncType
