@@ -79,6 +79,15 @@
 	[mMainWindow makeKeyAndOrderFront: nil];
 }
 
+//	windowDidResize:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
+- (void)windowDidResize: (NSNotification*)inNotification
+{
+	if ([inNotification object] == mMainWindow)
+		[mMainWindow display];
+}
+
 //	openExe:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 //	Open from File menu. Packages are treated as directories, so we can get
@@ -122,6 +131,7 @@
 {
 	[[NSUserDefaults standardUserDefaults] registerDefaults:
 		[NSDictionary dictionaryWithObjectsAndKeys:
+		@"YES",		DemangleCppNamesKey,
 		@"YES",		EntabOutputKey,
 		@"YES",		ShowCharAsBoolKey,
 		@"YES",		ShowDataSectionKey,
