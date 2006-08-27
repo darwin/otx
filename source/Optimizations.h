@@ -14,6 +14,7 @@
 #define CommentForLineFuncType				(void	(*)(id, SEL, Line*))
 #define CommentForSystemCallFuncType		(void	(*)(id, SEL))
 #define UpdateRegistersFuncType				(void	(*)(id, SEL, Line*))
+#define PrepareNameForDemanglingFuncType	(char*	(*)(id, SEL, char*))
 #define InsertLineBeforeFuncType			(void	(*)(id, SEL, Line*, Line*, Line**))
 #define InsertLineAfterFuncType				(void	(*)(id, SEL, Line*, Line*, Line**))
 #define ReplaceLineFuncType					(void	(*)(id, SEL, Line*, Line*, Line**))
@@ -37,6 +38,7 @@
 #define CommentForLineSel				@selector(commentForLine:)
 #define CommentForSystemCallSel			@selector(commentForSystemCall)
 #define UpdateRegistersSel				@selector(updateRegisters:)
+#define PrepareNameForDemanglingSel		@selector(prepareNameForDemangling:)
 #define InsertLineBeforeSel				@selector(insertLine:before:inList:)
 #define InsertLineAfterSel				@selector(insertLine:after:inList:)
 #define ReplaceLineSel					@selector(replaceLine:withLine:inList:)
@@ -76,6 +78,8 @@
 		CommentForSystemCall(self, CommentForSystemCallSel)
 #define UpdateRegisters(a)														\
 		UpdateRegisters(self, UpdateRegistersSel, (a))
+#define PrepareNameForDemangling(a)												\
+		PrepareNameForDemangling(self, PrepareNameForDemanglingSel, (a))
 #define InsertLineBefore(a, b, c)												\
 		InsertLineBefore(self, InsertLineBeforeSel, (a), (b), (c))
 #define InsertLineAfter(a, b, c)												\
