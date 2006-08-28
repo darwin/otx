@@ -116,7 +116,8 @@ sets of characters:
 */
 
 #include "ansidecl.h"
-#include <safe-ctype.h>
+//#include <safe-ctype.h>	// otxdev
+#include "safe-ctype.h"
 #include <stdio.h>  /* for EOF */
 
 #if EOF != -1

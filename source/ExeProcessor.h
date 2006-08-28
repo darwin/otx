@@ -180,6 +180,10 @@ TextFieldWidths;
 #define _OTX_DEBUG_SYMBOLS_		0
 #define _OTX_DEBUG_DYSYMBOLS_	0
 
+// Options for cplus_demangle()
+#define DEMANGLE_OPTS			\
+	DMGL_PARAMS | DMGL_ANSI | DMGL_VERBOSE | DMGL_TYPES | DMGL_RET_POSTFIX
+
 // ============================================================================
 
 @interface ExeProcessor : NSObject
@@ -192,7 +196,7 @@ TextFieldWidths;
 	// guts
 	NSURL*				mOFile;				// exe on disk
 	char*				mRAMFile;			// exe in RAM
-	UInt32				mRAMFileSize;
+	UInt32				mRAMFileSize;	// kill this
 	char*				mVerboseFile;
 	UInt32				mVerboseFileSize;
 	char*				mPlainFile;
@@ -263,6 +267,7 @@ TextFieldWidths;
 	BOOL		mShowIvarTypes;
 	BOOL		mEntabOutput;
 	BOOL		mCharIsBool;
+	BOOL		mDemangleCppNames;
 
 	// saved strings
 	char		mArchString[90];	// "-arch ppc" "-arch i386" etc.
@@ -285,6 +290,7 @@ TextFieldWidths;
 	void	(*CommentForLine)			(id, SEL, Line*);
 	void	(*CommentForSystemCall)		(id, SEL);
 	void	(*UpdateRegisters)			(id, SEL, Line*);
+	char*	(*PrepareNameForDemangling)	(id, SEL, char*);
 
 	void	(*InsertLineBefore)			(id, SEL, Line*, Line*, Line**);
 	void	(*InsertLineAfter)			(id, SEL, Line*, Line*, Line**);
@@ -359,7 +365,9 @@ TextFieldWidths;
 - (void)commentForLine: (Line*)inLine;
 - (void)commentForSystemCall;
 - (void)updateRegisters: (Line*)inLine;
+
 - (void)insertMD5;
+- (char*)prepareNameForDemangling: (char*)inName;
 
 - (objc_class*)objcClassPtrFromMethod: (UInt32)inAddress;
 - (objc_category*)objcCatPtrFromMethod: (UInt32)inAddress;

@@ -18,7 +18,13 @@
 		E172D5190A74874100C85E7A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* Info.plist */; };
 		E182007209AE4CD800584B07 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = E182007009AE4CD800584B07 /* AppController.m */; };
 		E18201E709AFAAAC00584B07 /* CDropBox.m in Sources */ = {isa = PBXBuildFile; fileRef = E18201E609AFAAAC00584B07 /* CDropBox.m */; };
-		E1A151FF0AA357E000324ED3 /* binutils-2.17 in Resources */ = {isa = PBXBuildFile; fileRef = E1A151ED0AA357DF00324ED3 /* binutils-2.17 */; };
+		E1A1526C0AA364A600324ED3 /* cp-demangle.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152640AA364A600324ED3 /* cp-demangle.c */; };
+		E1A1526D0AA364A600324ED3 /* cp-demint.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152660AA364A600324ED3 /* cp-demint.c */; };
+		E1A1526E0AA364A600324ED3 /* cplus-dem.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152670AA364A600324ED3 /* cplus-dem.c */; };
+		E1A1526F0AA364A600324ED3 /* safe-ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152680AA364A600324ED3 /* safe-ctype.c */; };
+		E1A152700AA364A600324ED3 /* xexit.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152690AA364A600324ED3 /* xexit.c */; };
+		E1A152710AA364A600324ED3 /* xmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526A0AA364A600324ED3 /* xmalloc.c */; };
+		E1A152720AA364A600324ED3 /* xstrdup.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526B0AA364A600324ED3 /* xstrdup.c */; };
 		E1BFAF0409B573EB00B8A308 /* About.nib in Resources */ = {isa = PBXBuildFile; fileRef = E1BFAF0209B573EB00B8A308 /* About.nib */; };
 		E1CF3B2E0A8D7210009BFEDC /* Version.plist in Resources */ = {isa = PBXBuildFile; fileRef = E1CF3B2D0A8D7210009BFEDC /* Version.plist */; };
 		E1D77F2E09B296A300176F18 /* ExeProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */; };
@@ -65,7 +71,18 @@
 		E16222240A4F80F4007ECB26 /* Optimizations.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Optimizations.h; path = source/Optimizations.h; sourceTree = "<group>"; };
 		E182007009AE4CD800584B07 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppController.m; path = source/AppController.m; sourceTree = "<group>"; wrapsLines = 0; };
 		E18201E609AFAAAC00584B07 /* CDropBox.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDropBox.m; path = source/CDropBox.m; sourceTree = "<group>"; };
-		E1A151ED0AA357DF00324ED3 /* binutils-2.17 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "binutils-2.17"; path = "source/binutils-2.17"; sourceTree = "<group>"; };
+		E1A152600AA3648600324ED3 /* ansidecl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ansidecl.h; path = "source/binutils-2.17/include/ansidecl.h"; sourceTree = SOURCE_ROOT; };
+		E1A152610AA3648600324ED3 /* demangle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = demangle.h; path = "source/binutils-2.17/include/demangle.h"; sourceTree = SOURCE_ROOT; };
+		E1A152620AA3648600324ED3 /* libiberty.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = libiberty.h; path = "source/binutils-2.17/include/libiberty.h"; sourceTree = SOURCE_ROOT; };
+		E1A152630AA3648600324ED3 /* safe-ctype.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "safe-ctype.h"; path = "source/binutils-2.17/include/safe-ctype.h"; sourceTree = SOURCE_ROOT; };
+		E1A152640AA364A600324ED3 /* cp-demangle.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = "cp-demangle.c"; path = "source/binutils-2.17/libiberty/cp-demangle.c"; sourceTree = SOURCE_ROOT; };
+		E1A152650AA364A600324ED3 /* cp-demangle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "cp-demangle.h"; path = "source/binutils-2.17/libiberty/cp-demangle.h"; sourceTree = SOURCE_ROOT; };
+		E1A152660AA364A600324ED3 /* cp-demint.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = "cp-demint.c"; path = "source/binutils-2.17/libiberty/cp-demint.c"; sourceTree = SOURCE_ROOT; };
+		E1A152670AA364A600324ED3 /* cplus-dem.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = "cplus-dem.c"; path = "source/binutils-2.17/libiberty/cplus-dem.c"; sourceTree = SOURCE_ROOT; };
+		E1A152680AA364A600324ED3 /* safe-ctype.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = "safe-ctype.c"; path = "source/binutils-2.17/libiberty/safe-ctype.c"; sourceTree = SOURCE_ROOT; };
+		E1A152690AA364A600324ED3 /* xexit.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xexit.c; path = "source/binutils-2.17/libiberty/xexit.c"; sourceTree = SOURCE_ROOT; };
+		E1A1526A0AA364A600324ED3 /* xmalloc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xmalloc.c; path = "source/binutils-2.17/libiberty/xmalloc.c"; sourceTree = SOURCE_ROOT; };
+		E1A1526B0AA364A600324ED3 /* xstrdup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xstrdup.c; path = "source/binutils-2.17/libiberty/xstrdup.c"; sourceTree = SOURCE_ROOT; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
 		E1BFAF0309B573EB00B8A308 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/About.nib; sourceTree = "<group>"; };
 		E1CF3B2D0A8D7210009BFEDC /* Version.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Version.plist; sourceTree = "<group>"; };
@@ -140,13 +157,13 @@
 			children = (
 				32CA4F630368D1EE00C91783 /* otx_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				E1A152490AA3639100324ED3 /* binutils */,
 				E160C7D609B97223005074DB /* LangDefs.h */,
 				E13539820A6817C700CBDDE5 /* ObjcSwap.c */,
 				E16222240A4F80F4007ECB26 /* Optimizations.h */,
 				E1167F1C09C8086900E7398D /* StolenDefs.h */,
 				E13539810A68178D00CBDDE5 /* SyscallStrings.h */,
 				E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */,
-				E1A151ED0AA357DF00324ED3 /* binutils-2.17 */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -183,6 +200,41 @@
 				E13539900A68185500CBDDE5 /* AppController.h */,
 			);
 			name = Headers;
+			sourceTree = "<group>";
+		};
+		E1A152490AA3639100324ED3 /* binutils */ = {
+			isa = PBXGroup;
+			children = (
+				E1A1524A0AA363DF00324ED3 /* include */,
+				E1A1524B0AA363E800324ED3 /* libiberty */,
+			);
+			name = binutils;
+			sourceTree = "<group>";
+		};
+		E1A1524A0AA363DF00324ED3 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				E1A152600AA3648600324ED3 /* ansidecl.h */,
+				E1A152610AA3648600324ED3 /* demangle.h */,
+				E1A152620AA3648600324ED3 /* libiberty.h */,
+				E1A152630AA3648600324ED3 /* safe-ctype.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		E1A1524B0AA363E800324ED3 /* libiberty */ = {
+			isa = PBXGroup;
+			children = (
+				E1A152640AA364A600324ED3 /* cp-demangle.c */,
+				E1A152650AA364A600324ED3 /* cp-demangle.h */,
+				E1A152660AA364A600324ED3 /* cp-demint.c */,
+				E1A152670AA364A600324ED3 /* cplus-dem.c */,
+				E1A152680AA364A600324ED3 /* safe-ctype.c */,
+				E1A152690AA364A600324ED3 /* xexit.c */,
+				E1A1526A0AA364A600324ED3 /* xmalloc.c */,
+				E1A1526B0AA364A600324ED3 /* xstrdup.c */,
+			);
+			name = libiberty;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -240,7 +292,6 @@
 				E172D5190A74874100C85E7A /* Info.plist in Resources */,
 				E125C39D0A86B2D000098114 /* App Icon.icns in Resources */,
 				E1CF3B2E0A8D7210009BFEDC /* Version.plist in Resources */,
-				E1A151FF0AA357E000324ED3 /* binutils-2.17 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,6 +309,13 @@
 				E14769580A60E95B00C03C62 /* PPCProcessor.m in Sources */,
 				E14769C10A60F47E00C03C62 /* X86Processor.m in Sources */,
 				E13539830A6817C700CBDDE5 /* ObjcSwap.c in Sources */,
+				E1A1526C0AA364A600324ED3 /* cp-demangle.c in Sources */,
+				E1A1526D0AA364A600324ED3 /* cp-demint.c in Sources */,
+				E1A1526E0AA364A600324ED3 /* cplus-dem.c in Sources */,
+				E1A1526F0AA364A600324ED3 /* safe-ctype.c in Sources */,
+				E1A152700AA364A600324ED3 /* xexit.c in Sources */,
+				E1A152710AA364A600324ED3 /* xmalloc.c in Sources */,
+				E1A152720AA364A600324ED3 /* xstrdup.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,6 +384,7 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = ppc;
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -340,6 +399,7 @@
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				USER_HEADER_SEARCH_PATHS = "source/binutils-2.17/include/ source/binutils-2.17/libiberty/";
 			};
 			name = Debug;
 		};
@@ -363,6 +423,7 @@
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				USER_HEADER_SEARCH_PATHS = "source/binutils-2.17/include/ source/binutils-2.17/libiberty/";
 			};
 			name = Release;
 		};

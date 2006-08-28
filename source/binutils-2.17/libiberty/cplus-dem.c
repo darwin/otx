@@ -56,7 +56,8 @@ char * malloc ();
 char * realloc ();
 #endif
 
-#include <demangle.h>
+//#include <demangle.h>	// otxdev
+#include "demangle.h"
 #undef CURRENT_DEMANGLING_STYLE
 #define CURRENT_DEMANGLING_STYLE work->options
 

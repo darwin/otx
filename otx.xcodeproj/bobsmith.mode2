@@ -311,7 +311,7 @@
 									<array>
 										<array>
 											<integer>19</integer>
-											<integer>17</integer>
+											<integer>18</integer>
 											<integer>0</integer>
 										</array>
 									</array>
@@ -481,8 +481,8 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>E1A151B00AA271F600324ED3</string>
-				<string>E1A151B10AA271F600324ED3</string>
+				<string>E1A152210AA35A1200324ED3</string>
+				<string>E1A152220AA35A1200324ED3</string>
 				<string>1C9437FD063B20B00039CFAC</string>
 				<string>1C9437FE063B20B00039CFAC</string>
 				<string>1C9437FF063B20B00039CFAC</string>
@@ -500,7 +500,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>178418142.87277001</real>
+	<real>178477714.88933</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>1</integer>
 	<key>ToolbarIsVisible</key>
@@ -516,6 +516,7 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>/Volumes/Venus/Dev/otx/project/trunk/otx.xcodeproj</string>
+		<string>1C530D52069F1CE1000CFCEE</string>
 	</array>
 	<key>WindowString</key>
 	<string>611 122 374 624 0 0 1024 746 </string>
@@ -673,14 +674,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>X86Processor.m</string>
+								<string>ExeProcessor.m</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -689,7 +688,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {718, 459}}</string>
 								<key>RubberWindowFrame</key>
-								<string>179 99 718 647 0 0 1024 746 </string>
+								<string>36 99 718 647 0 0 1024 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -697,6 +696,8 @@
 							<string>459pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -713,7 +714,7 @@
 								<key>Frame</key>
 								<string>{{0, 464}, {718, 142}}</string>
 								<key>RubberWindowFrame</key>
-								<string>179 99 718 647 0 0 1024 746 </string>
+								<string>36 99 718 647 0 0 1024 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXBuildResultsModule</string>
@@ -736,18 +737,18 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D52069F1CE1000CFCEE</string>
-				<string>E1A14FCD0AA0E4FA00324ED3</string>
+				<string>E1A152240AA35A5100324ED3</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.build</string>
 			<key>WindowString</key>
-			<string>179 99 718 647 0 0 1024 746 </string>
+			<string>36 99 718 647 0 0 1024 746 </string>
 			<key>WindowToolGUID</key>
 			<string>1C530D52069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>

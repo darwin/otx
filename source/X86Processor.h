@@ -1,11 +1,15 @@
 #import "ExeProcessor.h"
 
-// Addressing modes in mod field of mod r/m byte
-#define MODimm	0
-#define MOD8	1
-#define MOD32	2
+// Addressing modes in mod field of mod r/m byte.
+// See table 2.2 in the Pentium manual.
+#define MODimm	0	// [reg]
+#define MOD8	1	// [reg] + disp8
+#define MOD32	2	// [reg] + disp32
+#define MODx	3	// ignored
 
-#define DISP32	5
+// Addressing modes in r/m field of mod r/m byte.
+// See table 2.2 in the Pentium manual.
+#define DISP32	5	// disp32 when mod == 0
 
 // Register identifiers in r/m field of mod r/m byte
 enum {
@@ -29,8 +33,9 @@ enum {
 #define REG2(x)			((x) & 0x7)				// bits 0-2
 #define OPEXT(x)		REG1((x))
 #define RM(x)			REG2((x))
-#define HAS_SIB(x)		(MOD((x)) < 0x3 && REG2((x)) == 0x4)
+#define HAS_SIB(x)		(MOD((x)) != MODx && REG2((x)) == ESP)
 #define HAS_DISP8(x)	(MOD((x)) == MOD8)
+#define HAS_DISP32(x)	(MOD((x)) == MOD32)
 
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
