@@ -4,10 +4,6 @@
 <dict>
 	<key>BuildVersion</key>
 	<string>17</string>
-	<key>CFBundleShortVersionString</key>
-	<string>0.13b</string>
-	<key>CFBundleVersion</key>
-	<string>0.13b</string>
 	<key>ProjectName</key>
 	<string>NibPBTemplates</string>
 	<key>SourceVersion</key>

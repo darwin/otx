@@ -5,7 +5,6 @@
                 openExe = id; 
                 processFile = id; 
                 selectArch = id; 
-                showAboutBox = id; 
                 showMainWindow = id; 
                 showPrefs = id; 
                 switchPrefsViews = id; 
@@ -15,13 +14,10 @@
             CLASS = AppController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                mAboutPanel = NSPanel; 
                 mArchPopup = NSPopUpButton; 
                 mMainWindow = NSWindow; 
                 mOutputText = NSTextField; 
                 mPathText = NSTextField; 
-                mPrefsOutFileBaseText = NSTextField; 
-                mPrefsOutFileExtText = NSTextField; 
                 mPrefsOutputView = NSView; 
                 mPrefsProcessView = NSView; 
                 mPrefsViewPicker = NSSegmentedControl; 
@@ -30,7 +26,6 @@
                 mProgDrawer = NSDrawer; 
                 mProgText = NSTextField; 
                 mSaveButton = NSButton; 
-                mSaveMenuItem = NSMenuItem; 
                 mThinButton = NSButton; 
                 mTypeText = NSTextField; 
             }; 

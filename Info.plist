@@ -25,6 +25,9 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleGetInfoString</key>
+	<string>0.13b
+Copyright © 2006 anon</string>
 	<key>CFBundleIconFile</key>
 	<string>App Icon.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -35,8 +38,14 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.13b</string>
 	<key>CFBundleSignature</key>
 	<string>ot++</string>
+	<key>CFBundleVersion</key>
+	<string>31</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2006 anon</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

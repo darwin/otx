@@ -27,14 +27,6 @@
 	IBOutlet NSSegmentedControl*	mPrefsViewPicker;
 	IBOutlet NSView*				mPrefsProcessView;
 	IBOutlet NSView*				mPrefsOutputView;
-	IBOutlet NSTextField*			mPrefsOutFileBaseText;
-	IBOutlet NSTextField*			mPrefsOutFileExtText;
-
-// about window
-	IBOutlet NSPanel*				mAboutPanel;
-
-// menus
-	IBOutlet NSMenuItem*			mSaveMenuItem;
 
 @private
 	NSURL*				mOFile;
@@ -51,8 +43,6 @@
 	UInt32				mPrefsCurrentViewIndex;
 }
 
-- (void)registerUserDefaults;
-
 - (SInt32)checkOtool;
 
 // main window
@@ -68,9 +58,8 @@
 - (void)newOFile: (NSURL*)inOFile
 	   needsPath: (BOOL)inNeedsPath;
 
-// other windows
+// prefs window
 - (IBAction)showPrefs: (id)sender;
-- (IBAction)showAboutBox: (id)sender;
 - (IBAction)switchPrefsViews: (id)sender;
 
 // alerts

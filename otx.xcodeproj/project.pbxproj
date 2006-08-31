@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
-		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E125C39D0A86B2D000098114 /* App Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = E125C39C0A86B2D000098114 /* App Icon.icns */; };
@@ -25,8 +24,6 @@
 		E1A152700AA364A600324ED3 /* xexit.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152690AA364A600324ED3 /* xexit.c */; };
 		E1A152710AA364A600324ED3 /* xmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526A0AA364A600324ED3 /* xmalloc.c */; };
 		E1A152720AA364A600324ED3 /* xstrdup.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526B0AA364A600324ED3 /* xstrdup.c */; };
-		E1BFAF0409B573EB00B8A308 /* About.nib in Resources */ = {isa = PBXBuildFile; fileRef = E1BFAF0209B573EB00B8A308 /* About.nib */; };
-		E1CF3B2E0A8D7210009BFEDC /* Version.plist in Resources */ = {isa = PBXBuildFile; fileRef = E1CF3B2D0A8D7210009BFEDC /* Version.plist */; };
 		E1D77F2E09B296A300176F18 /* ExeProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */; };
 /* End PBXBuildFile section */
 
@@ -46,7 +43,6 @@
 /* End PBXBuildStyle section */
 
 /* Begin PBXFileReference section */
-		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -84,8 +80,6 @@
 		E1A1526A0AA364A600324ED3 /* xmalloc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xmalloc.c; path = "source/binutils-2.17/libiberty/xmalloc.c"; sourceTree = SOURCE_ROOT; };
 		E1A1526B0AA364A600324ED3 /* xstrdup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xstrdup.c; path = "source/binutils-2.17/libiberty/xstrdup.c"; sourceTree = SOURCE_ROOT; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
-		E1BFAF0309B573EB00B8A308 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/About.nib; sourceTree = "<group>"; };
-		E1CF3B2D0A8D7210009BFEDC /* Version.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Version.plist; sourceTree = "<group>"; };
 		E1D77F2D09B296A300176F18 /* ExeProcessor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ExeProcessor.m; path = source/ExeProcessor.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -173,10 +167,7 @@
 			children = (
 				E125C39C0A86B2D000098114 /* App Icon.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
-				E1CF3B2D0A8D7210009BFEDC /* Version.plist */,
-				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
-				E1BFAF0209B573EB00B8A308 /* About.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -287,11 +278,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
-				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
-				E1BFAF0409B573EB00B8A308 /* About.nib in Resources */,
 				E172D5190A74874100C85E7A /* Info.plist in Resources */,
 				E125C39D0A86B2D000098114 /* App Icon.icns in Resources */,
-				E1CF3B2E0A8D7210009BFEDC /* Version.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,28 +310,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				089C165DFE840E0CC02AAC07 /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				29B97319FDCFA39411CA2CEA /* English */,
 			);
 			name = MainMenu.nib;
-			sourceTree = "<group>";
-		};
-		E1BFAF0209B573EB00B8A308 /* About.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E1BFAF0309B573EB00B8A308 /* English */,
-			);
-			name = About.nib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

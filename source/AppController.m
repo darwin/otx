@@ -16,10 +16,37 @@
 
 - (id)init
 {
-	if ((self = [super init]) == nil)
-		return nil;
-
+	self = [super init];	// with apologies to Wil Shipley
 	return self;
+}
+
+//	initialize
+// ————————————————————————————————————————————————————————————————————————————
+
++ (void)initialize
+{
+	NSUserDefaultsController*	theController	=
+		[NSUserDefaultsController sharedUserDefaultsController];
+	NSDictionary*				theValues		=
+		[NSDictionary dictionaryWithObjectsAndKeys:
+		@"1",		AskOutputDirKey,
+		@"YES",		DemangleCppNamesKey,
+		@"YES",		EntabOutputKey,
+		@"YES",		OpenOutputFileKey,
+		@"BBEdit",	OutputAppKey,
+		@"txt",		OutputFileExtensionKey,
+		@"output",	OutputFileNameKey,
+		@"YES",		ShowCharAsBoolKey,
+		@"YES",		ShowDataSectionKey,
+		@"YES",		ShowIvarTypesKey,
+		@"YES",		ShowLocalOffsetsKey,
+		@"YES",		ShowMD5Key,
+		@"YES",		ShowMethodReturnTypesKey,
+		@"0",		UseCustomNameKey,
+		nil];
+
+	[theController setInitialValues: theValues];
+	[[theController defaults] registerDefaults: theValues];
 }
 
 //	dealloc
@@ -53,14 +80,12 @@
 
 - (void)applicationDidFinishLaunching: (NSNotification*)inNotification
 {
-	[self registerUserDefaults];
-
 	// Setup prefs window
 	UInt32	numViews	= [mPrefsViewPicker segmentCount];
 	UInt32	i;
 
 	mPrefsCurrentViewIndex	= 0;
-	mPrefsViews				= malloc(sizeof(NSView*) * numViews);
+	mPrefsViews				= calloc(numViews, sizeof(NSView*));
 	mPrefsViews[0]			= mPrefsProcessView;
 	mPrefsViews[1]			= mPrefsOutputView;
 
@@ -114,38 +139,12 @@
 - (BOOL)application: (NSApplication*)sender
 		   openFile: (NSString*)filename
 {
-	[self registerUserDefaults];
-
 	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: filename])
 		[self newPackageFile: [NSURL fileURLWithPath: filename]];
 	else
 		[self newOFile: [NSURL fileURLWithPath: filename] needsPath: true];
 
 	return true;
-}
-
-//	registerUserDefaults
-// ————————————————————————————————————————————————————————————————————————————
-
-- (void)registerUserDefaults
-{
-	[[NSUserDefaults standardUserDefaults] registerDefaults:
-		[NSDictionary dictionaryWithObjectsAndKeys:
-		@"YES",		DemangleCppNamesKey,
-		@"YES",		EntabOutputKey,
-		@"YES",		ShowCharAsBoolKey,
-		@"YES",		ShowDataSectionKey,
-		@"YES",		ShowIvarTypesKey,
-		@"YES",		ShowLocalOffsetsKey,
-		@"YES",		ShowMethReturnTypesKey,
-		@"YES",		ShowMD5Key,
-		@"YES",		OpenOutputFileKey,
-		@"BBEdit",	OutputAppKey,
-		@"txt",		OutputFileExtensionKey,
-		@"output",	OutputFileNameKey,
-		@"NO",		UseExeDirKey,
-		@"YES",		UseExeNameKey,
-		nil]];
 }
 
 #pragma mark -
@@ -293,7 +292,7 @@
 
 	[theTempOutputFilePath retain];
 
-	if (![[NSUserDefaults standardUserDefaults] boolForKey: UseExeDirKey])
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: AskOutputDirKey])
 	{
 		NSSavePanel*	thePanel	= [NSSavePanel savePanel];
 
@@ -331,7 +330,7 @@
 {
 	NSString*	theThinOutputPath		= nil;
 
-	if (![[NSUserDefaults standardUserDefaults] boolForKey: UseExeDirKey])
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: AskOutputDirKey])
 	{
 		NSSavePanel*	thePanel	= [NSSavePanel savePanel];
 		NSString*		theFileName	= [mExeName stringByAppendingString:
@@ -371,11 +370,11 @@
 	{
 		NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
 
-		if ([theDefaults boolForKey: UseExeDirKey])
-			[menuItem setTitle: @"Save"];
-		else
+		if ([theDefaults boolForKey: AskOutputDirKey])
 			[menuItem setTitle: [NSString stringWithCString: "Save…"
 				encoding: NSMacOSRomanStringEncoding]];
+		else
+			[menuItem setTitle: @"Save"];
 
 		return mFileIsValid;
 	}
@@ -498,10 +497,10 @@
 	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
 	NSString*		theString	= nil;
 
-	if ([theDefaults boolForKey: UseExeNameKey])
-		theString	= mExeName;
-	else
+	if ([theDefaults boolForKey: UseCustomNameKey])
 		theString	= [theDefaults objectForKey: OutputFileNameKey];
+	else
+		theString	= mExeName;
 
 	if (!theString)
 		theString	= @"error";
@@ -777,24 +776,6 @@
 	[theAnim autorelease];
 
 	mPrefsCurrentViewIndex	= theNewIndex;
-}
-
-//	showAboutBox:
-// ————————————————————————————————————————————————————————————————————————————
-
-- (IBAction)showAboutBox: (id)sender
-{
-	if (!mAboutPanel)
-	{
-		if (![NSBundle loadNibNamed: @"About.nib" owner: self])
-		{
-			printf("otx: failed to load About.nib\n");
-			return;
-		}
-	}
-
-	[mAboutPanel center];
-	[mAboutPanel makeKeyAndOrderFront: nil];
 }
 
 @end

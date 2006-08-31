@@ -144,7 +144,7 @@ methodInfo_compare(
 
 	mShowLocalOffsets		= [theDefaults boolForKey: ShowLocalOffsetsKey];
 	mShowDataSection		= [theDefaults boolForKey: ShowDataSectionKey];
-	mShowMethReturnTypes	= [theDefaults boolForKey: ShowMethReturnTypesKey];
+	mShowMethReturnTypes	= [theDefaults boolForKey: ShowMethodReturnTypesKey];
 	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
 	mCharIsBool				= [theDefaults boolForKey: ShowCharAsBoolKey];
 	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
