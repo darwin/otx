@@ -292,6 +292,12 @@ TextFieldWidths;
 	void	(*UpdateRegisters)			(id, SEL, Line*);
 	char*	(*PrepareNameForDemangling)	(id, SEL, char*);
 
+	objc_class*		(*ObjcClassPtrFromMethod)		(id, SEL, UInt32);
+	objc_category*	(*ObjcCatPtrFromMethod)			(id, SEL, UInt32);
+	MethodInfo*		(*ObjcMethodFromAddress)		(id, SEL, UInt32);
+	BOOL			(*ObjcClassFromName)			(id, SEL, objc_class*, const char*);
+	char*			(*ObjcDescriptionFromObject)	(id, SEL, const char*, UInt8);
+
 	void	(*InsertLineBefore)			(id, SEL, Line*, Line*, Line**);
 	void	(*InsertLineAfter)			(id, SEL, Line*, Line*, Line**);
 	void	(*ReplaceLine)				(id, SEL, Line*, Line*, Line**);
@@ -371,9 +377,9 @@ TextFieldWidths;
 
 - (objc_class*)objcClassPtrFromMethod: (UInt32)inAddress;
 - (objc_category*)objcCatPtrFromMethod: (UInt32)inAddress;
+- (MethodInfo*)objcMethodFromAddress: (UInt32)inAddress;
 - (BOOL)objcClass: (objc_class*)outClass
 		 fromName: (const char*)inName;
-- (MethodInfo*)objcMethodFromAddress: (UInt32)inAddress;
 - (char*)objcDescriptionFromObject: (const char*)inObject
 							  type: (UInt8)inType;
 

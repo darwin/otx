@@ -93,9 +93,9 @@
 		{
 			SInt16	imm	= SIMM(theCode);
 
-			// Check if it's a single printable 7-bit char
+			// Check for a single printable 7-bit char.
 			if (imm >= 0x20 && imm < 0x7f)
-				snprintf(mLineCommentCString, 10, "'%c'", imm);
+				snprintf(mLineCommentCString, 4, "'%c'", imm);
 
 			break;
 		}
@@ -454,7 +454,7 @@
 							fcc[2] >= 0x20 && fcc[2] < 0x7f &&
 							fcc[3] >= 0x20 && fcc[3] < 0x7f)
 							snprintf(mLineCommentCString,
-								10, "'%.4s'", fcc);
+								7, "'%.4s'", fcc);
 					}
 				}
 			}	// if !(.classPtr)

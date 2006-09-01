@@ -192,9 +192,9 @@
 
 			sscanf(&inLine->info.code[2], "%02hhx", &imm);
 
-			// Check if it's a single printable 7-bit char
+			// Check for a single printable 7-bit char.
 			if (imm >= 0x20 && imm < 0x7f)
-				snprintf(mLineCommentCString, 10, "'%c'", imm);
+				snprintf(mLineCommentCString, 4, "'%c'", imm);
 
 			break;
 		}
@@ -243,9 +243,9 @@
 
 			sscanf(&inLine->info.code[immOffset], "%02hhx", &imm);
 
-			// Check if it's a single printable 7-bit char
+			// Check for a single printable 7-bit char.
 			if (imm >= 0x20 && imm < 0x7f)
-				snprintf(mLineCommentCString, 10, "'%c'", imm);
+				snprintf(mLineCommentCString, 4, "'%c'", imm);
 
 			break;
 		}
@@ -447,7 +447,7 @@
 
 			// Check for a single printable 7-bit char.
 			if (imm >= 0x20 && imm < 0x7f)
-				snprintf(mLineCommentCString, 10, "'%c'", imm);
+				snprintf(mLineCommentCString, 4, "'%c'", imm);
 
 			break;
 		}
@@ -464,7 +464,7 @@
 			localAddy	= OSSwapInt32(localAddy);
 
 			// Check for a four char code.
-			if (localAddy > 0x20202020 && localAddy < 0x7f7f7f7f)
+			if (localAddy >= 0x20202020 && localAddy < 0x7f7f7f7f)
 			{
 				char*	fcc	= (char*)&localAddy;
 
@@ -477,8 +477,13 @@
 						localAddy	= OSSwapInt32(localAddy);
 
 					snprintf(mLineCommentCString,
-						10, "'%.4s'", fcc);
+						7, "'%.4s'", fcc);
 				}
+			}
+			else	// Check for a single printable 7-bit char.
+			if (localAddy >= 0x20 && localAddy < 0x7f)
+			{
+				snprintf(mLineCommentCString, 4, "'%c'", localAddy);
 			}
 
 			break;
@@ -512,7 +517,7 @@
 				{
 					UInt8	theSymOffset;
 
-					// offset immediately precedes immediate value, subtract
+					// offset precedes immediate value, subtract
 					// sizeof(UInt8) * 2
 					sscanf(&inLine->info.code[immOffset - 2], "%02hhx", &theSymOffset);
 
@@ -522,34 +527,45 @@
 				}
 				else if (MOD(modRM) == MOD32)
 				{
+					UInt32	imm;
 					UInt32	theSymOffset;
+					BOOL	foundFcc	= false;
 
-					// offset immediately precedes immediate value, subtract
+					sscanf(&inLine->info.code[immOffset], "%08x", &imm);
+					imm	= OSSwapInt32(imm);
+
+					// offset precedes immediate value, subtract
 					// sizeof(UInt32) * 2
 					sscanf(&inLine->info.code[immOffset - 8], "%08x", &theSymOffset);
 					theSymOffset	= OSSwapInt32(theSymOffset);
 
-					if (!FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
-						theSymOffset))
+					// Check for a four char code.
+					if (imm >= 0x20202020 && imm < 0x7f7f7f7f)
 					{
-						// Check for a four char code.
-						if (theSymOffset > 0x20202020 && theSymOffset < 0x7f7f7f7f)
+						char*	fcc	= (char*)&imm;
+
+						if (fcc[0] >= 0x20 && fcc[0] < 0x7f &&
+							fcc[1] >= 0x20 && fcc[1] < 0x7f &&
+							fcc[2] >= 0x20 && fcc[2] < 0x7f &&
+							fcc[3] >= 0x20 && fcc[3] < 0x7f)
 						{
-							char*	fcc	= (char*)&theSymOffset;
+							if (!mSwapped)
+								imm	= OSSwapInt32(imm);
 
-							if (fcc[0] >= 0x20 && fcc[0] < 0x7f &&
-								fcc[1] >= 0x20 && fcc[1] < 0x7f &&
-								fcc[2] >= 0x20 && fcc[2] < 0x7f &&
-								fcc[3] >= 0x20 && fcc[3] < 0x7f)
-							{
-								if (!mSwapped)
-									theSymOffset	= OSSwapInt32(theSymOffset);
-
-								snprintf(mLineCommentCString,
-									10, "'%.4s'", fcc);
-							}
+							snprintf(mLineCommentCString,
+								7, "'%.4s'", fcc);
+							foundFcc	= true;
 						}
 					}
+
+					FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
+						theSymOffset);
+
+					// possible to have both a var name and four char code here,
+					// should do something...
+					if (theIvar.ivar_name && foundFcc)
+						printf("otx: found both ivar and four char code at %0x%x, "
+							"printing ivar.", inLine->info.address);
 				}
 
 				theSymPtr	= GetPointer(
@@ -587,7 +603,7 @@
 				localAddy	= OSSwapInt32(localAddy);
 
 				// Check for a four char code.
-				if (localAddy > 0x20202020 && localAddy < 0x7f7f7f7f)
+				if (localAddy >= 0x20202020 && localAddy < 0x7f7f7f7f)
 				{
 					char*	fcc	= (char*)&localAddy;
 
@@ -600,8 +616,13 @@
 							localAddy	= OSSwapInt32(localAddy);
 
 						snprintf(mLineCommentCString,
-							10, "'%.4s'", fcc);
+							7, "'%.4s'", fcc);
 					}
+				}
+				else	// Check for a single printable 7-bit char.
+				if (localAddy >= 0x20 && localAddy < 0x7f)
+				{
+					snprintf(mLineCommentCString, 4, "'%c'", localAddy);
 				}
 			}
 

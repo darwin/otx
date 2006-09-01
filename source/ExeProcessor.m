@@ -780,8 +780,8 @@ methodInfo_compare(
 
 				// Categories are linked to classes by name only. Try to 
 				// find the class for this category. May be nil.
-				[self objcClass: &theClass
-					fromName: GetPointer((UInt32)theCat.class_name, nil)];
+				ObjcClassFromName(&theClass,
+					GetPointer((UInt32)theCat.class_name, nil));
 
 				// Save category instance method info.
 				objc_method_list	theMethodList;
@@ -1443,7 +1443,7 @@ methodInfo_compare(
 
 		// Try to build the method name.
 		MethodInfo*	theInfo			=
-			[self objcMethodFromAddress: mCurrentFuncPtr];
+			ObjcMethodFromAddress(mCurrentFuncPtr);
 
 		if (theInfo != nil)
 		{
@@ -1555,10 +1555,8 @@ methodInfo_compare(
 		}
 
 		// Clear registers and update current class.
-		mCurrentClass	= [self objcClassPtrFromMethod:
-			(*ioLine)->info.address];
-		mCurrentCat		= [self objcCatPtrFromMethod:
-			(*ioLine)->info.address];
+		mCurrentClass	= ObjcClassPtrFromMethod((*ioLine)->info.address);
+		mCurrentCat		= ObjcCatPtrFromMethod((*ioLine)->info.address);
 
 		UpdateRegisters(nil);
 	}
@@ -2105,6 +2103,24 @@ methodInfo_compare(
 	return nil;
 }
 
+//	objcMethodFromAddress:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+//	Given a method imp address, return the MethodInfo for it.
+
+- (MethodInfo*)objcMethodFromAddress: (UInt32)inAddress;
+{
+	MethodInfo*	theInfo	= nil;
+
+	FindClassMethodByAddress(&theInfo, inAddress);
+
+	if (theInfo)
+		return theInfo;
+
+	FindCatMethodByAddress(&theInfo, inAddress);
+
+	return theInfo;
+}
+
 //	objcClass:fromName:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 //	Given a class name, return the class itself. This func is used to tie
@@ -2129,24 +2145,6 @@ methodInfo_compare(
 	*outClass	= (objc_class){0};
 
 	return false;
-}
-
-//	objcMethodFromAddress:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	Given a method imp address, return the MethodInfo for it.
-
-- (MethodInfo*)objcMethodFromAddress: (UInt32)inAddress;
-{
-	MethodInfo*	theInfo	= nil;
-
-	FindClassMethodByAddress(&theInfo, inAddress);
-
-	if (theInfo)
-		return theInfo;
-
-	FindCatMethodByAddress(&theInfo, inAddress);
-
-	return theInfo;
 }
 
 //	objcDescriptionFromObject:type:
@@ -2508,6 +2506,9 @@ methodInfo_compare(
 - (BOOL)findClassMethod: (MethodInfo**)outMI
 			  byAddress: (UInt32)inAddress;
 {
+	if (!outMI)
+		return false;
+
 	if (!mClassMethodInfos)
 	{
 		*outMI	= nil;
@@ -2544,6 +2545,9 @@ methodInfo_compare(
 - (BOOL)findCatMethod: (MethodInfo**)outMI
 			byAddress: (UInt32)inAddress;
 {
+	if (!outMI)
+		return false;
+
 	if (!mCatMethodInfos)
 	{
 		*outMI	= nil;
@@ -2581,48 +2585,80 @@ methodInfo_compare(
 		 inClass: (objc_class*)inClass
 	  withOffset: (UInt32)inOffset
 {
-	if (!inClass)
+	if (!inClass || !outIvar)
 		return false;
 
-	objc_ivar_list*	theIvars	= (objc_ivar_list*)
-		GetPointer((UInt32)inClass->ivars, nil);
+	// Loop thru inClass and all superclasses.
+	objc_class*	theClassPtr		= inClass;
+	objc_class	theDummyClass	= {0};
+	char*		theSuperName	= nil;
 
-	if (!theIvars)
-		return false;
-
-	UInt32	numIvars	= theIvars->ivar_count;
-
-	if (mSwapped)
-		numIvars	= OSSwapInt32(numIvars);
-
-	SInt64	begin	= 0;
-	SInt64	end		= numIvars - 1;
-	SInt64	split	= numIvars / 2;
-	UInt32	offset;
-
-	while (end >= begin)
+	while (theClassPtr)
 	{
-		offset	= theIvars->ivar_list[split].ivar_offset;
+		objc_ivar_list*	theIvars	= (objc_ivar_list*)
+			GetPointer((UInt32)theClassPtr->ivars, nil);
 
-		if (mSwapped)
-			offset	= OSSwapInt32(offset);
+		if (!theIvars)
+		{	// Try again with the superclass.
+			theSuperName	= GetPointer(
+				(UInt32)theClassPtr->super_class, nil);
 
-		if (offset == inOffset)
-		{
-			*outIvar	= theIvars->ivar_list[split];
+			if (!theSuperName)
+				break;
 
-			if (mSwapped)
-				swap_objc_ivar(outIvar);
+			if (!ObjcClassFromName(&theDummyClass, theSuperName))
+				break;
 
-			return true;
+			theClassPtr	= &theDummyClass;
+
+			continue;
 		}
 
-		if (offset > inOffset)
-			end		= split - 1;
-		else
-			begin	= split + 1;
+		UInt32	numIvars	= theIvars->ivar_count;
 
-		split	= (begin + end) / 2;
+		if (mSwapped)
+			numIvars	= OSSwapInt32(numIvars);
+
+		SInt64	begin	= 0;
+		SInt64	end		= numIvars - 1;
+		SInt64	split	= numIvars / 2;
+		UInt32	offset;
+
+		while (end >= begin)
+		{
+			offset	= theIvars->ivar_list[split].ivar_offset;
+
+			if (mSwapped)
+				offset	= OSSwapInt32(offset);
+
+			if (offset == inOffset)
+			{
+				*outIvar	= theIvars->ivar_list[split];
+
+				if (mSwapped)
+					swap_objc_ivar(outIvar);
+
+				return true;
+			}
+
+			if (offset > inOffset)
+				end		= split - 1;
+			else
+				begin	= split + 1;
+
+			split	= (begin + end) / 2;
+		}
+
+		// Try again with the superclass.
+		theSuperName	= GetPointer((UInt32)theClassPtr->super_class, nil);
+
+		if (!theSuperName)
+			break;
+
+		if (!ObjcClassFromName(&theDummyClass, theSuperName))
+			break;
+
+		theClassPtr	= &theDummyClass;
 	}
 
 	return false;
@@ -3266,6 +3302,16 @@ methodInfo_compare(
 		[self methodForSelector: UpdateRegistersSel];
 	PrepareNameForDemangling	= PrepareNameForDemanglingFuncType
 		[self methodForSelector: PrepareNameForDemanglingSel];
+	ObjcClassPtrFromMethod		= ObjcClassPtrFromMethodFuncType
+		[self methodForSelector: ObjcClassPtrFromMethodSel];
+	ObjcCatPtrFromMethod		= ObjcCatPtrFromMethodFuncType
+		[self methodForSelector: ObjcCatPtrFromMethodSel];
+	ObjcMethodFromAddress		= ObjcMethodFromAddressFuncType
+		[self methodForSelector: ObjcMethodFromAddressSel];
+	ObjcClassFromName			= ObjcClassFromNameFuncType
+		[self methodForSelector: ObjcClassFromNameSel];
+	ObjcDescriptionFromObject	= ObjcDescriptionFromObjectFuncType
+		[self methodForSelector: ObjcDescriptionFromObjectSel];
 	InsertLineBefore			= InsertLineBeforeFuncType
 		[self methodForSelector: InsertLineBeforeSel];
 	InsertLineAfter				= InsertLineAfterFuncType
