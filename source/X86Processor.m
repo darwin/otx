@@ -501,7 +501,9 @@
 				if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
 					break;
 
-				UInt8	immOffset = 4;
+				UInt8	immOffset						= 4;
+				char	fcc[7]							= {0};
+				char	tempComment[MAX_COMMENT_LENGTH]	= {0};
 
 				if (HAS_DISP8(modRM))
 					immOffset	+= 2;
@@ -529,7 +531,6 @@
 				{
 					UInt32	imm;
 					UInt32	theSymOffset;
-					BOOL	foundFcc	= false;
 
 					sscanf(&inLine->info.code[immOffset], "%08x", &imm);
 					imm	= OSSwapInt32(imm);
@@ -542,52 +543,61 @@
 					// Check for a four char code.
 					if (imm >= 0x20202020 && imm < 0x7f7f7f7f)
 					{
-						char*	fcc	= (char*)&imm;
+						char*	tempFCC	= (char*)&imm;
 
-						if (fcc[0] >= 0x20 && fcc[0] < 0x7f &&
-							fcc[1] >= 0x20 && fcc[1] < 0x7f &&
-							fcc[2] >= 0x20 && fcc[2] < 0x7f &&
-							fcc[3] >= 0x20 && fcc[3] < 0x7f)
+						if (tempFCC[0] >= 0x20 && tempFCC[0] < 0x7f &&
+							tempFCC[1] >= 0x20 && tempFCC[1] < 0x7f &&
+							tempFCC[2] >= 0x20 && tempFCC[2] < 0x7f &&
+							tempFCC[3] >= 0x20 && tempFCC[3] < 0x7f)
 						{
 							if (!mSwapped)
 								imm	= OSSwapInt32(imm);
 
-							snprintf(mLineCommentCString,
-								7, "'%.4s'", fcc);
-							foundFcc	= true;
+							snprintf(fcc, 7, "'%.4s'", tempFCC);
 						}
+					}
+					else	// Check for a single printable 7-bit char.
+					if (imm >= 0x20 && imm < 0x7f)
+					{
+						snprintf(fcc, 4, "'%c'", imm);
 					}
 
 					FindIvar(&theIvar, mRegInfos[REG2(modRM)].classPtr,
 						theSymOffset);
-
-					// possible to have both a var name and four char code here,
-					// should do something...
-					if (theIvar.ivar_name && foundFcc)
-						printf("otx: found both ivar and four char code at %0x%x, "
-							"printing ivar.", inLine->info.address);
 				}
 
 				theSymPtr	= GetPointer(
 					(UInt32)theIvar.ivar_name, nil);
 
+				// copy four char code and/or var name to comment.
+				if (fcc[0])
+					strncpy(tempComment, fcc, strlen(fcc) + 1);
+
 				if (theSymPtr)
 				{
+					if (fcc[0])
+						strncat(tempComment, " ", 2);
+
+					UInt32	tempCommentLength	= strlen(tempComment);
+
 					if (mShowIvarTypes)
 					{
-						char	theTypeCString[200]	=	{0};
+						char	theTypeCString[200]	= {0};
 
 						GetDescription(theTypeCString,
 							GetPointer((UInt32)theIvar.ivar_type, nil));
-						snprintf(mLineCommentCString,
-							MAX_COMMENT_LENGTH - 1, "(%s)%s",
-							theTypeCString, theSymPtr);
+						snprintf(&tempComment[tempCommentLength],
+							MAX_COMMENT_LENGTH - tempCommentLength - 1,
+							"(%s)%s", theTypeCString, theSymPtr);
 					}
 					else
-						snprintf(mLineCommentCString,
-							MAX_COMMENT_LENGTH - 1, "%s",
-							theSymPtr);
+						strncat(tempComment, theSymPtr,
+							MAX_COMMENT_LENGTH - tempCommentLength - 1);
 				}
+
+				if (tempComment[0])
+					strncpy(mLineCommentCString, tempComment,
+						MAX_COMMENT_LENGTH - 1);
 			}
 			else	// absolute address
 			{

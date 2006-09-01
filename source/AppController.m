@@ -36,7 +36,6 @@
 		@"BBEdit",	OutputAppKey,
 		@"txt",		OutputFileExtensionKey,
 		@"output",	OutputFileNameKey,
-		@"YES",		ShowCharAsBoolKey,
 		@"YES",		ShowDataSectionKey,
 		@"YES",		ShowIvarTypesKey,
 		@"YES",		ShowLocalOffsetsKey,

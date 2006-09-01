@@ -266,7 +266,6 @@ TextFieldWidths;
 	BOOL		mShowMethReturnTypes;
 	BOOL		mShowIvarTypes;
 	BOOL		mEntabOutput;
-	BOOL		mCharIsBool;
 	BOOL		mDemangleCppNames;
 
 	// saved strings

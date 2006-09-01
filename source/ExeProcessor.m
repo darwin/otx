@@ -146,7 +146,6 @@ methodInfo_compare(
 	mShowDataSection		= [theDefaults boolForKey: ShowDataSectionKey];
 	mShowMethReturnTypes	= [theDefaults boolForKey: ShowMethodReturnTypesKey];
 	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
-	mCharIsBool				= [theDefaults boolForKey: ShowCharAsBoolKey];
 	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
 	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
 
@@ -2259,6 +2258,23 @@ methodInfo_compare(
 	SInt32	theNextChar				= 0;
 	UInt16	i						= 0;
 
+/*
+	char vs. BOOL
+
+	data type		encoding
+	ÑÑÑÑÑÑÑÑÑ		ÑÑÑÑÑÑÑÑ
+	BOOL			c
+	char			c
+	char[100]		[100c]
+
+	Any occurence of 'c' may be a char or a BOOL. The best option I can see is
+	to treat arrays as char arrays and atomic values as BOOL, and maybe let
+	the user disagree via preferences. Since the data type of an array is
+	decoded with a recursive call, we can use the following static variable
+	for this purpose.
+*/
+	static	BOOL	isArray	= false;
+
 	// Convert '^^' prefix to '**' suffix.
 	while (inTypeCode[theNextChar] == '^')
 	{
@@ -2316,7 +2332,7 @@ methodInfo_compare(
 			strncpy(theTypeCString, "bool", 5);
 			break;
 		case 'c':
-			strncpy(theTypeCString, (mCharIsBool) ? "BOOL" : "char", 5);
+			strncpy(theTypeCString, (isArray) ? "char" : "BOOL", 5);
 			break;
 		case 'C':
 			strncpy(theTypeCString, "unsigned char", 14);
@@ -2370,10 +2386,13 @@ methodInfo_compare(
 				   inTypeCode[theNextChar]   <= '9')
 				theArrayCCount[i++]	= inTypeCode[theNextChar];
 
-			// Recursive madness.
+			// Recursive madness. See 'char vs. BOOL' note above.
 			char	theCType[200]	= {0};
 
+			isArray	= true;
 			GetDescription(theCType, &inTypeCode[theNextChar]);
+			isArray	= false;
+
 			snprintf(theTypeCString, 300, "%s[%s]", theCType, theArrayCCount);
 
 			break;

@@ -234,48 +234,7 @@
 		</dict>
 	</array>
 	<key>OpenEditors</key>
-	<array>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>E1E4F5740AA7AB06007CA19C</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>X86Processor.m</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>E1E4F5750AA7AB06007CA19C</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>X86Processor.m</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>E1E4F5760AA7AB06007CA19C</string>
-						<key>history</key>
-						<array>
-							<string>E1E4F5710AA7AAB2007CA19C</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {626, 662}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>328 43 626 703 0 0 1024 746 </string>
-			</dict>
-		</dict>
-	</array>
+	<array/>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -353,7 +312,7 @@
 									<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 									<array>
 										<array>
-											<integer>7</integer>
+											<integer>3</integer>
 											<integer>1</integer>
 											<integer>0</integer>
 										</array>
@@ -545,7 +504,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>178760454.329779</real>
+	<real>178775379.88435999</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>1</integer>
 	<key>ToolbarIsVisible</key>
@@ -569,7 +528,6 @@
 		<string>1C530D54069F1CE1000CFCEE</string>
 		<string>E1E4F28B0AA563DD007CA19C</string>
 		<string>/Volumes/Venus/Dev/otx/project/trunk/otx.xcodeproj</string>
-		<string>E1E4F5740AA7AB06007CA19C</string>
 	</array>
 	<key>WindowString</key>
 	<string>605 108 416 638 0 0 1024 746 </string>
@@ -734,7 +692,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>ExeProcessor.m</string>
+								<string>X86Processor.m</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -832,8 +790,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {260, 273}}</string>
-											<string>{{260, 0}, {411, 273}}</string>
+											<string>{{0, 0}, {192, 379}}</string>
+											<string>{{192, 0}, {479, 379}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -848,8 +806,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {671, 273}}</string>
-											<string>{{0, 273}, {671, 333}}</string>
+											<string>{{0, 0}, {671, 379}}</string>
+											<string>{{0, 379}, {671, 227}}</string>
 										</array>
 									</dict>
 								</dict>
@@ -937,14 +895,14 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>ExeProcessor.m</string>
+										<string>PPCProcessor.m</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
 									<key>GeometryConfiguration</key>
 									<dict>
 										<key>Frame</key>
-										<string>{{0, 0}, {823, 298}}</string>
+										<string>{{0, 0}, {823, 434}}</string>
 										<key>RubberWindowFrame</key>
 										<string>18 43 823 703 0 0 1024 746 </string>
 									</dict>
@@ -955,7 +913,7 @@
 								</dict>
 							</array>
 							<key>Proportion</key>
-							<string>298pt</string>
+							<string>434pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -968,14 +926,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 303}, {823, 359}}</string>
+								<string>{{0, 439}, {823, 223}}</string>
 								<key>RubberWindowFrame</key>
 								<string>18 43 823 703 0 0 1024 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXProjectFindModule</string>
 							<key>Proportion</key>
-							<string>359pt</string>
+							<string>223pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>

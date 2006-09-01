@@ -5,7 +5,6 @@
 #define OutputAppKey				@"OutputApp"
 #define OutputFileExtensionKey		@"OutputFileExtension"
 #define OutputFileNameKey			@"OutputFileName"
-#define ShowCharAsBoolKey			@"ShowCharAsBool"
 #define ShowDataSectionKey			@"ShowDataSection"
 #define ShowIvarTypesKey			@"ShowIvarTypes"
 #define ShowLocalOffsetsKey			@"ShowLocalOffsets"

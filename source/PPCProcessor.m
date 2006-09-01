@@ -439,7 +439,7 @@
 								MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
 					}
 				}	// if (theSymPtr)
-				else	// test checking !theSymPtr instead
+				else
 				{	// Maybe it's a four-char code...
 					if ((opcode == 0x0e || opcode == 0x18) &&	// li | addi | ori
 						localAddy >= 0x20202020 && localAddy < 0x7f7f7f7f)
