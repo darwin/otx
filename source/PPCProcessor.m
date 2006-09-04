@@ -45,6 +45,9 @@
 {
 	[super loadDyldDataSection: inSect];
 
+	if (!mAddrDyldStubBindingHelper)
+		return;
+
 	mAddrDyldFuncLookupPointer	= mAddrDyldStubBindingHelper + 24;
 	mAddrDyldInitCheck			= mAddrDyldStubBindingHelper - 64;
 }

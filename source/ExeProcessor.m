@@ -1043,6 +1043,9 @@ methodInfo_compare(
 	mDyldSect.contents	= (char*)mMachHeader + inSect->offset;
 	mDyldSect.size		= inSect->size;
 
+	if (mDyldSect.size < sizeof(dyld_data_section))
+		return;
+
 	dyld_data_section*	data	= (dyld_data_section*)mDyldSect.contents;
 
 	mAddrDyldStubBindingHelper	= (UInt32)(data->dyld_stub_binding_helper);
@@ -2935,11 +2938,6 @@ methodInfo_compare(
 		inAddr < mCStringSect.s.addr + mCStringSect.size)
 	{
 		thePtr = (mCStringSect.contents + (inAddr - mCStringSect.s.addr));
-
-		// Make sure we're pointing to the beginning of a string,
-		// not somewhere in the middle.
-		if (*(thePtr - 1) != 0)
-			thePtr	= nil;
 	}
 	else	// (__TEXT,__const) (Str255* sometimes)
 	if (inAddr >= mConstTextSect.s.addr &&

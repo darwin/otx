@@ -345,10 +345,9 @@
 	}
 	else
 	{
-		theThinOutputPath	=
-			[[mOutputFilePath stringByDeletingPathExtension]
-				stringByAppendingString:
-				(mArchSelector == CPU_TYPE_POWERPC) ? @"_PPC" : @"_x86"];
+		theThinOutputPath	= [[mOutputFilePath stringByDeletingPathExtension]
+			stringByAppendingString:
+			(mArchSelector == CPU_TYPE_POWERPC) ? @"_PPC" : @"_x86"];
 	}
 
 	NSString*	lipoString	= [NSString stringWithFormat:
