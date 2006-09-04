@@ -38,6 +38,17 @@
 	return self;
 }
 
+//	loadDyldDataSection:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
+- (void)loadDyldDataSection: (section*)inSect
+{
+	[super loadDyldDataSection: inSect];
+
+	mAddrDyldFuncLookupPointer	= mAddrDyldStubBindingHelper + 24;
+	mAddrDyldInitCheck			= mAddrDyldStubBindingHelper - 64;
+}
+
 //	codeFromLine:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
@@ -321,6 +332,36 @@
 							theSymPtr	= nil;
 							break;
 
+// See http://darwinsource.opendarwin.org/Current/Csu-57/dyld.s
+// They hardcoded the values, we may as well...
+						case DYLDType:
+						{
+							char*	dyldComment	= nil;
+
+							theValue	= *(UInt32*)theSymPtr;
+
+							if (mSwapped)
+								theValue	= OSSwapInt32(theValue);
+
+							switch(theValue)
+							{
+								case kDyldAddress_LaSymBindingEntry:
+									dyldComment	= kDyldName_LaSymBindingEntry;
+									break;
+								case kDyldAddress_FuncLookupPointer:
+									dyldComment	= kDyldName_FuncLookupPointer;
+									break;
+
+								default:
+									break;
+							}
+
+							if (dyldComment)
+								strcpy(mLineCommentCString, dyldComment);
+
+							break;
+						}
+
 						case PointerType:
 							break;
 
@@ -429,7 +470,7 @@
 							break;
 					}
 
-					if (theSymPtr)
+					if (theSymPtr && !mLineCommentCString[0])
 					{
 						if (theType == PStringType)
 							snprintf(mLineCommentCString, 255,
@@ -916,6 +957,15 @@
 
 	MethodInfo*	theDummyInfo	= nil;
 	UInt32		theAddy			= inLine->info.address;
+
+	if (theAddy == mAddrDyldStubBindingHelper)
+		return true;
+
+	if (theAddy == mAddrDyldFuncLookupPointer)
+		return true;
+
+	if (theAddy == mAddrDyldInitCheck)
+		return true;
 
 	// In Obj-C apps, the majority of funcs will have Obj-C symbols, so check
 	// those first.

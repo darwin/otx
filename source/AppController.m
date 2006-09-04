@@ -352,7 +352,7 @@
 	}
 
 	NSString*	lipoString	= [NSString stringWithFormat:
-		@"lipo %@ -output %@ -thin %s", [mOFile path], theThinOutputPath,
+		@"lipo '%@' -output '%@' -thin %s", [mOFile path], theThinOutputPath,
 		(mArchSelector == CPU_TYPE_POWERPC) ? "ppc" : "i386"];
 
 	if (system([lipoString

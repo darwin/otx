@@ -499,6 +499,8 @@ methodInfo_compare(
 				[self loadCoalDataNTSection: theSect];
 			else if (!strcmp(theSect->sectname, "__const"))
 				[self loadConstDataSection: theSect];
+			else if (!strcmp(theSect->sectname, "__dyld"))
+				[self loadDyldDataSection: theSect];
 			else if (!strcmp(theSect->sectname, "__cfstring"))
 				[self loadCFStringSection: theSect];
 			else if (!strcmp(theSect->sectname, "__nl_symbol_ptr"))
@@ -1032,6 +1034,24 @@ methodInfo_compare(
 	mConstDataSect.size		= inSect->size;
 }
 
+//	loadDyldDataSection:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
+- (void)loadDyldDataSection: (section*)inSect
+{
+	mDyldSect.s			= *inSect;
+	mDyldSect.contents	= (char*)mMachHeader + inSect->offset;
+	mDyldSect.size		= inSect->size;
+
+	dyld_data_section*	data	= (dyld_data_section*)mDyldSect.contents;
+
+	mAddrDyldStubBindingHelper	= (UInt32)(data->dyld_stub_binding_helper);
+
+	if (mSwapped)
+		mAddrDyldStubBindingHelper	=
+			OSSwapInt32(mAddrDyldStubBindingHelper);
+}
+
 //	loadCFStringSection:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
@@ -1519,6 +1539,39 @@ methodInfo_compare(
 
 				strncpy(theNewLine->chars, theMethCName,
 					theNewLine->length + 1);
+				InsertLineBefore(theNewLine, *ioLine, &mPlainLineListHead);
+			}
+			else if ((*ioLine)->info.address == mAddrDyldStubBindingHelper)
+			{
+				Line*	theNewLine	= malloc(sizeof(Line));
+				char*	theDyldName	= "\ndyld_stub_binding_helper:\n";
+
+				theNewLine->length	= strlen(theDyldName);
+				theNewLine->chars	= malloc(theNewLine->length + 1);
+
+				strncpy(theNewLine->chars, theDyldName, theNewLine->length + 1);
+				InsertLineBefore(theNewLine, *ioLine, &mPlainLineListHead);
+			}
+			else if ((*ioLine)->info.address == mAddrDyldFuncLookupPointer)
+			{
+				Line*	theNewLine	= malloc(sizeof(Line));
+				char*	theDyldName	= "\n__dyld_func_lookup:\n";
+
+				theNewLine->length	= strlen(theDyldName);
+				theNewLine->chars	= malloc(theNewLine->length + 1);
+
+				strncpy(theNewLine->chars, theDyldName, theNewLine->length + 1);
+				InsertLineBefore(theNewLine, *ioLine, &mPlainLineListHead);
+			}
+			else if ((*ioLine)->info.address == mAddrDyldInitCheck)
+			{
+				Line*	theNewLine	= malloc(sizeof(Line));
+				char*	theDyldName	= "\n__dyld_init_check:\n";
+
+				theNewLine->length	= strlen(theDyldName);
+				theNewLine->chars	= malloc(theNewLine->length + 1);
+
+				strncpy(theNewLine->chars, theDyldName, theNewLine->length + 1);
 				InsertLineBefore(theNewLine, *ioLine, &mPlainLineListHead);
 			}
 			else
@@ -3102,6 +3155,16 @@ methodInfo_compare(
 
 		if (dataType)
 			*dataType	= NLSymType;
+	}
+	else	// (__DATA,__dyld) (function ptr)
+	if (inAddr >= mDyldSect.s.addr &&
+		inAddr < mDyldSect.s.addr + mDyldSect.size)
+	{
+		thePtr	= (char*)((UInt32)mDyldSect.contents +
+			(inAddr - mDyldSect.s.addr));
+
+		if (dataType)
+			*dataType	= DYLDType;
 	}
 /*	else	// (__DATA,__la_symbol_ptr) (func ptr)
 	if (inAddr >= mLASymSect.s.addr &&

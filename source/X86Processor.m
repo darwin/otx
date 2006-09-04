@@ -38,6 +38,16 @@
 	return self;
 }
 
+//	loadDyldDataSection:
+// ————————————————————————————————————————————————————————————————————————————
+
+- (void)loadDyldDataSection: (section*)inSect
+{
+	[super loadDyldDataSection: inSect];
+
+	mAddrDyldFuncLookupPointer	= mAddrDyldStubBindingHelper + 12;
+}
+
 //	codeFromLine:
 // ————————————————————————————————————————————————————————————————————————————
 
@@ -1275,6 +1285,12 @@
 
 	MethodInfo*	theDummyInfo	= nil;
 	UInt32		theAddy			= inLine->info.address;
+
+	if (theAddy == mAddrDyldStubBindingHelper)
+		return true;
+
+	if (theAddy == mAddrDyldFuncLookupPointer)
+		return true;
 
 	// In Obj-C apps, the majority of funcs will have Obj-C symbols, so check
 	// those first.

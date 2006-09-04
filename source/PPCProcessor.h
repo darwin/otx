@@ -55,6 +55,15 @@
 #define kRTName_objc_assign_global		"_objc_assign_global_rtp"
 #define kRTName_objc_assign_strongCast	"_objc_assign_strongCast_rtp"
 
+// Addresses and names of some dyld routines, stolen from
+// http://darwinsource.opendarwin.org/Current/Csu-57/dyld.s
+
+#define kDyldAddress_LaSymBindingEntry		0x8fe01000
+#define kDyldAddress_FuncLookupPointer		0x8fe01008
+
+#define kDyldName_LaSymBindingEntry		"dyld_lazy_symbol_binding_entry_point"
+#define kDyldName_FuncLookupPointer		"dyld_func_lookup_pointer"
+
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 @interface PPCProcessor : ExeProcessor

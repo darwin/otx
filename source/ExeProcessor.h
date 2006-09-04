@@ -47,6 +47,19 @@ typedef struct
 }
 LineInfo;
 
+// Adapted from http://darwinsource.opendarwin.org/DevToolsApr2004/cctools-499/libdyld/debug.h
+typedef struct dyld_data_section
+{
+    void*			stub_binding_helper_interface;
+    void*			_dyld_func_lookup;
+    void*			start_debug_thread;
+    mach_port_t		debug_port;
+    thread_port_t	debug_thread;
+    void*			dyld_stub_binding_helper;
+//    unsigned long	core_debug;	// wrong size and ignored anyway
+}
+dyld_data_section;
+
 /*	ThunkInfo
 
 	http://developer.apple.com/documentation/DeveloperTools/Conceptual/MachOTopics/Articles/dynamic_code.html#//apple_ref/doc/uid/TP40002528-SW1
@@ -144,6 +157,7 @@ enum {
 	DoubleType,			// double in (__TEXT,__literal8)
 	DataGenericType,	// ? in (__DATA,__data)
 	DataConstType,		// ? in (__DATA,__const)
+	DYLDType,			// function ptr in (__DATA,__dyld)
 	NLSymType,			// non-lazy symbol* in (__DATA,__nl_symbol_ptr)
 	ImpPtrType,			// cf_string_object* in (__IMPORT,__pointers)
 	OCGenericType,			// Obj-C types
@@ -242,6 +256,7 @@ TextFieldWidths;
 	section_info		mCoalDataSect;
 	section_info		mCoalDataNTSect;
 	section_info		mConstDataSect;
+	section_info		mDyldSect;
 	section_info		mCFStringSect;
 	section_info		mNLSymSect;
 	section_info		mImpPtrSect;
@@ -259,6 +274,11 @@ TextFieldWidths;
 	objc_category*		mCurrentCat;
 	LocalVarInfo*		mLocalSelves;
 	UInt32				mNumLocalSelves;
+
+	// dyld stuff
+	UInt32			mAddrDyldStubBindingHelper;
+	UInt32			mAddrDyldFuncLookupPointer;
+	UInt32			mAddrDyldInitCheck;
 
 	// saved prefs for speed
 	BOOL		mShowLocalOffsets;
@@ -340,6 +360,7 @@ TextFieldWidths;
 - (void)loadCoalDataSection: (section*)inSect;
 - (void)loadCoalDataNTSection: (section*)inSect;
 - (void)loadConstDataSection: (section*)inSect;
+- (void)loadDyldDataSection: (section*)inSect;
 - (void)loadCFStringSection: (section*)inSect;
 - (void)loadNonLazySymbolSection: (section*)inSect;
 - (void)loadImpPtrSection: (section*)inSect;

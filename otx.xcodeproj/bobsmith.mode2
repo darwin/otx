@@ -312,7 +312,7 @@
 									<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 									<array>
 										<array>
-											<integer>3</integer>
+											<integer>7</integer>
 											<integer>1</integer>
 											<integer>0</integer>
 										</array>
@@ -504,7 +504,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>178775379.88435999</real>
+	<real>179027205.55106899</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>1</integer>
 	<key>ToolbarIsVisible</key>
@@ -692,7 +692,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>X86Processor.m</string>
+								<string>PPCProcessor.m</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -790,8 +790,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {192, 379}}</string>
-											<string>{{192, 0}, {479, 379}}</string>
+											<string>{{0, 0}, {193, 268}}</string>
+											<string>{{193, 0}, {478, 268}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -806,8 +806,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {671, 379}}</string>
-											<string>{{0, 379}, {671, 227}}</string>
+											<string>{{0, 0}, {671, 268}}</string>
+											<string>{{0, 268}, {671, 338}}</string>
 										</array>
 									</dict>
 								</dict>
@@ -831,7 +831,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {671, 606}}</string>
 								<key>RubberWindowFrame</key>
-								<string>314 99 671 647 0 0 1024 746 </string>
+								<string>516 99 671 647 0 0 1024 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXDebugSessionModule</string>
@@ -866,7 +866,7 @@
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debug</string>
 			<key>WindowString</key>
-			<string>314 99 671 647 0 0 1024 746 </string>
+			<string>516 99 671 647 0 0 1024 746 </string>
 			<key>WindowToolGUID</key>
 			<string>1C530D54069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
