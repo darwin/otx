@@ -152,8 +152,7 @@ methodInfo_compare(
 	// Load exe into RAM.
 	NSData*	theData	= [NSData dataWithContentsOfURL: mOFile];
 
-	mRAMFileSize	= [theData length];
-	mRAMFile		= malloc(mRAMFileSize);
+	mRAMFile	= malloc([theData length]);
 	[theData getBytes: mRAMFile];
 
 	if (![self loadMachHeader])
@@ -464,6 +463,7 @@ methodInfo_compare(
 
 	// Loop thru sections.
 	section*	theSect	= nil;
+
 	for (i = 0; i < inSegPtr->nsects; i++)
 	{
 		theSect	= (section*)ptr;
@@ -1094,9 +1094,9 @@ methodInfo_compare(
 {
 	// Load otool's outputs into parallel doubly-linked lists of C strings.
 	// List heads have nil 'prev'. List tails have nil 'next'.
-	const char*	verbosePath		= [[inVerboseFile path]
+	const char*	verbosePath	= [[inVerboseFile path]
 		cStringUsingEncoding: NSMacOSRomanStringEncoding];
-	const char*	plainPath		= [[inPlainFile path]
+	const char*	plainPath	= [[inPlainFile path]
 		cStringUsingEncoding: NSMacOSRomanStringEncoding];
 
 	FILE*	verboseFile	= fopen(verbosePath, "r");
@@ -1559,17 +1559,6 @@ methodInfo_compare(
 			{
 				Line*	theNewLine	= malloc(sizeof(Line));
 				char*	theDyldName	= "\n__dyld_func_lookup:\n";
-
-				theNewLine->length	= strlen(theDyldName);
-				theNewLine->chars	= malloc(theNewLine->length + 1);
-
-				strncpy(theNewLine->chars, theDyldName, theNewLine->length + 1);
-				InsertLineBefore(theNewLine, *ioLine, &mPlainLineListHead);
-			}
-			else if ((*ioLine)->info.address == mAddrDyldInitCheck)
-			{
-				Line*	theNewLine	= malloc(sizeof(Line));
-				char*	theDyldName	= "\n__dyld_init_check:\n";
 
 				theNewLine->length	= strlen(theDyldName);
 				theNewLine->chars	= malloc(theNewLine->length + 1);

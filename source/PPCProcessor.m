@@ -49,7 +49,6 @@
 		return;
 
 	mAddrDyldFuncLookupPointer	= mAddrDyldStubBindingHelper + 24;
-	mAddrDyldInitCheck			= mAddrDyldStubBindingHelper - 64;
 }
 
 //	codeFromLine:
@@ -967,9 +966,6 @@
 	if (theAddy == mAddrDyldFuncLookupPointer)
 		return true;
 
-	if (theAddy == mAddrDyldInitCheck)
-		return true;
-
 	// In Obj-C apps, the majority of funcs will have Obj-C symbols, so check
 	// those first.
 	if (FindClassMethodByAddress(&theDummyInfo, theAddy))
@@ -1040,8 +1036,9 @@
 					theCode	= strtoul(
 						(const char*)&thePrevLine->info.code, nil, 16);
 
-					if (theCode == 0x7fe00008 ||	// ignore traps
-						theCode == 0x60000000)		// ignore nops
+					if (theCode == 0x7fe00008	||	// ignore traps
+						theCode == 0x60000000	||	// ignore nops
+						theCode == 0x00000000)		// ignore .longs
 						continue;
 					else
 					{

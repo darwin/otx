@@ -85,11 +85,11 @@
 
 	mPrefsCurrentViewIndex	= 0;
 	mPrefsViews				= calloc(numViews, sizeof(NSView*));
-	mPrefsViews[0]			= mPrefsProcessView;
+	mPrefsViews[0]			= mPrefsGeneralView;
 	mPrefsViews[1]			= mPrefsOutputView;
 
 	[mPrefsWindow setFrame: [mPrefsWindow frameRectForContentRect:
-		[mPrefsViews[0] frame]] display: false];
+		[mPrefsViews[mPrefsCurrentViewIndex] frame]] display: false];
 
 	for (i = 0; i < numViews; i++)
 	{
@@ -741,8 +741,10 @@
 
 	[theNewWindowItem setObject: mPrefsWindow
 		forKey: NSViewAnimationTargetKey];
-	[theNewWindowItem setObject: [NSValue valueWithBytes: &targetWindowFrame
-		objCType: @encode(NSRect)] forKey: NSViewAnimationEndFrameKey];
+//	[theNewWindowItem setObject: [NSValue valueWithBytes: &targetWindowFrame
+//		objCType: @encode(NSRect)] forKey: NSViewAnimationEndFrameKey];
+	[theNewWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
+		forKey: NSViewAnimationEndFrameKey];
 
 	// Create dictionary for old view.
 	NSMutableDictionary*	theOldViewItem =
@@ -767,7 +769,7 @@
 		initWithViewAnimations: [NSArray arrayWithObjects:
 		theOldViewItem, theNewViewItem, theNewWindowItem, nil]];
 
-	[theAnim setDuration: 0.12];
+	[theAnim setDuration: 0.14];
 	[theAnim setAnimationCurve: NSAnimationLinear];
 
 	// Do the deed.

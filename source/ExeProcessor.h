@@ -210,7 +210,6 @@ TextFieldWidths;
 	// guts
 	NSURL*				mOFile;				// exe on disk
 	char*				mRAMFile;			// exe in RAM
-	UInt32				mRAMFileSize;	// kill this
 	char*				mVerboseFile;
 	UInt32				mVerboseFileSize;
 	char*				mPlainFile;
@@ -278,7 +277,6 @@ TextFieldWidths;
 	// dyld stuff
 	UInt32			mAddrDyldStubBindingHelper;
 	UInt32			mAddrDyldFuncLookupPointer;
-	UInt32			mAddrDyldInitCheck;
 
 	// saved prefs for speed
 	BOOL		mShowLocalOffsets;

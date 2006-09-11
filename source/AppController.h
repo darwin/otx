@@ -25,7 +25,7 @@
 // prefs window
 	IBOutlet NSWindow*				mPrefsWindow;
 	IBOutlet NSSegmentedControl*	mPrefsViewPicker;
-	IBOutlet NSView*				mPrefsProcessView;
+	IBOutlet NSView*				mPrefsGeneralView;
 	IBOutlet NSView*				mPrefsOutputView;
 
 @private

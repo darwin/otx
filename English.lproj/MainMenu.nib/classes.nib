@@ -18,8 +18,8 @@
                 mMainWindow = NSWindow; 
                 mOutputText = NSTextField; 
                 mPathText = NSTextField; 
+                mPrefsGeneralView = NSView; 
                 mPrefsOutputView = NSView; 
-                mPrefsProcessView = NSView; 
                 mPrefsViewPicker = NSSegmentedControl; 
                 mPrefsWindow = NSWindow; 
                 mProgBar = NSProgressIndicator; 
