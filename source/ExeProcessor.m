@@ -17,7 +17,8 @@
 #import "ExeProcessor.h"
 #import "UserDefaultKeys.h"
 
-#define MAX_MD5_LINE	1024	// for the md5 pipe only
+#define MAX_TYPE_STRING_LENGTH	200		// for encoded ObjC data types
+#define MAX_MD5_LINE			1024	// for the md5 pipe only
 
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 // Comparison functions for qsort.
@@ -1119,6 +1120,7 @@ methodInfo_compare(
 	char	thePlainCLine[MAX_LINE_LENGTH];
 	Line*	thePrevVerboseLine	= nil;
 	Line*	thePrevPlainLine	= nil;
+	SInt32	theFileError;
 
 	// Loop thru lines in the temp files.
 	while (!feof(verboseFile) && !feof(plainFile))
@@ -1128,15 +1130,23 @@ methodInfo_compare(
 
 		if (!fgets(theVerboseCLine, MAX_LINE_LENGTH, verboseFile))
 		{
-			printf("otx: error reading from verbose temp file: %d",
-				ferror(verboseFile));
+			theFileError	= ferror(verboseFile);
+
+			if (theFileError)
+				printf("otx: error reading from verbose temp file: %d\n",
+					theFileError);
+
 			break;
 		}
 
 		if (!fgets(thePlainCLine, MAX_LINE_LENGTH, plainFile))
 		{
-			printf("otx: error reading from plain temp file: %d",
-				ferror(plainFile));
+			theFileError	= ferror(plainFile);
+
+			if (theFileError)
+				printf("otx: error reading from plain temp file: %d\n",
+					theFileError);
+
 			break;
 		}
 
@@ -2255,7 +2265,7 @@ methodInfo_compare(
 - (void)decodeMethodReturnType: (const char*)inTypeCode
 						output: (char*)outCString
 {
-	SInt32	theNextChar	= 0;
+	UInt32	theNextChar	= 0;
 
 	// Check for type specifiers.
 	// r* <-> const char* ... VI <-> oneway unsigned int
@@ -2300,7 +2310,7 @@ methodInfo_compare(
 		return;
 
 	char	theSuffixCString[50]	= {0};
-	SInt32	theNextChar				= 0;
+	UInt32	theNextChar				= 0;
 	UInt16	i						= 0;
 
 /*
@@ -2310,6 +2320,7 @@ methodInfo_compare(
 	ÑÑÑÑÑÑÑÑÑ		ÑÑÑÑÑÑÑÑ
 	BOOL			c
 	char			c
+	BOOL[100]		[100c]
 	char[100]		[100c]
 
 	Any occurence of 'c' may be a char or a BOOL. The best option I can see is
@@ -2317,6 +2328,9 @@ methodInfo_compare(
 	the user disagree via preferences. Since the data type of an array is
 	decoded with a recursive call, we can use the following static variable
 	for this purpose.
+
+	As of otx 0.14b, letting the user override this behavior with a pref
+	is left as an exercise for the reader.
 */
 	static	BOOL	isArray	= false;
 
@@ -2329,7 +2343,7 @@ methodInfo_compare(
 
 	i	= 0;
 
-	char	theTypeCString[200]	= {0};
+	char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
 
 	// Now we can get at the basic type.
 	switch (inTypeCode[theNextChar])
@@ -2411,14 +2425,18 @@ methodInfo_compare(
 			break;
 		case '(':	// union- just copy the name
 			while (inTypeCode[++theNextChar] != '=' &&
-				   inTypeCode[theNextChar]   != ')')
+				   inTypeCode[theNextChar]   != ')'	&&
+				   inTypeCode[theNextChar]   != '<'	&&
+				   theNextChar < MAX_TYPE_STRING_LENGTH)
 				theTypeCString[i++]	= inTypeCode[theNextChar];
 
 			break;
 
 		case '{':	// struct- just copy the name
-			while (inTypeCode[++theNextChar] != '=' &&
-				   inTypeCode[theNextChar]   != '}')
+			while (inTypeCode[++theNextChar] != '='	&&
+				   inTypeCode[theNextChar]   != '}'	&&
+				   inTypeCode[theNextChar]   != '<'	&&
+				   theNextChar < MAX_TYPE_STRING_LENGTH)
 				theTypeCString[i++]	= inTypeCode[theNextChar];
 
 			break;
@@ -2927,6 +2945,11 @@ methodInfo_compare(
 		inAddr < mCStringSect.s.addr + mCStringSect.size)
 	{
 		thePtr = (mCStringSect.contents + (inAddr - mCStringSect.s.addr));
+
+		// Make sure we're pointing to the beginning of a string,
+		// not somewhere in the middle.
+		if (*(thePtr - 1) != 0 && inAddr != mCStringSect.s.addr)
+			thePtr	= nil;
 	}
 	else	// (__TEXT,__const) (Str255* sometimes)
 	if (inAddr >= mConstTextSect.s.addr &&
