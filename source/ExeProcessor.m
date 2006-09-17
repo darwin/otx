@@ -28,13 +28,10 @@ sym_compare(
 	nlist**		sym1,
 	nlist**		sym2)
 {
-	if ((*sym1)->n_value == (*sym2)->n_value)
-		return 0;
-
 	if ((*sym1)->n_value < (*sym2)->n_value)
 		return -1;
 
-	return 1;
+	return ((*sym1)->n_value > (*sym2)->n_value);
 }
 
 static int
@@ -42,13 +39,10 @@ methodInfo_compare(
 	MethodInfo*		mi1,
 	MethodInfo*		mi2)
 {
-	if (mi1->m.method_imp == mi2->m.method_imp)
-		return 0;
-
 	if (mi1->m.method_imp < mi2->m.method_imp)
 		return -1;
 
-	return 1;
+	return (mi1->m.method_imp > mi2->m.method_imp);
 }
 
 // ============================================================================
@@ -561,7 +555,7 @@ methodInfo_compare(
 			mFuncSyms[mNumFuncSyms - 1]	= &theSyms[i];
 
 #if _OTX_DEBUG_SYMBOLS_
-		[self printSymbol: theSym];
+			[self printSymbol: theSym];
 #endif
 		}
 
