@@ -17,9 +17,6 @@
 #import "ExeProcessor.h"
 #import "UserDefaultKeys.h"
 
-#define MAX_TYPE_STRING_LENGTH	200		// for encoded ObjC data types
-#define MAX_MD5_LINE			1024	// for the md5 pipe only
-
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 // Comparison functions for qsort.
 
@@ -1499,9 +1496,9 @@ methodInfo_compare(
 					if (!theInfo->m.method_types)
 						return;
 
-					char	returnCType[200]	= {0};
-					char*	methTypes	= GetPointer(
-						(UInt32)theInfo->m.method_types, nil);
+					char	returnCType[MAX_TYPE_STRING_LENGTH]	= {0};
+					char*	methTypes	=
+						GetPointer((UInt32)theInfo->m.method_types, nil);
 
 					if (!methTypes)
 						return;
@@ -2444,7 +2441,7 @@ methodInfo_compare(
 				theArrayCCount[i++]	= inTypeCode[theNextChar];
 
 			// Recursive madness. See 'char vs. BOOL' note above.
-			char	theCType[200]	= {0};
+			char	theCType[MAX_TYPE_STRING_LENGTH]	= {0};
 
 			isArray	= true;
 			GetDescription(theCType, &inTypeCode[theNextChar]);

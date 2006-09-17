@@ -194,7 +194,7 @@
 				{
 					if (mShowIvarTypes)
 					{
-						char	theTypeCString[200]	=	{0};
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
 
 						GetDescription(theTypeCString,
 							GetPointer((UInt32)theIvar.ivar_type, nil));
@@ -274,7 +274,7 @@
 				{
 					if (mShowIvarTypes)
 					{
-						char	theTypeCString[200]	=	{0};
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
 
 						GetDescription(theTypeCString,
 							GetPointer((UInt32)theIvar.ivar_type, nil));

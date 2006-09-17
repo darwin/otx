@@ -186,6 +186,8 @@ TextFieldWidths;
 #define MAX_OPERANDS_LENGTH		1000
 #define MAX_COMMENT_LENGTH		2000
 #define MAX_LINE_LENGTH			10000
+#define MAX_TYPE_STRING_LENGTH	200		// for encoded ObjC data types
+#define MAX_MD5_LINE			1024	// for the md5 pipe
 
 // Refresh progress bar after processing this many lines.
 #define PROGRESS_FREQ			2500
