@@ -192,7 +192,7 @@ TextFieldWidths;
 // Refresh progress bar after processing this many lines.
 #define PROGRESS_FREQ			2500
 
-// Toggle these to print symbol descriptions to console.
+// Toggle these to print symbol descriptions to standard out.
 #define _OTX_DEBUG_SYMBOLS_		0
 #define _OTX_DEBUG_DYSYMBOLS_	0
 
@@ -210,24 +210,20 @@ TextFieldWidths;
 	NSProgressIndicator*	mProgBar;
 
 	// guts
-	NSURL*				mOFile;				// exe on disk
-	char*				mRAMFile;			// exe in RAM
-	char*				mVerboseFile;
-	UInt32				mVerboseFileSize;
-	char*				mPlainFile;
-	UInt32				mPlainFileSize;
+	NSURL*				mOFile;					// exe on disk
+	char*				mRAMFile;				// exe in RAM
 	NSString*			mOutputFilePath;
-	Line*				mVerboseLineListHead;
-	Line*				mPlainLineListHead;
-	UInt32				mNumLines;			// used only for progress
+	Line*				mVerboseLineListHead;	// linked list the first
+	Line*				mPlainLineListHead;		// linked list the second
+	UInt32				mNumLines;				// used only for progress
 	mach_header*		mMachHeader;
 	cpu_type_t			mArchSelector;
-	UInt32				mArchMagic;
+	UInt32				mArchMagic;				// 0xFEEDFACE etc.
 	BOOL				mExeIsFat;
-	BOOL				mSwapped;
-	UInt32				mLocalOffset;
-	ThunkInfo*			mThunks;			// x86 only
-	UInt32				mNumThunks;			//
+	BOOL				mSwapped;				// PPC host reading x86 exe or vice versa
+	UInt32				mLocalOffset;			// +420 etc.
+	ThunkInfo*			mThunks;				// x86 only
+	UInt32				mNumThunks;				// x86 only
 
 	TextFieldWidths		mFieldWidths;
 
@@ -273,12 +269,12 @@ TextFieldWidths;
 	UInt32				mNumCatMethodInfos;
 	objc_class*			mCurrentClass;
 	objc_category*		mCurrentCat;
-	LocalVarInfo*		mLocalSelves;
+	LocalVarInfo*		mLocalSelves;			// 'self' copied to local variables
 	UInt32				mNumLocalSelves;
 
 	// dyld stuff
-	UInt32			mAddrDyldStubBindingHelper;
-	UInt32			mAddrDyldFuncLookupPointer;
+	UInt32		mAddrDyldStubBindingHelper;
+	UInt32		mAddrDyldFuncLookupPointer;
 
 	// saved prefs for speed
 	BOOL		mShowLocalOffsets;
@@ -289,7 +285,7 @@ TextFieldWidths;
 	BOOL		mDemangleCppNames;
 
 	// saved strings
-	char		mArchString[90];	// "-arch ppc" "-arch i386" etc.
+	char		mArchString[90];	// "ppc", "i386" etc.
 	char		mLineCommentCString[MAX_COMMENT_LENGTH];
 	char		mLineOperandsCString[MAX_OPERANDS_LENGTH];
 
@@ -317,9 +313,9 @@ TextFieldWidths;
 	BOOL			(*ObjcClassFromName)			(id, SEL, objc_class*, const char*);
 	char*			(*ObjcDescriptionFromObject)	(id, SEL, const char*, UInt8);
 
-	void	(*InsertLineBefore)			(id, SEL, Line*, Line*, Line**);
-	void	(*InsertLineAfter)			(id, SEL, Line*, Line*, Line**);
-	void	(*ReplaceLine)				(id, SEL, Line*, Line*, Line**);
+	void	(*InsertLineBefore)	(id, SEL, Line*, Line*, Line**);
+	void	(*InsertLineAfter)	(id, SEL, Line*, Line*, Line**);
+	void	(*ReplaceLine)		(id, SEL, Line*, Line*, Line**);
 
 	BOOL	(*FindSymbolByAddress)		(id, SEL, UInt32);
 	BOOL	(*FindClassMethodByAddress)	(id, SEL, MethodInfo**, UInt32);
@@ -387,7 +383,7 @@ TextFieldWidths;
 - (void)chooseLine: (Line**)ioLine;
 - (void)entabLine: (Line*)ioLine;
 - (char*)getPointer: (UInt32)inAddr
-			outType: (UInt8*)dataType;
+			andType: (UInt8*)outType;
 - (void)commentForLine: (Line*)inLine;
 - (void)commentForSystemCall;
 - (void)updateRegisters: (Line*)inLine;

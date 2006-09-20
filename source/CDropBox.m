@@ -25,12 +25,11 @@
 	NSArray*	theFiles	= [thePasteBoard
 		propertyListForType: NSFilenamesPboardType];
 
-	// bail if more than one file.
+	// bail if not a single file.
 	if ([theFiles count] != 1)
 		return NSDragOperationNone;
 
-	NSDragOperation	theSourceDragMask	=
-		[sender draggingSourceOperationMask];
+	NSDragOperation	theSourceDragMask	= [sender draggingSourceOperationMask];
 
 	// bail if modifier keys pressed.
 	if (!(theSourceDragMask & NSDragOperationLink))
@@ -55,8 +54,7 @@
 
 - (BOOL)performDragOperation: (id <NSDraggingInfo>)sender
 {
-	NSURL*		theURL		= [NSURL URLFromPasteboard:
-		[sender draggingPasteboard]];
+	NSURL*	theURL	= [NSURL URLFromPasteboard: [sender draggingPasteboard]];
 
 	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: [theURL path]])
 		[mController newPackageFile: theURL];
@@ -78,8 +76,8 @@
 	if (mDragHilite)
 	{
 		[[NSColor keyboardFocusIndicatorColor] set];
-		[NSBezierPath setDefaultLineWidth: kBorderWidth];
-		[NSBezierPath strokeRect: rect];
+		NSFrameRectWithWidthUsingOperation(
+			rect, kBorderWidth, NSCompositeSourceOver);
 	}
 }
 

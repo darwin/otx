@@ -27,7 +27,7 @@
 		progText: inText progBar: inProg]) == nil)
 		return nil;
 
-	strncpy(mArchString, "-arch i386", 11);
+	strncpy(mArchString, "i386", 5);
 
 	mFieldWidths.offset			= 8;
 	mFieldWidths.address		= 10;

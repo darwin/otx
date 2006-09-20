@@ -102,12 +102,6 @@ methodInfo_compare(
 	if (mThunks)
 		free(mThunks);
 
-	if (mVerboseFile)
-		free(mVerboseFile);
-
-	if (mPlainFile)
-		free(mPlainFile);
-
 	[self deleteLinesFromList: mPlainLineListHead];
 	[self deleteLinesFromList: mVerboseLineListHead];
 
@@ -196,7 +190,7 @@ methodInfo_compare(
 	NSString*	oPath			= [mOFile path];
 	NSString*	otoolString;
 	char		cmdString[100]	= {0};
-	char*		cmdFormatString	= mExeIsFat ? "otool %s" : "otool";
+	char*		cmdFormatString	= mExeIsFat ? "otool -arch %s" : "otool";
 
 	snprintf(cmdString, 100, cmdFormatString, mArchString);
 
@@ -2920,13 +2914,13 @@ methodInfo_compare(
 //	referenced in outType.
 
 - (char*)getPointer: (UInt32)inAddr
-			outType: (UInt8*)dataType
+			andType: (UInt8*)outType
 {
 	if (inAddr == 0)
 		return nil;
 
-	if (dataType)
-		*dataType	= PointerType;
+	if (outType)
+		*outType	= PointerType;
 
 	char*	thePtr	= nil;
 	UInt32	i;
@@ -2948,8 +2942,8 @@ methodInfo_compare(
 	{
 		thePtr	= (mConstTextSect.contents + (inAddr - mConstTextSect.s.addr));
 
-		if (strlen(thePtr) == thePtr[0] + 1 && dataType)
-			*dataType	= PStringType;
+		if (strlen(thePtr) == thePtr[0] + 1 && outType)
+			*outType	= PStringType;
 		else
 			thePtr	= nil;
 	}
@@ -2960,8 +2954,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mLit4Sect.contents +
 			(inAddr - mLit4Sect.s.addr));
 
-		if (dataType)
-			*dataType	= FloatType;
+		if (outType)
+			*outType	= FloatType;
 	}
 	else	// (__TEXT,__literal8) (double)
 	if (inAddr >= mLit8Sect.s.addr &&
@@ -2970,8 +2964,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mLit8Sect.contents +
 			(inAddr - mLit8Sect.s.addr));
 
-		if (dataType)
-			*dataType	= DoubleType;
+		if (outType)
+			*outType	= DoubleType;
 	}
 
 	if (thePtr)
@@ -2984,8 +2978,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mNSStringSect.contents +
 			(inAddr - mNSStringSect.s.addr));
 
-		if (dataType)
-			*dataType	= OCStrObjectType;
+		if (outType)
+			*outType	= OCStrObjectType;
 	}
 	else	// (__OBJC,__class) (objc_class)
 	if (inAddr >= mClassSect.s.addr &&
@@ -2994,8 +2988,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mClassSect.contents +
 			(inAddr - mClassSect.s.addr));
 
-		if (dataType)
-			*dataType	= OCClassType;
+		if (outType)
+			*outType	= OCClassType;
 	}
 	else	// (__OBJC,__meta_class) (objc_class)
 	if (inAddr >= mMetaClassSect.s.addr &&
@@ -3004,8 +2998,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mMetaClassSect.contents +
 			(inAddr - mMetaClassSect.s.addr));
 
-		if (dataType)
-			*dataType	= OCClassType;
+		if (outType)
+			*outType	= OCClassType;
 	}
 /*	else	// (__OBJC,__instance_vars) (objc_method_list)
 	if (inAddr >= mIVarSect.s.addr &&
@@ -3020,8 +3014,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mObjcModSect.contents +
 			(inAddr - mObjcModSect.s.addr));
 
-		if (dataType)
-			*dataType	= OCModType;
+		if (outType)
+			*outType	= OCModType;
 	}
 /*	else	// (__OBJC,__symbols) (objc_symtab)
 	if (inAddr >= mObjcSymSect.s.addr &&
@@ -3040,8 +3034,8 @@ methodInfo_compare(
 			thePtr	= (char*)(mObjcSects[i].contents +
 				(inAddr - mObjcSects[i].s.addr));
 
-			if (dataType)
-				*dataType	= OCGenericType;
+			if (outType)
+				*outType	= OCGenericType;
 		}
 	}
 
@@ -3055,8 +3049,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mImpPtrSect.contents +
 			(inAddr - mImpPtrSect.s.addr));
 
-		if (dataType)
-			*dataType	= ImpPtrType;
+		if (outType)
+			*outType	= ImpPtrType;
 	}
 
 	if (thePtr)
@@ -3104,8 +3098,8 @@ methodInfo_compare(
 			recurseCount	= 0;
 		}
 
-		if (dataType)
-			*dataType	= theType;
+		if (outType)
+			*outType	= theType;
 	}
 	else	// (__DATA,__const) (void*)
 	if (inAddr >= mConstDataSect.s.addr &&
@@ -3114,7 +3108,7 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mConstDataSect.contents +
 			(inAddr - mConstDataSect.s.addr));
 
-		if (dataType)
+		if (outType)
 		{
 			UInt32	theID	= *(UInt32*)thePtr;
 
@@ -3122,7 +3116,7 @@ methodInfo_compare(
 				theID	= OSSwapInt32(theID);
 
 			if (theID == typeid_NSString)
-				*dataType	= OCStrObjectType;
+				*outType	= OCStrObjectType;
 			else
 			{
 				theID	= *(UInt32*)(thePtr + 4);
@@ -3131,9 +3125,9 @@ methodInfo_compare(
 					theID	= OSSwapInt32(theID);
 
 				if (theID == typeid_NSString)
-					*dataType	= CFStringType;
+					*outType	= CFStringType;
 				else
-					*dataType	= DataConstType;
+					*outType	= DataConstType;
 			}
 		}
 	}
@@ -3144,8 +3138,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mCFStringSect.contents +
 			(inAddr - mCFStringSect.s.addr));
 
-		if (dataType)
-			*dataType	= CFStringType;
+		if (outType)
+			*outType	= CFStringType;
 	}
 	else	// (__DATA,__nl_symbol_ptr) (cf_string_object*)
 	if (inAddr >= mNLSymSect.s.addr &&
@@ -3154,8 +3148,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mNLSymSect.contents +
 			(inAddr - mNLSymSect.s.addr));
 
-		if (dataType)
-			*dataType	= NLSymType;
+		if (outType)
+			*outType	= NLSymType;
 	}
 	else	// (__DATA,__dyld) (function ptr)
 	if (inAddr >= mDyldSect.s.addr &&
@@ -3164,8 +3158,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mDyldSect.contents +
 			(inAddr - mDyldSect.s.addr));
 
-		if (dataType)
-			*dataType	= DYLDType;
+		if (outType)
+			*outType	= DYLDType;
 	}
 /*	else	// (__DATA,__la_symbol_ptr) (func ptr)
 	if (inAddr >= mLASymSect.s.addr &&
@@ -3174,8 +3168,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mLASymSect.contents +
 			(inAddr - mLASymSect.s.addr));
 
-		if (dataType)
-			*dataType	= LASymType;
+		if (outType)
+			*outType	= LASymType;
 	}
 	else	// (__DATA,__la_sym_ptr2) (func ptr)
 	if (inAddr >= mLASym2Sect.s.addr &&
@@ -3184,8 +3178,8 @@ methodInfo_compare(
 		thePtr	= (char*)((UInt32)mLASym2Sect.contents +
 			(inAddr - mLASym2Sect.s.addr));
 
-		if (dataType)
-			*dataType	= LASymType;
+		if (outType)
+			*outType	= LASymType;
 	}*/
 
 	// should implement these if they ever contain CFStrings or NSStrings

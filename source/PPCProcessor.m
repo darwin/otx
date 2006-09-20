@@ -27,7 +27,7 @@
 		progText: inText progBar: inProg]) == nil)
 		return nil;
 
-	strncpy(mArchString, "-arch ppc", 10);
+	strncpy(mArchString, "ppc", 4);
 
 	mFieldWidths.offset			= 8;
 	mFieldWidths.address		= 10;

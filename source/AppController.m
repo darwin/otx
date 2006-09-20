@@ -741,8 +741,6 @@
 
 	[theNewWindowItem setObject: mPrefsWindow
 		forKey: NSViewAnimationTargetKey];
-//	[theNewWindowItem setObject: [NSValue valueWithBytes: &targetWindowFrame
-//		objCType: @encode(NSRect)] forKey: NSViewAnimationEndFrameKey];
 	[theNewWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
 		forKey: NSViewAnimationEndFrameKey];
 
