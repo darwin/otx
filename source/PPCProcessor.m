@@ -120,7 +120,7 @@
 
 		// Check for absolute branches to the ObjC runtime page. Similar to
 		// the comm page behavior described at
-		// http://darwinsource.opendarwin.org/10.4.6.ppc/xnu-792.6.70/osfmk/ppc/cpu_capabilities.h
+		// http://www.opensource.apple.com/darwinsource/10.4.7.ppc/xnu-792.6.76/osfmk/ppc/cpu_capabilities.h
 		// However, the ObjC runtime page is not really a comm page, and it
 		// cannot be accessed by bca and bcla instructions, due to their
 		// 16-bit limitation.
@@ -223,11 +223,9 @@
 					if (mSwapped)
 						theInt64	= OSSwapInt64(theInt64);
 
-					// dance around printf's type coersion...
-					double*	theDoublePtr	= (double*)&theInt64;
-
+					// dance around printf's type coersion
 					snprintf(mLineCommentCString,
-						30, "%lG", *theDoublePtr);
+						30, "%lG", *(double*)&theInt64);
 				}
 				else	// lfs | stfs
 				{
@@ -236,11 +234,9 @@
 					if (mSwapped)
 						theInt32	= OSSwapInt32(theInt32);
 
-					// dance around printf's type coersion...
-					float*	theFloatPtr	= (float*)&theInt32;
-
+					// dance around printf's type coersion
 					snprintf(mLineCommentCString,
-						30, "%G", *theFloatPtr);
+						30, "%G", *(float*)&theInt32);
 				}
 			}
 
@@ -334,7 +330,7 @@
 							theSymPtr	= nil;
 							break;
 
-// See http://darwinsource.opendarwin.org/Current/Csu-57/dyld.s
+// See http://www.opensource.apple.com/darwinsource/10.4.7.ppc/Csu-58/dyld.s
 // They hardcoded the values, we may as well...
 						case DYLDType:
 						{

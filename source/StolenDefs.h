@@ -14,7 +14,7 @@ typedef struct
 section_info;
 
 // NSString, from cctools-590/otool/print_objc.c, alternate definition in
-// http://darwinsource.opendarwin.org/10.4.6.x86/objc4-274/runtime/objc-private.h
+// http://www.opensource.apple.com/darwinsource/10.4.7.ppc/objc4-267.1/runtime/objc-private.h
 typedef struct
 {
 	objc_class*		isa;

@@ -47,7 +47,7 @@ typedef struct
 }
 LineInfo;
 
-// Adapted from http://darwinsource.opendarwin.org/DevToolsApr2004/cctools-499/libdyld/debug.h
+// Adapted from http://www.opensource.apple.com/darwinsource/10.4.7.ppc/cctools-590.23.6/libdyld/debug.h
 typedef struct dyld_data_section
 {
     void*			stub_binding_helper_interface;

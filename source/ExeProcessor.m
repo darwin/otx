@@ -1,7 +1,5 @@
 // This file relies upon, and steals code from, the cctools source code
-// available from: http://www.opensource.apple.com/darwinsource/ and
-// http://darwinsource.opendarwin.org
-// This version uses cctools-590 from the Mac OS X 10.4.5 release.
+// available from: http://www.opensource.apple.com/darwinsource/
 
 #import <libkern/OSByteOrder.h>
 #import <mach-o/fat.h>

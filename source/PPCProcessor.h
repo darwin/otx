@@ -43,7 +43,7 @@
 	  (BO((i)) != 0x14))
 
 // Addresses and names of functions in the ObjC runtime page, stolen from
-// http://darwinsource.opendarwin.org/10.4.6.ppc/objc4-267.1/runtime/objc-rtp.h
+// http://www.opensource.apple.com/darwinsource/10.4.7.ppc/objc4-267.1/runtime/objc-rtp.h
 
 #define kRTAddress_objc_msgSend				0xfffeff00
 #define kRTAddress_objc_assign_ivar			0xfffefec0
@@ -56,7 +56,7 @@
 #define kRTName_objc_assign_strongCast	"_objc_assign_strongCast_rtp"
 
 // Addresses and names of some dyld routines, stolen from
-// http://darwinsource.opendarwin.org/Current/Csu-57/dyld.s
+// http://www.opensource.apple.com/darwinsource/10.4.7.ppc/Csu-58/dyld.s
 
 #define kDyldAddress_LaSymBindingEntry		0x8fe01000
 #define kDyldAddress_FuncLookupPointer		0x8fe01008

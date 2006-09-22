@@ -743,10 +743,9 @@
 					if (mSwapped)
 						theInt32	= OSSwapInt32(theInt32);
 
-					float*	theFloatPtr	= (float*)&theInt32;
-
+					// dance around printf's type coersion
 					snprintf(mLineCommentCString,
-						30, "%G", *theFloatPtr);
+						30, "%G", *(float*)&theInt32);
 				}
 				else if (LO(opcode) == 0xd)	// fldll
 				{
@@ -755,10 +754,9 @@
 					if (mSwapped)
 						theInt64	= OSSwapInt64(theInt64);
 
-					double*	theDoublePtr	= (double*)&theInt64;
-
+					// dance around printf's type coersion
 					snprintf(mLineCommentCString,
-						30, "%lG", *theDoublePtr);
+						30, "%lG", *(double*)&theInt64);
 				}
 			}
 
