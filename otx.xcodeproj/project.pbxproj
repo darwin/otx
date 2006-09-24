@@ -17,6 +17,7 @@
 		E172D5190A74874100C85E7A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* Info.plist */; };
 		E182007209AE4CD800584B07 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = E182007009AE4CD800584B07 /* AppController.m */; };
 		E18201E709AFAAAC00584B07 /* CDropBox.m in Sources */ = {isa = PBXBuildFile; fileRef = E18201E609AFAAAC00584B07 /* CDropBox.m */; };
+		E1978C9E0AC603A40096EE62 /* Help in Resources */ = {isa = PBXBuildFile; fileRef = E1978C6A0AC603A40096EE62 /* Help */; };
 		E1A1526C0AA364A600324ED3 /* cp-demangle.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152640AA364A600324ED3 /* cp-demangle.c */; };
 		E1A1526D0AA364A600324ED3 /* cp-demint.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152660AA364A600324ED3 /* cp-demint.c */; };
 		E1A1526E0AA364A600324ED3 /* cplus-dem.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152670AA364A600324ED3 /* cplus-dem.c */; };
@@ -67,6 +68,7 @@
 		E16222240A4F80F4007ECB26 /* Optimizations.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Optimizations.h; path = source/Optimizations.h; sourceTree = "<group>"; };
 		E182007009AE4CD800584B07 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppController.m; path = source/AppController.m; sourceTree = "<group>"; wrapsLines = 0; };
 		E18201E609AFAAAC00584B07 /* CDropBox.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDropBox.m; path = source/CDropBox.m; sourceTree = "<group>"; };
+		E1978C6B0AC603A40096EE62 /* English */ = {isa = PBXFileReference; lastKnownFileType = folder; name = English; path = English.lproj/Help; sourceTree = "<group>"; };
 		E1A152600AA3648600324ED3 /* ansidecl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ansidecl.h; path = "source/binutils-2.17/include/ansidecl.h"; sourceTree = SOURCE_ROOT; };
 		E1A152610AA3648600324ED3 /* demangle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = demangle.h; path = "source/binutils-2.17/include/demangle.h"; sourceTree = SOURCE_ROOT; };
 		E1A152620AA3648600324ED3 /* libiberty.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = libiberty.h; path = "source/binutils-2.17/include/libiberty.h"; sourceTree = SOURCE_ROOT; };
@@ -168,6 +170,7 @@
 				E125C39C0A86B2D000098114 /* App Icon.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
+				E1978C6A0AC603A40096EE62 /* Help */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
 				E172D5190A74874100C85E7A /* Info.plist in Resources */,
 				E125C39D0A86B2D000098114 /* App Icon.icns in Resources */,
+				E1978C9E0AC603A40096EE62 /* Help in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,6 +320,14 @@
 				29B97319FDCFA39411CA2CEA /* English */,
 			);
 			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		E1978C6A0AC603A40096EE62 /* Help */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E1978C6B0AC603A40096EE62 /* English */,
+			);
+			name = Help;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

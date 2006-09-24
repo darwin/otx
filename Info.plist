@@ -28,6 +28,10 @@
 	<key>CFBundleGetInfoString</key>
 	<string>0.14b
 Copyright © 2006 anon</string>
+	<key>CFBundleHelpBookFolder</key>
+	<string>Help</string>
+	<key>CFBundleHelpBookName</key>
+	<string>otx Help</string>
 	<key>CFBundleIconFile</key>
 	<string>App Icon.icns</string>
 	<key>CFBundleIdentifier</key>
