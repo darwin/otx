@@ -182,6 +182,21 @@
 			E1978CC80AC60DB60096EE62 /* PBXTextBookmark */ = E1978CC80AC60DB60096EE62 /* PBXTextBookmark */;
 			E1978CC90AC60DB60096EE62 /* PBXTextBookmark */ = E1978CC90AC60DB60096EE62 /* PBXTextBookmark */;
 			E1978CCA0AC60DB70096EE62 /* PBXTextBookmark */ = E1978CCA0AC60DB70096EE62 /* PBXTextBookmark */;
+			E1978CE00AC8D07F0096EE62 /* PBXTextBookmark */ = E1978CE00AC8D07F0096EE62 /* PBXTextBookmark */;
+			E1978CE10AC8D07F0096EE62 /* PBXTextBookmark */ = E1978CE10AC8D07F0096EE62 /* PBXTextBookmark */;
+			E1978CE20AC8D07F0096EE62 /* PBXTextBookmark */ = E1978CE20AC8D07F0096EE62 /* PBXTextBookmark */;
+			E1978CE30AC8D07F0096EE62 /* PBXTextBookmark */ = E1978CE30AC8D07F0096EE62 /* PBXTextBookmark */;
+			E1978CE40AC8D07F0096EE62 /* PBXTextBookmark */ = E1978CE40AC8D07F0096EE62 /* PBXTextBookmark */;
+			E1978CE50AC8D07F0096EE62 /* PBXTextBookmark */ = E1978CE50AC8D07F0096EE62 /* PBXTextBookmark */;
+			E1978CE60AC8D07F0096EE62 /* PBXTextBookmark */ = E1978CE60AC8D07F0096EE62 /* PBXTextBookmark */;
+			E1978CE70AC8D07F0096EE62 /* PBXTextBookmark */ = E1978CE70AC8D07F0096EE62 /* PBXTextBookmark */;
+			E1978CE80AC8D07F0096EE62 /* PBXTextBookmark */ = E1978CE80AC8D07F0096EE62 /* PBXTextBookmark */;
+			E1978CE90AC8D0800096EE62 /* PBXTextBookmark */ = E1978CE90AC8D0800096EE62 /* PBXTextBookmark */;
+			E1978CEA0AC8D0800096EE62 /* PBXTextBookmark */ = E1978CEA0AC8D0800096EE62 /* PBXTextBookmark */;
+			E1978CEB0AC8D0800096EE62 /* PBXTextBookmark */ = E1978CEB0AC8D0800096EE62 /* PBXTextBookmark */;
+			E1978CEC0AC8D0800096EE62 /* PBXTextBookmark */ = E1978CEC0AC8D0800096EE62 /* PBXTextBookmark */;
+			E1978CEF0AC8D09C0096EE62 /* PBXTextBookmark */ = E1978CEF0AC8D09C0096EE62 /* PBXTextBookmark */;
+			E1978CF10AC8D09C0096EE62 /* PBXTextBookmark */ = E1978CF10AC8D09C0096EE62 /* PBXTextBookmark */;
 			E1D982840AB4F6CE0038B9CA = E1D982840AB4F6CE0038B9CA /* PBXTextBookmark */;
 			E1D982850AB4F6CE0038B9CA = E1D982850AB4F6CE0038B9CA /* PBXTextBookmark */;
 			E1D982950AB921E90038B9CA = E1D982950AB921E90038B9CA /* PBXBookmark */;
@@ -332,9 +347,9 @@
 	};
 	E13539810A68178D00CBDDE5 /* SyscallStrings.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {782, 3792}}";
-			sepNavSelRange = "{4170, 3}";
-			sepNavVisRect = "{{0, 1958}, {782, 249}}";
+			sepNavIntBoundsRect = "{{0, 0}, {891, 3792}}";
+			sepNavSelRange = "{136, 0}";
+			sepNavVisRect = "{{0, 0}, {891, 387}}";
 			sepNavWindowFrame = "{{158, 43}, {551, 703}}";
 		};
 	};
@@ -388,17 +403,17 @@
 	};
 	E14769570A60E95B00C03C62 /* PPCProcessor.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {668, 12744}}";
-			sepNavSelRange = "{2909, 0}";
-			sepNavVisRect = "{{0, 1194}, {598, 630}}";
+			sepNavIntBoundsRect = "{{0, 0}, {891, 12732}}";
+			sepNavSelRange = "{12057, 0}";
+			sepNavVisRect = "{{0, 6143}, {891, 387}}";
 			sepNavWindowFrame = "{{292, 43}, {637, 703}}";
 		};
 	};
 	E14769C00A60F47E00C03C62 /* X86Processor.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {546, 16020}}";
-			sepNavSelRange = "{17788, 0}";
-			sepNavVisRect = "{{0, 8631}, {546, 630}}";
+			sepNavIntBoundsRect = "{{0, 0}, {891, 16020}}";
+			sepNavSelRange = "{23201, 0}";
+			sepNavVisRect = "{{0, 12161}, {891, 387}}";
 			sepNavWindowFrame = "{{404, 43}, {585, 703}}";
 		};
 	};
@@ -1195,6 +1210,170 @@
 		rType = 0;
 		vrLen = 392;
 		vrLoc = 400;
+	};
+	E1978CE00AC8D07F0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
+		name = "SyscallStrings.h: gSysCalls";
+		rLen = 0;
+		rLoc = 136;
+		rType = 0;
+		vrLen = 786;
+		vrLoc = 0;
+	};
+	E1978CE10AC8D07F0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1030";
+		rLen = 0;
+		rLoc = 23201;
+		rType = 0;
+		vrLen = 940;
+		vrLoc = 22743;
+	};
+	E1978CE20AC8D07F0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "warning: initialization discards qualifiers from pointer target type";
+		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
+		rLen = 1;
+		rLoc = 524;
+		rType = 1;
+	};
+	E1978CE30AC8D07F0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
+		name = "PPCProcessor.m: 526";
+		rLen = 0;
+		rLoc = 11991;
+		rType = 0;
+		vrLen = 1106;
+		vrLoc = 11365;
+	};
+	E1978CE40AC8D07F0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
+		name = "SyscallStrings.h: gSysCalls";
+		rLen = 0;
+		rLoc = 136;
+		rType = 0;
+		vrLen = 786;
+		vrLoc = 0;
+	};
+	E1978CE50AC8D07F0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
+		name = "PPCProcessor.m: 526";
+		rLen = 0;
+		rLoc = 11991;
+		rType = 0;
+		vrLen = 1112;
+		vrLoc = 11365;
+	};
+	E1978CE60AC8D07F0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1030";
+		rLen = 0;
+		rLoc = 23201;
+		rType = 0;
+		vrLen = 940;
+		vrLoc = 22743;
+	};
+	E1978CE70AC8D07F0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
+		name = "PPCProcessor.m: 525";
+		rLen = 0;
+		rLoc = 12057;
+		rType = 0;
+		vrLen = 1060;
+		vrLoc = 11511;
+	};
+	E1978CE80AC8D07F0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1167F1C09C8086900E7398D /* StolenDefs.h */;
+		name = "StolenDefs.h: 17";
+		rLen = 0;
+		rLoc = 605;
+		rType = 0;
+		vrLen = 392;
+		vrLoc = 400;
+	};
+	E1978CE90AC8D0800096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
+		name = "PPCProcessor.m: 525";
+		rLen = 0;
+		rLoc = 12057;
+		rType = 0;
+		vrLen = 1060;
+		vrLoc = 11511;
+	};
+	E1978CEA0AC8D0800096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1167F1C09C8086900E7398D /* StolenDefs.h */;
+		name = "StolenDefs.h: 17";
+		rLen = 0;
+		rLoc = 605;
+		rType = 0;
+		vrLen = 392;
+		vrLoc = 400;
+	};
+	E1978CEB0AC8D0800096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
+		name = "PPCProcessor.m: 525";
+		rLen = 0;
+		rLoc = 12057;
+		rType = 0;
+		vrLen = 1060;
+		vrLoc = 11511;
+	};
+	E1978CEC0AC8D0800096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1167F1C09C8086900E7398D /* StolenDefs.h */;
+		name = "StolenDefs.h: 17";
+		rLen = 0;
+		rLoc = 605;
+		rType = 0;
+		vrLen = 392;
+		vrLoc = 400;
+	};
+	E1978CEF0AC8D09C0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1978CF00AC8D09C0096EE62 /* stdio.h */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	E1978CF00AC8D09C0096EE62 /* stdio.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = stdio.h;
+		path = /Developer/SDKs/MacOSX10.4u.sdk/usr/include/stdio.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {713, 5172}}";
+			sepNavSelRange = "{3143, 3}";
+			sepNavVisRect = "{{0, 2271}, {713, 630}}";
+			sepNavWindowFrame = "{{37, 43}, {752, 703}}";
+		};
+	};
+	E1978CF10AC8D09C0096EE62 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1978CF20AC8D09C0096EE62 /* stdio.h */;
+		name = arg;
+		rLen = 3;
+		rLoc = 3143;
+		rType = 0;
+		vrLen = 1645;
+		vrLoc = 2066;
+	};
+	E1978CF20AC8D09C0096EE62 /* stdio.h */ = {
+		isa = PBXFileReference;
+		name = stdio.h;
+		path = /Developer/SDKs/MacOSX10.4u.sdk/usr/include/stdio.h;
+		sourceTree = "<absolute>";
 	};
 	E1A152640AA364A600324ED3 /* cp-demangle.c */ = {
 		uiCtxt = {
@@ -2052,7 +2231,7 @@
 		isa = PBXTextBookmark;
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 	};
 	E1D9835D0ABD1B140038B9CA /* PBXTextBookmark */ = {
@@ -2090,7 +2269,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;
@@ -2110,7 +2289,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;
@@ -2130,7 +2309,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;
@@ -2150,7 +2329,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;
@@ -2170,7 +2349,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;
@@ -2190,7 +2369,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;
@@ -2210,7 +2389,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;
@@ -2230,7 +2409,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;
@@ -2250,7 +2429,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;
@@ -2270,7 +2449,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;
@@ -2290,7 +2469,7 @@
 		fRef = E13539810A68178D00CBDDE5 /* SyscallStrings.h */;
 		name = 200;
 		rLen = 3;
-		rLoc = 4170;
+		rLoc = 4176;
 		rType = 0;
 		vrLen = 529;
 		vrLoc = 3901;

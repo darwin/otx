@@ -2,7 +2,7 @@
 // Using 0 instead of "" for empty strings results in a nil pointer
 // instead of a pointer to zeroes.
 
-static char*	gSysCalls[371]	=	{
+static const char*	gSysCalls[371]	=	{
 	"syscall",							//	0
 	"exit",								//	1
 	"fork",								//	2

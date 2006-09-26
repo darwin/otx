@@ -519,11 +519,10 @@
 		 mRegInfos[0].intValue > SYS_MAXSYSCALL)
 		return;
 
-	BOOL	isIndirect		= (mRegInfos[0].intValue == SYS_syscall);
-	UInt32	syscallNumReg	= isIndirect ? 3 : 0;
-	UInt32	syscallArg1Reg	= isIndirect ? 4 : 3;
-
-	char*	theSysString	= gSysCalls[mRegInfos[syscallNumReg].intValue];
+	BOOL		isIndirect		= (mRegInfos[0].intValue == SYS_syscall);
+	UInt32		syscallNumReg	= isIndirect ? 3 : 0;
+	UInt32		syscallArg1Reg	= isIndirect ? 4 : 3;
+	const char*	theSysString	= gSysCalls[mRegInfos[syscallNumReg].intValue];
 
 	if (!theSysString)
 		return;

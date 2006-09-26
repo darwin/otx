@@ -1027,7 +1027,7 @@
 		 mRegInfos[EAX].intValue > SYS_MAXSYSCALL)
 		return;
 
-	char*	theSysString	= gSysCalls[mRegInfos[EAX].intValue];
+	const char*	theSysString	= gSysCalls[mRegInfos[EAX].intValue];
 
 	if (!theSysString)
 		return;
