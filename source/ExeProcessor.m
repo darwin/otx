@@ -57,6 +57,9 @@ methodInfo_compare(
 		 progText: (NSTextField*)inText
 		  progBar: (NSProgressIndicator*)inProg
 {
+	if (!inURL || !inText || !inProg)
+		return nil;
+
 	if ((self = [super init]) == nil)
 		return nil;
 
@@ -64,12 +67,21 @@ methodInfo_compare(
 	mProgText	= inText;
 	mProgBar	= inProg;
 
-	NSFileHandle*	theFileH	=
-		[NSFileHandle fileHandleForReadingAtPath: [mOFile path]];
-	NSData*			theData		=
-		[theFileH readDataOfLength: sizeof(mArchMagic)];
+	// Load exe into RAM.
+	NSData*	theData	= [NSData dataWithContentsOfURL: mOFile];
 
-	mArchMagic	= *(UInt32*)[theData bytes];
+	mRAMFileSize	= [theData length];
+	mRAMFile		= malloc(mRAMFileSize);
+	[theData getBytes: mRAMFile];
+
+	// Harness the magic.
+//	NSFileHandle*	theFileH	=
+//		[NSFileHandle fileHandleForReadingAtPath: [mOFile path]];
+//	NSData*			theData		=
+//		[theFileH readDataOfLength: sizeof(mArchMagic)];
+
+//	mArchMagic	= *(UInt32*)[theData bytes];
+	mArchMagic	= *(UInt32*)mRAMFile;
 	mExeIsFat	= mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM;
 
 	[self speedyDelivery];
@@ -106,7 +118,6 @@ methodInfo_compare(
 	[super dealloc];
 }
 
-#pragma mark -
 //	processExe:arch:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
@@ -134,10 +145,11 @@ methodInfo_compare(
 	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
 
 	// Load exe into RAM.
-	NSData*	theData	= [NSData dataWithContentsOfURL: mOFile];
+/*	NSData*	theData	= [NSData dataWithContentsOfURL: mOFile];
 
-	mRAMFile	= malloc([theData length]);
-	[theData getBytes: mRAMFile];
+	mRAMFileSize	= [theData length];
+	mRAMFile		= malloc(mRAMFileSize);
+	[theData getBytes: mRAMFile];*/
 
 	if (![self loadMachHeader])
 	{
@@ -301,9 +313,9 @@ methodInfo_compare(
 		{
 			if (fa->cputype == mArchSelector)
 			{
-				mMachHeader		= (mach_header*)(mRAMFile + fa->offset);
-				mArchMagic		= *(UInt32*)mMachHeader;
-				mSwapped		= mArchMagic == MH_CIGAM;
+				mMachHeader	= (mach_header*)(mRAMFile + fa->offset);
+				mArchMagic	= *(UInt32*)mMachHeader;
+				mSwapped	= mArchMagic == MH_CIGAM;
 			}
 
 			fa++;	// next arch
@@ -1316,9 +1328,15 @@ methodInfo_compare(
 		strncpy(ioLine->chars, theTempLine, ioLine->length + 1);
 
 		if (strstr(ioLine->chars, "\n(__TEXT,__coalesced_text)"))
-			mEndOfText	= mCoalTextSect.s.addr + mCoalTextSect.s.size;
+		{
+			mEndOfText		= mCoalTextSect.s.addr + mCoalTextSect.s.size;
+			mLocalOffset	= 0;
+		}
 		else if (strstr(ioLine->chars, "\n(__TEXT,__textcoal_nt)"))
-			mEndOfText	= mCoalTextNTSect.s.addr + mCoalTextNTSect.s.size;
+		{
+			mEndOfText		= mCoalTextNTSect.s.addr + mCoalTextNTSect.s.size;
+			mLocalOffset	= 0;
+		}
 	}
 	else if (mDemangleCppNames)
 	{

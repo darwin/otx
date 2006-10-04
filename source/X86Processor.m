@@ -6,6 +6,7 @@
 //#import <sys/ptrace.h>
 #import <sys/syscall.h>
 
+#import "BruteForceNopSearch.h"
 #import "X86Processor.h"
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
@@ -1330,5 +1331,128 @@
 
 	return isFunction;
 }
+
+#pragma mark -
+//	verifyNops:
+// ————————————————————————————————————————————————————————————————————————————
+
+- (BOOL)verifyNops: (UInt32**)outList
+		  numFound: (UInt32*)outFound
+		  arch: (cpu_type_t)inArch
+{
+	mArchSelector	= inArch;
+
+	if (![self loadMachHeader])
+	{
+		printf("otx: failed to load mach header\n");
+		return false;
+	}
+
+	[self loadLCommands];
+
+	BruteForceNopSearch*	theSearch	= [[BruteForceNopSearch alloc] init];
+
+	[theSearch autorelease];
+
+	*outList	= [theSearch searchIn: (unsigned char*)mTextSect.contents
+		OfLength: mTextSect.size NumFound: outFound OnlyByExistence: true];
+
+	return *outFound != 0;
+}
+
+//	fixNops:
+// ————————————————————————————————————————————————————————————————————————————
+
+- (void)fixNops: (NopListInfo*)inList
+{
+	UInt32			i	= 0;
+	unsigned char*	item;
+
+	for (i = 0; i < inList->count; i++)
+	{
+		item	= (unsigned char*)inList->list[i];
+
+		if (*(item - 7) == 0xe9)
+		{
+			*(item)		= 0x90;
+			*(item - 1)	= 0x90;
+			*(item - 2)	= 0x90;
+		}
+		else if (*(item - 5) == 0xe9)
+		{
+			*(item)		= 0x90;
+		}
+		else if (*(item - 4) == 0xeb)
+		{
+			*(item)		= 0x90;
+			*(item - 1)	= 0x90;
+			*(item - 2)	= 0x90;
+		}
+		else if (*(item - 2) == 0xeb)
+		{
+			*(item)		= 0x90;
+		}
+		else if (*(item - 5) == 0xc2)
+		{
+			*(item)		= 0x90;
+			*(item - 1)	= 0x90;
+			*(item - 2)	= 0x90;
+		}
+		else if (*(item - 5) == 0xca)
+		{
+			*(item)		= 0x90;
+			*(item - 1)	= 0x90;
+			*(item - 2)	= 0x90;
+		}
+		else if (*(item - 3) == 0xc3)
+		{
+			*(item)		= 0x90;
+			*(item - 1)	= 0x90;
+			*(item - 2)	= 0x90;
+		}
+		else if (*(item - 3) == 0xcb)
+		{
+			*(item)		= 0x90;
+			*(item - 1)	= 0x90;
+			*(item - 2)	= 0x90;
+		}
+		else if (*(item - 1) == 0xc3)
+		{
+			*(item)		= 0x90;
+		}
+		else if (*(item - 1) == 0xcb)
+		{
+			*(item)		= 0x90;
+		}
+	}
+
+	NSData*		newFile	= [NSData dataWithBytesNoCopy: mRAMFile
+		length: mRAMFileSize];
+	NSError*	error	= nil;
+	NSURL*		newURL	= [NSURL fileURLWithPath: [[mOFile path]
+		stringByAppendingString: @"_fixed"]];
+
+	if (![newFile writeToURL: newURL options: NSAtomicWrite
+		error: &error])
+	{
+		if (error)
+			printf("otx: %s\n", [[error localizedDescription]
+				cStringUsingEncoding: NSMacOSRomanStringEncoding]);
+
+		return;
+	}
+
+/*	NSDictionary*	fileTypeDict	=
+		[NSDictionary dictionaryWithObjectsAndKeys:
+		@"", NSFileHFSCreatorCode,
+		@"", NSFileHFSTypeCode,
+		nil];
+
+	[[NSFileManager defaultManager] changeFileAttributes:
+		atPath:[newURL path]];*/
+}
+
+
+
 
 @end

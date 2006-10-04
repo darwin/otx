@@ -260,9 +260,11 @@
 	{
 		case CPU_TYPE_POWERPC:
 			mOutputFileLabel	= @"_PPC";
+			[mVerifyButton setEnabled: false];
 			break;
 		case CPU_TYPE_I386:
 			mOutputFileLabel	= @"_x86";
+			[mVerifyButton setEnabled: true];
 			break;
 
 		default:
@@ -361,6 +363,112 @@
 		[self doLipoAlertSheet];
 }
 
+//	verifyNops:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+- (IBAction)verifyNops: (id)sender
+{
+	switch (mArchSelector)
+	{
+		case CPU_TYPE_I386:
+		{
+			X86Processor*	theProcessor	=
+				[[X86Processor alloc] initWithURL: mOFile
+				progText: mProgText progBar: mProgBar];
+
+			if (!theProcessor)
+			{
+				printf("otx: couldn't create processor\n");
+				return;
+			}
+
+			UInt32*		foundList	= nil;
+			UInt32		foundCount	= 0;
+			NSAlert*	theAlert	= [[NSAlert alloc] init];
+
+			if ([theProcessor verifyNops: &foundList
+				numFound: &foundCount
+				arch: mArchSelector])
+			{
+//				NopListInfo	theInfo	= {foundList, foundCount};
+
+				NopListInfo*	theInfo	= malloc(sizeof(NopListInfo));
+
+				theInfo->list	= foundList;
+				theInfo->count	= foundCount;
+
+				[theAlert addButtonWithTitle: @"Save"];
+				[theAlert addButtonWithTitle: @"Cancel"];
+				[theAlert setMessageText: @"Broken nop's found."];
+				[theAlert setInformativeText: [NSString stringWithFormat:
+					@"otx found %d broken nop's. Would you like to save "
+					@"a copy of the executable with fixed nop's?",
+					foundCount]];
+				[theAlert beginSheetModalForWindow: mMainWindow
+					modalDelegate: self didEndSelector:
+					@selector(nopAlertDidEnd:returnCode:contextInfo:)
+					contextInfo: theInfo];
+			}
+			else
+			{
+				[theAlert addButtonWithTitle: @"OK"];
+				[theAlert setMessageText: @"The executable is healthy."];
+				[theAlert beginSheetModalForWindow: mMainWindow
+					modalDelegate: nil didEndSelector: nil contextInfo: nil];
+			}
+
+			[theAlert release];
+			[theProcessor release];
+
+			break;
+		}
+
+		default:
+			break;
+	}
+}
+
+//	nopAlertDidEnd:returnCode:contextInfo:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
+- (void)nopAlertDidEnd: (NSAlert*)alert
+			returnCode: (int)returnCode
+		   contextInfo: (void*)contextInfo
+{
+	if (returnCode == NSAlertSecondButtonReturn)
+		return;
+
+	if (!contextInfo)
+		return;
+
+	NopListInfo*	theInfo	= (NopListInfo*)contextInfo;
+
+	switch (mArchSelector)
+	{
+		case CPU_TYPE_I386:
+		{
+			X86Processor*	theProcessor	=
+				[[X86Processor alloc] initWithURL: mOFile
+				progText: mProgText progBar: mProgBar];
+
+			if (!theProcessor)
+			{
+				printf("otx: couldn't create processor\n");
+				return;
+			}
+
+			[theProcessor fixNops: theInfo];
+			[theProcessor release];
+
+			break;
+		}
+
+		default:
+			break;
+	}
+
+	free(theInfo);
+}
+
 //	validateMenuItem
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
@@ -428,11 +536,13 @@
 			{
 				mArchSelector	= CPU_TYPE_POWERPC;
 				[mTypeText setStringValue: @"PPC"];
+				[mVerifyButton setEnabled: false];
 			}
 			else
 			{
 				mArchSelector	= CPU_TYPE_I386;
 				[mTypeText setStringValue: @"x86"];
+				[mVerifyButton setEnabled: true];
 			}
 
 			break;
@@ -442,11 +552,13 @@
 			{
 				mArchSelector	= CPU_TYPE_I386;
 				[mTypeText setStringValue: @"x86"];
+				[mVerifyButton setEnabled: true];
 			}
 			else
 			{
 				mArchSelector	= CPU_TYPE_POWERPC;
 				[mTypeText setStringValue: @"PPC"];
+				[mVerifyButton setEnabled: false];
 			}
 
 			break;
@@ -457,11 +569,13 @@
 			{
 				mArchSelector		= CPU_TYPE_POWERPC;
 				mOutputFileLabel	= @"_PPC";
+				[mVerifyButton setEnabled: false];
 			}
 			else
 			{
 				mArchSelector		= CPU_TYPE_I386;
 				mOutputFileLabel	= @"_x86";
+				[mVerifyButton setEnabled: true];
 			}
 
 			shouldEnableArch	= true;
@@ -472,6 +586,7 @@
 			mFileIsValid	= false;
 			mArchSelector	= 0;
 			[mTypeText setStringValue: @"Not a Mach-O file"];
+			[mVerifyButton setEnabled: false];
 			break;
 	}
 

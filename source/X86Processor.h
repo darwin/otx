@@ -44,4 +44,9 @@ enum {
 	RegisterInfo	mRegInfos[8];
 }
 
+- (BOOL)verifyNops: (UInt32**)outList
+		  numFound: (UInt32*)outFound
+			  arch: (cpu_type_t)inArch;
+- (void)fixNops: (NopListInfo*)inList;
+
 @end

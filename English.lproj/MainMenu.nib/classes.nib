@@ -10,6 +10,7 @@
                 switchPrefsViews = id; 
                 syncOutputText = id; 
                 thinFile = id; 
+                verifyNops = id; 
             }; 
             CLASS = AppController; 
             LANGUAGE = ObjC; 
@@ -28,6 +29,7 @@
                 mSaveButton = NSButton; 
                 mThinButton = NSButton; 
                 mTypeText = NSTextField; 
+                mVerifyButton = NSButton; 
             }; 
             SUPERCLASS = NSObject; 
         }, 

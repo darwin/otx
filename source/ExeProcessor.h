@@ -47,6 +47,14 @@ typedef struct
 }
 LineInfo;
 
+// NopListInfo
+typedef struct NopListInfo
+{
+	UInt32*	list;
+	UInt32	count;
+}
+NopListInfo;
+
 // Adapted from http://www.opensource.apple.com/darwinsource/10.4.7.ppc/cctools-590.23.6/libdyld/debug.h
 typedef struct dyld_data_section
 {
@@ -212,6 +220,7 @@ TextFieldWidths;
 	// guts
 	NSURL*				mOFile;					// exe on disk
 	char*				mRAMFile;				// exe in RAM
+	UInt32				mRAMFileSize;
 	NSString*			mOutputFilePath;
 	Line*				mVerboseLineListHead;	// linked list the first
 	Line*				mPlainLineListHead;		// linked list the second

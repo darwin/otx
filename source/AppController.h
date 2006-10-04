@@ -14,6 +14,7 @@
 	IBOutlet NSDrawer*				mProgDrawer;
 	IBOutlet NSPopUpButton*			mArchPopup;
 	IBOutlet NSButton*				mThinButton;
+	IBOutlet NSButton*				mVerifyButton;
 	IBOutlet NSTextField*			mOutputText;
 	IBOutlet NSTextField*			mPathText;
 	IBOutlet NSTextField*			mProgText;
@@ -52,11 +53,16 @@
 - (IBAction)syncOutputText: (id)sender;
 - (IBAction)processFile: (id)sender;
 - (IBAction)thinFile: (id)sender;
+- (IBAction)verifyNops: (id)sender;
 - (void)syncSaveButton;
 - (void)syncDescriptionText;
 - (void)newPackageFile: (NSURL*)inPackageFile;
 - (void)newOFile: (NSURL*)inOFile
 	   needsPath: (BOOL)inNeedsPath;
+
+- (void)nopAlertDidEnd: (NSAlert*)alert
+			returnCode: (int)returnCode
+		   contextInfo: (void*)contextInfo;
 
 // prefs window
 - (IBAction)showPrefs: (id)sender;
