@@ -45,8 +45,11 @@ enum {
 }
 
 - (BOOL)verifyNops: (UInt32**)outList
-		  numFound: (UInt32*)outFound
-			  arch: (cpu_type_t)inArch;
-- (void)fixNops: (NopListInfo*)inList;
+		  numFound: (UInt32*)outFound;
+- (UInt32*)searchForNopsIn: (unsigned char*)inHaystack
+				  OfLength: (UInt32)inHaystackLength
+				  NumFound: (UInt32*)outFound;;
+- (NSURL*)fixNops: (NopListInfo*)inList
+		   toPath: (NSString*)inOutputFilePath;
 
 @end

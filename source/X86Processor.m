@@ -6,7 +6,6 @@
 //#import <sys/ptrace.h>
 #import <sys/syscall.h>
 
-#import "BruteForceNopSearch.h"
 #import "X86Processor.h"
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
@@ -30,6 +29,7 @@
 
 	strncpy(mArchString, "i386", 5);
 
+	mArchSelector				= CPU_TYPE_I386;
 	mFieldWidths.offset			= 8;
 	mFieldWidths.address		= 10;
 	mFieldWidths.instruction	= 22;
@@ -144,6 +144,7 @@
 			return;
 	}
 
+	// Store a thunk.
 	mNumThunks++;
 
 	if (mThunks)
@@ -153,6 +154,12 @@
 		mThunks	= malloc(sizeof(ThunkInfo));
 
 	mThunks[mNumThunks - 1]	= theThunk;
+
+	// Recognize it as a function.
+	inLine->prev->info.isFunction	= true;
+
+	if (inLine->prev->alt)
+		inLine->prev->alt->info.isFunction	= true;
 }
 
 //	commentForLine:
@@ -1037,7 +1044,7 @@
 
 	// Handle various system calls.
 	// If this was Linux, args would be passed in registers and we could
-	// easily spot PT_DENY_ATTACH. In BSD, we'd have to keep track of
+	// easily spot PT_DENY_ATTACH. In Mach/BSD, we'd have to keep track of
 	// the stack...
 }
 
@@ -1306,6 +1313,19 @@
 	if (FindSymbolByAddress(theAddy))
 		return true;
 
+	// Check for saved thunks.
+	if (mThunks)
+	{
+		UInt32	i;
+
+		for (i = 0; i < mNumThunks; i++)
+		{
+			if (mThunks[i].address == theAddy)
+				return true;
+		}
+	}
+
+	// Obvious avenues expended, brute force check now.
 	BOOL	isFunction	= false;
 	UInt8	opcode;
 
@@ -1332,16 +1352,13 @@
 	return isFunction;
 }
 
-#pragma mark -
+#pragma mark Deobfuscastion
 //	verifyNops:
 // ————————————————————————————————————————————————————————————————————————————
 
 - (BOOL)verifyNops: (UInt32**)outList
 		  numFound: (UInt32*)outFound
-		  arch: (cpu_type_t)inArch
 {
-	mArchSelector	= inArch;
-
 	if (![self loadMachHeader])
 	{
 		printf("otx: failed to load mach header\n");
@@ -1350,20 +1367,73 @@
 
 	[self loadLCommands];
 
-	BruteForceNopSearch*	theSearch	= [[BruteForceNopSearch alloc] init];
-
-	[theSearch autorelease];
-
-	*outList	= [theSearch searchIn: (unsigned char*)mTextSect.contents
-		OfLength: mTextSect.size NumFound: outFound OnlyByExistence: true];
+	*outList	= [self searchForNopsIn: (unsigned char*)mTextSect.contents
+		OfLength: mTextSect.size NumFound: outFound];
 
 	return *outFound != 0;
+}
+
+//	searchForNopsIn:OfLength:NumFound:OnlyByExistence:
+// ————————————————————————————————————————————————————————————————————————————
+//	Return value is a newly allocated list of addresses of 'outFound' length.
+//	Caller owns the list.
+
+- (UInt32*)searchForNopsIn: (unsigned char*)inHaystack
+				  OfLength: (UInt32)inHaystackLength
+				  NumFound: (UInt32*)outFound;
+{
+	UInt32*			foundList			= nil;
+	unsigned char	theSearchString[4]	= {0x00, 0x55, 0x89, 0xe5};
+	unsigned char*	current;
+
+	*outFound	= 0;
+
+	// loop thru haystack
+	for (current = inHaystack;
+		 current <= inHaystack + inHaystackLength - 4;
+		 current++)
+	{
+		if (memcmp(current, theSearchString, 4) != 0)
+			continue;
+
+		// Match for common benign occurences
+		if (*(current - 4) == 0xe9	||	// jmpl
+			*(current - 2) == 0xc2)		// ret
+			continue;
+
+		// Match for common malignant occurences
+		if (*(current - 7) != 0xe9	&&	// jmpl
+			*(current - 5) != 0xe9	&&	// jmpl
+			*(current - 4) != 0xeb	&&	// jmp
+			*(current - 2) != 0xeb	&&	// jmp
+			*(current - 5) != 0xc2	&&	// ret
+			*(current - 5) != 0xca	&&	// ret
+			*(current - 3) != 0xc2	&&	// ret
+			*(current - 3) != 0xca	&&	// ret
+			*(current - 3) != 0xc3	&&	// ret
+			*(current - 3) != 0xcb	&&	// ret
+			*(current - 1) != 0xc3	&&	// ret
+			*(current - 1) != 0xcb)		// ret
+			continue;
+
+		(*outFound)++;
+
+		if (foundList)
+			foundList	= realloc(foundList, *outFound * sizeof(UInt32));
+		else
+			foundList	= malloc(sizeof(UInt32));
+
+		foundList[*outFound - 1]	= (UInt32)current;
+	}
+
+	return foundList;
 }
 
 //	fixNops:
 // ————————————————————————————————————————————————————————————————————————————
 
-- (void)fixNops: (NopListInfo*)inList
+- (NSURL*)fixNops: (NopListInfo*)inList
+		   toPath: (NSString*)inOutputFilePath
 {
 	UInt32			i	= 0;
 	unsigned char*	item;
@@ -1372,65 +1442,80 @@
 	{
 		item	= (unsigned char*)inList->list[i];
 
-		if (*(item - 7) == 0xe9)
+		// This appears redundant, but to avoid false positives, we must
+		// check jumps first(in decreasing size) and return statements last.
+		if (*(item - 7) == 0xe9)		// e9xxxxxxxx0000005589e5
 		{
 			*(item)		= 0x90;
 			*(item - 1)	= 0x90;
 			*(item - 2)	= 0x90;
 		}
-		else if (*(item - 5) == 0xe9)
+		else if (*(item - 5) == 0xe9)	// e9xxxxxxxx005589e5
 		{
 			*(item)		= 0x90;
 		}
-		else if (*(item - 4) == 0xeb)
-		{
-			*(item)		= 0x90;
-			*(item - 1)	= 0x90;
-			*(item - 2)	= 0x90;
-		}
-		else if (*(item - 2) == 0xeb)
-		{
-			*(item)		= 0x90;
-		}
-		else if (*(item - 5) == 0xc2)
+		else if (*(item - 4) == 0xeb)	// ebxx0000005589e5
 		{
 			*(item)		= 0x90;
 			*(item - 1)	= 0x90;
 			*(item - 2)	= 0x90;
 		}
-		else if (*(item - 5) == 0xca)
+		else if (*(item - 2) == 0xeb)	// ebxx005589e5
+		{
+			*(item)		= 0x90;
+		}
+		else if (*(item - 5) == 0xc2)	// c2xxxx0000005589e5
 		{
 			*(item)		= 0x90;
 			*(item - 1)	= 0x90;
 			*(item - 2)	= 0x90;
 		}
-		else if (*(item - 3) == 0xc3)
+		else if (*(item - 5) == 0xca)	// caxxxx0000005589e5
 		{
 			*(item)		= 0x90;
 			*(item - 1)	= 0x90;
 			*(item - 2)	= 0x90;
 		}
-		else if (*(item - 3) == 0xcb)
+		else if (*(item - 3) == 0xc2)	// c2xxxx005589e5
+		{
+			*(item)		= 0x90;
+		}
+		else if (*(item - 3) == 0xca)	// caxxxx005589e5
+		{
+			*(item)		= 0x90;
+		}
+		else if (*(item - 3) == 0xc3)	// c30000005589e5
 		{
 			*(item)		= 0x90;
 			*(item - 1)	= 0x90;
 			*(item - 2)	= 0x90;
 		}
-		else if (*(item - 1) == 0xc3)
+		else if (*(item - 3) == 0xcb)	// cb0000005589e5
+		{
+			*(item)		= 0x90;
+			*(item - 1)	= 0x90;
+			*(item - 2)	= 0x90;
+		}
+		else if (*(item - 1) == 0xc3)	// c3005589e5
 		{
 			*(item)		= 0x90;
 		}
-		else if (*(item - 1) == 0xcb)
+		else if (*(item - 1) == 0xcb)	// cb005589e5
 		{
 			*(item)		= 0x90;
 		}
 	}
 
+	// Write data to a new file.
 	NSData*		newFile	= [NSData dataWithBytesNoCopy: mRAMFile
 		length: mRAMFileSize];
 	NSError*	error	= nil;
-	NSURL*		newURL	= [NSURL fileURLWithPath: [[mOFile path]
+	NSURL*		newURL	= [[NSURL alloc] initFileURLWithPath:
+		[[[inOutputFilePath stringByDeletingLastPathComponent]
+		stringByAppendingPathComponent: [[mOFile path] lastPathComponent]]
 		stringByAppendingString: @"_fixed"]];
+
+	[newURL autorelease];
 
 	if (![newFile writeToURL: newURL options: NSAtomicWrite
 		error: &error])
@@ -1439,20 +1524,32 @@
 			printf("otx: %s\n", [[error localizedDescription]
 				cStringUsingEncoding: NSMacOSRomanStringEncoding]);
 
-		return;
+		return nil;
 	}
 
-/*	NSDictionary*	fileTypeDict	=
-		[NSDictionary dictionaryWithObjectsAndKeys:
-		@"", NSFileHFSCreatorCode,
-		@"", NSFileHFSTypeCode,
-		nil];
+	// Copy original app's permissions to new file.
+	NSFileManager*	fileMan		= [NSFileManager defaultManager];
+	NSDictionary*	fileAttrs	= [fileMan fileAttributesAtPath:
+		[mOFile path] traverseLink: false];
 
-	[[NSFileManager defaultManager] changeFileAttributes:
-		atPath:[newURL path]];*/
+	if (!fileAttrs)
+	{
+		printf("otx: unable to read attributes from executable\n");
+		return nil;
+	}
+
+	NSDictionary*	permsDict	= [NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithUnsignedInt: [fileAttrs filePosixPermissions]],
+		NSFilePosixPermissions, nil];
+
+	if (![fileMan changeFileAttributes: permsDict atPath: [newURL path]])
+	{
+		printf(
+			"otx: unable to change file permissions for fixed executable\n");
+	}
+
+	// Return fixed file.
+	return newURL;
 }
-
-
-
 
 @end

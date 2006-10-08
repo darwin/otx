@@ -386,11 +386,8 @@
 			NSAlert*	theAlert	= [[NSAlert alloc] init];
 
 			if ([theProcessor verifyNops: &foundList
-				numFound: &foundCount
-				arch: mArchSelector])
+				numFound: &foundCount])
 			{
-//				NopListInfo	theInfo	= {foundList, foundCount};
-
 				NopListInfo*	theInfo	= malloc(sizeof(NopListInfo));
 
 				theInfo->list	= foundList;
@@ -438,9 +435,19 @@
 		return;
 
 	if (!contextInfo)
+	{
+		printf("otx: tried to fix nops with nil contextInfo\n");
 		return;
+	}
 
-	NopListInfo*	theInfo	= (NopListInfo*)contextInfo;
+	NopListInfo*	theNops	= (NopListInfo*)contextInfo;
+
+	if (!theNops->list)
+	{
+		printf("otx: tried to fix nops with nil NopListInfo.list\n");
+		free(theNops);
+		return;
+	}
 
 	switch (mArchSelector)
 	{
@@ -456,8 +463,15 @@
 				return;
 			}
 
-			[theProcessor fixNops: theInfo];
+			NSURL*	fixedFile	= 
+				[theProcessor fixNops: theNops toPath: mOutputFilePath];
+
 			[theProcessor release];
+
+			if (fixedFile)
+				[self newOFile: fixedFile needsPath: true];
+			else
+				printf("otx: unable to fix nops\n");
 
 			break;
 		}
@@ -466,7 +480,8 @@
 			break;
 	}
 
-	free(theInfo);
+	free(theNops->list);
+	free(theNops);
 }
 
 //	validateMenuItem
@@ -669,7 +684,7 @@
 				return;
 			}
 
-			if (![theProcessor processExe: mOutputFilePath arch: mArchSelector])
+			if (![theProcessor processExe: mOutputFilePath])
 			{
 				printf("otx: possible permission error\n");
 				[self doErrorAlertSheet];
@@ -695,7 +710,7 @@
 				return;
 			}
 
-			if (![theProcessor processExe: mOutputFilePath arch: mArchSelector])
+			if (![theProcessor processExe: mOutputFilePath])
 			{
 				printf("otx: possible permission error\n");
 				[self doErrorAlertSheet];
@@ -740,9 +755,9 @@
 
 - (SInt32)checkOtool
 {
-	char*		cmdString	= mExeIsFat ? "otool -f" : "otool -h";
+	char*		headerArg	= mExeIsFat ? "-f" : "-h";
 	NSString*	otoolString	= [NSString stringWithFormat:
-		@"%s '%@' > /dev/null", cmdString, [mOFile path]];
+		@"otool %s '%@' > /dev/null", headerArg, [mOFile path]];
 
 	return system(
 		[otoolString cStringUsingEncoding: NSMacOSRomanStringEncoding]);

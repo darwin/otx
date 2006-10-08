@@ -25,7 +25,6 @@
 		E1A152700AA364A600324ED3 /* xexit.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152690AA364A600324ED3 /* xexit.c */; };
 		E1A152710AA364A600324ED3 /* xmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526A0AA364A600324ED3 /* xmalloc.c */; };
 		E1A152720AA364A600324ED3 /* xstrdup.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526B0AA364A600324ED3 /* xstrdup.c */; };
-		E1C327A40AD0C6250066F856 /* BruteForceNopSearch.m in Sources */ = {isa = PBXBuildFile; fileRef = E1C327A30AD0C6250066F856 /* BruteForceNopSearch.m */; };
 		E1D77F2E09B296A300176F18 /* ExeProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */; };
 /* End PBXBuildFile section */
 
@@ -83,8 +82,6 @@
 		E1A1526A0AA364A600324ED3 /* xmalloc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xmalloc.c; path = "source/binutils-2.17/libiberty/xmalloc.c"; sourceTree = SOURCE_ROOT; };
 		E1A1526B0AA364A600324ED3 /* xstrdup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xstrdup.c; path = "source/binutils-2.17/libiberty/xstrdup.c"; sourceTree = SOURCE_ROOT; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
-		E1C327A30AD0C6250066F856 /* BruteForceNopSearch.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = BruteForceNopSearch.m; path = source/BruteForceNopSearch.m; sourceTree = "<group>"; };
-		E1C327A50AD0C6360066F856 /* BruteForceNopSearch.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = BruteForceNopSearch.h; path = source/BruteForceNopSearch.h; sourceTree = "<group>"; };
 		E1D77F2D09B296A300176F18 /* ExeProcessor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ExeProcessor.m; path = source/ExeProcessor.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,7 +102,6 @@
 			children = (
 				E13539860A68183800CBDDE5 /* Headers */,
 				E182007009AE4CD800584B07 /* AppController.m */,
-				E1C327A30AD0C6250066F856 /* BruteForceNopSearch.m */,
 				E18201E609AFAAAC00584B07 /* CDropBox.m */,
 				E1D77F2D09B296A300176F18 /* ExeProcessor.m */,
 				E14769570A60E95B00C03C62 /* PPCProcessor.m */,
@@ -192,7 +188,6 @@
 			isa = PBXGroup;
 			children = (
 				E13539900A68185500CBDDE5 /* AppController.h */,
-				E1C327A50AD0C6360066F856 /* BruteForceNopSearch.h */,
 				E135398F0A68185500CBDDE5 /* CDropBox.h */,
 				E135398E0A68185500CBDDE5 /* ExeProcessor.h */,
 				E135398C0A68185500CBDDE5 /* PPCProcessor.h */,
@@ -313,7 +308,6 @@
 				E1A152700AA364A600324ED3 /* xexit.c in Sources */,
 				E1A152710AA364A600324ED3 /* xmalloc.c in Sources */,
 				E1A152720AA364A600324ED3 /* xstrdup.c in Sources */,
-				E1C327A40AD0C6250066F856 /* BruteForceNopSearch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

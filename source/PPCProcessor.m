@@ -29,6 +29,7 @@
 
 	strncpy(mArchString, "ppc", 4);
 
+	mArchSelector				= CPU_TYPE_POWERPC;
 	mFieldWidths.offset			= 8;
 	mFieldWidths.address		= 10;
 	mFieldWidths.instruction	= 10;

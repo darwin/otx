@@ -337,8 +337,7 @@ TextFieldWidths;
 		  progBar: (NSProgressIndicator*)inProg;
 
 // processors
-- (BOOL)processExe: (NSString*)inOutputFilePath
-			  arch: (cpu_type_t)inArchSelector;
+- (BOOL)processExe: (NSString*)inOutputFilePath;
 - (void)createVerboseFile: (NSURL**)outVerbosePath
 			 andPlainFile: (NSURL**)outPlainPath;
 - (BOOL)loadMachHeader;

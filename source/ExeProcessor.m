@@ -74,13 +74,6 @@ methodInfo_compare(
 	mRAMFile		= malloc(mRAMFileSize);
 	[theData getBytes: mRAMFile];
 
-	// Harness the magic.
-//	NSFileHandle*	theFileH	=
-//		[NSFileHandle fileHandleForReadingAtPath: [mOFile path]];
-//	NSData*			theData		=
-//		[theFileH readDataOfLength: sizeof(mArchMagic)];
-
-//	mArchMagic	= *(UInt32*)[theData bytes];
 	mArchMagic	= *(UInt32*)mRAMFile;
 	mExeIsFat	= mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM;
 
@@ -122,7 +115,6 @@ methodInfo_compare(
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 - (BOOL)processExe: (NSString*)inOutputFilePath
-			  arch: (cpu_type_t)inArchSelector
 {
 	if (!mArchMagic)
 	{
@@ -130,7 +122,6 @@ methodInfo_compare(
 		return false;
 	}
 
-	mArchSelector	= inArchSelector;
 	mOutputFilePath	= inOutputFilePath;
 	mMachHeader		= nil;
 
@@ -143,13 +134,6 @@ methodInfo_compare(
 	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
 	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
 	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
-
-	// Load exe into RAM.
-/*	NSData*	theData	= [NSData dataWithContentsOfURL: mOFile];
-
-	mRAMFileSize	= [theData length];
-	mRAMFile		= malloc(mRAMFileSize);
-	[theData getBytes: mRAMFile];*/
 
 	if (![self loadMachHeader])
 	{
@@ -1356,14 +1340,14 @@ methodInfo_compare(
 					free(ioLine->chars);
 					ioLine->length	= strlen(cpName) + 1;
 
-					// theCPName is null-terminated but has no \n. Allocate
-					// space for both...
+					// cpName is null-terminated but has no '\n'. Allocate
+					// space for both.
 					ioLine->chars	= malloc(ioLine->length + 2);
 
-					// ...copy theCPName and terminate it...
+					// copy cpName and terminate it.
 					strncpy(ioLine->chars, cpName, ioLine->length + 1);
 
-					// ...add \n and terminate it
+					// add '\n' and terminate it
 					strncat(ioLine->chars, "\n", 1);
 				}
 
