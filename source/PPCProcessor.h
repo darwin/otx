@@ -1,5 +1,15 @@
 #import "ExeProcessor.h"
 
+// PPCMachineState
+typedef struct
+{
+	RegisterInfo	regInfos[32];
+	RegisterInfo	lr;
+	RegisterInfo	ctr;
+	VarInfo*		localSelves;
+}
+PPCMachineState;
+
 // from cctools-590/otool/ppc-disasm.c
 // The various macros defined in that file get their names from the field
 // naming conventions given in the PowerPC Programming Environments Manual

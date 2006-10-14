@@ -29,16 +29,6 @@ typedef struct
 }
 RegisterInfo;
 
-/*
-// LocalVarInfo
-typedef struct
-{
-	RegisterInfo	regInfo;
-	UInt16			localAddress;
-}
-LocalVarInfo;
-*/
-
 /*	VarInfo
 
 	Represents a local variable in the stack frame. Currently, copies of
@@ -61,16 +51,6 @@ typedef struct
 	SInt32			offset;
 }
 VarInfo;
-
-// LineInfo
-typedef struct
-{
-	UInt32	address;
-	char	code[25];
-	BOOL	isCode;
-	BOOL	isFunction;
-}
-LineInfo;
 
 /*	NopListInfo
 
@@ -133,8 +113,7 @@ ___i686.get_pc_thunk.bx:
 	I've heard, but there it is. From what I've seen, the thunk can be stored
 	in EAX, EBX, ECX, or EDX, and there can be multiple get_pc_thunk routines,
 	each referencing one of these registers. EBX is the most popular, followed
-	by ECX, EAX, and finally EDX. I have only seen EDX being used for this
-	in Linux code, but otx allows for it.
+	by ECX, EAX, and finally EDX.
 
 	The PPC version of this behavior requires no function calls, and is
 	fairly easy to spot. And in x86 code, when symbols have not been stripped,
@@ -154,6 +133,16 @@ typedef struct
 	SInt8	reg;		// register to which the thunk is being saved
 }
 ThunkInfo;
+
+// LineInfo
+typedef struct
+{
+	UInt32	address;
+	char	code[25];		// machine code as ASCII text
+	BOOL	isCode;
+	BOOL	isFunction;
+}
+LineInfo;
 
 /*	Line
 
@@ -185,6 +174,21 @@ struct Line
 
 #define Line	struct Line
 
+// Number of characters in each field, pre-entabified. Comment field is
+// limited only by MAX_COMMENT_LENGTH. A single space per field is
+// hardcoded in the snprintf format strings to prevent collisions.
+
+// TextFieldWidths
+typedef struct
+{
+	UInt16	offset;
+	UInt16	address;
+	UInt16	instruction;
+	UInt16	mnemonic;
+	UInt16	operands;
+}
+TextFieldWidths;
+
 // Constants that represent which section is being referenced, indicating
 // likely data types.
 enum {
@@ -204,28 +208,13 @@ enum {
 	OCModType,			// objc_module in (__OBJC,__module_info)
 };
 
-// Number of characters in each field, pre-entabified. Comment field is
-// limited only by MAX_COMMENT_LENGTH. A single space per field is
-// hardcoded in the snprintf format strings to prevent collisions.
-
-// TextFieldWidths
-typedef struct
-{
-	UInt16	offset;
-	UInt16	address;
-	UInt16	instruction;
-	UInt16	mnemonic;
-	UInt16	operands;
-}
-TextFieldWidths;
-
 #define MAX_FIELD_SPACING		100		// spaces between fields
 #define MAX_FORMAT_LENGTH		50		// snprintf() format string
 #define MAX_OPERANDS_LENGTH		1000
 #define MAX_COMMENT_LENGTH		2000
 #define MAX_LINE_LENGTH			10000
 #define MAX_TYPE_STRING_LENGTH	200		// for encoded ObjC data types
-#define MAX_MD5_LINE			1024	// for the md5 pipe
+#define MAX_MD5_LINE			40		// for the md5 pipe
 #define MAX_ARCH_STRING_LENGTH	20		// "ppc", "i386" etc.
 
 // Maximum number of stack variables.

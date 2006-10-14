@@ -2275,7 +2275,7 @@ methodInfo_compare(
 }
 
 #pragma mark -
-//	decodeMethodReturnType:output:	FIXME return the char*
+//	decodeMethodReturnType:output:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 - (void)decodeMethodReturnType: (const char*)inTypeCode
@@ -2306,6 +2306,7 @@ methodInfo_compare(
 			strncpy(outCString, "oneway ", 8);
 			break;
 
+		// No specifier found, roll back the marker.
 		default:
 			theNextChar--;
 			break;
@@ -2472,7 +2473,8 @@ methodInfo_compare(
 			GetDescription(theCType, &inTypeCode[theNextChar]);
 			isArray	= false;
 
-			snprintf(theTypeCString, 300, "%s[%s]", theCType, theArrayCCount);
+			snprintf(theTypeCString, MAX_TYPE_STRING_LENGTH + 1, "%s[%s]",
+				theCType, theArrayCCount);
 
 			break;
 		}
@@ -2490,6 +2492,7 @@ methodInfo_compare(
 		strncat(ioCString, theSuffixCString, strlen(theSuffixCString));
 }
 
+#pragma mark -
 //	entabLine:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 //	A cheap and fast way to entab a line, assuming it contains no tabs already.
