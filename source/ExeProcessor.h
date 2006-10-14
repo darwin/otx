@@ -29,6 +29,7 @@ typedef struct
 }
 RegisterInfo;
 
+/*
 // LocalVarInfo
 typedef struct
 {
@@ -36,6 +37,30 @@ typedef struct
 	UInt16			localAddress;
 }
 LocalVarInfo;
+*/
+
+/*	VarInfo
+
+	Represents a local variable in the stack frame. Currently, copies of
+	'self' are maintained in the variable-sized array mLocalSelves, and
+	variables pushed onto the stack in x86 code are maintained in the array
+	mStack[STACK_SIZE]. May be used for other things in future.
+
+	Note the semantic differences regarding stacks:
+
+					PPC							x86
+					--------------------------------------------------
+	local vars		stack ptr(r1) + offset		base ptr(EBP) - offset
+	arguments		---							base ptr(EBP) + offset
+
+*/
+
+typedef struct
+{
+	RegisterInfo	regInfo;
+	SInt32			offset;
+}
+VarInfo;
 
 // LineInfo
 typedef struct
@@ -47,24 +72,29 @@ typedef struct
 }
 LineInfo;
 
-// NopListInfo
+/*	NopListInfo
+
+	Used for deobfuscation. 'list' is a 'count'-sized array of addresses
+	at which an obfuscated sequence of nops was found.
+*/
+
 typedef struct NopListInfo
 {
-	UInt32*	list;
-	UInt32	count;
+	unsigned char**	list;
+	UInt32			count;
 }
 NopListInfo;
 
 // Adapted from http://www.opensource.apple.com/darwinsource/10.4.7.ppc/cctools-590.23.6/libdyld/debug.h
 typedef struct dyld_data_section
 {
-    void*			stub_binding_helper_interface;
-    void*			_dyld_func_lookup;
-    void*			start_debug_thread;
-    mach_port_t		debug_port;
-    thread_port_t	debug_thread;
-    void*			dyld_stub_binding_helper;
-//    unsigned long	core_debug;	// wrong size and ignored anyway
+	void*			stub_binding_helper_interface;
+	void*			_dyld_func_lookup;
+	void*			start_debug_thread;
+	mach_port_t		debug_port;
+	thread_port_t	debug_thread;
+	void*			dyld_stub_binding_helper;
+//	unsigned long	core_debug;	// wrong size and ignored anyway
 }
 dyld_data_section;
 
@@ -93,8 +123,8 @@ dyld_data_section;
 	to simply copy the IP from the stack into some GP register, like so:
 
 ___i686.get_pc_thunk.bx:
-	+0	10001ffc  8b1c24		movl	(%esp,1),%ebx
-	+3	10001fff  c3			ret
+	8b1c24		movl	(%esp,1),%ebx
+	c3			ret
 
 	This routine copies IP into EBX and returns. Subsequent code in the
 	calling function can use EBX as a base address, same as above. Note the
@@ -110,8 +140,8 @@ ___i686.get_pc_thunk.bx:
 	fairly easy to spot. And in x86 code, when symbols have not been stripped,
 	otool reports the ___i686.get_pc_thunk.bx calls like a champ. Our only
 	problem occurs when symbols are stripped in x86 code. In that case, otool
-	cannot display the name of the routine, only the address being call'd.
-	This is why we need ThunkInfo's. otx makes 2 passes over otool's output.
+	cannot display the name of the routine, only the address being called.
+	This is why we need ThunkInfos. otx makes 2 passes over otool's output.
 	During the first pass, it recognizes the code pattern of these get_pc_thunk
 	routines, and saves their addresses in an array of ThunkInfo's. Having
 	this data available during the 2nd pass makes it possible to reference
@@ -171,10 +201,10 @@ enum {
 	OCGenericType,			// Obj-C types
 	OCStrObjectType,	// objc_string_object in (__OBJC,__string_object)
 	OCClassType,		// objc_class in (__OBJC,__class)
-	OCModType,			// obj_module in (__OBJC,__module_info)
+	OCModType,			// objc_module in (__OBJC,__module_info)
 };
 
-// Number of characters in each 'field', pre-entabified. Comment field is
+// Number of characters in each field, pre-entabified. Comment field is
 // limited only by MAX_COMMENT_LENGTH. A single space per field is
 // hardcoded in the snprintf format strings to prevent collisions.
 
@@ -196,6 +226,10 @@ TextFieldWidths;
 #define MAX_LINE_LENGTH			10000
 #define MAX_TYPE_STRING_LENGTH	200		// for encoded ObjC data types
 #define MAX_MD5_LINE			1024	// for the md5 pipe
+#define MAX_ARCH_STRING_LENGTH	20		// "ppc", "i386" etc.
+
+// Maximum number of stack variables.
+#define STACK_SIZE				20
 
 // Refresh progress bar after processing this many lines.
 #define PROGRESS_FREQ			2500
@@ -233,18 +267,20 @@ TextFieldWidths;
 	UInt32				mLocalOffset;			// +420 etc.
 	ThunkInfo*			mThunks;				// x86 only
 	UInt32				mNumThunks;				// x86 only
+	VarInfo				mStack[STACK_SIZE];
+	BOOL				mIsIniting;
 
 	TextFieldWidths		mFieldWidths;
 
 	// base pointers for indirect addressing
-	SInt8				mCurrentThunk;		// x86 register identifier
-	UInt32				mCurrentFuncPtr;	// PPC function address
+	SInt8				mCurrentThunk;			// x86 register identifier
+	UInt32				mCurrentFuncPtr;		// PPC function address
 
 	// symbols that point to functions
 	nlist**				mFuncSyms;
 	UInt32				mNumFuncSyms;
 
-	// mach-O sections
+	// Mach-O sections
 	section_info		mCStringSect;
 	section_info		mNSStringSect;
 	section_info		mClassSect;
@@ -278,7 +314,7 @@ TextFieldWidths;
 	UInt32				mNumCatMethodInfos;
 	objc_class*			mCurrentClass;
 	objc_category*		mCurrentCat;
-	LocalVarInfo*		mLocalSelves;			// 'self' copied to local variables
+	VarInfo*			mLocalSelves;			// 'self' copied to local variables
 	UInt32				mNumLocalSelves;
 
 	// dyld stuff
@@ -294,7 +330,7 @@ TextFieldWidths;
 	BOOL		mDemangleCppNames;
 
 	// saved strings
-	char		mArchString[90];	// "ppc", "i386" etc.
+	char		mArchString[MAX_ARCH_STRING_LENGTH];	// "ppc", "i386" etc.
 	char		mLineCommentCString[MAX_COMMENT_LENGTH];
 	char		mLineOperandsCString[MAX_OPERANDS_LENGTH];
 
@@ -443,6 +479,15 @@ TextFieldWidths;
 - (BOOL)findIvar: (objc_ivar*)outIvar
 		 inClass: (objc_class*)inClass
 	  withOffset: (UInt32)inOffset;
+
+// deobfuscation
+- (BOOL)verifyNops: (unsigned char***)outList
+		  numFound: (UInt32*)outFound;
+- (unsigned char**)searchForNopsIn: (unsigned char*)inHaystack
+						  ofLength: (UInt32)inHaystackLength
+						  numFound: (UInt32*)outFound;
+- (NSURL*)fixNops: (NopListInfo*)inList
+		   toPath: (NSString*)inOutputFilePath;
 
 - (void)speedyDelivery;
 - (void)printSymbol: (nlist)inSym;

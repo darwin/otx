@@ -381,9 +381,9 @@
 				return;
 			}
 
-			UInt32*		foundList	= nil;
-			UInt32		foundCount	= 0;
-			NSAlert*	theAlert	= [[NSAlert alloc] init];
+			unsigned char**		foundList	= nil;
+			UInt32				foundCount	= 0;
+			NSAlert*			theAlert	= [[NSAlert alloc] init];
 
 			if ([theProcessor verifyNops: &foundList
 				numFound: &foundCount])
@@ -466,7 +466,7 @@
 			NSURL*	fixedFile	= 
 				[theProcessor fixNops: theNops toPath: mOutputFilePath];
 
-			[theProcessor release];
+//			[theProcessor release];
 
 			if (fixedFile)
 				[self newOFile: fixedFile needsPath: true];

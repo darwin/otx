@@ -44,11 +44,13 @@ methodInfo_compare(
 
 @implementation ExeProcessor
 
-// ExeProcessor is designed as a one-shot class. The AppController class
-// creates a new instance of this class for each processing, and deletes
-// the instance as soon as possible. Member variables may or may not be
+// ExeProcessor is a base class that handles processor-independent issues.
+// PPCProcessor and X86Processor are subclasses that add functionality
+// specific to those CPUs. The AppController class creates a new instance of
+// one of those subclasses class for each processing, and deletes the
+// instance as soon as possible. Member variables may or may not be
 // re-initialized before destruction. Do not reuse a single instance of
-// this class for multiple processings.
+// those subclasses class for multiple processings.
 
 //	initWithURL:progText:progBar:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -68,10 +70,38 @@ methodInfo_compare(
 	mProgBar	= inProg;
 
 	// Load exe into RAM.
-	NSData*	theData	= [NSData dataWithContentsOfURL: mOFile];
+	NSError*	theError	= nil;
+	NSData*		theData		= [NSData dataWithContentsOfURL: mOFile
+		options: 0 error: &theError];
+
+	if (!theData)
+	{
+		NSLog(@"otx: error loading executable from disk: %@",
+			[theError localizedFailureReason]);
+		[self release];
+		return nil;
+	}
 
 	mRAMFileSize	= [theData length];
-	mRAMFile		= malloc(mRAMFileSize);
+
+	if (mRAMFileSize < sizeof(mArchMagic))
+	{
+		printf("otx: truncated executable file\n");
+		[theData release];
+		[self release];
+		return nil;
+	}
+
+	mRAMFile	= malloc(mRAMFileSize);
+
+	if (!mRAMFile)
+	{
+		printf("otx: not enough memory to allocate mRAMFile\n");
+		[theData release];
+		[self release];
+		return nil;
+	}
+
 	[theData getBytes: mRAMFile];
 
 	mArchMagic	= *(UInt32*)mRAMFile;
@@ -186,7 +216,8 @@ methodInfo_compare(
 	char		cmdString[100]	= {0};
 	char*		cmdFormatString	= mExeIsFat ? "otool -arch %s" : "otool";
 
-	snprintf(cmdString, 100, cmdFormatString, mArchString);
+	snprintf(cmdString, MAX_ARCH_STRING_LENGTH + 1,
+		cmdFormatString, mArchString);
 
 	NSString*	verbosePath	= [NSTemporaryDirectory()
 		stringByAppendingPathComponent: @"temp1.otx"];
@@ -1788,7 +1819,7 @@ methodInfo_compare(
 
 //	postProcessCodeLine:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	Subclasses may override
+//	Subclasses may override.
 
 - (void)postProcessCodeLine: (Line**)ioLine
 {}
@@ -1986,42 +2017,42 @@ methodInfo_compare(
 
 //	codeFromLine:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	Subclasses must override
+//	Subclasses must override.
 
 - (void)codeFromLine: (Line*)inLine
 {}
 
 //	checkThunk:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	Subclasses may override
+//	Subclasses may override.
 
 - (void)checkThunk:(Line*)inLine
 {}
 
 //	commentForLine:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	Subclasses may override
+//	Subclasses may override.
 
 - (void)commentForLine: (Line*)inLine
 {}
 
 //	commentForSystemCall
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	Subclasses may override
+//	Subclasses may override.
 
 - (void)commentForSystemCall
 {}
 
 //	chooseLine:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	Subclasses may override
+//	Subclasses may override.
 
 - (void)chooseLine: (Line**)ioLine
 {}
 
 //	updateRegisters:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	Subclasses may override
+//	Subclasses may override.
 
 - (void)updateRegisters: (Line*)inLine
 {}
@@ -2244,7 +2275,7 @@ methodInfo_compare(
 }
 
 #pragma mark -
-//	decodeMethodReturnType:output:
+//	decodeMethodReturnType:output:	FIXME return the char*
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 - (void)decodeMethodReturnType: (const char*)inTypeCode
@@ -3339,6 +3370,40 @@ methodInfo_compare(
 			theLine	= nil;
 		}
 	}
+}
+
+#pragma mark -
+//	verifyNops:numFound:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+//	Subclasses may override.
+
+- (BOOL)verifyNops: (unsigned char***)outList
+		  numFound: (UInt32*)outFound
+{
+	return false;
+}
+
+//	searchForNopsIn:ofLength:numFound:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+//	Subclasses may override.
+//	Return value is a newly allocated list of addresses of 'outFound' length.
+//	Caller owns the list.
+
+- (unsigned char**)searchForNopsIn: (unsigned char*)inHaystack
+						  ofLength: (UInt32)inHaystackLength
+						  numFound: (UInt32*)outFound
+{
+	return nil;
+}
+
+//	fixNops:toPath:
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+//	Subclasses may override.
+
+- (NSURL*)fixNops: (NopListInfo*)inList
+		   toPath: (NSString*)inOutputFilePath
+{
+	return nil;
 }
 
 #pragma mark -

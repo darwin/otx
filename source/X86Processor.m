@@ -289,6 +289,19 @@
 					sscanf(&inLine->info.code[4], "%08x", &localAddy);
 					localAddy	= OSSwapInt32(localAddy);
 				}
+				else
+				if (mRegInfos[REG1(modRM)].isValid	&&
+					mRegInfos[REG1(modRM)].classPtr	&&
+					REG2(modRM) == ESP)
+				{
+					objc_class*	ocClass		= mRegInfos[REG1(modRM)].classPtr;
+					char*		className	= GetPointer((ocClass->name) ?
+						(UInt32)ocClass->name : (UInt32)ocClass->isa, nil);
+
+					if (className)
+						strncpy(mLineCommentCString, className,
+							strlen(className) + 1);
+				}
 			}
 			else
 			{
@@ -1155,6 +1168,14 @@
 	{
 		bzero(&mRegInfos[0], sizeof(RegisterInfo) * 8);
 		mCurrentThunk	= NOREG;
+
+		if (mLocalSelves)
+		{
+			free(mLocalSelves);
+			mLocalSelves	= nil;
+			mNumLocalSelves	= 0;
+		}
+
 		return;
 	}
 
@@ -1222,20 +1243,79 @@
 			break;
 		}
 
-		case 0x8b:	// mov mem to reg
+		case 0x89:	// mov reg to mem
+		{
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+
+			if (!mRegInfos[REG1(modRM)].isValid		||
+				!mRegInfos[REG1(modRM)].classPtr	||
+				REG2(modRM) != EBP)
+				break;
 
 			if (MOD(modRM) == MOD8)
 			{
-				UInt8	offset;
+				SInt8	offset;
+
+				sscanf(&inLine->info.code[4], "%02hhx", &offset);
+
+				if (offset >= 0)
+					break;
+
+				// Copying self from a register to a local var.
+				mNumLocalSelves++;
+
+				if (mLocalSelves)
+					mLocalSelves	= realloc(mLocalSelves,
+						mNumLocalSelves * sizeof(VarInfo));
+				else
+					mLocalSelves	= malloc(sizeof(VarInfo));
+
+				mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
+					{mRegInfos[REG1(modRM)], offset};
+			}
+
+			break;
+		}
+
+		case 0x8b:	// mov mem to reg
+			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+
+			bzero(&mRegInfos[REG1(modRM)], sizeof(RegisterInfo));
+
+			if (MOD(modRM) == MOD8)
+			{
+				SInt8	offset;
 
 				sscanf(&inLine->info.code[4], "%02hhx", &offset);
 
 				if (REG2(modRM) == EBP && offset == 0x8)
-				{
+				{	// Copying self from 1st arg to a register.
 					mRegInfos[REG1(modRM)].classPtr	= mCurrentClass;
 					mRegInfos[REG1(modRM)].catPtr	= mCurrentCat;
 					mRegInfos[REG1(modRM)].isValid	= true;
+				}
+				else
+				{	// Check for copied self pointer.
+					if (mLocalSelves		&&
+						REG2(modRM) == EBP	&&
+						offset < 0)
+					{
+						UInt32	i;
+
+						for (i = 0; i < mNumLocalSelves; i++)
+						{
+							if (mLocalSelves[i].offset != offset)
+								continue;
+
+							// If we're accessing a local var copy of self,
+							// copy that info back to the reg in question.
+							bzero(&mRegInfos[REG1(modRM)], sizeof(RegisterInfo));
+							mRegInfos[REG1(modRM)]	= mLocalSelves[i].regInfo;
+
+							// and split.
+							break;
+						}
+					}
 				}
 			}
 
@@ -1261,6 +1341,14 @@
 			break;
 		}
 
+		case 0xa1:	// movl	moffs32,%eax
+			bzero(&mRegInfos[EAX], sizeof(RegisterInfo));
+
+			sscanf(&inLine->info.code[2], "%08x", &mRegInfos[EAX].intValue);
+			mRegInfos[EAX].intValue	= OSSwapInt32(mRegInfos[EAX].intValue);
+			mRegInfos[EAX].isValid	= true;
+
+			break;
 		case 0xb8:	// movl	imm32,%eax
 		case 0xb9:	// movl	imm32,%ecx
 		case 0xba:	// movl	imm32,%edx
@@ -1356,7 +1444,7 @@
 //	verifyNops:
 // ————————————————————————————————————————————————————————————————————————————
 
-- (BOOL)verifyNops: (UInt32**)outList
+- (BOOL)verifyNops: (unsigned char***)outList
 		  numFound: (UInt32*)outFound
 {
 	if (![self loadMachHeader])
@@ -1368,7 +1456,7 @@
 	[self loadLCommands];
 
 	*outList	= [self searchForNopsIn: (unsigned char*)mTextSect.contents
-		OfLength: mTextSect.size NumFound: outFound];
+		ofLength: mTextSect.size numFound: outFound];
 
 	return *outFound != 0;
 }
@@ -1378,11 +1466,11 @@
 //	Return value is a newly allocated list of addresses of 'outFound' length.
 //	Caller owns the list.
 
-- (UInt32*)searchForNopsIn: (unsigned char*)inHaystack
-				  OfLength: (UInt32)inHaystackLength
-				  NumFound: (UInt32*)outFound;
+- (unsigned char**)searchForNopsIn: (unsigned char*)inHaystack
+				  ofLength: (UInt32)inHaystackLength
+				  numFound: (UInt32*)outFound;
 {
-	UInt32*			foundList			= nil;
+	unsigned char**	foundList			= nil;
 	unsigned char	theSearchString[4]	= {0x00, 0x55, 0x89, 0xe5};
 	unsigned char*	current;
 
@@ -1401,7 +1489,7 @@
 			*(current - 2) == 0xc2)		// ret
 			continue;
 
-		// Match for common malignant occurences
+		// Match for (not) common malignant occurences
 		if (*(current - 7) != 0xe9	&&	// jmpl
 			*(current - 5) != 0xe9	&&	// jmpl
 			*(current - 4) != 0xeb	&&	// jmp
@@ -1419,11 +1507,12 @@
 		(*outFound)++;
 
 		if (foundList)
-			foundList	= realloc(foundList, *outFound * sizeof(UInt32));
+			foundList	= realloc(
+				foundList, *outFound * sizeof(unsigned char*));
 		else
-			foundList	= malloc(sizeof(UInt32));
+			foundList	= malloc(sizeof(unsigned char*));
 
-		foundList[*outFound - 1]	= (UInt32)current;
+		foundList[*outFound - 1]	= current;
 	}
 
 	return foundList;
@@ -1440,7 +1529,11 @@
 
 	for (i = 0; i < inList->count; i++)
 	{
-		item	= (unsigned char*)inList->list[i];
+		item	= inList->list[i];
+
+		// For some unknown reason, the following direct memory accesses make
+		// the app crash when running inside MallocDebug. Until the cause is
+		// found, comment them out when looking for memory leaks.
 
 		// This appears redundant, but to avoid false positives, we must
 		// check jumps first(in decreasing size) and return statements last.
