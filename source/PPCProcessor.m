@@ -83,9 +83,12 @@
 
 	mLineCommentCString[0]	= 0;
 
-// Examine the primary opcode to see if we need to look for comments. The
-// following switch statement checks most of the cases in which otool calls
-// print_immediate(), excluding some uncommon cases.
+if (inLine->info.address == 0x00004cb4)
+{
+	UInt8	theBreak	= 9;
+}
+
+// Examine the primary opcode to see if we need to look for comments.
 
 //	0x07 mulli
 //	0x08 subfic
@@ -160,14 +163,35 @@
 		}
 
 		case 0x13:	// bcctr, bclr, isync
-		{
-			if (SO(theCode) != 528)		// bcctr
+			if (SO(theCode) != 528)	// bcctr
 				break;
 
 			// Print value of ctr, ignoring the low 2 bits.
 			if (mCTR.isValid)
 				snprintf(mLineCommentCString, 10, "0x%x",
 					mCTR.intValue & ~3);
+
+			break;
+
+		case 0x1f:
+		{
+			if (SO(theCode) != 444)	// or
+				break;
+
+			if (RB(theCode) != RT(theCode))	// Copying a register
+				break;
+
+			// Check for self.
+			if (!mRegInfos[RB(theCode)].isValid	||
+				!mRegInfos[RB(theCode)].classPtr)
+				break;
+
+			objc_class*	ocClass		= mRegInfos[RB(theCode)].classPtr;
+			char*		className	= GetPointer((ocClass->name) ?
+				(UInt32)ocClass->name : (UInt32)ocClass->isa, nil);
+
+			if (className)
+				strncpy(mLineCommentCString, className, strlen(className) + 1);
 
 			break;
 		}
@@ -675,16 +699,16 @@
 
 				for (i = 0; i < mNumLocalSelves; i++)
 				{
-					// If we're accessing a local var copy of self...
-					if (mLocalSelves[i].localAddress == UIMM(theCode))
-					{
-						// ... copy that info back to the reg in question
-						bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
-						mRegInfos[RT(theCode)]	= mLocalSelves[i].regInfo;
+					if (mLocalSelves[i].offset != UIMM(theCode))
+						continue;
 
-						// and split.
-						break;
-					}
+					// If we're accessing a local var copy of self,
+					// copy that info back to the reg in question.
+					bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+					mRegInfos[RT(theCode)]	= mLocalSelves[i].regInfo;
+
+					// and split.
+					break;
 				}
 
 				break;
@@ -744,6 +768,27 @@
 			mRegInfos[RT(theCode)].isValid	= true;
 
 			break;
+
+		case 0x10:	// bcl, bcla
+		case 0x13:	// bclrl, bcctrl
+			if (!IS_BRANCH_LINK(theCode))	// fall thru if link
+				break;
+
+		case 0x12:	// b, ba, bl, bla
+		{
+			if (!LK(theCode))	// bl, bla
+				break;
+
+			// At each branch link, we must assume that r3 will be trampled.
+			// In the case that the object is being inited, r3 will be trampled
+			// with the same class, so leave it alone.
+			if (mIsIniting)
+				mIsIniting	= false;
+			else
+				bzero(&mRegInfos[3], sizeof(RegisterInfo));
+
+			break;
+		}
 
 		case 0x15:	// rlwinm
 		{
@@ -893,7 +938,26 @@
 
 		case 0x20:	// lwz
 		case 0x22:	// lbz
-		{
+			if (RA(theCode) == 0)
+			{
+				bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+				mRegInfos[RT(theCode)].intValue	= SIMM(theCode);
+				mRegInfos[RT(theCode)].isValid	= true;
+			}
+			else if (mRegInfos[RA(theCode)].isValid)
+			{
+				mRegInfos[RT(theCode)].intValue	=
+					mRegInfos[RA(theCode)].intValue + SIMM(theCode);
+				mRegInfos[RT(theCode)].isValid	= true;
+			}
+			else
+			{
+				bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+			}
+
+			break;
+
+/*		case 0x22:	// lbz
 			bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
 
 			if (RA(theCode) == 0)
@@ -902,8 +966,7 @@
 				mRegInfos[RT(theCode)].isValid	= true;
 			}
 
-			break;
-		}
+			break;*/
 
 		case 0x24:	// stw
 			if (!mRegInfos[RT(theCode)].isValid		||	// only if it's a class
@@ -916,12 +979,15 @@
 
 			if (mLocalSelves)
 				mLocalSelves	= realloc(mLocalSelves,
-					mNumLocalSelves * sizeof(LocalVarInfo));
+					mNumLocalSelves * sizeof(VarInfo));
 			else
-				mLocalSelves	= malloc(sizeof(LocalVarInfo));
+				mLocalSelves	= malloc(sizeof(VarInfo));
 
-			mLocalSelves[mNumLocalSelves - 1]	= (LocalVarInfo)
+			mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
 				{mRegInfos[RT(theCode)], UIMM(theCode)};
+
+			if (UIMM(theCode) == 0x38)
+				mIsIniting	= true;
 
 			break;
 
