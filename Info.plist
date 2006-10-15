@@ -58,7 +58,5 @@ Copyright © 2006 anon</string>
 	<string>anon</string>
 	<key>SmartCrashReports_EmailTicket</key>
 	<string>SCR-0E249AECC8</string>
-	<key>SmartCrashReports_CommentsTemplate</key>
-	<string>If possible, please provide a download link for the executable that otx was processing.</string>
 </dict>
 </plist>
