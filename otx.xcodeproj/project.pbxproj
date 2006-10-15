@@ -26,6 +26,10 @@
 		E1A152710AA364A600324ED3 /* xmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526A0AA364A600324ED3 /* xmalloc.c */; };
 		E1A152720AA364A600324ED3 /* xstrdup.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526B0AA364A600324ED3 /* xstrdup.c */; };
 		E1D77F2E09B296A300176F18 /* ExeProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */; };
+		E1F81AC50AE1EE02003D8E2C /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */; };
+		E1F81ADD0AE1EEEC003D8E2C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */; };
+		E1F81B090AE1EF07003D8E2C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */; };
+		E1F81B3F0AE1EF2D003D8E2C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81B0A0AE1EF2C003D8E2C /* Security.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildStyle section */
@@ -83,6 +87,11 @@
 		E1A1526B0AA364A600324ED3 /* xstrdup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xstrdup.c; path = "source/binutils-2.17/libiberty/xstrdup.c"; sourceTree = SOURCE_ROOT; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
 		E1D77F2D09B296A300176F18 /* ExeProcessor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ExeProcessor.m; path = source/ExeProcessor.m; sourceTree = "<group>"; };
+		E1F81AC20AE1EDC0003D8E2C /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = "source/Smart Crash Reports/SmartCrashReportsInstall.h"; sourceTree = "<group>"; };
+		E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = "source/Smart Crash Reports/SmartCrashReportsInstall.o"; sourceTree = "<group>"; };
+		E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		E1F81B0A0AE1EF2C003D8E2C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +99,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1F81ADD0AE1EEEC003D8E2C /* Carbon.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				E1F81B090AE1EF07003D8E2C /* CoreFoundation.framework in Frameworks */,
+				E1F81B3F0AE1EF2D003D8E2C /* Security.framework in Frameworks */,
+				E1F81AC50AE1EE02003D8E2C /* SmartCrashReportsInstall.o in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,7 +126,10 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+				E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */,
+				E1F81B0A0AE1EF2C003D8E2C /* Security.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -159,6 +175,7 @@
 				E1167F1C09C8086900E7398D /* StolenDefs.h */,
 				E13539810A68178D00CBDDE5 /* SyscallStrings.h */,
 				E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */,
+				E1F81ABB0AE1ED62003D8E2C /* Smart Crash Reports */,
 				E1A152490AA3639100324ED3 /* binutils */,
 			);
 			name = "Other Sources";
@@ -229,6 +246,15 @@
 				E1A1526B0AA364A600324ED3 /* xstrdup.c */,
 			);
 			name = libiberty;
+			sourceTree = "<group>";
+		};
+		E1F81ABB0AE1ED62003D8E2C /* Smart Crash Reports */ = {
+			isa = PBXGroup;
+			children = (
+				E1F81AC20AE1EDC0003D8E2C /* SmartCrashReportsInstall.h */,
+				E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */,
+			);
+			name = "Smart Crash Reports";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -380,7 +406,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "-falign-loops=16";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lz";
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				USER_HEADER_SEARCH_PATHS = "source/binutils-2.17/include/ source/binutils-2.17/libiberty/";
@@ -404,7 +430,7 @@
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "-falign-loops=16";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lz";
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				USER_HEADER_SEARCH_PATHS = "source/binutils-2.17/include/ source/binutils-2.17/libiberty/";

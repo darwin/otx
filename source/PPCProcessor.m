@@ -30,11 +30,17 @@
 	strncpy(mArchString, "ppc", 4);
 
 	mArchSelector				= CPU_TYPE_POWERPC;
-	mFieldWidths.offset			= 8;
+/*	mFieldWidths.offset			= 8;
 	mFieldWidths.address		= 10;
 	mFieldWidths.instruction	= 10;
 	mFieldWidths.mnemonic		= 9;
-	mFieldWidths.operands		= 17;
+	mFieldWidths.operands		= 17;*/
+
+	mFieldWidths.offset			= 7;
+	mFieldWidths.address		= 10;
+	mFieldWidths.instruction	= 12;
+	mFieldWidths.mnemonic		= 9;
+	mFieldWidths.operands		= 15;
 
 	return self;
 }
@@ -82,11 +88,6 @@
 	UInt32	localAddy;
 
 	mLineCommentCString[0]	= 0;
-
-if (inLine->info.address == 0x00004cb4)
-{
-	UInt8	theBreak	= 9;
-}
 
 // Examine the primary opcode to see if we need to look for comments.
 

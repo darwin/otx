@@ -9,6 +9,8 @@
 #import "X86Processor.h"
 #import "UserDefaultKeys.h"
 
+#import "SmartCrashReportsInstall.h"
+
 @implementation AppController
 
 //	init
@@ -79,6 +81,12 @@
 
 - (void)applicationDidFinishLaunching: (NSNotification*)inNotification
 {
+	// Check for Smart Crash Reports.
+	Boolean authRequired = false;
+
+	if (UnsanitySCR_CanInstall(&authRequired))
+		UnsanitySCR_Install(authRequired ? kUnsanitySCR_GlobalInstall : 0);
+
 	// Setup prefs window
 	UInt32	numViews	= [mPrefsViewPicker segmentCount];
 	UInt32	i;
@@ -393,7 +401,7 @@
 				theInfo->list	= foundList;
 				theInfo->count	= foundCount;
 
-				[theAlert addButtonWithTitle: @"Save"];
+				[theAlert addButtonWithTitle: @"Fix"];
 				[theAlert addButtonWithTitle: @"Cancel"];
 				[theAlert setMessageText: @"Broken nop's found."];
 				[theAlert setInformativeText: [NSString stringWithFormat:
