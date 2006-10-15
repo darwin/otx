@@ -54,5 +54,9 @@ Copyright © 2006 anon</string>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>SmartCrashReports_CompanyName</key>
+	<string>anon</string>
+	<key>SmartCrashReports_EmailTicket</key>
+	<string>SCR-0E249AECC8</string>
 </dict>
 </plist>
