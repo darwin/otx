@@ -394,18 +394,19 @@
 							cf_string_object	theCFString	= 
 								*(cf_string_object*)theSymPtr;
 
-							if (theCFString.oc.length == 0)
+							if (theCFString.oc_string.length == 0)
 							{
 								theSymPtr	= nil;
 								break;
 							}
 
 							if (mSwapped)
-								theCFString.oc.chars	= (char*)
-									OSSwapInt32((UInt32)theCFString.oc.chars);
+								theCFString.oc_string.chars	=
+									(char*)OSSwapInt32(
+									(UInt32)theCFString.oc_string.chars);
 
 							theSymPtr	= GetPointer(
-								(UInt32)theCFString.oc.chars, nil);
+								(UInt32)theCFString.oc_string.chars, nil);
 
 							break;
 						}
@@ -450,18 +451,19 @@
 							cf_string_object	theCFString	= 
 								*(cf_string_object*)theDummyPtr;
 
-							if (theCFString.oc.length == 0)
+							if (theCFString.oc_string.length == 0)
 							{
 								theSymPtr	= nil;
 								break;
 							}
 
 							if (mSwapped)
-								theCFString.oc.chars	= (char*)
-									OSSwapInt32((UInt32)theCFString.oc.chars);
+								theCFString.oc_string.chars	=
+									(char*)OSSwapInt32(
+									(UInt32)theCFString.oc_string.chars);
 
 							theSymPtr	= GetPointer(
-								(UInt32)theCFString.oc.chars, nil);
+								(UInt32)theCFString.oc_string.chars, nil);
 
 							break;
 						}

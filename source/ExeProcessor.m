@@ -3403,7 +3403,7 @@ methodInfo_compare(
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 //	Subclasses may override.
 
-- (NSURL*)fixNops: (NopListInfo*)inList
+- (NSURL*)fixNops: (NopList*)inList
 		   toPath: (NSString*)inOutputFilePath
 {
 	return nil;

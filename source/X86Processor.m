@@ -939,13 +939,13 @@
 					cf_string_object	theCFString	= 
 						*(cf_string_object*)theDummyPtr;
 
-					if (theCFString.oc.length == 0)
+					if (theCFString.oc_string.length == 0)
 					{
 						theSymPtr	= nil;
 						break;
 					}
 
-					theValue	= (UInt32)theCFString.oc.chars;
+					theValue	= (UInt32)theCFString.oc_string.chars;
 
 					if (mSwapped)
 						theValue	= OSSwapInt32(theValue);
@@ -994,13 +994,13 @@
 					cf_string_object	theCFString	= 
 						*(cf_string_object*)theDummyPtr;
 
-					if (theCFString.oc.length == 0)
+					if (theCFString.oc_string.length == 0)
 					{
 						theSymPtr	= nil;
 						break;
 					}
 
-					theValue	= (UInt32)theCFString.oc.chars;
+					theValue	= (UInt32)theCFString.oc_string.chars;
 
 					if (mSwapped)
 						theValue	= OSSwapInt32(theValue);
@@ -1521,7 +1521,7 @@
 //	fixNops:
 // ————————————————————————————————————————————————————————————————————————————
 
-- (NSURL*)fixNops: (NopListInfo*)inList
+- (NSURL*)fixNops: (NopList*)inList
 		   toPath: (NSString*)inOutputFilePath
 {
 	UInt32			i	= 0;

@@ -396,7 +396,7 @@
 			if ([theProcessor verifyNops: &foundList
 				numFound: &foundCount])
 			{
-				NopListInfo*	theInfo	= malloc(sizeof(NopListInfo));
+				NopList*	theInfo	= malloc(sizeof(NopList));
 
 				theInfo->list	= foundList;
 				theInfo->count	= foundCount;
@@ -448,11 +448,11 @@
 		return;
 	}
 
-	NopListInfo*	theNops	= (NopListInfo*)contextInfo;
+	NopList*	theNops	= (NopList*)contextInfo;
 
 	if (!theNops->list)
 	{
-		printf("otx: tried to fix nops with nil NopListInfo.list\n");
+		printf("otx: tried to fix nops with nil NopList.list\n");
 		free(theNops);
 		return;
 	}

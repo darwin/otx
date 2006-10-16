@@ -6,7 +6,37 @@
 #import "Optimizations.h"
 #import "StolenDefs.h"
 
-// MethodInfo
+/*	BlockInfo
+
+	Info pertaining to a logical block of code. 'state' points to a malloc'd
+	MachineState struct defined in the processor-specific headers.
+*/
+typedef struct
+{
+	UInt32	start;
+	UInt32	end;
+	void*	state;
+}
+BlockInfo;
+
+/*	FunctionInfo
+
+	Used for tracking the changing machine states between code blocks
+	in a function. 'blocks' is a dynamically allocated array with
+	'numBlocks' items.
+*/
+typedef struct
+{
+	UInt32		address;
+	UInt32		numBlocks;
+	BlockInfo*	blocks;
+}
+FunctionInfo;
+
+/*	MethodInfo
+
+	Additional info pertaining to an Obj-C method.
+*/
 typedef struct
 {
 	objc_method		m;
@@ -16,7 +46,12 @@ typedef struct
 }
 MethodInfo;
 
-// RegisterInfo
+/*	RegisterInfo
+
+	Processor-specific subclasses maintain arrays of RegisterInfo's to
+	simulate the state of registers in the CPU as each line of code is
+	executed.
+*/
 typedef struct
 {
 	union {
@@ -44,7 +79,6 @@ RegisterInfo;
 	arguments		---							base ptr(EBP) + offset
 
 */
-
 typedef struct
 {
 	RegisterInfo	regInfo;
@@ -52,31 +86,17 @@ typedef struct
 }
 VarInfo;
 
-/*	NopListInfo
+/*	NopList
 
 	Used for deobfuscation. 'list' is a 'count'-sized array of addresses
 	at which an obfuscated sequence of nops was found.
 */
-
-typedef struct NopListInfo
+typedef struct NopList
 {
 	unsigned char**	list;
 	UInt32			count;
 }
-NopListInfo;
-
-// Adapted from http://www.opensource.apple.com/darwinsource/10.4.7.ppc/cctools-590.23.6/libdyld/debug.h
-typedef struct dyld_data_section
-{
-	void*			stub_binding_helper_interface;
-	void*			_dyld_func_lookup;
-	void*			start_debug_thread;
-	mach_port_t		debug_port;
-	thread_port_t	debug_thread;
-	void*			dyld_stub_binding_helper;
-//	unsigned long	core_debug;	// wrong size and ignored anyway
-}
-dyld_data_section;
+NopList;
 
 /*	ThunkInfo
 
@@ -126,7 +146,6 @@ ___i686.get_pc_thunk.bx:
 	this data available during the 2nd pass makes it possible to reference
 	whatever data we need in the calling function.
 */
-
 typedef struct
 {
 	UInt32	address;	// address of the get_pc_thunk routine
@@ -134,13 +153,18 @@ typedef struct
 }
 ThunkInfo;
 
-// LineInfo
+/*	LineInfo
+
+	Used exclusively in the Line struct below, LineInfo encapsulates the
+	details pertaining to a line of disassemled code that are not part
+	of the basic linked list element.
+*/
 typedef struct
 {
 	UInt32	address;
-	char	code[25];		// machine code as ASCII text
-	BOOL	isCode;
-	BOOL	isFunction;
+	char	code[25];	// machine code as ASCII text
+	BOOL	isCode;		// false for function and section names etc.
+	BOOL	isFunction;	// true if this is the first instruction in a function.
 }
 LineInfo;
 
@@ -161,7 +185,6 @@ LineInfo;
 	slight loss of info, in the rare case that otool guesses correctly for
 	any instruction that is not a function call.
 */
-
 struct Line
 {
 	char*			chars;		// C string
@@ -174,11 +197,12 @@ struct Line
 
 #define Line	struct Line
 
-// Number of characters in each field, pre-entabified. Comment field is
-// limited only by MAX_COMMENT_LENGTH. A single space per field is
-// hardcoded in the snprintf format strings to prevent collisions.
+/*	TextFieldWidths
 
-// TextFieldWidths
+	Number of characters in each field, pre-entabified. Comment field is
+	limited only by MAX_COMMENT_LENGTH. A single space per field is
+	hardcoded in the snprintf format strings to prevent collisions.
+*/
 typedef struct
 {
 	UInt16	offset;
@@ -475,7 +499,7 @@ enum {
 - (unsigned char**)searchForNopsIn: (unsigned char*)inHaystack
 						  ofLength: (UInt32)inHaystackLength
 						  numFound: (UInt32*)outFound;
-- (NSURL*)fixNops: (NopListInfo*)inList
+- (NSURL*)fixNops: (NopList*)inList
 		   toPath: (NSString*)inOutputFilePath;
 
 - (void)speedyDelivery;
