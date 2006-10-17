@@ -199,9 +199,7 @@
 				if (mSwapped)
 					theInt32	= OSSwapInt32(theInt32);
 
-				float*	theFloatPtr	= (float*)&theInt32;
-
-				snprintf(mLineCommentCString, 30, "%G", *theFloatPtr);
+				snprintf(mLineCommentCString, 30, "%G", *(float*)&theInt32);
 			}
 
 			break;
@@ -239,9 +237,7 @@
 				if (mSwapped)
 					theInt64	= OSSwapInt64(theInt64);
 
-				double*	theDoublePtr	= (double*)&theInt64;
-
-				snprintf(mLineCommentCString, 30, "%lG", *theDoublePtr);
+				snprintf(mLineCommentCString, 30, "%lG", *(double*)&theInt64);
 			}
 
 			break;
@@ -865,10 +861,8 @@
 						if (mSwapped)
 							theInt32	= OSSwapInt32(theInt32);
 
-						float*	theFloatPtr	= (float*)&theInt32;
-
 						snprintf(mLineCommentCString,
-							30, "%G", *theFloatPtr);
+							30, "%G", *(float*)&theInt32);
 					}
 					else if (LO(opcode) == 0x2)
 					{
@@ -877,10 +871,8 @@
 						if (mSwapped)
 							theInt64	= OSSwapInt64(theInt64);
 
-						double*	theDoublePtr	= (double*)&theInt64;
-
 						snprintf(mLineCommentCString,
-							MAX_COMMENT_LENGTH - 1, "%lG", *theDoublePtr);
+							30, "%lG", *(double*)&theInt64);
 					}
 				}
 			}
