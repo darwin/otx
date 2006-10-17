@@ -1,13 +1,5 @@
 #import "ExeProcessor.h"
 
-// X86MachineState
-typedef struct
-{
-	RegisterInfo	regInfos[8];
-	VarInfo*		localSelves;
-}
-X86MachineState;
-
 // Addressing modes in mod field of mod r/m byte.
 // See table 2.2 in the Pentium manual.
 #define MODimm	0	// [reg]

@@ -6,46 +6,6 @@
 #import "Optimizations.h"
 #import "StolenDefs.h"
 
-/*	BlockInfo
-
-	Info pertaining to a logical block of code. 'state' points to a malloc'd
-	MachineState struct defined in the processor-specific headers.
-*/
-typedef struct
-{
-	UInt32	start;
-	UInt32	end;
-	void*	state;
-}
-BlockInfo;
-
-/*	FunctionInfo
-
-	Used for tracking the changing machine states between code blocks
-	in a function. 'blocks' is a dynamically allocated array with
-	'numBlocks' items.
-*/
-typedef struct
-{
-	UInt32		address;
-	UInt32		numBlocks;
-	BlockInfo*	blocks;
-}
-FunctionInfo;
-
-/*	MethodInfo
-
-	Additional info pertaining to an Obj-C method.
-*/
-typedef struct
-{
-	objc_method		m;
-	objc_class		oc_class;
-	objc_category	oc_cat;
-	BOOL			inst;		// to determine '+' or '-'
-}
-MethodInfo;
-
 /*	RegisterInfo
 
 	Processor-specific subclasses maintain arrays of RegisterInfo's to
@@ -85,6 +45,59 @@ typedef struct
 	SInt32			offset;
 }
 VarInfo;
+
+/*	MachineState
+
+	Saved state of the CPU registers and local copies of self. 'localSelves'
+	is an array with 'numLocalSelves' items. 'regInfos' is an array whose
+	count is defined by the processor-specific subclasses.
+*/
+typedef struct
+{
+	RegisterInfo*	regInfos;
+	VarInfo*		localSelves;
+	UInt32			numLocalSelves;
+}
+MachineState;
+
+/*	BlockInfo
+
+	Info pertaining to a logical block of code. 'state' is the saved
+	MachineState that should be restored upon entering this block.
+*/
+typedef struct
+{
+	UInt32			start;
+	UInt32			end;
+	MachineState	state;
+}
+BlockInfo;
+
+/*	FunctionInfo
+
+	Used for tracking the changing machine states between code blocks in a
+	function. 'blocks' is an array with 'numBlocks' items.
+*/
+typedef struct
+{
+	UInt32		address;
+	BlockInfo*	blocks;
+	UInt32		numBlocks;
+}
+FunctionInfo;
+
+/*	MethodInfo
+
+	Additional info pertaining to an Obj-C method.
+*/
+typedef struct
+{
+	objc_method		m;
+	objc_class		oc_class;
+	objc_category	oc_cat;
+	BOOL			inst;		// to determine '+' or '-'
+}
+MethodInfo;
 
 /*	NopList
 

@@ -1602,6 +1602,14 @@
 	// Write data to a new file.
 	NSData*		newFile	= [NSData dataWithBytesNoCopy: mRAMFile
 		length: mRAMFileSize];
+
+	if (!newFile)
+	{
+		printf("otx: -[X86Processor fixNops]: "
+			"unable to create NSData for new file.\n");
+		return nil;
+	}
+
 	NSError*	error	= nil;
 	NSURL*		newURL	= [[NSURL alloc] initFileURLWithPath:
 		[[[inOutputFilePath stringByDeletingLastPathComponent]
@@ -1614,8 +1622,12 @@
 		error: &error])
 	{
 		if (error)
-			printf("otx: %s\n", [[error localizedDescription]
-				cStringUsingEncoding: NSMacOSRomanStringEncoding]);
+			printf("otx: -[X86Processor fixNops]: "
+				"unable to write to new file. %s\n",
+				CSTRING([error localizedDescription]));
+		else
+			printf("otx: -[X86Processor fixNops]: "
+				"unable to write to new file.\n");
 
 		return nil;
 	}

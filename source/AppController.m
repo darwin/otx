@@ -366,13 +366,15 @@
 		@"lipo '%@' -output '%@' -thin %s", [mOFile path], theThinOutputPath,
 		(mArchSelector == CPU_TYPE_POWERPC) ? "ppc" : "i386"];
 
-	if (system([lipoString
-		cStringUsingEncoding: NSMacOSRomanStringEncoding]) != 0)
+	if (system(CSTRING(lipoString)) != 0)
 		[self doLipoAlertSheet];
 }
 
 //	verifyNops:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+//	Create an instance of xxxProcessor to search for obfuscated nops. If any
+//	are found, let user decide to fix them or not.
+
 - (IBAction)verifyNops: (id)sender
 {
 	switch (mArchSelector)
@@ -385,13 +387,14 @@
 
 			if (!theProcessor)
 			{
-				printf("otx: couldn't create processor\n");
+				printf("otx: -[AppController verifyNops]: "
+					"unable to create processor.\n");
 				return;
 			}
 
-			unsigned char**		foundList	= nil;
-			UInt32				foundCount	= 0;
-			NSAlert*			theAlert	= [[NSAlert alloc] init];
+			unsigned char**	foundList	= nil;
+			UInt32			foundCount	= 0;
+			NSAlert*		theAlert	= [[NSAlert alloc] init];
 
 			if ([theProcessor verifyNops: &foundList
 				numFound: &foundCount])
@@ -434,6 +437,7 @@
 
 //	nopAlertDidEnd:returnCode:contextInfo:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+//	Respond to user's decision to fix obfuscated nops.
 
 - (void)nopAlertDidEnd: (NSAlert*)alert
 			returnCode: (int)returnCode
@@ -467,7 +471,8 @@
 
 			if (!theProcessor)
 			{
-				printf("otx: couldn't create processor\n");
+				printf("otx: -[AppController nopAlertDidEnd]: "
+					"unable to create processor.\n");
 				return;
 			}
 
@@ -534,12 +539,31 @@
 
 	if (!theFileH)
 	{
-		printf("otx: -[AppController syncDescriptionText] "
-			"couldn't open executable file. returning.\n");
+		printf("otx: -[AppController syncDescriptionText]: "
+			"unable to open executable file.\n");
 		return;
 	}
 
-	NSData*	theData	= [theFileH readDataOfLength: sizeof(mArchMagic)];
+	NSData*	theData;
+
+	@try
+	{
+		theData	= [theFileH readDataOfLength: sizeof(mArchMagic)];
+	}
+	@catch(NSException* e)
+	{
+		printf("otx: -[AppController syncDescriptionText]: "
+			"unable to read from executable file. %s\n",
+			CSTRING([e reason]));
+		return;
+	}
+
+	if ([theData length] < sizeof(mArchMagic))
+	{
+		printf("otx: -[AppController syncDescriptionText]: "
+			"truncated executable file.\n");
+		return;
+	}
 
 	mArchMagic		= *(UInt32*)[theData bytes];
 	mFileIsValid	= true;
@@ -688,7 +712,8 @@
 
 			if (!theProcessor)
 			{
-				printf("otx: couldn't create processor\n");
+				printf("otx: -[AppController drawerDidOpen]: "
+					"unable to create processor.\n");
 				return;
 			}
 
@@ -714,13 +739,15 @@
 
 			if (!theProcessor)
 			{
-				printf("otx: couldn't create processor\n");
+				printf("otx: -[AppController drawerDidOpen]: "
+					"unable to create processor.\n");
 				return;
 			}
 
 			if (![theProcessor processExe: mOutputFilePath])
 			{
-				printf("otx: possible permission error\n");
+				printf("otx: -[AppController drawerDidOpen]: "
+					"possible permission error.\n");
 				[self doErrorAlertSheet];
 				[theProcessor release];
 				[mProgDrawer close];
@@ -767,8 +794,7 @@
 	NSString*	otoolString	= [NSString stringWithFormat:
 		@"otool %s '%@' > /dev/null", headerArg, [mOFile path]];
 
-	return system(
-		[otoolString cStringUsingEncoding: NSMacOSRomanStringEncoding]);
+	return system(CSTRING(otoolString));
 }
 
 //	doOtoolAlertSheet

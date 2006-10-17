@@ -76,8 +76,8 @@ methodInfo_compare(
 
 	if (!theData)
 	{
-		NSLog(@"otx: error loading executable from disk: %@",
-			[theError localizedFailureReason]);
+		printf("otx: error loading executable from disk: %s\n",
+			CSTRING([theError localizedFailureReason]));
 		[self release];
 		return nil;
 	}
@@ -239,8 +239,7 @@ methodInfo_compare(
 		@"%s -V -s __TEXT __text '%@' > '%@'",
 		cmdString, oPath, verbosePath];
 
-	if (system([otoolString
-		cStringUsingEncoding: NSMacOSRomanStringEncoding]) != noErr)
+	if (system(CSTRING(otoolString)) != noErr)
 		return;
 
 	[mProgBar animate: self];
@@ -250,7 +249,7 @@ methodInfo_compare(
 	otoolString	= [NSString stringWithFormat:
 		@"%s -v -s __TEXT __text '%@' > '%@'",
 		cmdString, oPath, plainPath];
-	system([otoolString cStringUsingEncoding: NSMacOSRomanStringEncoding]);
+	system(CSTRING(otoolString));
 
 	[mProgBar animate: self];
 	[mProgBar display];
@@ -259,7 +258,7 @@ methodInfo_compare(
 	otoolString	= [NSString stringWithFormat:
 		@"%s -V -s __TEXT __coalesced_text '%@' | sed '1 d' >> '%@'",
 		cmdString, oPath, verbosePath];
-	system([otoolString cStringUsingEncoding: NSMacOSRomanStringEncoding]);
+	system(CSTRING(otoolString));
 
 	[mProgBar animate: self];
 	[mProgBar display];
@@ -268,7 +267,7 @@ methodInfo_compare(
 	otoolString	= [NSString stringWithFormat:
 		@"%s -v -s __TEXT __coalesced_text '%@' | sed '1 d' >> '%@'",
 		cmdString, oPath, plainPath];
-	system([otoolString cStringUsingEncoding: NSMacOSRomanStringEncoding]);
+	system(CSTRING(otoolString));
 
 	[mProgBar animate: self];
 	[mProgBar display];
@@ -277,7 +276,7 @@ methodInfo_compare(
 	otoolString	= [NSString stringWithFormat:
 		@"%s -V -s __TEXT __textcoal_nt '%@' | sed '1 d' >> '%@'",
 		cmdString, oPath, verbosePath];
-	system([otoolString cStringUsingEncoding: NSMacOSRomanStringEncoding]);
+	system(CSTRING(otoolString));
 
 	[mProgBar animate: self];
 	[mProgBar display];
@@ -286,7 +285,7 @@ methodInfo_compare(
 	otoolString	= [NSString stringWithFormat:
 		@"%s -v -s __TEXT __textcoal_nt '%@' | sed '1 d' >> '%@'",
 		cmdString, oPath, plainPath];
-	system([otoolString cStringUsingEncoding: NSMacOSRomanStringEncoding]);
+	system(CSTRING(otoolString));
 
 	*outVerbosePath	= [NSURL fileURLWithPath: verbosePath];
 	*outPlainPath	= [NSURL fileURLWithPath: plainPath];
@@ -1105,10 +1104,8 @@ methodInfo_compare(
 {
 	// Load otool's outputs into parallel doubly-linked lists of C strings.
 	// List heads have nil 'prev'. List tails have nil 'next'.
-	const char*	verbosePath	= [[inVerboseFile path]
-		cStringUsingEncoding: NSMacOSRomanStringEncoding];
-	const char*	plainPath	= [[inPlainFile path]
-		cStringUsingEncoding: NSMacOSRomanStringEncoding];
+	const char*	verbosePath	= CSTRING([inVerboseFile path]);
+	const char*	plainPath	= CSTRING([inPlainFile path]);
 
 	FILE*	verboseFile	= fopen(verbosePath, "r");
 
@@ -1830,8 +1827,7 @@ methodInfo_compare(
 
 - (BOOL)printDataSections
 {
-	const char*	outPath		= [mOutputFilePath
-		cStringUsingEncoding: NSMacOSRomanStringEncoding];
+	const char*	outPath		= CSTRING(mOutputFilePath);
 	FILE*		outFile		= fopen(outPath, "a");
 
 	if (!outFile)
@@ -2066,8 +2062,7 @@ methodInfo_compare(
 	char		finalLine[MAX_MD5_LINE];
 	NSString*	md5CommandString	= [NSString stringWithFormat:
 		@"md5 -q '%@'", [mOFile path]];
-	FILE*		md5Pipe				= popen([md5CommandString
-		cStringUsingEncoding: NSMacOSRomanStringEncoding], "r");
+	FILE*		md5Pipe				= popen(CSTRING(md5CommandString), "r");
 
 	if (!md5Pipe)
 	{
@@ -3312,8 +3307,7 @@ methodInfo_compare(
 
 - (BOOL)printLinesFromList: (Line*)listHead
 {
-	const char*	outPath	= [mOutputFilePath
-		cStringUsingEncoding: NSMacOSRomanStringEncoding];
+	const char*	outPath	= CSTRING(mOutputFilePath);
 	Line*	theLine		= listHead;
 	FILE*	outFile		= fopen(outPath, "w");
 

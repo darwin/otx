@@ -1,15 +1,5 @@
 #import "ExeProcessor.h"
 
-// PPCMachineState
-typedef struct
-{
-	RegisterInfo	regInfos[32];
-	RegisterInfo	lr;
-	RegisterInfo	ctr;
-	VarInfo*		localSelves;
-}
-PPCMachineState;
-
 // from cctools-590/otool/ppc-disasm.c
 // The various macros defined in that file get their names from the field
 // naming conventions given in the PowerPC Programming Environments Manual
@@ -40,8 +30,13 @@ PPCMachineState;
 #define LK(x)	((x) & 0x1)					// bit 0
 #define BD(x)	((x) & 0xfffc)				// bits 2 - 15
 
-#define LR		8
-#define CTR		9
+// SPR values
+#define LR			8
+#define CTR			9
+
+// indices into MachineState.regInfos array
+#define LRIndex		32
+#define CTRIndex	33
 
 #define IS_BRANCH_LINK(i)							\
 	((PO(i) == 0x10 && (i & 0x1))	||				\
