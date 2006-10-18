@@ -302,12 +302,17 @@ enum {
 	TextFieldWidths		mFieldWidths;
 
 	// base pointers for indirect addressing
-	SInt8				mCurrentThunk;			// x86 register identifier
-	UInt32				mCurrentFuncPtr;		// PPC function address
+	SInt8				mCurrentThunk;		// x86 register identifier
+	UInt32				mCurrentFuncPtr;	// PPC function address
 
 	// symbols that point to functions
 	nlist**				mFuncSyms;
 	UInt32				mNumFuncSyms;
+
+	// FunctionInfo array
+	FunctionInfo*		mFuncInfos;
+	UInt32				mNumFuncInfos;
+	SInt64				mCurrentFuncInfoIndex;
 
 	// Mach-O sections
 	section_info		mCStringSect;
@@ -400,6 +405,7 @@ enum {
 - (id)initWithURL: (NSURL*)inURL
 		 progText: (NSTextField*)inText
 		  progBar: (NSProgressIndicator*)inProg;
+- (void)deleteFuncInfos;
 
 // processors
 - (BOOL)processExe: (NSString*)inOutputFilePath;

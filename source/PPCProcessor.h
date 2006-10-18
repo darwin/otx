@@ -42,6 +42,9 @@
 #define LRIndex		32
 #define CTRIndex	33
 
+#define IS_BLOCK_BRANCH(i)							\
+	((PO(i) == 0x10 || PO(i) == 0x12) && (!AA(i) && !LK(i)))
+
 #define IS_BRANCH_LINK(i)							\
 	((PO(i) == 0x10 && (i & 0x1))	||				\
 	 (PO(i) == 0x13 && (i & 0x7ff) == 0x421))

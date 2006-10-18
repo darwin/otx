@@ -73,6 +73,8 @@ methodInfo_compare(
 	mProgText	= inText;
 	mProgBar	= inProg;
 
+	mCurrentFuncInfoIndex	= -1;
+
 	// Load exe into RAM.
 	NSError*	theError	= nil;
 	NSData*		theData		= [NSData dataWithContentsOfURL: mOFile
@@ -139,10 +141,51 @@ methodInfo_compare(
 	if (mThunks)
 		free(mThunks);
 
+//	if (mFuncInfos)
+//		free(mFuncInfos);
+	[self deleteFuncInfos];
+
 	[self deleteLinesFromList: mPlainLineListHead];
 	[self deleteLinesFromList: mVerboseLineListHead];
 
 	[super dealloc];
+}
+
+//	deleteFuncInfos
+// ----------------------------------------------------------------------------
+
+- (void)deleteFuncInfos
+{
+	if (!mFuncInfos)
+		return;
+
+	UInt32			i;
+	UInt32			j;
+	FunctionInfo	funcInfo;
+	BlockInfo		blockInfo;
+
+	for (i = 0; i < mNumFuncInfos; i++)
+	{
+		funcInfo	= mFuncInfos[i];
+
+		if (funcInfo.blocks)
+		{
+			for (j = 0; j < funcInfo.numBlocks; j++)
+			{
+				blockInfo	= funcInfo.blocks[j];
+
+				if (blockInfo.state.regInfos)
+					free(blockInfo.state.regInfos);
+
+				if (blockInfo.state.localSelves)
+					free(blockInfo.state.localSelves);
+			}
+
+			free(funcInfo.blocks);
+		}
+	}
+
+	free(mFuncInfos);
 }
 
 //	processExe:arch:
@@ -1302,6 +1345,20 @@ methodInfo_compare(
 			theLine->alt->info.isFunction	= LineIsFunction(theLine);
 
 			CheckThunk(theLine);
+
+			if (theLine->info.isFunction)
+			{
+				mNumFuncInfos++;
+
+				if (mFuncInfos)
+					mFuncInfos	= realloc(mFuncInfos,
+						sizeof(FunctionInfo) * mNumFuncInfos);
+				else
+					mFuncInfos	= malloc(sizeof(FunctionInfo));
+
+				mFuncInfos[mNumFuncInfos - 1]	= (FunctionInfo)
+					{theLine->info.address, nil, 0};
+			}
 		}
 		else	// not code...
 		{
@@ -1791,10 +1848,10 @@ methodInfo_compare(
 		snprintf(&finalFormatCString[formatMarker],
 			30, "%s", "%s %s%s %s%s\n");
 
-	char	theFinalCString[MAX_LINE_LENGTH]	= {0};
+	char	theFinalCString[MAX_LINE_LENGTH]	/*= {0}*/;
 
 	if (mShowLocalOffsets)
-		snprintf(theFinalCString, MAX_LINE_LENGTH,
+		snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
 			finalFormatCString, localOffsetString,
 			addrSpaces, theAddressCString,
 			instSpaces, theCodeCString,
@@ -1802,7 +1859,7 @@ methodInfo_compare(
 			opSpaces, mLineOperandsCString,
 			commentSpaces, theCommentCString);
 	else
-		snprintf(theFinalCString, MAX_LINE_LENGTH,
+		snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
 			finalFormatCString, theAddressCString,
 			instSpaces, theCodeCString,
 			mnemSpaces, theMnemonicCString,
