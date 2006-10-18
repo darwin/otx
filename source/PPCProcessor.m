@@ -21,7 +21,7 @@
 @implementation PPCProcessor
 
 //	initWithURL:progText:progBar:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (id)initWithURL: (NSURL*)inURL
 		 progText: (NSTextField*)inText
@@ -44,7 +44,7 @@
 }
 
 //	loadDyldDataSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadDyldDataSection: (section*)inSect
 {
@@ -57,7 +57,7 @@
 }
 
 //	codeFromLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)codeFromLine: (Line*)inLine
 {
@@ -71,7 +71,7 @@
 }
 
 //	commentForLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)commentForLine: (Line*)inLine;
 {
@@ -533,7 +533,7 @@
 }
 
 //	commentForSystemCall
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	System call number is stored in r0, possible values defined in
 //	<sys/syscall.h>. Call numbers are indices into a lookup table of handler
 //	routines. Args being passed to the looked-up handler start at r3 or r4,
@@ -580,7 +580,7 @@
 }
 
 //	chooseLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)chooseLine: (Line**)ioLine
 {
@@ -606,7 +606,7 @@
 }
 
 //	updateRegisters:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Keep our local copy of the GPRs in sync as much as possible with the
 //	values that the exe will use at runtime. Assign classPtr and catPtr fields
 //	in a register's info if its new value points to a class or category.
@@ -1013,7 +1013,7 @@
 }
 
 //	lineIsFunction:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)lineIsFunction: (Line*)inLine
 {

@@ -19,7 +19,7 @@
 #import "ExeProcessor.h"
 #import "UserDefaultKeys.h"
 
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 // Comparison functions for qsort.
 
 static int
@@ -57,7 +57,7 @@ methodInfo_compare(
 // those subclasses class for multiple processings.
 
 //	initWithURL:progText:progBar:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (id)initWithURL: (NSURL*)inURL
 		 progText: (NSTextField*)inText
@@ -117,7 +117,7 @@ methodInfo_compare(
 }
 
 //	dealloc
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)dealloc
 {
@@ -146,7 +146,7 @@ methodInfo_compare(
 }
 
 //	processExe:arch:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)processExe: (NSString*)inOutputFilePath
 {
@@ -209,7 +209,7 @@ methodInfo_compare(
 }
 
 //	createVerboseFile:andPlainFile:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Call otool on the exe too many times.
 
 - (void)createVerboseFile: (NSURL**)outVerbosePath
@@ -302,7 +302,7 @@ methodInfo_compare(
 // stolen from cctools.
 
 //	loadMachHeader
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Assuming mRAMFile points to RAM that contains the contents of the exe, we
 //	can set our mach_header* to point to the appropriate mach header, whether
 //	the exe is unibin or not.
@@ -371,7 +371,7 @@ methodInfo_compare(
 }
 
 //	loadLCommands
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	From the mach_header ptr, loop thru the load commands for each segment.
 
 - (void)loadLCommands
@@ -460,7 +460,7 @@ methodInfo_compare(
 }
 
 //	loadSegment:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Given a pointer to a segment, loop thru its sections and save whatever
 //	we'll need later.
 
@@ -536,7 +536,7 @@ methodInfo_compare(
 }
 
 //	loadSymbols:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	This refers to the symbol table contained in the SEG_LINKEDIT segment.
 //	See loadObjcSymTabFromModule for ObjC symbols.
 
@@ -586,7 +586,7 @@ methodInfo_compare(
 }
 
 //	loadDySymbols:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadDySymbols: (dysymtab_command*)inSymPtr
 {
@@ -608,7 +608,7 @@ methodInfo_compare(
 }
 
 //	loadObjcSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadObjcSection: (section*)inSect
 {
@@ -638,7 +638,7 @@ methodInfo_compare(
 }
 
 //	loadObjcModules
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadObjcModules
 {
@@ -877,7 +877,7 @@ methodInfo_compare(
 }
 
 //	loadCStringSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadCStringSection: (section*)inSect
 {
@@ -887,7 +887,7 @@ methodInfo_compare(
 }
 
 //	loadNSStringSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadNSStringSection: (section*)inSect
 {
@@ -897,7 +897,7 @@ methodInfo_compare(
 }
 
 //	loadClassSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadClassSection: (section*)inSect
 {
@@ -907,7 +907,7 @@ methodInfo_compare(
 }
 
 //	loadMetaClassSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadMetaClassSection: (section*)inSect
 {
@@ -917,7 +917,7 @@ methodInfo_compare(
 }
 
 //	loadIVarSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadIVarSection: (section*)inSect
 {
@@ -927,7 +927,7 @@ methodInfo_compare(
 }
 
 //	loadObjcModSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadObjcModSection: (section*)inSect
 {
@@ -937,7 +937,7 @@ methodInfo_compare(
 }
 
 //	loadObjcSymSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadObjcSymSection: (section*)inSect
 {
@@ -947,7 +947,7 @@ methodInfo_compare(
 }
 
 //	loadLit4Section:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadLit4Section: (section*)inSect
 {
@@ -957,7 +957,7 @@ methodInfo_compare(
 }
 
 //	loadLit8Section:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadLit8Section: (section*)inSect
 {
@@ -967,7 +967,7 @@ methodInfo_compare(
 }
 
 //	loadTextSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadTextSection: (section*)inSect
 {
@@ -979,7 +979,7 @@ methodInfo_compare(
 }
 
 //	loadConstTextSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadConstTextSection: (section*)inSect
 {
@@ -989,7 +989,7 @@ methodInfo_compare(
 }
 
 //	loadCoalTextSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadCoalTextSection: (section*)inSect
 {
@@ -999,7 +999,7 @@ methodInfo_compare(
 }
 
 //	loadCoalTextNTSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadCoalTextNTSection: (section*)inSect
 {
@@ -1009,7 +1009,7 @@ methodInfo_compare(
 }
 
 //	loadDataSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadDataSection: (section*)inSect
 {
@@ -1019,7 +1019,7 @@ methodInfo_compare(
 }
 
 //	loadCoalDataSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadCoalDataSection: (section*)inSect
 {
@@ -1029,7 +1029,7 @@ methodInfo_compare(
 }
 
 //	loadCoalDataNTSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadCoalDataNTSection: (section*)inSect
 {
@@ -1039,7 +1039,7 @@ methodInfo_compare(
 }
 
 //	loadConstDataSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadConstDataSection: (section*)inSect
 {
@@ -1049,7 +1049,7 @@ methodInfo_compare(
 }
 
 //	loadDyldDataSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadDyldDataSection: (section*)inSect
 {
@@ -1070,7 +1070,7 @@ methodInfo_compare(
 }
 
 //	loadCFStringSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadCFStringSection: (section*)inSect
 {
@@ -1080,7 +1080,7 @@ methodInfo_compare(
 }
 
 //	loadNonLazySymbolSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadNonLazySymbolSection: (section*)inSect
 {
@@ -1090,7 +1090,7 @@ methodInfo_compare(
 }
 
 //	loadImpPtrSection:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)loadImpPtrSection: (section*)inSect
 {
@@ -1101,7 +1101,7 @@ methodInfo_compare(
 
 #pragma mark -
 //	processVerboseFile:andPlainFile:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)processVerboseFile: (NSURL*)inVerboseFile
 			  andPlainFile: (NSURL*)inPlainFile
@@ -1269,7 +1269,7 @@ methodInfo_compare(
 }
 
 //	gatherLineInfos
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	To make life easier as we make changes to the lines, whatever info we need
 //	is harvested early here.
 
@@ -1321,7 +1321,7 @@ methodInfo_compare(
 }
 
 //	processLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)processLine: (Line*)ioLine;
 {
@@ -1390,7 +1390,7 @@ methodInfo_compare(
 }
 
 //	processCodeLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)processCodeLine: (Line**)ioLine;
 {
@@ -1819,14 +1819,14 @@ methodInfo_compare(
 }
 
 //	postProcessCodeLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses may override.
 
 - (void)postProcessCodeLine: (Line**)ioLine
 {}
 
 //	printDataSections
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Append data sections to output file.
 
 - (BOOL)printDataSections
@@ -1883,7 +1883,7 @@ methodInfo_compare(
 }
 
 //	printDataSection:toFile:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)printDataSection: (section_info*)inSect
 				  toFile: (FILE*)outFile;
@@ -1970,7 +1970,7 @@ methodInfo_compare(
 }
 
 //	lineIsCode:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Line is code if first 8 chars are hex numbers and 9th is tab.
 
 - (BOOL)lineIsCode: (const char*)inLine
@@ -1991,7 +1991,7 @@ methodInfo_compare(
 }
 
 //	addressFromLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (UInt32)addressFromLine: (const char*)inLine
 {
@@ -2007,7 +2007,7 @@ methodInfo_compare(
 }
 
 //	lineIsFunction:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses may override
 
 - (BOOL)lineIsFunction: (Line*)inLine
@@ -2016,49 +2016,49 @@ methodInfo_compare(
 }
 
 //	codeFromLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses must override.
 
 - (void)codeFromLine: (Line*)inLine
 {}
 
 //	checkThunk:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses may override.
 
 - (void)checkThunk:(Line*)inLine
 {}
 
 //	commentForLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses may override.
 
 - (void)commentForLine: (Line*)inLine
 {}
 
 //	commentForSystemCall
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses may override.
 
 - (void)commentForSystemCall
 {}
 
 //	chooseLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses may override.
 
 - (void)chooseLine: (Line**)ioLine
 {}
 
 //	updateRegisters:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses may override.
 
 - (void)updateRegisters: (Line*)inLine
 {}
 
 //	insertMD5
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)insertMD5
 {
@@ -2102,7 +2102,7 @@ methodInfo_compare(
 }
 
 //	prepareNameForDemangling:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	For cplus_demangle(), we must remove any extra leading underscores and
 //	any trailing colons. Caller owns the returned string.
 
@@ -2139,7 +2139,7 @@ methodInfo_compare(
 
 #pragma mark -
 //	objcClassPtrFromMethod:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Given a method imp address, return the class to which it belongs. This func
 //	is called each time a new function is detected. If that function is known
 //	to be an Obj-C method, it's class is returned. Otherwise this returns nil.
@@ -2157,7 +2157,7 @@ methodInfo_compare(
 }
 
 //	objcCatPtrFromMethod:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Same as above, for categories.
 
 - (objc_category*)objcCatPtrFromMethod: (UInt32)inAddress;
@@ -2173,7 +2173,7 @@ methodInfo_compare(
 }
 
 //	objcMethodFromAddress:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Given a method imp address, return the MethodInfo for it.
 
 - (MethodInfo*)objcMethodFromAddress: (UInt32)inAddress;
@@ -2191,7 +2191,7 @@ methodInfo_compare(
 }
 
 //	objcClass:fromName:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Given a class name, return the class itself. This func is used to tie
 //	categories to classes. We have 2 pointers to the same name, so pointer
 //	equality is sufficient.
@@ -2217,7 +2217,7 @@ methodInfo_compare(
 }
 
 //	objcDescriptionFromObject:type:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Given an Obj-C object, return it's description.
 
 - (char*)objcDescriptionFromObject: (const char*)inObject
@@ -2275,7 +2275,7 @@ methodInfo_compare(
 
 #pragma mark -
 //	decodeMethodReturnType:output:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)decodeMethodReturnType: (const char*)inTypeCode
 						output: (char*)outCString
@@ -2315,7 +2315,7 @@ methodInfo_compare(
 }
 
 //	getDescription:forType:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	"filer types" defined in objc/objc-class.h, NSCoder.h, and
 // http://developer.apple.com/documentation/DeveloperTools/gcc-3.3/gcc/Type-encoding.html
 
@@ -2493,7 +2493,7 @@ methodInfo_compare(
 
 #pragma mark -
 //	entabLine:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	A cheap and fast way to entab a line, assuming it contains no tabs already.
 //	If tabs get added in the future, this WILL break. Single spaces are not
 //	replaced with tabs, even when possible, since it would save no additional
@@ -2573,7 +2573,7 @@ methodInfo_compare(
 #pragma mark -
 #pragma mark Binary searches
 //	findSymbolByAddress:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)findSymbolByAddress: (UInt32)inAddress
 {
@@ -2601,7 +2601,7 @@ methodInfo_compare(
 }
 
 //	findClassMethod:byAddress:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)findClassMethod: (MethodInfo**)outMI
 			  byAddress: (UInt32)inAddress;
@@ -2640,7 +2640,7 @@ methodInfo_compare(
 }
 
 //	findCatMethod:byAddress:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)findCatMethod: (MethodInfo**)outMI
 			byAddress: (UInt32)inAddress;
@@ -2679,7 +2679,7 @@ methodInfo_compare(
 }
 
 //	findIvar:inClass:withOffset:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)findIvar: (objc_ivar*)outIvar
 		 inClass: (objc_class*)inClass
@@ -2771,7 +2771,7 @@ methodInfo_compare(
 // variables.
 
 //	getObjcSymtab:andDefs:fromModule: (was get_symtab)
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Removed the truncation flag. 'left' is no longer used by the caller.
 
 - (BOOL)getObjcSymtab: (objc_symtab*)outSymTab
@@ -2819,7 +2819,7 @@ methodInfo_compare(
 }
 
 //	getObjcClass:fromDef: (was get_objc_class)
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)getObjcClass: (objc_class*)outClass
 			 fromDef: (UInt32)inDef;
@@ -2845,7 +2845,7 @@ methodInfo_compare(
 }
 
 //	getObjcCategory:fromDef: (was get_objc_category)
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)getObjcCategory: (objc_category*)outCat
 				fromDef: (UInt32)inDef;
@@ -2871,7 +2871,7 @@ methodInfo_compare(
 }
 
 //	getObjcMetaClass:fromClass:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)getObjcMetaClass: (objc_class*)outClass
 			   fromClass: (objc_class*)inClass;
@@ -2892,7 +2892,7 @@ methodInfo_compare(
 }
 
 //	getObjcMethodList:andMethods:fromAddress: (was get_method_list)
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Removed the truncation flag. 'left' is no longer used by the caller.
 
 - (BOOL)getObjcMethodList: (objc_method_list*)outList
@@ -2942,7 +2942,7 @@ methodInfo_compare(
 }
 
 //	getPointer:outType:	(was get_pointer)
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Convert a relative ptr to an absolute ptr. Return which data type is being
 //	referenced in outType.
 
@@ -3237,7 +3237,7 @@ methodInfo_compare(
 // vanilla textbook funcs for maintaining the list.
 
 //	insertLine:before:inList:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)insertLine: (Line*)inLine
 			before: (Line*)nextLine
@@ -3258,7 +3258,7 @@ methodInfo_compare(
 }
 
 //	insertLine:after:inList:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)insertLine: (Line*)inLine
 			 after: (Line*)prevLine
@@ -3279,7 +3279,7 @@ methodInfo_compare(
 }
 
 //	replaceLine:withLine:inList:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)replaceLine: (Line*)inLine
 		   withLine: (Line*)newLine
@@ -3307,7 +3307,7 @@ methodInfo_compare(
 }
 
 //	printLinesFromList:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (BOOL)printLinesFromList: (Line*)listHead
 {
@@ -3348,7 +3348,7 @@ methodInfo_compare(
 }
 
 //	deleteLinesFromList:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)deleteLinesFromList: (Line*)listHead;
 {
@@ -3375,7 +3375,7 @@ methodInfo_compare(
 
 #pragma mark -
 //	verifyNops:numFound:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses may override.
 
 - (BOOL)verifyNops: (unsigned char***)outList
@@ -3385,7 +3385,7 @@ methodInfo_compare(
 }
 
 //	searchForNopsIn:ofLength:numFound:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses may override.
 //	Return value is a newly allocated list of addresses of 'outFound' length.
 //	Caller owns the list.
@@ -3398,7 +3398,7 @@ methodInfo_compare(
 }
 
 //	fixNops:toPath:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Subclasses may override.
 
 - (NSURL*)fixNops: (NopList*)inList
@@ -3409,7 +3409,7 @@ methodInfo_compare(
 
 #pragma mark -
 //	speedyDelivery
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 
 - (void)speedyDelivery
 {
@@ -3472,7 +3472,7 @@ methodInfo_compare(
 }
 
 //	printSymbol:
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ----------------------------------------------------------------------------
 //	Originally used for symbol debugging, may come in handy.
 
 - (void)printSymbol: (nlist)inSym

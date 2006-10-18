@@ -41,7 +41,6 @@ RegisterInfo;
 					--------------------------------------------------
 	local vars		stack ptr(r1) + offset		base ptr(EBP) - offset
 	arguments		---							base ptr(EBP) + offset
-
 */
 typedef struct
 {

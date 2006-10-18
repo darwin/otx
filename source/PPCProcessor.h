@@ -74,7 +74,7 @@
 #define kDyldName_LaSymBindingEntry		"dyld_lazy_symbol_binding_entry_point"
 #define kDyldName_FuncLookupPointer		"dyld_func_lookup_pointer"
 
-// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+// ============================================================================
 
 @interface PPCProcessor : ExeProcessor
 {
