@@ -1,3 +1,7 @@
+/*
+	ExeProcessor.h
+*/
+
 #import <Cocoa/Cocoa.h>
 #import <Kernel/mach/machine.h>
 #import <objc/objc-class.h>

@@ -1,3 +1,7 @@
+/*
+	CDropBox.m
+*/
+
 #import "CDropBox.h"
 
 @implementation CDropBox

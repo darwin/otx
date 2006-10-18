@@ -1,3 +1,7 @@
+/*
+	LangDefs.h
+*/
+
 // I refuse to type 'struct' 1,000 times.
 #define fat_header			struct fat_header
 #define fat_arch			struct fat_arch

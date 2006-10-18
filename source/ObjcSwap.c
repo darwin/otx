@@ -1,9 +1,16 @@
-// Functions adapted from cctools-590/otool/print_objc.c
+/*
+	ObjcSwap.c
+
+	Functions adapted from cctools-590/otool/print_objc.c
+*/
 
 #import <libkern/OSByteOrder.h>
 #import <objc/objc-runtime.h>
 
 #import "LangDefs.h"
+
+//	swap_objc_module
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 void
 swap_objc_module(
@@ -15,6 +22,9 @@ swap_objc_module(
 	module->symtab	= (Symtab)OSSwapInt32((int32_t)module->symtab);
 }
 
+//	swap_objc_symtab
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
 void
 swap_objc_symtab(
 	objc_symtab*	symtab)
@@ -24,6 +34,9 @@ swap_objc_symtab(
 	symtab->cls_def_cnt	= OSSwapInt16(symtab->cls_def_cnt);
 	symtab->cat_def_cnt	= OSSwapInt16(symtab->cat_def_cnt);
 }
+
+//	swap_objc_class
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 void
 swap_objc_class(
@@ -43,6 +56,9 @@ swap_objc_class(
 		(objc_protocol_list*)OSSwapInt32((long)oc->protocols);
 }
 
+//	swap_objc_ivar
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
 void
 swap_objc_ivar(
 	objc_ivar*	oi)
@@ -51,6 +67,9 @@ swap_objc_ivar(
 	oi->ivar_type	= (char*)OSSwapInt32((long)oi->ivar_type);
 	oi->ivar_offset	= OSSwapInt32(oi->ivar_offset);
 }
+
+//	swap_objc_category
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 void
 swap_objc_category(
@@ -66,6 +85,9 @@ swap_objc_category(
 		(objc_protocol_list*)OSSwapInt32((long)oc->protocols);
 }
 
+//	swap_objc_method_list
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
+
 void
 swap_objc_method_list(
 	objc_method_list*	ml)
@@ -73,6 +95,9 @@ swap_objc_method_list(
 	ml->obsolete		= (objc_method_list*)OSSwapInt32((long)ml->obsolete);
 	ml->method_count	= OSSwapInt32(ml->method_count);
 }
+
+//	swap_objc_method
+// ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 void
 swap_objc_method(

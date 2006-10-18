@@ -1,5 +1,9 @@
-// This file relies upon, and steals code from, the cctools source code
-// available from: http://www.opensource.apple.com/darwinsource/
+/*
+	ExeProcessor.m
+
+	This file relies upon, and steals code from, the cctools source code
+	available from: http://www.opensource.apple.com/darwinsource/
+*/
 
 #import <libkern/OSByteOrder.h>
 #import <mach-o/fat.h>

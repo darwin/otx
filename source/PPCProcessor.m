@@ -1,3 +1,9 @@
+/*
+	PPCProcessor.m
+
+	A subclass of ExeProcessor that handles PPC-specific issues.
+*/
+
 #import <libkern/OSByteOrder.h>
 #import <mach-o/loader.h>
 #import <mach-o/nlist.h>
@@ -13,8 +19,6 @@
 // ============================================================================
 
 @implementation PPCProcessor
-
-// A subclass of ExeProcessor that handles PPC-specific issues.
 
 //	initWithURL:progText:progBar:
 // ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ

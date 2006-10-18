@@ -1,3 +1,7 @@
+/*
+	AppController.m
+*/
+
 #import <mach-o/fat.h>
 #import <sys/types.h>
 #import <sys/ptrace.h>

@@ -1,3 +1,7 @@
+/*
+	AppController.h
+*/
+
 #import <Cocoa/Cocoa.h>
 #import <Kernel/mach-o/loader.h>
 

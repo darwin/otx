@@ -1,3 +1,7 @@
+/*
+	main.m
+*/
+
 #import <AppKit/NSApplication.h>
 #import <Cocoa/Cocoa.h>
 

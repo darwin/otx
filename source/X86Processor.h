@@ -1,3 +1,7 @@
+/*
+	X86Processor.h
+*/
+
 #import "ExeProcessor.h"
 
 // Addressing modes in mod field of mod r/m byte.

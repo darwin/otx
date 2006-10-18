@@ -1,3 +1,7 @@
+/*
+	PPCProcessor.h
+*/
+
 #import "ExeProcessor.h"
 
 // from cctools-590/otool/ppc-disasm.c

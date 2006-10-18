@@ -1,4 +1,9 @@
-// Adapted from <sys/syscall.h>
+/*
+	SyscallStrings.h
+
+	Adapted from <sys/syscall.h>.
+*/
+
 // Using 0 instead of "" for empty strings results in a nil pointer
 // instead of a pointer to zeroes.
 

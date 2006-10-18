@@ -1,3 +1,7 @@
+/*
+	CDropBox.h
+*/
+
 #import "AppController.h"
 
 #define kBorderWidth	3.0

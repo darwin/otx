@@ -1,4 +1,11 @@
-// Brad Cox is too cool for speed. We'll let Dennis Ritchie take over.
+/*
+	Optimizations.h
+
+	Definitions of function types and selectors for use with
+	getMethodForSelector: in ExeProcessor.h.
+*/
+
+// Function types
 #define GetDescriptionFuncType				(BOOL			(*)(id, SEL, char*, const char*))
 #define LineIsCodeFuncType					(BOOL			(*)(id, SEL, const char*))
 #define LineIsFunctionFuncType				(BOOL			(*)(id, SEL, Line*))
@@ -28,6 +35,7 @@
 #define FindCatMethodByAddressFuncType		(BOOL			(*)(id, SEL, MethodInfo**, UInt32))
 #define FindIvarFuncType					(BOOL			(*)(id, SEL, objc_ivar*, objc_class*, UInt32))
 
+// Selectors
 #define GetDescriptionSel				@selector(getDescription:forType:)
 #define LineIsCodeSel					@selector(lineIsCode:)
 #define LineIsFunctionSel				@selector(lineIsFunction:)

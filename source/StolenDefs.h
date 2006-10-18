@@ -1,5 +1,7 @@
 /*
-	Definitions stolen from, or inspired by, darwin & cctools.
+	StolenDefs.h
+
+	Definitions stolen from, or inspired by, Darwin & cctools.
 */
 
 #define rotr(x, n)   (((x) >> ((int)(n))) | ((x) << (32 - (int)(n))))
