@@ -1172,6 +1172,8 @@
 			mNumLocalSelves	= 0;
 		}
 
+		mCurrentFuncInfoIndex++;
+
 		return;
 	}
 
@@ -1179,6 +1181,111 @@
 	UInt8	modRM;
 
 	sscanf(inLine->info.code, "%02hhx", &opcode);
+
+	// Check if we need to save the machine state.
+	if (IS_JUMP(opcode) && mCurrentFuncInfoIndex >= 0)
+	{
+		// Retrieve current FunctionInfo.
+		FunctionInfo*	funcInfo	=
+			&mFuncInfos[mCurrentFuncInfoIndex];
+
+		// Allocate another BlockInfo.
+		funcInfo->numBlocks++;
+
+		if (funcInfo->blocks)
+			funcInfo->blocks	= realloc(funcInfo->blocks,
+				sizeof(BlockInfo) * funcInfo->numBlocks);
+		else
+			funcInfo->blocks	= malloc(sizeof(BlockInfo));
+
+		UInt32	jumpTarget;
+		BOOL	validTarget	= false;
+
+		// Retrieve the jump target.
+		if ((opcode >= 0x71 && opcode <= 0x7f) ||
+			opcode == 0xe3 || opcode == 0xeb)
+		{
+			SInt8	rel8;
+
+			sscanf(&inLine->info.code[2], "%02hhx", &rel8);
+			jumpTarget	= inLine->info.address + 2 + rel8;
+
+			// Ignore backwards branches.
+			if (rel8 > 0)
+				validTarget	= true;
+		}
+		else if (opcode == 0xe9)
+		{
+			SInt32	rel32;
+
+			sscanf(&inLine->info.code[2], "%08x", &rel32);
+			rel32		= OSSwapInt32(rel32);
+			jumpTarget	= inLine->info.address + 5 + rel32;
+
+			// Ignore backwards branches.
+			if (rel32 > 0)
+				validTarget	= true;
+		}
+
+		if (validTarget)
+		{
+			// Create a new MachineState.
+			RegisterInfo*	savedRegs	= malloc(
+				sizeof(RegisterInfo) * 8);
+
+			memcpy(savedRegs, mRegInfos, sizeof(RegisterInfo) * 8);
+
+			VarInfo*	savedVars	= nil;
+
+			if (mLocalSelves)
+			{
+				savedVars	= malloc(
+					sizeof(VarInfo) * mNumLocalSelves);
+				memcpy(savedVars, mLocalSelves,
+					sizeof(VarInfo) * mNumLocalSelves);
+			}
+
+			MachineState	machState	=
+				{savedRegs, savedVars, mNumLocalSelves};
+
+			// Create and store a new BlockInfo.
+			funcInfo->blocks[funcInfo->numBlocks - 1]	= (BlockInfo)
+				{jumpTarget, 0, machState};
+		}
+	}
+	else	// Check if we need to restore the machine state.
+	{
+		// search current FunctionInfo for blocks that start at this address.
+		if (mCurrentFuncInfoIndex >= 0)
+		{
+			// Retrieve current funcInfo.
+			FunctionInfo*	funcInfo	=
+				&mFuncInfos[mCurrentFuncInfoIndex];
+
+			if (funcInfo->blocks)
+			{
+				UInt32	i;
+
+				for (i = 0; i < funcInfo->numBlocks; i++)
+				{
+					if (funcInfo->blocks[i].start == inLine->info.address)
+					{
+						MachineState	machState	=
+							funcInfo->blocks[i].state;
+
+						memcpy(mRegInfos, machState.regInfos,
+							sizeof(RegisterInfo) * 8);
+
+						if (machState.localSelves)
+							memcpy(mLocalSelves, machState.localSelves,
+								sizeof(VarInfo) * machState.numLocalSelves);
+
+						break;
+					}
+				}	// for (i = 0...)
+			}	// if (funcInfo->blocks)
+		}	// if (mCurrentFuncInfoIndex >= 0)
+	}
 
 	switch (opcode)
 	{
@@ -1254,20 +1361,26 @@
 
 				sscanf(&inLine->info.code[4], "%02hhx", &offset);
 
-				if (offset >= 0)
-					break;
-
-				// Copying self from a register to a local var.
-				mNumLocalSelves++;
-
-				if (mLocalSelves)
-					mLocalSelves	= realloc(mLocalSelves,
-						mNumLocalSelves * sizeof(VarInfo));
+				if (offset >= 0)	// pushing an arg onto stack
+				{
+//					mStack[offset / 4]	= 
+					offset	= 0;	// placeholder
+				}
 				else
-					mLocalSelves	= malloc(sizeof(VarInfo));
+				{
+					// Copying self from a register to a local var.
+					mNumLocalSelves++;
 
-				mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
-					{mRegInfos[REG1(modRM)], offset};
+					if (mLocalSelves)
+						mLocalSelves	= realloc(mLocalSelves,
+							mNumLocalSelves * sizeof(VarInfo));
+					else
+						mLocalSelves	= malloc(sizeof(VarInfo));
+
+					mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
+						{mRegInfos[REG1(modRM)], offset};
+				}
+				
 			}
 
 			break;

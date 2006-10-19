@@ -42,18 +42,16 @@
 #define LRIndex		32
 #define CTRIndex	33
 
-#define IS_BLOCK_BRANCH(i)							\
+#define IS_BLOCK_BRANCH(i)											\
 	((PO(i) == 0x10 || PO(i) == 0x12) && (!AA(i) && !LK(i)))
 
-#define IS_BRANCH_LINK(i)							\
-	((PO(i) == 0x10 && (i & 0x1))	||				\
+#define IS_BRANCH_LINK(i)											\
+	((PO(i) == 0x10 && (i & 0x1))	||								\
 	 (PO(i) == 0x13 && (i & 0x7ff) == 0x421))
 
-#define IS_BRANCH_CONDITIONAL(i)					\
-	(((PO((i)) == 0x13 && SO((i)) == 0x10) ||		\
-	  (PO((i)) == 0x10))							\
-	&&												\
-	  (BO((i)) != 0x14))
+#define IS_BRANCH_CONDITIONAL(i)									\
+	(((PO((i)) == 0x13 && SO((i)) == 0x10) || (PO((i)) == 0x10))	\
+	&& (BO((i)) != 0x14))
 
 // Addresses and names of functions in the ObjC runtime page, stolen from
 // http://www.opensource.apple.com/darwinsource/10.4.7.ppc/objc4-267.1/runtime/objc-rtp.h

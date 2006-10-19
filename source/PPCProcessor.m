@@ -649,38 +649,39 @@
 		(const char*)inLine->info.code, nil, 16);
 
 	// Check if we need to save the machine state.
-	if (IS_BLOCK_BRANCH(theCode))
+	if (IS_BLOCK_BRANCH(theCode) && mCurrentFuncInfoIndex >= 0)
 	{
-		if (mCurrentFuncInfoIndex >= 0)
+		// Retrieve current FunctionInfo.
+		FunctionInfo*	funcInfo	=
+			&mFuncInfos[mCurrentFuncInfoIndex];
+
+		// Allocate another BlockInfo.
+		funcInfo->numBlocks++;
+
+		if (funcInfo->blocks)
+			funcInfo->blocks	= realloc(funcInfo->blocks,
+				sizeof(BlockInfo) * funcInfo->numBlocks);
+		else
+			funcInfo->blocks	= malloc(sizeof(BlockInfo));
+
+		UInt32	branchTarget;
+
+		// Retrieve the branch target.
+		if (PO(theCode) == 0x12)	// b
+			branchTarget	= inLine->info.address + LI(theCode);
+		else	// bc
+			branchTarget	= inLine->info.address + BD(theCode);
+
+		// Ignore backwards branches.
+		if (branchTarget > inLine->info.address)
 		{
-			// Retrieve current funcInfo.
-			FunctionInfo*	funcInfo	=
-				&mFuncInfos[mCurrentFuncInfoIndex];
-
-			// Allocate another BlockInfo.
-			funcInfo->numBlocks++;
-
-			if (funcInfo->blocks)
-				funcInfo->blocks	= realloc(funcInfo->blocks,
-					sizeof(BlockInfo) * funcInfo->numBlocks);
-			else
-				funcInfo->blocks	= malloc(sizeof(BlockInfo));
-
-			UInt32	branchTarget;
-
-			// Retrieve the branch target.
-			if (PO(theCode) == 0x12)	// b
-				branchTarget	= inLine->info.address + LI(theCode);
-			else	// bc
-				branchTarget	= inLine->info.address + BD(theCode);
-
 			// Create a new MachineState.
 			RegisterInfo*	savedRegs	= malloc(
 				sizeof(RegisterInfo) * 34);
 
 			memcpy(savedRegs, mRegInfos, sizeof(RegisterInfo) * 32);
-			savedRegs[32]	= mLR;
-			savedRegs[33]	= mCTR;
+			savedRegs[LRIndex]	= mLR;
+			savedRegs[CTRIndex]	= mCTR;
 
 			VarInfo*	savedVars	= nil;
 
@@ -700,7 +701,7 @@
 				{branchTarget, 0, machState};
 		}
 	}
-	else	// Check if we should restore the machine state.
+	else	// Check if we need to restore the machine state.
 	{
 		// search current FunctionInfo for blocks that start at this address.
 		if (mCurrentFuncInfoIndex >= 0)
@@ -709,10 +710,10 @@
 			FunctionInfo*	funcInfo	=
 				&mFuncInfos[mCurrentFuncInfoIndex];
 
-			UInt32	i;
-
 			if (funcInfo->blocks)
 			{
+				UInt32	i;
+
 				for (i = 0; i < funcInfo->numBlocks; i++)
 				{
 					if (funcInfo->blocks[i].start == inLine->info.address)
@@ -722,8 +723,8 @@
 
 						memcpy(mRegInfos, machState.regInfos,
 							sizeof(RegisterInfo) * 32);
-						mLR		= machState.regInfos[32];
-						mCTR	= machState.regInfos[33];
+						mLR		= machState.regInfos[LRIndex];
+						mCTR	= machState.regInfos[CTRIndex];
 
 						if (machState.localSelves)
 							memcpy(mLocalSelves, machState.localSelves,
@@ -731,9 +732,9 @@
 
 						break;
 					}
-				}
-			}
-		}
+				}	// for (i = 0...)
+			}	// if (funcInfo->blocks)
+		}	// if (mCurrentFuncInfoIndex >= 0)
 	}
 
 	if (IS_BRANCH_LINK(theCode))
