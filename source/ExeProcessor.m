@@ -20,12 +20,12 @@
 #import "UserDefaultKeys.h"
 
 // ----------------------------------------------------------------------------
-// Comparison functions for qsort.
+// Comparison functions for qsort(3) and bsearch(3)
 
 static int
 sym_compare(
-	nlist**		sym1,
-	nlist**		sym2)
+	nlist**	sym1,
+	nlist**	sym2)
 {
 	if ((*sym1)->n_value < (*sym2)->n_value)
 		return -1;
@@ -35,8 +35,8 @@ sym_compare(
 
 static int
 methodInfo_compare(
-	MethodInfo*		mi1,
-	MethodInfo*		mi2)
+	MethodInfo*	mi1,
+	MethodInfo*	mi2)
 {
 	if (mi1->m.method_imp < mi2->m.method_imp)
 		return -1;
@@ -141,10 +141,7 @@ methodInfo_compare(
 	if (mThunks)
 		free(mThunks);
 
-//	if (mFuncInfos)
-//		free(mFuncInfos);
 	[self deleteFuncInfos];
-
 	[self deleteLinesFromList: mPlainLineListHead];
 	[self deleteLinesFromList: mVerboseLineListHead];
 
@@ -2629,6 +2626,7 @@ methodInfo_compare(
 
 #pragma mark -
 #pragma mark Binary searches
+
 //	findSymbolByAddress:
 // ----------------------------------------------------------------------------
 
@@ -2637,24 +2635,17 @@ methodInfo_compare(
 	if (!mFuncSyms)
 		return false;
 
-	SInt64	begin	= 0;
-	SInt64	end		= mNumFuncSyms - 1;
-	SInt64	split	= mNumFuncSyms / 2;
+	nlist*	searchKey	= malloc(sizeof(nlist));
 
-	while (end >= begin)
-	{
-		if (mFuncSyms[split]->n_value == inAddress)
-			return true;
+	searchKey->n_value	= inAddress;
 
-		if (mFuncSyms[split]->n_value > inAddress)
-			end		= split - 1;
-		else
-			begin	= split + 1;
+	BOOL	symbolExists	= (bsearch(&searchKey,
+		mFuncSyms, mNumFuncSyms, sizeof(nlist*),
+		(int (*)(const void*, const void*))sym_compare) != nil);
 
-		split	= (begin + end) / 2;
-	}
+	free(searchKey);
 
-	return false;
+	return symbolExists;
 }
 
 //	findClassMethod:byAddress:
@@ -2672,28 +2663,13 @@ methodInfo_compare(
 		return false;
 	}
 
-	SInt64	begin	= 0;
-	SInt64	end		= mNumClassMethodInfos - 1;
-	SInt64	split	= mNumClassMethodInfos / 2;
+	MethodInfo	searchKey	= {{nil, nil, (IMP)inAddress}, {0}, {0}, false};
 
-	while (end >= begin)
-	{
-		if ((UInt32)mClassMethodInfos[split].m.method_imp == inAddress)
-		{
-			*outMI	= &mClassMethodInfos[split];
-			return true;
-		}
+	*outMI	= bsearch(&searchKey,
+		mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
+		(int (*)(const void*, const void*))methodInfo_compare);
 
-		if ((UInt32)mClassMethodInfos[split].m.method_imp > inAddress)
-			end	= split - 1;
-		else
-			begin	= split + 1;
-
-		split	= (begin + end) / 2;
-	}
-
-	*outMI	= nil;
-	return false;
+	return (*outMI != nil);
 }
 
 //	findCatMethod:byAddress:
@@ -2711,28 +2687,13 @@ methodInfo_compare(
 		return false;
 	}
 
-	SInt64	begin	= 0;
-	SInt64	end		= mNumCatMethodInfos - 1;
-	SInt64	split	= mNumCatMethodInfos / 2;
+	MethodInfo	searchKey	= {{nil, nil, (IMP)inAddress}, {0}, {0}, false};
 
-	while (end >= begin)
-	{
-		if ((UInt32)mCatMethodInfos[split].m.method_imp == inAddress)
-		{
-			*outMI	= &mCatMethodInfos[split];
-			return true;
-		}
+	*outMI	= bsearch(&searchKey,
+		mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
+		(int (*)(const void*, const void*))methodInfo_compare);
 
-		if ((UInt32)mCatMethodInfos[split].m.method_imp > inAddress)
-			end		= split - 1;
-		else
-			begin	= split + 1;
-
-		split	= (begin + end) / 2;
-	}
-
-	*outMI	= nil;
-	return false;
+	return (*outMI != nil);
 }
 
 //	findIvar:inClass:withOffset:
@@ -2776,6 +2737,8 @@ methodInfo_compare(
 		if (mSwapped)
 			numIvars	= OSSwapInt32(numIvars);
 
+		// It would be nice to use bsearch(3) here, but there's too much
+		// swapping.
 		SInt64	begin	= 0;
 		SInt64	end		= numIvars - 1;
 		SInt64	split	= numIvars / 2;
