@@ -158,31 +158,39 @@ methodInfo_compare(
 
 	UInt32			i;
 	UInt32			j;
-	FunctionInfo	funcInfo;
-	BlockInfo		blockInfo;
+	FunctionInfo*	funcInfo;
+	BlockInfo*		blockInfo;
 
 	for (i = 0; i < mNumFuncInfos; i++)
 	{
-		funcInfo	= mFuncInfos[i];
+		funcInfo	= &mFuncInfos[i];
 
-		if (funcInfo.blocks)
+		if (funcInfo->blocks)
 		{
-			for (j = 0; j < funcInfo.numBlocks; j++)
+			for (j = 0; j < funcInfo->numBlocks; j++)
 			{
-				blockInfo	= funcInfo.blocks[j];
+				blockInfo	= &funcInfo->blocks[j];
 
-				if (blockInfo.state.regInfos)
-					free(blockInfo.state.regInfos);
+				if (blockInfo->state.regInfos)
+				{
+					free(blockInfo->state.regInfos);
+					blockInfo->state.regInfos	= nil;
+				}
 
-				if (blockInfo.state.localSelves)
-					free(blockInfo.state.localSelves);
+				if (blockInfo->state.localSelves)
+				{
+					free(blockInfo->state.localSelves);
+					blockInfo->state.localSelves	= nil;
+				}
 			}
 
-			free(funcInfo.blocks);
+			free(funcInfo->blocks);
+			funcInfo->blocks	= nil;
 		}
 	}
 
 	free(mFuncInfos);
+	mFuncInfos	= nil;
 }
 
 //	processExe:arch:

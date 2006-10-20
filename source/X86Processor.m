@@ -1185,19 +1185,6 @@
 	// Check if we need to save the machine state.
 	if (IS_JUMP(opcode) && mCurrentFuncInfoIndex >= 0)
 	{
-		// Retrieve current FunctionInfo.
-		FunctionInfo*	funcInfo	=
-			&mFuncInfos[mCurrentFuncInfoIndex];
-
-		// Allocate another BlockInfo.
-		funcInfo->numBlocks++;
-
-		if (funcInfo->blocks)
-			funcInfo->blocks	= realloc(funcInfo->blocks,
-				sizeof(BlockInfo) * funcInfo->numBlocks);
-		else
-			funcInfo->blocks	= malloc(sizeof(BlockInfo));
-
 		UInt32	jumpTarget;
 		BOOL	validTarget	= false;
 
@@ -1229,6 +1216,19 @@
 
 		if (validTarget)
 		{
+			// Retrieve current FunctionInfo.
+			FunctionInfo*	funcInfo	=
+				&mFuncInfos[mCurrentFuncInfoIndex];
+
+			// Allocate another BlockInfo.
+			funcInfo->numBlocks++;
+
+			if (funcInfo->blocks)
+				funcInfo->blocks	= realloc(funcInfo->blocks,
+					sizeof(BlockInfo) * funcInfo->numBlocks);
+			else
+				funcInfo->blocks	= malloc(sizeof(BlockInfo));
+
 			// Create a new MachineState.
 			RegisterInfo*	savedRegs	= malloc(
 				sizeof(RegisterInfo) * 8);

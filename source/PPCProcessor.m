@@ -628,19 +628,6 @@
 	// Check if we need to save the machine state.
 	if (IS_BLOCK_BRANCH(theCode) && mCurrentFuncInfoIndex >= 0)
 	{
-		// Retrieve current FunctionInfo.
-		FunctionInfo*	funcInfo	=
-			&mFuncInfos[mCurrentFuncInfoIndex];
-
-		// Allocate another BlockInfo.
-		funcInfo->numBlocks++;
-
-		if (funcInfo->blocks)
-			funcInfo->blocks	= realloc(funcInfo->blocks,
-				sizeof(BlockInfo) * funcInfo->numBlocks);
-		else
-			funcInfo->blocks	= malloc(sizeof(BlockInfo));
-
 		UInt32	branchTarget;
 
 		// Retrieve the branch target.
@@ -652,6 +639,19 @@
 		// Ignore backwards branches.
 		if (branchTarget > inLine->info.address)
 		{
+			// Retrieve current FunctionInfo.
+			FunctionInfo*	funcInfo	=
+				&mFuncInfos[mCurrentFuncInfoIndex];
+
+			// Allocate another BlockInfo.
+			funcInfo->numBlocks++;
+
+			if (funcInfo->blocks)
+				funcInfo->blocks	= realloc(funcInfo->blocks,
+					sizeof(BlockInfo) * funcInfo->numBlocks);
+			else
+				funcInfo->blocks	= malloc(sizeof(BlockInfo));
+
 			// Create a new MachineState.
 			RegisterInfo*	savedRegs	= malloc(
 				sizeof(RegisterInfo) * 34);
