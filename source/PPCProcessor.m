@@ -172,29 +172,6 @@
 
 			break;
 
-		case 0x1f:
-		{
-			if (SO(theCode) != 444)	// or
-				break;
-
-			if (RB(theCode) != RT(theCode))	// Copying a register
-				break;
-
-			// Check for self.
-			if (!mRegInfos[RB(theCode)].isValid	||
-				!mRegInfos[RB(theCode)].classPtr)
-				break;
-
-			objc_class*	ocClass		= mRegInfos[RB(theCode)].classPtr;
-			char*		className	= GetPointer((ocClass->name) ?
-				(UInt32)ocClass->name : (UInt32)ocClass->isa, nil);
-
-			if (className)
-				strncpy(mLineCommentCString, className, strlen(className) + 1);
-
-			break;
-		}
-
 		case 0x30:	// lfs		SIMM
 		case 0x34:	// stfs		SIMM
 		case 0x32:	// lfd		SIMM
@@ -860,27 +837,6 @@
 			mRegInfos[RT(theCode)].isValid	= true;
 
 			break;
-
-		case 0x10:	// bcl, bcla
-		case 0x13:	// bclrl, bcctrl
-			if (!IS_BRANCH_LINK(theCode))	// fall thru if link
-				break;
-
-		case 0x12:	// b, ba, bl, bla
-		{
-			if (!LK(theCode))	// bl, bla
-				break;
-
-			// At each branch link, we must assume that r3 will be trampled.
-			// In the case that the object is being inited, r3 will be trampled
-			// with the same class, so leave it alone.
-			if (mIsIniting)
-				mIsIniting	= false;
-			else
-				bzero(&mRegInfos[3], sizeof(RegisterInfo));
-
-			break;
-		}
 
 		case 0x15:	// rlwinm
 		{
