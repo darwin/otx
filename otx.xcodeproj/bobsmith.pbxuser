@@ -9,8 +9,6 @@
 			8D1107260486CEB800E47090 /* otx */,
 		);
 		breakpoints = (
-			E183FAD00AE89B9200638B92 /* ExeProcessor.m:182 */,
-			E183FB100AE8A07300638B92 /* ExeProcessor.m:176 */,
 		);
 		breakpointsGroup = E182009D09AE608A00584B07 /* XCBreakpointsBucket */;
 		codeSenseManager = E1C3BA5309A957E100B38A4D /* Code sense */;
@@ -771,6 +769,64 @@
 			E183FB4A0AE8AE7300638B92 /* PBXTextBookmark */ = E183FB4A0AE8AE7300638B92 /* PBXTextBookmark */;
 			E183FB4B0AE8AE9700638B92 /* PBXTextBookmark */ = E183FB4B0AE8AE9700638B92 /* PBXTextBookmark */;
 			E183FB4C0AE8AE9700638B92 /* PBXTextBookmark */ = E183FB4C0AE8AE9700638B92 /* PBXTextBookmark */;
+			E183FB4D0AEB387300638B92 /* PBXBookmark */ = E183FB4D0AEB387300638B92 /* PBXBookmark */;
+			E183FB4E0AEB388600638B92 /* PBXBookmark */ = E183FB4E0AEB388600638B92 /* PBXBookmark */;
+			E183FB550AEB3E7C00638B92 /* PBXTextBookmark */ = E183FB550AEB3E7C00638B92 /* PBXTextBookmark */;
+			E183FB580AEB3E7C00638B92 /* PBXTextBookmark */ = E183FB580AEB3E7C00638B92 /* PBXTextBookmark */;
+			E183FB590AEB3E7C00638B92 /* PBXTextBookmark */ = E183FB590AEB3E7C00638B92 /* PBXTextBookmark */;
+			E183FB5C0AEB3E7C00638B92 /* PBXTextBookmark */ = E183FB5C0AEB3E7C00638B92 /* PBXTextBookmark */;
+			E183FB680AEB48FA00638B92 /* PBXTextBookmark */ = E183FB680AEB48FA00638B92 /* PBXTextBookmark */;
+			E183FB690AEB48FA00638B92 /* PBXTextBookmark */ = E183FB690AEB48FA00638B92 /* PBXTextBookmark */;
+			E183FB6A0AEB48FA00638B92 /* PBXTextBookmark */ = E183FB6A0AEB48FA00638B92 /* PBXTextBookmark */;
+			E183FB6B0AEB48FA00638B92 /* PBXTextBookmark */ = E183FB6B0AEB48FA00638B92 /* PBXTextBookmark */;
+			E183FB6E0AEB48FA00638B92 /* PBXTextBookmark */ = E183FB6E0AEB48FA00638B92 /* PBXTextBookmark */;
+			E183FB6F0AEB48FA00638B92 /* PBXTextBookmark */ = E183FB6F0AEB48FA00638B92 /* PBXTextBookmark */;
+			E183FB700AEB498C00638B92 /* PBXTextBookmark */ = E183FB700AEB498C00638B92 /* PBXTextBookmark */;
+			E183FB710AEB498C00638B92 /* PBXTextBookmark */ = E183FB710AEB498C00638B92 /* PBXTextBookmark */;
+			E183FB720AEB498C00638B92 /* PBXTextBookmark */ = E183FB720AEB498C00638B92 /* PBXTextBookmark */;
+			E183FB730AEB498C00638B92 /* PBXTextBookmark */ = E183FB730AEB498C00638B92 /* PBXTextBookmark */;
+			E183FB750AEB4A5300638B92 /* PBXTextBookmark */ = E183FB750AEB4A5300638B92 /* PBXTextBookmark */;
+			E183FB760AEB4A5400638B92 /* PBXTextBookmark */ = E183FB760AEB4A5400638B92 /* PBXTextBookmark */;
+			E183FB770AEB4A5400638B92 /* PBXTextBookmark */ = E183FB770AEB4A5400638B92 /* PBXTextBookmark */;
+			E183FB780AEB4A5400638B92 /* PBXTextBookmark */ = E183FB780AEB4A5400638B92 /* PBXTextBookmark */;
+			E183FB790AEB4A5400638B92 /* PBXTextBookmark */ = E183FB790AEB4A5400638B92 /* PBXTextBookmark */;
+			E183FB7A0AEB4A5400638B92 /* PBXTextBookmark */ = E183FB7A0AEB4A5400638B92 /* PBXTextBookmark */;
+			E183FB7C0AEB4B8600638B92 /* PBXTextBookmark */ = E183FB7C0AEB4B8600638B92 /* PBXTextBookmark */;
+			E183FB7D0AEB4B8600638B92 /* PBXTextBookmark */ = E183FB7D0AEB4B8600638B92 /* PBXTextBookmark */;
+			E183FB7E0AEB4B8600638B92 /* PBXTextBookmark */ = E183FB7E0AEB4B8600638B92 /* PBXTextBookmark */;
+			E183FB7F0AEB4B8600638B92 /* PBXTextBookmark */ = E183FB7F0AEB4B8600638B92 /* PBXTextBookmark */;
+			E183FB800AEB4B8700638B92 /* PBXTextBookmark */ = E183FB800AEB4B8700638B92 /* PBXTextBookmark */;
+			E183FB810AEB4B8700638B92 /* PBXTextBookmark */ = E183FB810AEB4B8700638B92 /* PBXTextBookmark */;
+			E183FB820AEB4BB200638B92 /* PBXTextBookmark */ = E183FB820AEB4BB200638B92 /* PBXTextBookmark */;
+			E183FB830AEB4BB200638B92 /* PBXTextBookmark */ = E183FB830AEB4BB200638B92 /* PBXTextBookmark */;
+			E183FB840AEB4BB200638B92 /* PBXTextBookmark */ = E183FB840AEB4BB200638B92 /* PBXTextBookmark */;
+			E183FB850AEB4CA000638B92 /* PBXBookmark */ = E183FB850AEB4CA000638B92 /* PBXBookmark */;
+			E183FB8B0AEB4D7B00638B92 /* PBXTextBookmark */ = E183FB8B0AEB4D7B00638B92 /* PBXTextBookmark */;
+			E183FB8C0AEB4D7B00638B92 /* PBXTextBookmark */ = E183FB8C0AEB4D7B00638B92 /* PBXTextBookmark */;
+			E183FB8D0AEB4D7B00638B92 /* PBXTextBookmark */ = E183FB8D0AEB4D7B00638B92 /* PBXTextBookmark */;
+			E183FB8E0AEB4D7B00638B92 /* PBXTextBookmark */ = E183FB8E0AEB4D7B00638B92 /* PBXTextBookmark */;
+			E183FB8F0AEB4D7B00638B92 /* PBXTextBookmark */ = E183FB8F0AEB4D7B00638B92 /* PBXTextBookmark */;
+			E183FB900AEB4D7B00638B92 /* PBXTextBookmark */ = E183FB900AEB4D7B00638B92 /* PBXTextBookmark */;
+			E183FB930AEB4DAC00638B92 /* PBXTextBookmark */ = E183FB930AEB4DAC00638B92 /* PBXTextBookmark */;
+			E183FB940AEB4DAD00638B92 /* PBXTextBookmark */ = E183FB940AEB4DAD00638B92 /* PBXTextBookmark */;
+			E183FB950AEB4DAD00638B92 /* PBXTextBookmark */ = E183FB950AEB4DAD00638B92 /* PBXTextBookmark */;
+			E183FB960AEB4DAD00638B92 /* PBXTextBookmark */ = E183FB960AEB4DAD00638B92 /* PBXTextBookmark */;
+			E183FB970AEB4E5F00638B92 /* PBXTextBookmark */ = E183FB970AEB4E5F00638B92 /* PBXTextBookmark */;
+			E183FB980AEB4E5F00638B92 /* PBXTextBookmark */ = E183FB980AEB4E5F00638B92 /* PBXTextBookmark */;
+			E183FB990AEB4E5F00638B92 /* PBXTextBookmark */ = E183FB990AEB4E5F00638B92 /* PBXTextBookmark */;
+			E183FB9A0AEB4E5F00638B92 /* PBXTextBookmark */ = E183FB9A0AEB4E5F00638B92 /* PBXTextBookmark */;
+			E183FB9D0AEB53D200638B92 /* PBXTextBookmark */ = E183FB9D0AEB53D200638B92 /* PBXTextBookmark */;
+			E183FB9E0AEB53D200638B92 /* PBXTextBookmark */ = E183FB9E0AEB53D200638B92 /* PBXTextBookmark */;
+			E183FB9F0AEB53D200638B92 /* PBXTextBookmark */ = E183FB9F0AEB53D200638B92 /* PBXTextBookmark */;
+			E183FBA00AEB53D200638B92 /* PBXTextBookmark */ = E183FBA00AEB53D200638B92 /* PBXTextBookmark */;
+			E183FBA10AEB53DE00638B92 /* PBXTextBookmark */ = E183FBA10AEB53DE00638B92 /* PBXTextBookmark */;
+			E183FBA20AEB53DE00638B92 /* PBXTextBookmark */ = E183FBA20AEB53DE00638B92 /* PBXTextBookmark */;
+			E183FBA30AEB53DE00638B92 /* PBXTextBookmark */ = E183FBA30AEB53DE00638B92 /* PBXTextBookmark */;
+			E183FBA40AEB53DE00638B92 /* PBXTextBookmark */ = E183FBA40AEB53DE00638B92 /* PBXTextBookmark */;
+			E183FBA50AEB545E00638B92 /* PBXTextBookmark */ = E183FBA50AEB545E00638B92 /* PBXTextBookmark */;
+			E183FBA60AEB545E00638B92 /* PBXTextBookmark */ = E183FBA60AEB545E00638B92 /* PBXTextBookmark */;
+			E183FBA90AEB54D600638B92 /* PBXTextBookmark */ = E183FBA90AEB54D600638B92 /* PBXTextBookmark */;
+			E183FBAA0AEB54D600638B92 /* PBXTextBookmark */ = E183FBAA0AEB54D600638B92 /* PBXTextBookmark */;
 			E1968D4F0AE33D700026B1BB = E1968D4F0AE33D700026B1BB /* PBXBookmark */;
 			E1968D550AE345FE0026B1BB = E1968D550AE345FE0026B1BB /* PBXTextBookmark */;
 			E1968D560AE345FE0026B1BB = E1968D560AE345FE0026B1BB /* PBXTextBookmark */;
@@ -937,17 +993,17 @@
 	E135398D0A68185500CBDDE5 /* X86Processor.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {507, 672}}";
-			sepNavSelRange = "{1096, 0}";
-			sepNavVisRect = "{{0, 0}, {507, 610}}";
-			sepNavWindowFrame = "{{469, 63}, {546, 683}}";
+			sepNavSelRange = "{995, 9}";
+			sepNavVisRect = "{{0, 62}, {507, 610}}";
+			sepNavWindowFrame = "{{473, 63}, {546, 683}}";
 		};
 	};
 	E135398E0A68185500CBDDE5 /* ExeProcessor.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {884, 6372}}";
-			sepNavSelRange = "{9449, 6}";
-			sepNavVisRect = "{{0, 3794}, {526, 627}}";
-			sepNavWindowFrame = "{{344, 46}, {565, 700}}";
+			sepNavSelRange = "{9438, 12}";
+			sepNavVisRect = "{{0, 0}, {526, 627}}";
+			sepNavWindowFrame = "{{437, 46}, {565, 700}}";
 		};
 	};
 	E135398F0A68185500CBDDE5 /* CDropBox.h */ = {
@@ -976,10 +1032,10 @@
 	};
 	E14769C00A60F47E00C03C62 /* X86Processor.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {782, 21240}}";
-			sepNavSelRange = "{28108, 12}";
-			sepNavVisRect = "{{0, 14277}, {782, 387}}";
-			sepNavWindowFrame = "{{386, 43}, {583, 703}}";
+			sepNavIntBoundsRect = "{{0, 0}, {544, 21420}}";
+			sepNavSelRange = "{33944, 0}";
+			sepNavVisRect = "{{0, 17431}, {544, 630}}";
+			sepNavWindowFrame = "{{323, 43}, {583, 703}}";
 		};
 	};
 	E160C7D609B97223005074DB /* LangDefs.h */ = {
@@ -1010,8 +1066,6 @@
 		isa = XCBreakpointsBucket;
 		name = "Project Breakpoints";
 		objects = (
-			E183FAD00AE89B9200638B92 /* ExeProcessor.m:182 */,
-			E183FB100AE8A07300638B92 /* ExeProcessor.m:176 */,
 		);
 	};
 	E18201E609AFAAAC00584B07 /* CDropBox.m */ = {
@@ -1105,7 +1159,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1617";
 		rLen = 0;
-		rLoc = 39510;
+		rLoc = 39915;
 		rType = 0;
 		vrLen = 1000;
 		vrLoc = 36282;
@@ -1162,7 +1216,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1617";
 		rLen = 0;
-		rLoc = 39510;
+		rLoc = 39915;
 		rType = 0;
 		vrLen = 1000;
 		vrLoc = 36282;
@@ -1192,7 +1246,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1617";
 		rLen = 0;
-		rLoc = 39510;
+		rLoc = 39915;
 		rType = 0;
 		vrLen = 1000;
 		vrLoc = 36282;
@@ -1212,7 +1266,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1617";
 		rLen = 0;
-		rLoc = 39510;
+		rLoc = 39915;
 		rType = 0;
 		vrLen = 1000;
 		vrLoc = 36282;
@@ -1232,7 +1286,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1617";
 		rLen = 0;
-		rLoc = 39510;
+		rLoc = 39915;
 		rType = 0;
 		vrLen = 1000;
 		vrLoc = 36282;
@@ -1271,7 +1325,7 @@
 		isa = PBXTextBookmark;
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		rLen = 6;
-		rLoc = 38829;
+		rLoc = 39234;
 		rType = 0;
 	};
 	E183F6800AE49A1300638B92 /* PBXTextBookmark */ = {
@@ -1279,7 +1333,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1617";
 		rLen = 0;
-		rLoc = 39510;
+		rLoc = 39915;
 		rType = 0;
 		vrLen = 1000;
 		vrLoc = 36282;
@@ -1309,7 +1363,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = NSData;
 		rLen = 6;
-		rLoc = 38829;
+		rLoc = 39234;
 		rType = 0;
 		vrLen = 732;
 		vrLoc = 36056;
@@ -1329,7 +1383,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = NSData;
 		rLen = 6;
-		rLoc = 38829;
+		rLoc = 39234;
 		rType = 0;
 		vrLen = 732;
 		vrLoc = 36056;
@@ -1346,7 +1400,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = NSData;
 		rLen = 6;
-		rLoc = 38829;
+		rLoc = 39234;
 		rType = 0;
 		vrLen = 732;
 		vrLoc = 36056;
@@ -1386,7 +1440,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1283";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1225;
 		vrLoc = 28710;
@@ -1511,7 +1565,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = NSData;
 		rLen = 6;
-		rLoc = 38973;
+		rLoc = 39378;
 		rType = 0;
 		vrLen = 808;
 		vrLoc = 36200;
@@ -1591,7 +1645,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1275";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1236;
 		vrLoc = 28681;
@@ -1737,7 +1791,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: mNumFuncInfos";
 		rLen = 0;
-		rLoc = 9867;
+		rLoc = 9870;
 		rType = 0;
 		vrLen = 1004;
 		vrLoc = 1158;
@@ -1794,7 +1848,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: mNumFuncInfos";
 		rLen = 0;
-		rLoc = 9867;
+		rLoc = 9870;
 		rType = 0;
 		vrLen = 1004;
 		vrLoc = 1158;
@@ -1814,7 +1868,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mCurrentFuncInfoIndex;
 		rLen = 21;
-		rLoc = 9845;
+		rLoc = 9848;
 		rType = 0;
 		vrLen = 1596;
 		vrLoc = 8840;
@@ -1824,7 +1878,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mCurrentFuncInfoIndex;
 		rLen = 21;
-		rLoc = 9845;
+		rLoc = 9848;
 		rType = 0;
 		vrLen = 1004;
 		vrLoc = 1158;
@@ -1904,7 +1958,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mCurrentFuncInfoIndex;
 		rLen = 21;
-		rLoc = 9845;
+		rLoc = 9848;
 		rType = 0;
 		vrLen = 1004;
 		vrLoc = 1158;
@@ -1944,7 +1998,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mCurrentFuncInfoIndex;
 		rLen = 21;
-		rLoc = 9845;
+		rLoc = 9848;
 		rType = 0;
 		vrLen = 1004;
 		vrLoc = 1158;
@@ -1984,7 +2038,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mCurrentFuncInfoIndex;
 		rLen = 21;
-		rLoc = 9845;
+		rLoc = 9848;
 		rType = 0;
 		vrLen = 1004;
 		vrLoc = 1158;
@@ -2024,7 +2078,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mCurrentFuncInfoIndex;
 		rLen = 21;
-		rLoc = 9845;
+		rLoc = 9848;
 		rType = 0;
 		vrLen = 1301;
 		vrLoc = 332;
@@ -2034,7 +2088,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mCurrentFuncInfoIndex;
 		rLen = 21;
-		rLoc = 9845;
+		rLoc = 9848;
 		rType = 0;
 		vrLen = 1003;
 		vrLoc = 1147;
@@ -2172,7 +2226,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 2267;
 		vrLoc = 12146;
@@ -2232,7 +2286,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 2267;
 		vrLoc = 12146;
@@ -2332,7 +2386,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 2267;
 		vrLoc = 12146;
@@ -2372,7 +2426,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 2267;
 		vrLoc = 12146;
@@ -2532,7 +2586,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 2267;
 		vrLoc = 12146;
@@ -2602,7 +2656,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 2267;
 		vrLoc = 12146;
@@ -2642,7 +2696,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 999;
 		vrLoc = 1176;
@@ -2682,7 +2736,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 999;
 		vrLoc = 1176;
@@ -2842,7 +2896,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 999;
 		vrLoc = 1176;
@@ -2902,7 +2956,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 999;
 		vrLoc = 1176;
@@ -2942,7 +2996,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: deleteFuncInfos";
 		rLen = 0;
-		rLoc = 13021;
+		rLoc = 13024;
 		rType = 0;
 		vrLen = 999;
 		vrLoc = 1176;
@@ -3686,7 +3740,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1187";
 		rLen = 0;
-		rLoc = 28345;
+		rLoc = 28375;
 		rType = 0;
 		vrLen = 970;
 		vrLoc = 26187;
@@ -3706,7 +3760,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = IS_BLOCK_JUMP;
 		rLen = 7;
-		rLoc = 26696;
+		rLoc = 26710;
 		rType = 0;
 		vrLen = 968;
 		vrLoc = 26187;
@@ -3716,7 +3770,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1184";
 		rLen = 0;
-		rLoc = 26710;
+		rLoc = 26724;
 		rType = 0;
 		vrLen = 961;
 		vrLoc = 26187;
@@ -3753,7 +3807,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1204";
 		rLen = 0;
-		rLoc = 26906;
+		rLoc = 26920;
 		rType = 0;
 		vrLen = 1030;
 		vrLoc = 26594;
@@ -3821,7 +3875,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1218";
 		rLen = 0;
-		rLoc = 27262;
+		rLoc = 27276;
 		rType = 0;
 		vrLen = 676;
 		vrLoc = 27082;
@@ -3868,7 +3922,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1218";
 		rLen = 0;
-		rLoc = 27262;
+		rLoc = 27276;
 		rType = 0;
 		vrLen = 676;
 		vrLoc = 27082;
@@ -3888,7 +3942,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1218";
 		rLen = 0;
-		rLoc = 27262;
+		rLoc = 27276;
 		rType = 0;
 		vrLen = 676;
 		vrLoc = 27082;
@@ -3908,7 +3962,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1218";
 		rLen = 0;
-		rLoc = 27262;
+		rLoc = 27276;
 		rType = 0;
 		vrLen = 676;
 		vrLoc = 27082;
@@ -3928,7 +3982,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 28314;
+		rLoc = 28328;
 		rType = 0;
 		vrLen = 1133;
 		vrLoc = 26849;
@@ -3958,7 +4012,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1282";
 		rLen = 0;
-		rLoc = 29034;
+		rLoc = 29064;
 		rType = 0;
 		vrLen = 1216;
 		vrLoc = 28160;
@@ -3988,7 +4042,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1282";
 		rLen = 0;
-		rLoc = 29034;
+		rLoc = 29064;
 		rType = 0;
 		vrLen = 1214;
 		vrLoc = 28160;
@@ -4026,7 +4080,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1253";
 		rLen = 0;
-		rLoc = 28287;
+		rLoc = 28301;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 27882;
@@ -4046,7 +4100,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1253";
 		rLen = 0;
-		rLoc = 28287;
+		rLoc = 28301;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 27882;
@@ -4066,7 +4120,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1253";
 		rLen = 0;
-		rLoc = 28287;
+		rLoc = 28301;
 		rType = 0;
 		vrLen = 779;
 		vrLoc = 27882;
@@ -4086,7 +4140,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1253";
 		rLen = 0;
-		rLoc = 28287;
+		rLoc = 28301;
 		rType = 0;
 		vrLen = 779;
 		vrLoc = 27882;
@@ -4106,7 +4160,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1253";
 		rLen = 0;
-		rLoc = 28287;
+		rLoc = 28301;
 		rType = 0;
 		vrLen = 779;
 		vrLoc = 27882;
@@ -4126,7 +4180,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: i";
 		rLen = 0;
-		rLoc = 28622;
+		rLoc = 28652;
 		rType = 0;
 		vrLen = 1215;
 		vrLoc = 28160;
@@ -4156,7 +4210,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: i";
 		rLen = 0;
-		rLoc = 28622;
+		rLoc = 28652;
 		rType = 0;
 		vrLen = 1183;
 		vrLoc = 26932;
@@ -4186,7 +4240,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: i";
 		rLen = 0;
-		rLoc = 28622;
+		rLoc = 28652;
 		rType = 0;
 		vrLen = 1183;
 		vrLoc = 26932;
@@ -4216,7 +4270,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: i";
 		rLen = 0;
-		rLoc = 28622;
+		rLoc = 28652;
 		rType = 0;
 		vrLen = 1183;
 		vrLoc = 26932;
@@ -4246,7 +4300,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1253";
 		rLen = 0;
-		rLoc = 28287;
+		rLoc = 28301;
 		rType = 0;
 		vrLen = 779;
 		vrLoc = 27882;
@@ -4266,7 +4320,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1253";
 		rLen = 0;
-		rLoc = 28287;
+		rLoc = 28301;
 		rType = 0;
 		vrLen = 779;
 		vrLoc = 27882;
@@ -4286,7 +4340,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1253";
 		rLen = 0;
-		rLoc = 28287;
+		rLoc = 28301;
 		rType = 0;
 		vrLen = 779;
 		vrLoc = 27882;
@@ -4306,7 +4360,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: i";
 		rLen = 0;
-		rLoc = 28622;
+		rLoc = 28652;
 		rType = 0;
 		vrLen = 1183;
 		vrLoc = 26932;
@@ -4344,7 +4398,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4364,7 +4418,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4384,7 +4438,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4404,7 +4458,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: i";
 		rLen = 0;
-		rLoc = 28622;
+		rLoc = 28652;
 		rType = 0;
 		vrLen = 1191;
 		vrLoc = 26932;
@@ -4434,7 +4488,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: i";
 		rLen = 0;
-		rLoc = 28622;
+		rLoc = 28652;
 		rType = 0;
 		vrLen = 1191;
 		vrLoc = 26932;
@@ -4464,7 +4518,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4484,7 +4538,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4504,7 +4558,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4523,7 +4577,7 @@
 		isa = PBXTextBookmark;
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 	};
 	E183F9840AE7603600638B92 /* PBXTextBookmark */ = {
@@ -4541,7 +4595,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4551,7 +4605,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = VarInfo;
 		rLen = 7;
-		rLoc = 27904;
+		rLoc = 27918;
 		rType = 0;
 		vrLen = 1213;
 		vrLoc = 27365;
@@ -4595,7 +4649,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4605,7 +4659,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4615,7 +4669,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4625,7 +4679,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4635,7 +4689,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4645,7 +4699,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4655,7 +4709,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1050;
 		vrLoc = 30336;
@@ -4701,7 +4755,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1482;
 		vrLoc = 8634;
@@ -4735,7 +4789,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4753,7 +4807,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1221";
 		rLen = 0;
-		rLoc = 27167;
+		rLoc = 27181;
 		rType = 0;
 		vrLen = 770;
 		vrLoc = 26907;
@@ -4773,7 +4827,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4793,7 +4847,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4813,7 +4867,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4833,7 +4887,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4853,7 +4907,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4873,7 +4927,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4893,7 +4947,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -4941,7 +4995,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1482;
 		vrLoc = 8634;
@@ -4951,7 +5005,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1482;
 		vrLoc = 8634;
@@ -4961,7 +5015,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1050;
 		vrLoc = 30336;
@@ -5011,7 +5065,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5031,7 +5085,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5051,7 +5105,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5071,7 +5125,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5091,7 +5145,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5162,7 +5216,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1482;
 		vrLoc = 8634;
@@ -5172,7 +5226,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1050;
 		vrLoc = 30336;
@@ -5247,7 +5301,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1482;
 		vrLoc = 8634;
@@ -5257,7 +5311,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1050;
 		vrLoc = 30336;
@@ -5307,7 +5361,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5327,7 +5381,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5347,7 +5401,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5412,7 +5466,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1482;
 		vrLoc = 8634;
@@ -5422,7 +5476,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1050;
 		vrLoc = 30336;
@@ -5507,7 +5561,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1482;
 		vrLoc = 8634;
@@ -5517,7 +5571,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1050;
 		vrLoc = 30336;
@@ -5567,7 +5621,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5595,7 +5649,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5615,7 +5669,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5635,7 +5689,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5655,7 +5709,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5675,7 +5729,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -5819,7 +5873,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1050;
 		vrLoc = 30336;
@@ -5934,7 +5988,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1050;
 		vrLoc = 30336;
@@ -5984,7 +6038,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6004,7 +6058,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6024,7 +6078,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6044,7 +6098,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6064,7 +6118,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6084,7 +6138,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6104,7 +6158,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6158,7 +6212,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6178,7 +6232,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6198,7 +6252,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6298,7 +6352,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6318,7 +6372,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6348,7 +6402,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6368,7 +6422,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6388,7 +6442,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6408,7 +6462,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6428,7 +6482,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6464,7 +6518,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6484,7 +6538,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6504,7 +6558,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6544,7 +6598,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1252;
 		vrLoc = 0;
@@ -6574,7 +6628,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6594,7 +6648,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6614,7 +6668,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6654,7 +6708,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1252;
 		vrLoc = 0;
@@ -6668,19 +6722,6 @@
 		rType = 0;
 		vrLen = 1596;
 		vrLoc = 125;
-	};
-	E183FAD00AE89B9200638B92 /* ExeProcessor.m:182 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
-		functionName = "-deleteFuncInfos";
-		hitCount = 1;
-		lineNumber = 182;
-		modificationTime = 183018987.026289;
-		state = 2;
 	};
 	E183FAD10AE89BF400638B92 /* PBXBookmark */ = {
 		isa = PBXBookmark;
@@ -6701,7 +6742,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6720,7 +6761,7 @@
 		isa = PBXTextBookmark;
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 	};
 	E183FADA0AE89DDE00638B92 /* PBXTextBookmark */ = {
@@ -6728,7 +6769,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1037;
 		vrLoc = 8831;
@@ -6738,7 +6779,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28758;
+		rLoc = 28788;
 		rType = 0;
 		vrLen = 779;
 		vrLoc = 28363;
@@ -6758,7 +6799,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 795;
 		vrLoc = 27677;
@@ -6778,7 +6819,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 27729;
@@ -6798,7 +6839,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 766;
 		vrLoc = 26809;
@@ -6818,7 +6859,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 766;
 		vrLoc = 26809;
@@ -6838,7 +6879,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 766;
 		vrLoc = 26809;
@@ -6858,7 +6899,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 766;
 		vrLoc = 26809;
@@ -6878,7 +6919,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 766;
 		vrLoc = 26809;
@@ -6898,7 +6939,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 766;
 		vrLoc = 26809;
@@ -6908,7 +6949,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1472;
 		vrLoc = 9869;
@@ -6948,7 +6989,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1252;
 		vrLoc = 0;
@@ -6978,7 +7019,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -6998,7 +7039,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7018,7 +7059,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7038,7 +7079,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7058,7 +7099,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7068,7 +7109,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1367";
 		rLen = 0;
-		rLoc = 30833;
+		rLoc = 31119;
 		rType = 0;
 		vrLen = 1252;
 		vrLoc = 0;
@@ -7078,7 +7119,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1244";
 		rLen = 0;
-		rLoc = 27738;
+		rLoc = 27752;
 		rType = 0;
 		vrLen = 1242;
 		vrLoc = 27475;
@@ -7108,7 +7149,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1472;
 		vrLoc = 9869;
@@ -7143,25 +7184,12 @@
 		vrLen = 1596;
 		vrLoc = 125;
 	};
-	E183FB100AE8A07300638B92 /* ExeProcessor.m:176 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		fileReference = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
-		functionName = "-deleteFuncInfos";
-		hitCount = 1;
-		lineNumber = 176;
-		modificationTime = 183018987.028242;
-		state = 2;
-	};
 	E183FB110AE8A0B700638B92 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1244";
 		rLen = 0;
-		rLoc = 27738;
+		rLoc = 27752;
 		rType = 0;
 		vrLen = 1242;
 		vrLoc = 27475;
@@ -7181,7 +7209,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1472;
 		vrLoc = 9869;
@@ -7231,7 +7259,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7251,7 +7279,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "BOOL\tvalidTarget\t= false;";
 		rLen = 28;
-		rLoc = 26767;
+		rLoc = 26781;
 		rType = 0;
 		vrLen = 1182;
 		vrLoc = 26523;
@@ -7278,7 +7306,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1472;
 		vrLoc = 9869;
@@ -7328,7 +7356,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7348,7 +7376,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7368,7 +7396,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7388,7 +7416,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7408,7 +7436,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7418,7 +7446,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "BOOL\tvalidTarget\t= false;";
 		rLen = 28;
-		rLoc = 26767;
+		rLoc = 26781;
 		rType = 0;
 		vrLen = 1182;
 		vrLoc = 26523;
@@ -7448,7 +7476,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1472;
 		vrLoc = 9869;
@@ -7498,7 +7526,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 768;
 		vrLoc = 26811;
@@ -7508,7 +7536,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1188";
 		rLen = 0;
-		rLoc = 26746;
+		rLoc = 26760;
 		rType = 0;
 		vrLen = 1420;
 		vrLoc = 32281;
@@ -7538,7 +7566,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mStack;
 		rLen = 6;
-		rLoc = 9449;
+		rLoc = 9452;
 		rType = 0;
 		vrLen = 1472;
 		vrLoc = 9869;
@@ -7588,7 +7616,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 703;
 		vrLoc = 26795;
@@ -7608,7 +7636,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 703;
 		vrLoc = 26795;
@@ -7628,7 +7656,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 703;
 		vrLoc = 26795;
@@ -7648,7 +7676,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 703;
 		vrLoc = 26795;
@@ -7668,10 +7696,569 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = MachineState;
 		rLen = 12;
-		rLoc = 28108;
+		rLoc = 28122;
 		rType = 0;
 		vrLen = 703;
 		vrLoc = 26795;
+	};
+	E183FB4D0AEB387300638B92 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+	};
+	E183FB4E0AEB388600638B92 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+	};
+	E183FB550AEB3E7C00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1386";
+		rLen = 0;
+		rLoc = 31125;
+		rType = 0;
+		vrLen = 1062;
+		vrLoc = 30320;
+	};
+	E183FB580AEB3E7C00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398D0A68185500CBDDE5 /* X86Processor.h */;
+		name = "#define HAS_SIB(x)\t\t(MOD((x)) != MODx && REG2((x)) == ESP)";
+		rLen = 59;
+		rLoc = 928;
+		rType = 0;
+		vrLen = 1303;
+		vrLoc = 0;
+	};
+	E183FB590AEB3E7C00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398D0A68185500CBDDE5 /* X86Processor.h */;
+		name = "#define HAS_SIB(x)\t\t(MOD((x)) != MODx && REG2((x)) == ESP)";
+		rLen = 59;
+		rLoc = 928;
+		rType = 0;
+		vrLen = 1303;
+		vrLoc = 0;
+	};
+	E183FB5C0AEB3E7C00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = mStack;
+		rLen = 6;
+		rLoc = 9452;
+		rType = 0;
+		vrLen = 1533;
+		vrLoc = 8635;
+	};
+	E183FB680AEB48FA00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1358";
+		rLen = 0;
+		rLoc = 30663;
+		rType = 0;
+		vrLen = 1187;
+		vrLoc = 30320;
+	};
+	E183FB690AEB48FA00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1389";
+		rLen = 0;
+		rLoc = 31375;
+		rType = 0;
+		vrLen = 1190;
+		vrLoc = 30404;
+	};
+	E183FB6A0AEB48FA00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		rLen = 1;
+		rLoc = 49;
+		rType = 1;
+	};
+	E183FB6B0AEB48FA00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = RegisterInfo;
+		rLen = 12;
+		rLoc = 9438;
+		rType = 0;
+		vrLen = 1176;
+		vrLoc = 0;
+	};
+	E183FB6E0AEB48FA00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398D0A68185500CBDDE5 /* X86Processor.h */;
+		name = HAS_DISP8;
+		rLen = 9;
+		rLoc = 995;
+		rType = 0;
+		vrLen = 1303;
+		vrLoc = 0;
+	};
+	E183FB6F0AEB48FA00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398D0A68185500CBDDE5 /* X86Processor.h */;
+		name = HAS_DISP8;
+		rLen = 9;
+		rLoc = 995;
+		rType = 0;
+		vrLen = 1291;
+		vrLoc = 48;
+	};
+	E183FB700AEB498C00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB710AEB498C00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 703;
+		vrLoc = 26795;
+	};
+	E183FB720AEB498C00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB730AEB498C00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 703;
+		vrLoc = 26795;
+	};
+	E183FB750AEB4A5300638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB760AEB4A5400638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 703;
+		vrLoc = 26795;
+	};
+	E183FB770AEB4A5400638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB780AEB4A5400638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 703;
+		vrLoc = 26795;
+	};
+	E183FB790AEB4A5400638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB7A0AEB4A5400638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 703;
+		vrLoc = 26795;
+	};
+	E183FB7C0AEB4B8600638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB7D0AEB4B8600638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 703;
+		vrLoc = 26795;
+	};
+	E183FB7E0AEB4B8600638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB7F0AEB4B8600638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 703;
+		vrLoc = 26795;
+	};
+	E183FB800AEB4B8700638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB810AEB4B8700638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 703;
+		vrLoc = 26795;
+	};
+	E183FB820AEB4BB200638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: updateRegisters:";
+		rLen = 0;
+		rLoc = 28402;
+		rType = 0;
+		vrLen = 1280;
+		vrLoc = 27931;
+	};
+	E183FB830AEB4BB200638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = RegisterInfo;
+		rLen = 12;
+		rLoc = 9438;
+		rType = 0;
+		vrLen = 1176;
+		vrLoc = 0;
+	};
+	E183FB840AEB4BB200638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398D0A68185500CBDDE5 /* X86Processor.h */;
+		name = HAS_DISP8;
+		rLen = 9;
+		rLoc = 995;
+		rType = 0;
+		vrLen = 1291;
+		vrLoc = 48;
+	};
+	E183FB850AEB4CA000638B92 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+	};
+	E183FB8B0AEB4D7B00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB8C0AEB4D7B00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 736;
+		vrLoc = 26795;
+	};
+	E183FB8D0AEB4D7B00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB8E0AEB4D7B00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 736;
+		vrLoc = 26795;
+	};
+	E183FB8F0AEB4D7B00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB900AEB4D7B00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 736;
+		vrLoc = 26795;
+	};
+	E183FB930AEB4DAC00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = mFuncInfos;
+		rLen = 10;
+		rLoc = 35403;
+		rType = 0;
+		vrLen = 1277;
+		vrLoc = 34576;
+	};
+	E183FB940AEB4DAD00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1219";
+		rLen = 0;
+		rLoc = 27406;
+		rType = 0;
+		vrLen = 1226;
+		vrLoc = 26912;
+	};
+	E183FB950AEB4DAD00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = RegisterInfo;
+		rLen = 12;
+		rLoc = 9438;
+		rType = 0;
+		vrLen = 1176;
+		vrLoc = 0;
+	};
+	E183FB960AEB4DAD00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398D0A68185500CBDDE5 /* X86Processor.h */;
+		name = HAS_DISP8;
+		rLen = 9;
+		rLoc = 995;
+		rType = 0;
+		vrLen = 1291;
+		vrLoc = 48;
+	};
+	E183FB970AEB4E5F00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = mFuncInfos;
+		rLen = 10;
+		rLoc = 35403;
+		rType = 0;
+		vrLen = 1277;
+		vrLoc = 34576;
+	};
+	E183FB980AEB4E5F00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1219";
+		rLen = 0;
+		rLoc = 27406;
+		rType = 0;
+		vrLen = 1226;
+		vrLoc = 26912;
+	};
+	E183FB990AEB4E5F00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = RegisterInfo;
+		rLen = 12;
+		rLoc = 9438;
+		rType = 0;
+		vrLen = 1176;
+		vrLoc = 0;
+	};
+	E183FB9A0AEB4E5F00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398D0A68185500CBDDE5 /* X86Processor.h */;
+		name = HAS_DISP8;
+		rLen = 9;
+		rLoc = 995;
+		rType = 0;
+		vrLen = 1291;
+		vrLoc = 48;
+	};
+	E183FB9D0AEB53D200638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FB9E0AEB53D200638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 732;
+		vrLoc = 26795;
+	};
+	E183FB9F0AEB53D200638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FBA00AEB53D200638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 732;
+		vrLoc = 26795;
+	};
+	E183FBA10AEB53DE00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1491";
+		rLen = 0;
+		rLoc = 33929;
+		rType = 0;
+		vrLen = 1334;
+		vrLoc = 32859;
+	};
+	E183FBA20AEB53DE00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = mFuncInfos;
+		rLen = 10;
+		rLoc = 35403;
+		rType = 0;
+		vrLen = 1277;
+		vrLoc = 34576;
+	};
+	E183FBA30AEB53DE00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = RegisterInfo;
+		rLen = 12;
+		rLoc = 9438;
+		rType = 0;
+		vrLen = 1176;
+		vrLoc = 0;
+	};
+	E183FBA40AEB53DE00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398D0A68185500CBDDE5 /* X86Processor.h */;
+		name = HAS_DISP8;
+		rLen = 9;
+		rLoc = 995;
+		rType = 0;
+		vrLen = 1291;
+		vrLoc = 48;
+	};
+	E183FBA50AEB545E00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FBA60AEB545E00638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 732;
+		vrLoc = 26795;
+	};
+	E183FBA90AEB54D600638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = "ExeProcessor.m: 2674";
+		rLen = 0;
+		rLoc = 67333;
+		rType = 0;
+		vrLen = 753;
+		vrLoc = 67745;
+	};
+	E183FBAA0AEB54D600638B92 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = MachineState;
+		rLen = 12;
+		rLoc = 28122;
+		rType = 0;
+		vrLen = 703;
+		vrLoc = 26809;
 	};
 	E1968D4F0AE33D700026B1BB /* PBXBookmark */ = {
 		isa = PBXBookmark;
@@ -7740,7 +8327,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: findClassMethod:byAddress:";
 		rLen = 0;
-		rLoc = 17302;
+		rLoc = 17305;
 		rType = 0;
 		vrLen = 678;
 		vrLoc = 1529;
@@ -7750,7 +8337,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: findClassMethod:byAddress:";
 		rLen = 0;
-		rLoc = 17302;
+		rLoc = 17305;
 		rType = 0;
 		vrLen = 678;
 		vrLoc = 1529;
@@ -7797,7 +8384,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: findClassMethod:byAddress:";
 		rLen = 0;
-		rLoc = 17302;
+		rLoc = 17305;
 		rType = 0;
 		vrLen = 678;
 		vrLoc = 1529;
@@ -7877,7 +8464,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1283";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1225;
 		vrLoc = 28710;
@@ -7937,7 +8524,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1283";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1225;
 		vrLoc = 28710;
@@ -8027,7 +8614,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1283";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1225;
 		vrLoc = 28710;
@@ -8117,7 +8704,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1283";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1225;
 		vrLoc = 28710;
@@ -8177,7 +8764,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1283";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1225;
 		vrLoc = 28710;
@@ -8251,7 +8838,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1283";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1225;
 		vrLoc = 28710;
@@ -8342,7 +8929,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1283";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1225;
 		vrLoc = 28710;
@@ -8575,8 +9162,8 @@
 	E1D77F2D09B296A300176F18 /* ExeProcessor.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {554, 42900}}";
-			sepNavSelRange = "{66757, 0}";
-			sepNavVisRect = "{{0, 1353}, {507, 630}}";
+			sepNavSelRange = "{35403, 10}";
+			sepNavVisRect = "{{0, 15868}, {507, 630}}";
 			sepNavWindowFrame = "{{342, 43}, {546, 703}}";
 		};
 	};
@@ -8595,7 +9182,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1283";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1213;
 		vrLoc = 28243;
@@ -8633,7 +9220,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1283";
 		rLen = 0;
-		rLoc = 31336;
+		rLoc = 31655;
 		rType = 0;
 		vrLen = 1255;
 		vrLoc = 28682;

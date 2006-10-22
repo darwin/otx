@@ -1183,7 +1183,7 @@
 	sscanf(inLine->info.code, "%02hhx", &opcode);
 
 	// Check if we need to save the machine state.
-	if (IS_JUMP(opcode) && mCurrentFuncInfoIndex >= 0)
+	if (mFuncInfos && IS_JUMP(opcode) && mCurrentFuncInfoIndex >= 0)
 	{
 		UInt32	jumpTarget;
 		BOOL	validTarget	= false;
@@ -1253,7 +1253,7 @@
 				{jumpTarget, 0, machState};
 		}
 	}
-	else	// Check if we need to restore the machine state.
+	else if (mFuncInfos)	// Check if we need to restore the machine state.
 	{
 		// search current FunctionInfo for blocks that start at this address.
 		if (mCurrentFuncInfoIndex >= 0)
@@ -1355,32 +1355,43 @@
 				REG2(modRM) != EBP)
 				break;
 
-			if (MOD(modRM) == MOD8)
-			{
-				SInt8	offset;
+			SInt8	offset	= 0;
 
+			if (HAS_SIB(modRM))	// pushing an arg onto stack
+			{
+				if (HAS_DISP8(modRM))
+					sscanf(&inLine->info.code[6], "%02hhx", &offset);
+
+				if (offset >= 0)
+				{
+					if (offset / 4 > STACK_SIZE - 1)
+					{
+						printf("otx: out of stack bounds: "
+							"stack size needs to be %d", (offset / 4) + 1);
+						break;
+					}
+
+					// Convert offset to array index.
+					if (offset != 0)
+						offset /= 4;
+
+					mStack[offset]	= mRegInfos[REG1(modRM)];
+				}
+			}
+			else	// Copying self from a register to a local var.
+			{
 				sscanf(&inLine->info.code[4], "%02hhx", &offset);
 
-				if (offset >= 0)	// pushing an arg onto stack
-				{
-//					mStack[offset / 4]	= 
-					offset	= 0;	// placeholder
-				}
+				mNumLocalSelves++;
+
+				if (mLocalSelves)
+					mLocalSelves	= realloc(mLocalSelves,
+						mNumLocalSelves * sizeof(VarInfo));
 				else
-				{
-					// Copying self from a register to a local var.
-					mNumLocalSelves++;
+					mLocalSelves	= malloc(sizeof(VarInfo));
 
-					if (mLocalSelves)
-						mLocalSelves	= realloc(mLocalSelves,
-							mNumLocalSelves * sizeof(VarInfo));
-					else
-						mLocalSelves	= malloc(sizeof(VarInfo));
-
-					mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
-						{mRegInfos[REG1(modRM)], offset};
-				}
-				
+				mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
+					{mRegInfos[REG1(modRM)], offset};
 			}
 
 			break;
@@ -1474,6 +1485,10 @@
 				OSSwapInt32(mRegInfos[REG2(opcode)].intValue);
 			mRegInfos[REG2(opcode)].isValid	= true;
 
+			break;
+
+		case 0xe8:	// calll
+			bzero(mStack, sizeof(RegisterInfo) * STACK_SIZE);
 			break;
 
 		default:

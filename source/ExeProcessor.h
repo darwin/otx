@@ -296,7 +296,7 @@ enum {
 	UInt32				mLocalOffset;			// +420 etc.
 	ThunkInfo*			mThunks;				// x86 only
 	UInt32				mNumThunks;				// x86 only
-	VarInfo				mStack[STACK_SIZE];
+	RegisterInfo		mStack[STACK_SIZE];
 	BOOL				mIsIniting;
 
 	TextFieldWidths		mFieldWidths;
