@@ -9,7 +9,7 @@
 #import <mach-o/nlist.h>
 #import <mach-o/swap.h>
 #import <objc/objc-runtime.h>
-//#import <sys/ptrace.h>
+#import <sys/ptrace.h>
 #import <sys/syscall.h>
 
 #import "X86Processor.h"
@@ -1044,17 +1044,46 @@
 		 mRegInfos[EAX].intValue > SYS_MAXSYSCALL)
 		return;
 
-	const char*	theSysString	= gSysCalls[mRegInfos[EAX].intValue];
+	BOOL		isIndirect	= (mRegInfos[EAX].intValue == SYS_syscall);
+	UInt32		syscallNum;
+	UInt32		syscallArgIndex	= (isIndirect) ? 1 : 0;
+	const char*	theSysString	= nil;
+
+	if (isIndirect && mStack[0].isValid &&
+		mStack[0].intValue <= SYS_MAXSYSCALL)
+		syscallNum	= mStack[0].intValue;
+	else
+		syscallNum	= mRegInfos[EAX].intValue;
+
+	theSysString	= gSysCalls[syscallNum];
 
 	if (!theSysString)
 		return;
 
-	strncpy(mLineCommentCString, theSysString, strlen(theSysString) + 1);
+	char	theTempComment[50]	= {0};
+
+	strncpy(theTempComment, theSysString, strlen(theSysString) + 1);
 
 	// Handle various system calls.
-	// If this was Linux, args would be passed in registers and we could
-	// easily spot PT_DENY_ATTACH. In Mach/BSD, we'd have to keep track of
-	// the stack...
+	switch(syscallNum)
+	{
+		case SYS_ptrace:
+			if (mStack[syscallArgIndex].isValid &&
+				mStack[syscallArgIndex].intValue == PT_DENY_ATTACH)
+				snprintf(mLineCommentCString, 40, "%s(%s)",
+					theTempComment, "PT_DENY_ATTACH");
+			else
+				strncpy(mLineCommentCString, theTempComment,
+					strlen(theTempComment) + 1);
+
+			break;
+
+		default:
+			strncpy(mLineCommentCString, theTempComment,
+				strlen(theTempComment) + 1);
+
+			break;
+	}
 }
 
 //	chooseLine:
@@ -1350,9 +1379,19 @@
 		{
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			if (!mRegInfos[REG1(modRM)].isValid		||
-				!mRegInfos[REG1(modRM)].classPtr	||
-				REG2(modRM) != EBP)
+			if (MOD(modRM) == MODx)	// reg to reg
+			{
+				if (!mRegInfos[REG1(modRM)].isValid)
+					break;
+
+				memcpy(&mRegInfos[REG2(modRM)], &mRegInfos[REG1(modRM)],
+					sizeof(RegisterInfo));
+
+				break;
+			}
+
+			if (!mRegInfos[REG1(modRM)].isValid	||
+				(REG2(modRM) != EBP && !HAS_SIB(modRM)))
 				break;
 
 			SInt8	offset	= 0;
@@ -1380,6 +1419,9 @@
 			}
 			else	// Copying self from a register to a local var.
 			{
+				if (!mRegInfos[REG1(modRM)].classPtr)
+					break;
+
 				sscanf(&inLine->info.code[4], "%02hhx", &offset);
 
 				mNumLocalSelves++;
