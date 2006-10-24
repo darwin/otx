@@ -297,7 +297,6 @@ enum {
 	ThunkInfo*			mThunks;				// x86 only
 	UInt32				mNumThunks;				// x86 only
 	RegisterInfo		mStack[STACK_SIZE];
-//	BOOL				mIsIniting;
 
 	TextFieldWidths		mFieldWidths;
 
