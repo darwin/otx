@@ -289,19 +289,6 @@
 					sscanf(&inLine->info.code[4], "%08x", &localAddy);
 					localAddy	= OSSwapInt32(localAddy);
 				}
-/*				else
-				if (mRegInfos[REG1(modRM)].isValid	&&
-					mRegInfos[REG1(modRM)].classPtr	&&
-					REG2(modRM) == ESP)
-				{
-					objc_class*	ocClass		= mRegInfos[REG1(modRM)].classPtr;
-					char*		className	= GetPointer((ocClass->name) ?
-						(UInt32)ocClass->name : (UInt32)ocClass->isa, nil);
-
-					if (className)
-						strncpy(mLineCommentCString, className,
-							strlen(className) + 1);
-				}*/
 			}
 			else
 			{
@@ -665,9 +652,7 @@
 				}
 				else	// Check for a single printable 7-bit char.
 				if (localAddy >= 0x20 && localAddy < 0x7f)
-				{
 					snprintf(mLineCommentCString, 4, "'%c'", localAddy);
-				}
 			}
 
 			break;
@@ -1529,10 +1514,6 @@
 
 			break;
 
-//		case 0xe8:	// calll
-//			bzero(mStack, sizeof(RegisterInfo) * STACK_SIZE);
-//			break;
-
 		default:
 			break;
 	}	// switch (opcode)
@@ -1637,7 +1618,7 @@
 				  numFound: (UInt32*)outFound;
 {
 	unsigned char**	foundList			= nil;
-	unsigned char	theSearchString[4]	= {0x00, 0x55, 0x89, 0xe5};
+	unsigned char	searchString[4]	= {0x00, 0x55, 0x89, 0xe5};
 	unsigned char*	current;
 
 	*outFound	= 0;
@@ -1647,7 +1628,7 @@
 		 current <= inHaystack + inHaystackLength - 4;
 		 current++)
 	{
-		if (memcmp(current, theSearchString, 4) != 0)
+		if (memcmp(current, searchString, 4) != 0)
 			continue;
 
 		// Match for common benign occurences
