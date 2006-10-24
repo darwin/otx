@@ -289,7 +289,7 @@
 					sscanf(&inLine->info.code[4], "%08x", &localAddy);
 					localAddy	= OSSwapInt32(localAddy);
 				}
-				else
+/*				else
 				if (mRegInfos[REG1(modRM)].isValid	&&
 					mRegInfos[REG1(modRM)].classPtr	&&
 					REG2(modRM) == ESP)
@@ -301,7 +301,7 @@
 					if (className)
 						strncpy(mLineCommentCString, className,
 							strlen(className) + 1);
-				}
+				}*/
 			}
 			else
 			{
@@ -1529,9 +1529,9 @@
 
 			break;
 
-		case 0xe8:	// calll
-			bzero(mStack, sizeof(RegisterInfo) * STACK_SIZE);
-			break;
+//		case 0xe8:	// calll
+//			bzero(mStack, sizeof(RegisterInfo) * STACK_SIZE);
+//			break;
 
 		default:
 			break;

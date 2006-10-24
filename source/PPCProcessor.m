@@ -1038,8 +1038,8 @@
 			mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
 				{mRegInfos[RT(theCode)], UIMM(theCode)};
 
-			if (UIMM(theCode) == 0x38)
-				mIsIniting	= true;
+//			if (UIMM(theCode) == 0x38)
+//				mIsIniting	= true;
 
 			break;
 
