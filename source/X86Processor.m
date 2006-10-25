@@ -1188,6 +1188,9 @@
 
 		mCurrentFuncInfoIndex++;
 
+		if (mCurrentFuncInfoIndex >= mNumFuncInfos)
+			mCurrentFuncInfoIndex	= -1;
+
 		return;
 	}
 
