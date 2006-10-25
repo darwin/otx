@@ -40,6 +40,7 @@
 	UInt32				mArchMagic;
 	BOOL				mExeIsFat;
 	BOOL				mFileIsValid;
+	BOOL				mIgnoreArch;
 	NSString*			mExeName;
 	NSString*			mOutputFileLabel;
 	NSString*			mOutputFileName;

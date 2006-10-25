@@ -488,7 +488,10 @@
 //			[theProcessor release];
 
 			if (fixedFile)
+			{
+				mIgnoreArch	= true;
 				[self newOFile: fixedFile needsPath: true];
+			}
 			else
 				printf("otx: unable to fix nops\n");
 
@@ -575,6 +578,12 @@
 	mFileIsValid	= true;
 
 	[mPathText setStringValue: [mOFile path]];
+
+	if (mIgnoreArch)
+	{
+		mIgnoreArch	= false;
+		return;
+	}
 
 	if (mOutputFileLabel)
 	{
