@@ -283,7 +283,7 @@
 									<key>PBXSmartGroupTreeModuleColumnWidthsKey</key>
 									<array>
 										<real>22</real>
-										<real>220</real>
+										<real>283</real>
 										<real>48</real>
 										<real>20</real>
 										<real>43</real>
@@ -311,15 +311,9 @@
 										<string>19C28FACFE9D520D11CA2CBB</string>
 									</array>
 									<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
-									<array>
-										<array>
-											<integer>10</integer>
-											<integer>1</integer>
-											<integer>0</integer>
-										</array>
-									</array>
+									<array/>
 									<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-									<string>{{0, 0}, {396, 547}}</string>
+									<string>{{0, 0}, {396, 554}}</string>
 								</dict>
 								<key>PBXTopSmartGroupGIDs</key>
 								<array/>
@@ -329,13 +323,13 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{10, 27}, {413, 565}}</string>
+								<string>{{10, 27}, {413, 572}}</string>
 								<key>GroupTreeTableConfiguration</key>
 								<array>
 									<string>SCMStatusColumn</string>
 									<real>22</real>
 									<string>MainColumn</string>
-									<real>220</real>
+									<real>283</real>
 									<string>ObjectSizeColumn</string>
 									<real>48</real>
 									<string>FileBuiltColumn</string>
@@ -346,7 +340,7 @@
 									<real>43</real>
 								</array>
 								<key>RubberWindowFrame</key>
-								<string>605 113 413 633 0 0 1024 746 </string>
+								<string>605 106 413 640 0 0 1024 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXSmartGroupTreeModule</string>
@@ -486,8 +480,8 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>E1EA82310AF05FCF004A7C26</string>
-				<string>E1EA82320AF05FCF004A7C26</string>
+				<string>E1BF5ED40AF0758300BACF30</string>
+				<string>E1BF5ED50AF0758300BACF30</string>
 				<string>1C9437FD063B20B00039CFAC</string>
 				<string>1C9437FE063B20B00039CFAC</string>
 				<string>1C9437FF063B20B00039CFAC</string>
@@ -505,7 +499,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>183529092.96356499</real>
+	<real>183532521.63825199</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>1</integer>
 	<key>ToolbarIsVisible</key>
@@ -520,18 +514,11 @@
 	<integer>0</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>E1EA82580AF06868004A7C26</string>
-		<string>E1EA825E0AF0689E004A7C26</string>
-		<string>E1EA825F0AF0689E004A7C26</string>
-		<string>1C530D5B069F1CE1000CFCEE</string>
-		<string>1C530D54069F1CE1000CFCEE</string>
-		<string>E1EA82470AF064B3004A7C26</string>
 		<string>1C530D52069F1CE1000CFCEE</string>
 		<string>/Volumes/Venus/Dev/otx/project/trunk/otx.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>605 113 413 633 0 0 1024 746 </string>
+	<string>605 106 413 640 0 0 1024 746 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -747,7 +734,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D52069F1CE1000CFCEE</string>
-				<string>E1EA82350AF0600F004A7C26</string>
+				<string>E1BF5ECF0AF0751300BACF30</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
