@@ -485,8 +485,6 @@
 			NSURL*	fixedFile	= 
 				[theProcessor fixNops: theNops toPath: mOutputFilePath];
 
-//			[theProcessor release];
-
 			if (fixedFile)
 			{
 				mIgnoreArch	= true;
@@ -579,6 +577,7 @@
 
 	[mPathText setStringValue: [mOFile path]];
 
+	// If we just loaded a deobfuscated copy, skip the rest.
 	if (mIgnoreArch)
 	{
 		mIgnoreArch	= false;
