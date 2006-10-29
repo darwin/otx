@@ -40,6 +40,12 @@
 	mFieldWidths.mnemonic		= 12;
 	mFieldWidths.operands		= 29;
 
+/**/
+
+mAddBlockSpaces	= true;
+
+/**/
+
 	return self;
 }
 
@@ -1027,7 +1033,10 @@
 {
 	if (!mRegInfos[EAX].isValid ||
 		 mRegInfos[EAX].intValue > SYS_MAXSYSCALL)
+	{
+		snprintf(mLineCommentCString, 11, "syscall(?)");
 		return;
+	}
 
 	BOOL		isIndirect	= (mRegInfos[EAX].intValue == SYS_syscall);
 	UInt32		syscallNum;
@@ -1172,9 +1181,9 @@
 //	updateRegisters:
 // ----------------------------------------------------------------------------
 
-- (void)updateRegisters: (Line*)inLine;
+- (void)updateRegisters: (Line*)ioLine;
 {
-	if (!inLine)
+	if (!ioLine)
 	{
 		bzero(&mRegInfos[0], sizeof(RegisterInfo) * 8);
 		mCurrentThunk	= NOREG;
@@ -1195,12 +1204,14 @@
 	}
 
 	UInt8	opcode;
+	UInt8	opcode2;
 	UInt8	modRM;
 
-	sscanf(inLine->info.code, "%02hhx", &opcode);
+	sscanf(ioLine->info.code, "%02hhx", &opcode);
+	sscanf(&ioLine->info.code[2], "%02hhx", &opcode2);
 
 	// Check if we need to save the machine state.
-	if (mFuncInfos && IS_JUMP(opcode) && mCurrentFuncInfoIndex >= 0)
+	if (mFuncInfos && IS_JUMP(opcode, opcode2) && mCurrentFuncInfoIndex >= 0)
 	{
 		UInt32	jumpTarget;
 		BOOL	validTarget	= false;
@@ -1211,24 +1222,21 @@
 		{
 			SInt8	rel8;
 
-			sscanf(&inLine->info.code[2], "%02hhx", &rel8);
-			jumpTarget	= inLine->info.address + 2 + rel8;
+			sscanf(&ioLine->info.code[2], "%02hhx", &rel8);
+			jumpTarget	= ioLine->info.address + 2 + rel8;
 
-			// Ignore backwards branches.
-			if (rel8 > 0)
-				validTarget	= true;
+			validTarget	= true;
 		}
-		else if (opcode == 0xe9)
+		else if (opcode == 0xe9	||
+			(opcode == 0x0f	&& opcode2 >= 0x81 && opcode2 <= 0x8f))
 		{
 			SInt32	rel32;
 
-			sscanf(&inLine->info.code[2], "%08x", &rel32);
+			sscanf(&ioLine->info.code[2], "%08x", &rel32);
 			rel32		= OSSwapInt32(rel32);
-			jumpTarget	= inLine->info.address + 5 + rel32;
+			jumpTarget	= ioLine->info.address + 5 + rel32;
 
-			// Ignore backwards branches.
-			if (rel32 > 0)
-				validTarget	= true;
+			validTarget	= true;
 		}
 
 		if (validTarget)
@@ -1267,7 +1275,10 @@
 
 			// Create and store a new BlockInfo.
 			funcInfo->blocks[funcInfo->numBlocks - 1]	= (BlockInfo)
-				{jumpTarget, 0, machState};
+				{jumpTarget, 0, machState, true};
+
+			// Remind us to add a \n to the following line.
+			mEnteringNewBlock	= true;
 		}
 	}
 	else if (mFuncInfos)	// Check if we need to restore the machine state.
@@ -1285,17 +1296,35 @@
 
 				for (i = 0; i < funcInfo->numBlocks; i++)
 				{
-					if (funcInfo->blocks[i].start == inLine->info.address)
+					if (funcInfo->blocks[i].start == ioLine->info.address)
 					{
-						MachineState	machState	=
-							funcInfo->blocks[i].state;
+						// Update machine state if needed.
+						if (funcInfo->blocks[i].required)
+						{
+							MachineState	machState	=
+								funcInfo->blocks[i].state;
 
-						memcpy(mRegInfos, machState.regInfos,
-							sizeof(RegisterInfo) * 8);
+							memcpy(mRegInfos, machState.regInfos,
+								sizeof(RegisterInfo) * 8);
 
-						if (machState.localSelves)
-							memcpy(mLocalSelves, machState.localSelves,
-								sizeof(VarInfo) * machState.numLocalSelves);
+							if (machState.localSelves)
+								memcpy(mLocalSelves, machState.localSelves,
+									sizeof(VarInfo) * machState.numLocalSelves);
+						}
+
+						// Optionally add a blank line before this block
+						if (mAddBlockSpaces	&& ioLine->chars[0]	!= '\n')
+						{
+							char	origLine[MAX_LINE_LENGTH];
+
+							strncpy(origLine, ioLine->chars, ioLine->length);
+
+							ioLine->chars		= realloc(
+								ioLine->chars, ioLine->length + 2);
+							ioLine->chars[0]	= '\n';
+							strncpy(&ioLine->chars[1], origLine, ioLine->length);
+							ioLine->length++;
+						}
 
 						break;
 					}
@@ -1310,14 +1339,14 @@
 		// add, or, adc, sbb, and, sub, xor, cmp
 		case 0x83:	// EXTS(imm8),r32
 		{
-			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+			sscanf(&ioLine->info.code[2], "%02hhx", &modRM);
 
 			if (!mRegInfos[REG1(modRM)].isValid)
 				break;
 
 			UInt8	imm;
 
-			sscanf(&inLine->info.code[4], "%02hhx", &imm);
+			sscanf(&ioLine->info.code[4], "%02hhx", &imm);
 
 			switch (OPEXT(modRM))
 			{
@@ -1365,7 +1394,7 @@
 
 		case 0x89:	// mov reg to mem
 		{
-			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+			sscanf(&ioLine->info.code[2], "%02hhx", &modRM);
 
 			if (MOD(modRM) == MODx)	// reg to reg
 			{
@@ -1387,7 +1416,7 @@
 			if (HAS_SIB(modRM))	// pushing an arg onto stack
 			{
 				if (HAS_DISP8(modRM))
-					sscanf(&inLine->info.code[6], "%02hhx", &offset);
+					sscanf(&ioLine->info.code[6], "%02hhx", &offset);
 
 				if (offset >= 0)
 				{
@@ -1410,7 +1439,7 @@
 				if (!mRegInfos[REG1(modRM)].classPtr)
 					break;
 
-				sscanf(&inLine->info.code[4], "%02hhx", &offset);
+				sscanf(&ioLine->info.code[4], "%02hhx", &offset);
 
 				mNumLocalSelves++;
 
@@ -1428,7 +1457,7 @@
 		}
 
 		case 0x8b:	// mov mem to reg
-			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+			sscanf(&ioLine->info.code[2], "%02hhx", &modRM);
 
 			bzero(&mRegInfos[REG1(modRM)], sizeof(RegisterInfo));
 
@@ -1436,7 +1465,7 @@
 			{
 				SInt8	offset;
 
-				sscanf(&inLine->info.code[4], "%02hhx", &offset);
+				sscanf(&ioLine->info.code[4], "%02hhx", &offset);
 
 				if (REG2(modRM) == EBP && offset == 0x8)
 				{	// Copying self from 1st arg to a register.
@@ -1484,7 +1513,7 @@
 
 			bzero(&mRegInfos[REG2(opcode)], sizeof(RegisterInfo));
 
-			sscanf(&inLine->info.code[2], "%02hhx", &imm);
+			sscanf(&ioLine->info.code[2], "%02hhx", &imm);
 			mRegInfos[REG2(opcode)].intValue	= imm;
 			mRegInfos[REG2(opcode)].isValid		= true;
 
@@ -1494,7 +1523,7 @@
 		case 0xa1:	// movl	moffs32,%eax
 			bzero(&mRegInfos[EAX], sizeof(RegisterInfo));
 
-			sscanf(&inLine->info.code[2], "%08x", &mRegInfos[EAX].intValue);
+			sscanf(&ioLine->info.code[2], "%08x", &mRegInfos[EAX].intValue);
 			mRegInfos[EAX].intValue	= OSSwapInt32(mRegInfos[EAX].intValue);
 			mRegInfos[EAX].isValid	= true;
 
@@ -1509,7 +1538,7 @@
 		case 0xbf:	// movl	imm32,%edi
 			bzero(&mRegInfos[REG2(opcode)], sizeof(RegisterInfo));
 
-			sscanf(&inLine->info.code[2], "%08x",
+			sscanf(&ioLine->info.code[2], "%08x",
 				&mRegInfos[REG2(opcode)].intValue);
 			mRegInfos[REG2(opcode)].intValue	=
 				OSSwapInt32(mRegInfos[REG2(opcode)].intValue);
@@ -1674,6 +1703,20 @@
 - (NSURL*)fixNops: (NopList*)inList
 		   toPath: (NSString*)inOutputFilePath
 {
+	if (!inList)
+	{
+		printf("otx: -[X86Processor fixNops]: "
+			"tried to fix nil NopList.\n");
+		return nil;
+	}
+
+	if (!inOutputFilePath)
+	{
+		printf("otx: -[X86Processor fixNops]: "
+			"inOutputFilePath was nil.\n");
+		return nil;
+	}
+
 	UInt32			i	= 0;
 	unsigned char*	item;
 
@@ -1789,7 +1832,8 @@
 
 	if (!fileAttrs)
 	{
-		printf("otx: unable to read attributes from executable\n");
+		printf("otx: -[X86Processor fixNops]: "
+			"unable to read attributes from executable\n");
 		return nil;
 	}
 
@@ -1800,7 +1844,8 @@
 	if (![fileMan changeFileAttributes: permsDict atPath: [newURL path]])
 	{
 		printf(
-			"otx: unable to change file permissions for fixed executable\n");
+			"otx: -[X86Processor fixNops]: "
+			"unable to change file permissions for fixed executable\n");
 	}
 
 	// Return fixed file.
