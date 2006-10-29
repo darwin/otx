@@ -40,12 +40,6 @@
 	mFieldWidths.mnemonic		= 12;
 	mFieldWidths.operands		= 29;
 
-/**/
-
-mAddBlockSpaces	= true;
-
-/**/
-
 	return self;
 }
 
@@ -1274,8 +1268,8 @@ mAddBlockSpaces	= true;
 				{savedRegs, savedVars, mNumLocalSelves};
 
 			// Create and store a new BlockInfo.
-			funcInfo->blocks[funcInfo->numBlocks - 1]	= (BlockInfo)
-				{jumpTarget, 0, machState, true};
+			funcInfo->blocks[funcInfo->numBlocks - 1]	=
+				(BlockInfo){jumpTarget, 0, machState};
 
 			// Remind us to add a \n to the following line.
 			mEnteringNewBlock	= true;
@@ -1298,22 +1292,19 @@ mAddBlockSpaces	= true;
 				{
 					if (funcInfo->blocks[i].start == ioLine->info.address)
 					{
-						// Update machine state if needed.
-						if (funcInfo->blocks[i].required)
-						{
-							MachineState	machState	=
-								funcInfo->blocks[i].state;
+						// Update machine state.
+						MachineState	machState	=
+							funcInfo->blocks[i].state;
 
-							memcpy(mRegInfos, machState.regInfos,
-								sizeof(RegisterInfo) * 8);
+						memcpy(mRegInfos, machState.regInfos,
+							sizeof(RegisterInfo) * 8);
 
-							if (machState.localSelves)
-								memcpy(mLocalSelves, machState.localSelves,
-									sizeof(VarInfo) * machState.numLocalSelves);
-						}
+						if (machState.localSelves)
+							memcpy(mLocalSelves, machState.localSelves,
+								sizeof(VarInfo) * machState.numLocalSelves);
 
-						// Optionally add a blank line before this block
-						if (mAddBlockSpaces	&& ioLine->chars[0]	!= '\n')
+						// Optionally add a blank line before this block.
+						if (mIsolateCodeBlocks	&& ioLine->chars[0]	!= '\n')
 						{
 							char	origLine[MAX_LINE_LENGTH];
 

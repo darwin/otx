@@ -5,6 +5,7 @@
 #define AskOutputDirKey				@"AskOutputDir"
 #define DemangleCppNamesKey			@"DemangleCppNames"
 #define EntabOutputKey				@"EntabOutput"
+#define IsolateCodeBlocksKey		@"IsolateCodeBlocks"
 #define OpenOutputFileKey			@"OpenOutputFile"
 #define OutputAppKey				@"OutputApp"
 #define OutputFileExtensionKey		@"OutputFileExtension"

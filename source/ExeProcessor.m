@@ -216,6 +216,7 @@ methodInfo_compare(
 	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
 	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
 	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
+	mIsolateCodeBlocks		= [theDefaults boolForKey: IsolateCodeBlocksKey];
 
 	if (![self loadMachHeader])
 	{
@@ -1548,6 +1549,9 @@ methodInfo_compare(
 	// Check if this is the beginning of a function.
 	if ((*ioLine)->info.isFunction)
 	{
+		// Squash the new block flag, just in case.
+		mEnteringNewBlock	= false;
+
 		// New function, new local offset count.
 		mLocalOffset	= 0;
 		mCurrentFuncPtr	= (*ioLine)->info.address;
@@ -1853,7 +1857,7 @@ methodInfo_compare(
 		snprintf(&finalFormatCString[formatMarker],
 			30, "%s", "%s %s%s %s%s\n");
 
-	char	theFinalCString[MAX_LINE_LENGTH]	/*= {0}*/;
+	char	theFinalCString[MAX_LINE_LENGTH];
 
 	if (mShowLocalOffsets)
 		snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
@@ -1872,9 +1876,21 @@ methodInfo_compare(
 			commentSpaces, theCommentCString);
 
 	free((*ioLine)->chars);
-	(*ioLine)->length	= strlen(theFinalCString);
-	(*ioLine)->chars	= malloc((*ioLine)->length + 1);
-	strncpy((*ioLine)->chars, theFinalCString, (*ioLine)->length + 1);
+
+	if (mIsolateCodeBlocks	&& mEnteringNewBlock)
+	{
+		(*ioLine)->length	= strlen(theFinalCString) + 1;
+		(*ioLine)->chars	= malloc((*ioLine)->length + 1);
+		(*ioLine)->chars[0]	= '\n';
+		strncpy(&(*ioLine)->chars[1], theFinalCString, (*ioLine)->length);
+		mEnteringNewBlock	= false;
+	}
+	else
+	{
+		(*ioLine)->length	= strlen(theFinalCString);
+		(*ioLine)->chars	= malloc((*ioLine)->length + 1);
+		strncpy((*ioLine)->chars, theFinalCString, (*ioLine)->length + 1);
+	}
 
 	UpdateRegisters(*ioLine);
 	PostProcessCodeLine(ioLine);
@@ -2116,7 +2132,7 @@ methodInfo_compare(
 // ----------------------------------------------------------------------------
 //	Subclasses may override.
 
-- (void)updateRegisters: (Line*)inLine
+- (void)updateRegisters: (Line*)ioLine
 {}
 
 //	insertMD5

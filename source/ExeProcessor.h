@@ -67,6 +67,8 @@ MachineState;
 
 	Info pertaining to a logical block of code. 'state' is the saved
 	MachineState that should be restored upon entering this block.
+	'required' is true if the state actually changes. Normal processing
+	uses only required blocks, block-separating uses all blocks.
 */
 typedef struct
 {
@@ -361,6 +363,9 @@ enum {
 	BOOL		mShowIvarTypes;
 	BOOL		mEntabOutput;
 	BOOL		mDemangleCppNames;
+	BOOL		mIsolateCodeBlocks;
+
+	BOOL		mEnteringNewBlock;
 
 	// saved strings
 	char		mArchString[MAX_ARCH_STRING_LENGTH];	// "ppc", "i386" etc.
@@ -464,7 +469,7 @@ enum {
 			andType: (UInt8*)outType;
 - (void)commentForLine: (Line*)inLine;
 - (void)commentForSystemCall;
-- (void)updateRegisters: (Line*)inLine;
+- (void)updateRegisters: (Line*)ioLine;
 
 - (void)insertMD5;
 - (char*)prepareNameForDemangling: (char*)inName;

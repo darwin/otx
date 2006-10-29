@@ -40,6 +40,7 @@
 		@"1",		AskOutputDirKey,
 		@"YES",		DemangleCppNamesKey,
 		@"YES",		EntabOutputKey,
+		@"NO",		IsolateCodeBlocksKey,
 		@"YES",		OpenOutputFileKey,
 		@"BBEdit",	OutputAppKey,
 		@"txt",		OutputFileExtensionKey,
