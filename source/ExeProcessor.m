@@ -1480,34 +1480,18 @@ methodInfo_compare(
 
 	mLineOperandsCString[0]	= 0;
 
+	char*	origFormatString	= "%s\t%s\t%s%n";
+	UInt32	consumedAfterOp		= 0;
+
 	// The address and mnemonic always exist, separated by a tab.
-	sscanf((*ioLine)->chars, "%s\t%s", theAddressCString, theMnemonicCString);
+	sscanf((*ioLine)->chars, origFormatString, theAddressCString,
+		theMnemonicCString, mLineOperandsCString, &consumedAfterOp);
 
-	// Any remaining data must be accessed manually.
-	UInt16	theSrcMarker		=
-		strlen(theAddressCString) + strlen(theMnemonicCString) + 1;
-	UInt16	theDestMarker		= 0;
-
-	while (++theSrcMarker < theOrigLength)
-	{
-		if ((*ioLine)->chars[theSrcMarker] == '\t'	||
-			(*ioLine)->chars[theSrcMarker] == '\n')
-			break;
-
-		mLineOperandsCString[theDestMarker++] = (*ioLine)->chars[theSrcMarker];
-	}
-
-	// Add null terminator, this is a static string.
-	mLineOperandsCString[theDestMarker] = 0;
-	theDestMarker	= 0;
-
-	while (++theSrcMarker < theOrigLength)
-	{
-		if ((*ioLine)->chars[theSrcMarker] == '\n')
-			break;
-
-		theOrigCommentCString[theDestMarker++] = (*ioLine)->chars[theSrcMarker];
-	}
+	// If we didn't grab everything up to the newline, there's a comment
+	// remaining. Copy it, starting after the preceding tab.
+	if (consumedAfterOp && consumedAfterOp < theOrigLength - 1)
+		strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
+			theOrigLength - consumedAfterOp - 2);
 
 	char*	theCodeCString	= (*ioLine)->info.code;
 	SInt16	i				=
