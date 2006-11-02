@@ -20,6 +20,8 @@
 #define GetPointerFuncType					(char*			(*)(id, SEL, UInt32, UInt8*))
 #define CommentForLineFuncType				(void			(*)(id, SEL, Line*))
 #define CommentForSystemCallFuncType		(void			(*)(id, SEL))
+#define CommentForMsgSendFromLineFuncType	(void			(*)(id, SEL, char*, Line*))
+#define ResetRegistersFuncType				(void			(*)(id, SEL, Line*))
 #define UpdateRegistersFuncType				(void			(*)(id, SEL, Line*))
 #define PrepareNameForDemanglingFuncType	(char*			(*)(id, SEL, char*))
 #define ObjcClassPtrFromMethodFuncType		(objc_class*	(*)(id, SEL, UInt32))
@@ -50,6 +52,8 @@
 #define GetPointerSel					@selector(getPointer:andType:)
 #define CommentForLineSel				@selector(commentForLine:)
 #define CommentForSystemCallSel			@selector(commentForSystemCall)
+#define CommentForMsgSendFromLineSel	@selector(commentForMsgSend:fromLine:)
+#define ResetRegistersSel				@selector(resetRegisters:)
 #define UpdateRegistersSel				@selector(updateRegisters:)
 #define PrepareNameForDemanglingSel		@selector(prepareNameForDemangling:)
 #define ObjcClassPtrFromMethodSel		@selector(objcClassPtrFromMethod:)
@@ -94,6 +98,10 @@
 		CommentForLine(self, CommentForLineSel, (a))
 #define CommentForSystemCall()													\
 		CommentForSystemCall(self, CommentForSystemCallSel)
+#define CommentForMsgSendFromLine(a, b)											\
+		CommentForMsgSendFromLine(self, CommentForMsgSendFromLineSel, (a), (b))
+#define ResetRegisters(a)														\
+		ResetRegisters(self, ResetRegistersSel, (a))
 #define UpdateRegisters(a)														\
 		UpdateRegisters(self, UpdateRegistersSel, (a))
 #define PrepareNameForDemangling(a)												\

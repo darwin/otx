@@ -17,7 +17,7 @@
 
 // Register identifiers in r/m field of mod r/m byte
 enum {
-	NOREG	= -1,
+	NO_REG	= -1,
 	EAX,	// 0
 	ECX,	// 1
 	EDX,	// 2

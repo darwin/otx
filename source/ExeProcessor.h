@@ -365,6 +365,8 @@ enum {
 	BOOL		mDemangleCppNames;
 	BOOL		mIsolateCodeBlocks;
 
+	BOOL		mReplaceSends;
+
 	BOOL		mEnteringNewBlock;
 
 	// saved strings
@@ -373,22 +375,24 @@ enum {
 	char		mLineOperandsCString[MAX_OPERANDS_LENGTH];
 
 	// C function pointers- see Optimizations.h and speedyDelivery
-	BOOL	(*GetDescription)			(id, SEL, char*, const char*);
-	BOOL	(*LineIsCode)				(id, SEL, const char*);
-	BOOL	(*LineIsFunction)			(id, SEL, Line*);
-	UInt32	(*AddressFromLine)			(id, SEL, const char*);
-	void	(*CodeFromLine)				(id, SEL, Line*);
-	void	(*CheckThunk)				(id, SEL, Line*);
-	void	(*ProcessLine)				(id, SEL, Line*);
-	void	(*ProcessCodeLine)			(id, SEL, Line**);
-	void	(*PostProcessCodeLine)		(id, SEL, Line**);
-	void	(*ChooseLine)				(id, SEL, Line**);
-	void	(*EntabLine)				(id, SEL, Line*);
-	char*	(*GetPointer)				(id, SEL, UInt32, UInt8*);
-	void	(*CommentForLine)			(id, SEL, Line*);
-	void	(*CommentForSystemCall)		(id, SEL);
-	void	(*UpdateRegisters)			(id, SEL, Line*);
-	char*	(*PrepareNameForDemangling)	(id, SEL, char*);
+	BOOL	(*GetDescription)				(id, SEL, char*, const char*);
+	BOOL	(*LineIsCode)					(id, SEL, const char*);
+	BOOL	(*LineIsFunction)				(id, SEL, Line*);
+	UInt32	(*AddressFromLine)				(id, SEL, const char*);
+	void	(*CodeFromLine)					(id, SEL, Line*);
+	void	(*CheckThunk)					(id, SEL, Line*);
+	void	(*ProcessLine)					(id, SEL, Line*);
+	void	(*ProcessCodeLine)				(id, SEL, Line**);
+	void	(*PostProcessCodeLine)			(id, SEL, Line**);
+	void	(*ChooseLine)					(id, SEL, Line**);
+	void	(*EntabLine)					(id, SEL, Line*);
+	char*	(*GetPointer)					(id, SEL, UInt32, UInt8*);
+	void	(*CommentForLine)				(id, SEL, Line*);
+	void	(*CommentForSystemCall)			(id, SEL);
+	void	(*CommentForMsgSendFromLine)	(id, SEL, char*, Line*);
+	void	(*ResetRegisters)				(id, SEL, Line*);
+	void	(*UpdateRegisters)				(id, SEL, Line*);
+	char*	(*PrepareNameForDemangling)		(id, SEL, char*);
 
 	objc_class*		(*ObjcClassPtrFromMethod)		(id, SEL, UInt32);
 	objc_category*	(*ObjcCatPtrFromMethod)			(id, SEL, UInt32);
@@ -448,6 +452,7 @@ enum {
 - (BOOL)processVerboseFile: (NSURL*)inVerboseFile
 			  andPlainFile: (NSURL*)inPlainFile;
 - (void)gatherLineInfos;
+- (void)gatherFuncInfos;
 - (void)decodeMethodReturnType: (const char*)inTypeCode
 						output: (char*)outCString;
 - (void)getDescription: (char*)ioCString
@@ -469,7 +474,11 @@ enum {
 			andType: (UInt8*)outType;
 - (void)commentForLine: (Line*)inLine;
 - (void)commentForSystemCall;
+- (void)commentForMsgSend: (char*)ioComment
+				 fromLine: (Line*)inLine;
+- (void)resetRegisters: (Line*)ioLine;
 - (void)updateRegisters: (Line*)ioLine;
+- (BOOL)restoreRegisters: (Line*)ioLine;
 
 - (void)insertMD5;
 - (char*)prepareNameForDemangling: (char*)inName;

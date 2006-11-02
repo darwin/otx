@@ -124,7 +124,7 @@
 		return;
 
 	UInt32		theInstruction	= strtoul(inLine->prev->info.code, nil, 16);
-	ThunkInfo	theThunk		= {inLine->prev->info.address, NOREG};
+	ThunkInfo	theThunk		= {inLine->prev->info.address, NO_REG};
 
 	switch (theInstruction)
 	{
@@ -1074,6 +1074,18 @@
 	}
 }
 
+//	commentForMsgSend:fromLine:
+// ----------------------------------------------------------------------------
+
+- (void)commentForMsgSend: (char*)ioComment
+				 fromLine: (Line*)inLine
+{
+	if (memcmp(mLineCommentCString, "_objc_msgSend", 13))
+		return;
+
+	
+}
+
 //	chooseLine:
 // ----------------------------------------------------------------------------
 
@@ -1179,8 +1191,11 @@
 {
 	if (!ioLine)
 	{
+		mCurrentClass	= ObjcClassPtrFromMethod(ioLine->info.address);
+		mCurrentCat		= ObjcCatPtrFromMethod(ioLine->info.address);
+		mCurrentThunk	= NO_REG;
+
 		bzero(&mRegInfos[0], sizeof(RegisterInfo) * 8);
-		mCurrentThunk	= NOREG;
 
 		if (mLocalSelves)
 		{
@@ -1189,10 +1204,11 @@
 			mNumLocalSelves	= 0;
 		}
 
-		mCurrentFuncInfoIndex++;
+// this logic was fucked anyway
+//		mCurrentFuncInfoIndex++;
 
-		if (mCurrentFuncInfoIndex >= mNumFuncInfos)
-			mCurrentFuncInfoIndex	= -1;
+//		if (mCurrentFuncInfoIndex >= mNumFuncInfos)
+//			mCurrentFuncInfoIndex	= -1;
 
 		return;
 	}
@@ -1204,6 +1220,7 @@
 	sscanf(ioLine->info.code, "%02hhx", &opcode);
 	sscanf(&ioLine->info.code[2], "%02hhx", &opcode2);
 
+/*
 	// Check if we need to save the machine state.
 	if (mFuncInfos && IS_JUMP(opcode, opcode2) && mCurrentFuncInfoIndex >= 0)
 	{
@@ -1323,6 +1340,7 @@
 			}	// if (funcInfo->blocks)
 		}	// if (mCurrentFuncInfoIndex >= 0)
 	}
+*/
 
 	switch (opcode)
 	{
@@ -1608,6 +1626,26 @@
 	}
 
 	return isFunction;
+}
+
+//	gatherFuncInfos
+// ----------------------------------------------------------------------------
+//	Subclasses may override
+
+- (void)gatherFuncInfos
+{
+	Line*	theLine	= mPlainLineListHead;
+
+	// Loop thru lines.
+	while (theLine)
+	{
+		if (theLine->info.isCode)
+		{
+
+		}
+
+		theLine	= theLine->next;
+	}
 }
 
 #pragma mark Deobfuscastion

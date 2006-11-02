@@ -40,6 +40,12 @@
 	mFieldWidths.mnemonic		= 9;
 	mFieldWidths.operands		= 17;
 
+/**/
+
+mReplaceSends	= true;
+
+/**/
+
 	return self;
 }
 
@@ -129,33 +135,47 @@
 		// 16-bit limitation.
 		case 0x12:	// b, ba, bl, bla
 		{
-			// ignore non-absolute branches
-			if (!AA(theCode))
-				break;
-
 			UInt32	target	= LI(theCode) | 0xfc000000;
 
-			switch (target)
+			if (mReplaceSends)
 			{
-				case kRTAddress_objc_msgSend:
-					strncpy(mLineCommentCString, kRTName_objc_msgSend,
-						strlen(kRTName_objc_msgSend) + 1);
+				if (AA(theCode) && target == kRTAddress_objc_msgSend)
+				{
+					// handle rtp here
+
 					break;
-				case kRTAddress_objc_assign_ivar:
-					strncpy(mLineCommentCString, kRTName_objc_assign_ivar,
-						strlen(kRTName_objc_assign_ivar) + 1);
-					break;
-				case kRTAddress_objc_assign_global:
-					strncpy(mLineCommentCString, kRTName_objc_assign_global,
-						strlen(kRTName_objc_assign_global) + 1);
-					break;
-				case kRTAddress_objc_assign_strongCast:
-					strncpy(mLineCommentCString, kRTName_objc_assign_strongCast,
-						strlen(kRTName_objc_assign_strongCast) + 1);
+				}
+
+				
+			}
+			else
+			{
+				// ignore non-absolute branches
+				if (!AA(theCode))
 					break;
 
-				default:
-					break;
+				switch (target)
+				{
+					case kRTAddress_objc_msgSend:
+						strncpy(mLineCommentCString, kRTName_objc_msgSend,
+							strlen(kRTName_objc_msgSend) + 1);
+						break;
+					case kRTAddress_objc_assign_ivar:
+						strncpy(mLineCommentCString, kRTName_objc_assign_ivar,
+							strlen(kRTName_objc_assign_ivar) + 1);
+						break;
+					case kRTAddress_objc_assign_global:
+						strncpy(mLineCommentCString, kRTName_objc_assign_global,
+							strlen(kRTName_objc_assign_global) + 1);
+						break;
+					case kRTAddress_objc_assign_strongCast:
+						strncpy(mLineCommentCString, kRTName_objc_assign_strongCast,
+							strlen(kRTName_objc_assign_strongCast) + 1);
+						break;
+
+					default:
+						break;
+				}
 			}
 
 			break;
@@ -566,6 +586,73 @@
 	}
 }
 
+//	commentForMsgSend:fromLine:
+// ----------------------------------------------------------------------------
+
+- (void)commentForMsgSend: (char*)ioComment
+				 fromLine: (Line*)inLine
+{
+	UInt32	theCode	= strtoul(inLine->info.code, nil, 16);
+
+	if (PO(theCode) != 0x12)	// b, bl, ba, bla
+		return;
+
+	if (memcmp(ioComment, "_objc_msgSend", 13))
+		return;
+
+	char	tempComment[MAX_COMMENT_LENGTH];
+
+	tempComment[0]	= 0;
+
+	if (strlen(ioComment) == 13)	// _objc_msgSend
+	{
+		if (!mRegInfos[4].isValid || !mRegInfos[4].intValue)
+			return;
+
+		if (mRegInfos[3].isValid && mRegInfos[3].intValue)
+		{
+			UInt8	theType		= PointerType;
+			char*	className	= nil;
+			char*	ptr			= GetPointer(mRegInfos[3].intValue, &theType);
+
+			switch(theType)
+			{
+				case PointerType:
+					className	= ptr;
+					break;
+
+				case OCGenericType:
+					className	= GetPointer(*(UInt32*)ptr, nil);
+					break;
+
+				default:
+					break;
+			}
+
+			if (className)
+				snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "[%s %s]",
+					className, GetPointer(mRegInfos[4].intValue, nil));
+			else
+				snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "[$r3 %s]",
+					GetPointer(mRegInfos[4].intValue, nil));
+		}
+		else
+		{
+			snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "[$r3 %s]",
+				GetPointer(mRegInfos[4].intValue, nil));
+		}
+	}
+	else if (strstr(ioComment, "Super_stret"))
+	{}
+	else if (strstr(ioComment, "Super"))
+	{}
+	else if (strstr(ioComment, "_stret"))
+	{}
+
+	if (tempComment[0])
+		strncpy(ioComment, tempComment, strlen(tempComment) + 1);
+}
+
 //	chooseLine:
 // ----------------------------------------------------------------------------
 
@@ -592,6 +679,45 @@
 	}
 }
 
+//	resetRegisters:
+// ----------------------------------------------------------------------------
+
+- (void)resetRegisters: (Line*)ioLine
+{
+	if (!ioLine)
+	{
+		printf("otx: [PPCProcessor resetRegisters]: "
+			"tried to reset with nil ioLine\n");
+		return;
+	}
+
+	mCurrentClass	= ObjcClassPtrFromMethod(ioLine->info.address);
+	mCurrentCat		= ObjcCatPtrFromMethod(ioLine->info.address);
+
+	bzero(&mRegInfos[0], sizeof(RegisterInfo) * 32);
+
+	mRegInfos[3].classPtr	= mCurrentClass;
+	mRegInfos[3].catPtr		= mCurrentCat;
+	mRegInfos[3].isValid	= true;
+	mRegInfos[12].intValue	= mCurrentFuncPtr;
+	mRegInfos[12].isValid	= true;
+	bzero(&mLR, sizeof(RegisterInfo));
+	bzero(&mCTR, sizeof(RegisterInfo));
+
+	if (mLocalSelves)
+	{
+		free(mLocalSelves);
+		mLocalSelves	= nil;
+		mNumLocalSelves	= 0;
+	}
+
+// this logic was fucked anyway
+	mCurrentFuncInfoIndex++;
+
+	if (mCurrentFuncInfoIndex >= mNumFuncInfos)
+		mCurrentFuncInfoIndex	= -1;
+}
+
 //	updateRegisters:
 // ----------------------------------------------------------------------------
 //	Keep our local copy of the GPRs in sync as much as possible with the
@@ -607,30 +733,11 @@
 	// and r12 holds the address of the 1st instruction if the function was
 	// called indirectly. In the case of direct calls, r12 will be overwritten
 	// before it is used, if it is used at all.
+
 	if (!ioLine)
 	{
-		bzero(&mRegInfos[0], sizeof(RegisterInfo) * 32);
-
-		mRegInfos[3].classPtr	= mCurrentClass;
-		mRegInfos[3].catPtr		= mCurrentCat;
-		mRegInfos[3].isValid	= true;
-		mRegInfos[12].intValue	= mCurrentFuncPtr;
-		mRegInfos[12].isValid	= true;
-		bzero(&mLR, sizeof(RegisterInfo));
-		bzero(&mCTR, sizeof(RegisterInfo));
-
-		if (mLocalSelves)
-		{
-			free(mLocalSelves);
-			mLocalSelves	= nil;
-			mNumLocalSelves	= 0;
-		}
-
-		mCurrentFuncInfoIndex++;
-
-		if (mCurrentFuncInfoIndex >= mNumFuncInfos)
-			mCurrentFuncInfoIndex	= -1;
-
+		printf("otx: [PPCProcessor updateRegisters]: "
+			"tried to update with nil ioLine\n");
 		return;
 	}
 
@@ -638,105 +745,8 @@
 	UInt32	theCode		= strtoul(
 		(const char*)ioLine->info.code, nil, 16);
 
-	// Check if we need to save the machine state.
-	if (IS_BLOCK_BRANCH(theCode) && mCurrentFuncInfoIndex >= 0)
-	{
-		UInt32	branchTarget;
-
-		// Retrieve the branch target.
-		if (PO(theCode) == 0x12)	// b
-			branchTarget	= ioLine->info.address + LI(theCode);
-		else	// bc
-			branchTarget	= ioLine->info.address + BD(theCode);
-
-		// Retrieve current FunctionInfo.
-		FunctionInfo*	funcInfo	=
-			&mFuncInfos[mCurrentFuncInfoIndex];
-
-		// Allocate another BlockInfo.
-		funcInfo->numBlocks++;
-
-		if (funcInfo->blocks)
-			funcInfo->blocks	= realloc(funcInfo->blocks,
-				sizeof(BlockInfo) * funcInfo->numBlocks);
-		else
-			funcInfo->blocks	= malloc(sizeof(BlockInfo));
-
-		// Create a new MachineState.
-		RegisterInfo*	savedRegs	= malloc(
-			sizeof(RegisterInfo) * 34);
-
-		memcpy(savedRegs, mRegInfos, sizeof(RegisterInfo) * 32);
-		savedRegs[LRIndex]	= mLR;
-		savedRegs[CTRIndex]	= mCTR;
-
-		VarInfo*	savedVars	= nil;
-
-		if (mLocalSelves)
-		{
-			savedVars	= malloc(
-				sizeof(VarInfo) * mNumLocalSelves);
-			memcpy(savedVars, mLocalSelves,
-				sizeof(VarInfo) * mNumLocalSelves);
-		}
-
-		MachineState	machState	=
-			{savedRegs, savedVars, mNumLocalSelves};
-
-		// Create and store a new BlockInfo.
-		funcInfo->blocks[funcInfo->numBlocks - 1]	=
-			(BlockInfo){branchTarget, 0, machState};
-
-		// Remind us to add a \n to the following line.
+	if (IS_BLOCK_BRANCH(theCode))
 		mEnteringNewBlock	= true;
-	}
-		// Check if we need to restore the machine state.
-	else if (mCurrentFuncInfoIndex >= 0)
-	{
-		// Search current FunctionInfo for blocks that start at this address.
-		FunctionInfo*	funcInfo	=
-			&mFuncInfos[mCurrentFuncInfoIndex];
-
-		if (funcInfo->blocks)
-		{
-			UInt32	i;
-
-			for (i = 0; i < funcInfo->numBlocks; i++)
-			{
-				if (funcInfo->blocks[i].start == ioLine->info.address)
-				{
-					// Update machine state.
-					MachineState	machState	=
-						funcInfo->blocks[i].state;
-
-					memcpy(mRegInfos, machState.regInfos,
-						sizeof(RegisterInfo) * 32);
-					mLR		= machState.regInfos[LRIndex];
-					mCTR	= machState.regInfos[CTRIndex];
-
-					if (machState.localSelves)
-						memcpy(mLocalSelves, machState.localSelves,
-							sizeof(VarInfo) * machState.numLocalSelves);
-
-					// Optionally add a blank line before this block.
-					if (mIsolateCodeBlocks	&& ioLine->chars[0]	!= '\n')
-					{
-						char	origLine[MAX_LINE_LENGTH];
-
-						strncpy(origLine, ioLine->chars, ioLine->length);
-
-						ioLine->chars		= realloc(
-							ioLine->chars, ioLine->length + 2);
-						ioLine->chars[0]	= '\n';
-						strncpy(&ioLine->chars[1], origLine, ioLine->length);
-						ioLine->length++;
-					}
-
-					break;
-				}
-			}	// for (i = 0...)
-		}	// if (funcInfo->blocks)
-	}	// if (mCurrentFuncInfoIndex >= 0)
 
 	if (IS_BRANCH_LINK(theCode))
 	{
@@ -862,6 +872,26 @@
 
 			break;
 
+		case 0x10:	// bcl, bcla
+		case 0x13:	// bclrl, bcctrl
+			if (!IS_BRANCH_LINK(theCode))	// fall thru if link
+				break;
+
+		case 0x12:	// b, ba, bl, bla
+		{
+			if (!LK(theCode))	// bl, bla
+				break;
+
+			// At each branch link, we must assume that r3 will be trampled.
+			// In the case that the object is being inited, r3 will be trampled
+			// with the same class, so leave it alone.
+//			if (mIsIniting)
+//				mIsIniting	= false;
+//			else
+				bzero(&mRegInfos[3], sizeof(RegisterInfo));
+
+			break;
+		}
 		case 0x15:	// rlwinm
 		{
 			if (!mRegInfos[RT(theCode)].isValid)
@@ -1019,9 +1049,16 @@
 			else if (mRegInfos[RA(theCode)].isValid	&&
 					!mRegInfos[RA(theCode)].classPtr)
 			{
-				mRegInfos[RT(theCode)].intValue	=
-					mRegInfos[RA(theCode)].intValue + SIMM(theCode);
-				mRegInfos[RT(theCode)].isValid	= true;
+				UInt32	tempPtr	= (UInt32)GetPointer(
+					mRegInfos[RA(theCode)].intValue + SIMM(theCode), nil);
+
+				if (tempPtr)
+				{
+					mRegInfos[RT(theCode)].intValue	= *(UInt32*)tempPtr;
+					mRegInfos[RT(theCode)].isValid	= true;
+				}
+				else
+					bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
 			}
 			else
 			{
@@ -1079,6 +1116,71 @@
 		default:
 			break;
 	}
+}
+
+//	restoreRegisters:
+// ----------------------------------------------------------------------------
+
+- (BOOL)restoreRegisters: (Line*)ioLine
+{
+	if (!ioLine)
+	{
+		printf("otx: [PPCProcessor restoreRegisters]: "
+			"tried to restore with nil ioLine\n");
+		return false;
+	}
+
+	BOOL	needNewLine	= false;
+
+	if (mCurrentFuncInfoIndex >= 0)
+	{
+		// Search current FunctionInfo for blocks that start at this address.
+		FunctionInfo*	funcInfo	=
+			&mFuncInfos[mCurrentFuncInfoIndex];
+
+		if (funcInfo->blocks)
+		{
+			UInt32	i;
+
+			for (i = 0; i < funcInfo->numBlocks; i++)
+			{
+				if (funcInfo->blocks[i].start == ioLine->info.address)
+				{
+					// Update machine state.
+					MachineState	machState	=
+						funcInfo->blocks[i].state;
+
+					memcpy(mRegInfos, machState.regInfos,
+						sizeof(RegisterInfo) * 32);
+					mLR		= machState.regInfos[LRIndex];
+					mCTR	= machState.regInfos[CTRIndex];
+
+					if (machState.localSelves)
+						memcpy(mLocalSelves, machState.localSelves,
+							sizeof(VarInfo) * machState.numLocalSelves);
+
+					// Optionally add a blank line before this block.
+					if (mIsolateCodeBlocks	&& ioLine->chars[0]	!= '\n')
+					{
+						needNewLine	= true;
+				/*		char	origLine[MAX_LINE_LENGTH];
+
+						strncpy(origLine, ioLine->chars, ioLine->length);
+
+						ioLine->chars		= realloc(
+							ioLine->chars, ioLine->length + 2);
+						ioLine->chars[0]	= '\n';
+						strncpy(&ioLine->chars[1], origLine, ioLine->length);
+						ioLine->length++;*/
+					}
+
+					break;
+				}
+			}	// for (i = 0...)
+		}	// if (funcInfo->blocks)
+	}	// if (mCurrentFuncInfoIndex >= 0)
+
+	return needNewLine;
 }
 
 //	lineIsFunction:
@@ -1192,6 +1294,87 @@
 	}	// if (theCode == 0x7c0802a6)
 
 	return isFunction;
+}
+
+//	gatherFuncInfos
+// ----------------------------------------------------------------------------
+//	Subclasses may override
+
+- (void)gatherFuncInfos
+{
+	Line*	theLine	= mPlainLineListHead;
+	UInt32	theCode;
+
+	// Loop thru lines.
+	while (theLine)
+	{
+		if (theLine->info.isCode)
+		{
+			theCode	= strtoul(theLine->info.code, nil, 16);
+
+			if (theLine->info.isFunction)
+				ResetRegisters(theLine);
+			else
+				UpdateRegisters(theLine);
+
+			// Check if we need to save the machine state.
+			if (IS_BLOCK_BRANCH(theCode) && mCurrentFuncInfoIndex >= 0)
+			{
+				UInt32	branchTarget;
+
+				// Retrieve the branch target.
+				if (PO(theCode) == 0x12)	// b
+					branchTarget	= theLine->info.address + LI(theCode);
+				else	// bc
+					branchTarget	= theLine->info.address + BD(theCode);
+
+				// Retrieve current FunctionInfo.
+				FunctionInfo*	funcInfo	=
+					&mFuncInfos[mCurrentFuncInfoIndex];
+
+				// Allocate another BlockInfo.
+				funcInfo->numBlocks++;
+
+				if (funcInfo->blocks)
+					funcInfo->blocks	= realloc(funcInfo->blocks,
+						sizeof(BlockInfo) * funcInfo->numBlocks);
+				else
+					funcInfo->blocks	= malloc(sizeof(BlockInfo));
+
+				// Create a new MachineState.
+				RegisterInfo*	savedRegs	= malloc(
+					sizeof(RegisterInfo) * 34);
+
+				memcpy(savedRegs, mRegInfos, sizeof(RegisterInfo) * 32);
+				savedRegs[LRIndex]	= mLR;
+				savedRegs[CTRIndex]	= mCTR;
+
+				VarInfo*	savedVars	= nil;
+
+				if (mLocalSelves)
+				{
+					savedVars	= malloc(
+						sizeof(VarInfo) * mNumLocalSelves);
+					memcpy(savedVars, mLocalSelves,
+						sizeof(VarInfo) * mNumLocalSelves);
+				}
+
+				MachineState	machState	=
+					{savedRegs, savedVars, mNumLocalSelves};
+
+				// Create and store a new BlockInfo.
+				funcInfo->blocks[funcInfo->numBlocks - 1]	=
+					(BlockInfo){branchTarget, 0, machState};
+
+				// Remind us to add a \n to the following line.
+//				mEnteringNewBlock	= true;
+			}
+		}
+
+		theLine	= theLine->next;
+	}
+
+	mCurrentFuncInfoIndex	= -1;
 }
 
 @end

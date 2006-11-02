@@ -115,6 +115,11 @@ methodInfo_compare(
 
 	[self speedyDelivery];
 
+/**/
+
+	mReplaceSends	= true;
+
+/**/
 	return self;
 }
 
@@ -586,7 +591,7 @@ methodInfo_compare(
 
 //	loadSymbols:
 // ----------------------------------------------------------------------------
-//	This refers to the symbol table contained in the SEG_LINKEDIT segment.
+//	This refers to the symbol table located in the SEG_LINKEDIT segment.
 //	See loadObjcSymTabFromModule for ObjC symbols.
 
 - (void)loadSymbols: (symtab_command*)inSymPtr
@@ -602,7 +607,7 @@ methodInfo_compare(
 	// loop thru symbols
 	for (i = 0; i < inSymPtr->nsyms; i++)
 	{
-		nlist	theSym		= theSyms[i];
+		nlist	theSym	= theSyms[i];
 
 		if (theSym.n_value == 0)
 			continue;
@@ -1259,6 +1264,7 @@ methodInfo_compare(
 	[mProgText setStringValue: @"Gathering info"];
 	[mProgText display];
 	[self gatherLineInfos];
+	[self gatherFuncInfos];
 
 	UInt32	progCounter	= 0;
 
@@ -1383,6 +1389,13 @@ methodInfo_compare(
 	mEndOfText	= mTextSect.s.addr + mTextSect.s.size;
 }
 
+//	gatherFuncInfos
+// ----------------------------------------------------------------------------
+//	Subclasses may override
+
+- (void)gatherFuncInfos
+{}
+
 //	processLine:
 // ----------------------------------------------------------------------------
 
@@ -1463,7 +1476,21 @@ methodInfo_compare(
 		return;
 	}
 
+/**/
+
+if ((*ioLine)->info.address == 0x000029ec)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
+
 	ChooseLine(ioLine);
+
+// ****************************************************************************
+// the newline added by restoreRegisters: is overwritten below.
+// restoreRegisters: should return a BOOL flag instead.
+// ****************************************************************************
 
 	UInt32	theOrigLength								= (*ioLine)->length;
 	char	addrSpaces[MAX_FIELD_SPACING]				= {0};
@@ -1476,7 +1503,9 @@ methodInfo_compare(
 	char	theMnemonicCString[20]						= {0};
 	char	theOrigCommentCString[MAX_COMMENT_LENGTH]	= {0};
 	char	theCommentCString[MAX_COMMENT_LENGTH]		= {0};
-	BOOL	needNewLine									= false;
+
+	// Swap in saved registers if necessary
+	BOOL	needNewLine	= [self restoreRegisters: (*ioLine)];
 
 	mLineOperandsCString[0]	= 0;
 
@@ -1676,11 +1705,12 @@ methodInfo_compare(
 		}
 
 		// Clear registers and update current class.
-		mCurrentClass	= ObjcClassPtrFromMethod((*ioLine)->info.address);
-		mCurrentCat		= ObjcCatPtrFromMethod((*ioLine)->info.address);
+//		mCurrentClass	= ObjcClassPtrFromMethod((*ioLine)->info.address);
+//		mCurrentCat		= ObjcCatPtrFromMethod((*ioLine)->info.address);
 
-		UpdateRegisters(nil);
-	}
+		ResetRegisters((*ioLine));
+//		UpdateRegisters(nil);
+	}	// if ((*ioLine)->info.isFunction)
 
 	// Find a comment if necessary.
 	if (!theCommentCString[0])
@@ -1727,6 +1757,13 @@ methodInfo_compare(
 
 			for (; k > 1; k--)
 				commentSpaces[k - 2]	= 0x20;
+		}
+	}	// if (!theCommentCString[0])
+	else	// otool gave us a comment.
+	{	// Optionally modify otool's comment.
+		if (mReplaceSends)
+		{
+			CommentForMsgSendFromLine(theCommentCString, *ioLine);
 		}
 	}
 
@@ -1861,13 +1898,13 @@ methodInfo_compare(
 
 	free((*ioLine)->chars);
 
-	if (mIsolateCodeBlocks	&& mEnteringNewBlock)
+	if (mIsolateCodeBlocks && mEnteringNewBlock &&
+		theFinalCString[0] != '\n')
 	{
 		(*ioLine)->length	= strlen(theFinalCString) + 1;
 		(*ioLine)->chars	= malloc((*ioLine)->length + 1);
 		(*ioLine)->chars[0]	= '\n';
 		strncpy(&(*ioLine)->chars[1], theFinalCString, (*ioLine)->length);
-		mEnteringNewBlock	= false;
 	}
 	else
 	{
@@ -1875,6 +1912,10 @@ methodInfo_compare(
 		(*ioLine)->chars	= malloc((*ioLine)->length + 1);
 		strncpy((*ioLine)->chars, theFinalCString, (*ioLine)->length + 1);
 	}
+
+	// The test above can fail even if mEnteringNewBlock was true, so it's
+	// better to reset it here.
+	mEnteringNewBlock	= false;
 
 	UpdateRegisters(*ioLine);
 	PostProcessCodeLine(ioLine);
@@ -2105,11 +2146,26 @@ methodInfo_compare(
 - (void)commentForSystemCall
 {}
 
+//	commentForMsgSend:fromLine:
+// ----------------------------------------------------------------------------
+//	Subclasses may override.
+
+- (void)commentForMsgSend: (char*)ioComment
+				 fromLine: (Line*)inLine
+{}
+
 //	chooseLine:
 // ----------------------------------------------------------------------------
 //	Subclasses may override.
 
 - (void)chooseLine: (Line**)ioLine
+{}
+
+//	resetRegisters:
+// ----------------------------------------------------------------------------
+//	Subclasses may override.
+
+- (void)resetRegisters: (Line*)ioLine
 {}
 
 //	updateRegisters:
@@ -2118,6 +2174,15 @@ methodInfo_compare(
 
 - (void)updateRegisters: (Line*)ioLine
 {}
+
+//	restoreRegisters:
+// ----------------------------------------------------------------------------
+//	Subclasses may override.
+
+- (BOOL)restoreRegisters: (Line*)ioLine
+{
+	return false;
+}
 
 //	insertMD5
 // ----------------------------------------------------------------------------
@@ -3469,6 +3534,10 @@ methodInfo_compare(
 		[self methodForSelector: CommentForLineSel];
 	CommentForSystemCall		= CommentForSystemCallFuncType
 		[self methodForSelector: CommentForSystemCallSel];
+	CommentForMsgSendFromLine	= CommentForMsgSendFromLineFuncType
+		[self methodForSelector: CommentForMsgSendFromLineSel];
+	ResetRegisters				= ResetRegistersFuncType
+		[self methodForSelector: ResetRegistersSel];
 	UpdateRegisters				= UpdateRegistersFuncType
 		[self methodForSelector: UpdateRegistersSel];
 	PrepareNameForDemangling	= PrepareNameForDemanglingFuncType
