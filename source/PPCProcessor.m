@@ -594,60 +594,92 @@ mReplaceSends	= true;
 {
 	UInt32	theCode	= strtoul(inLine->info.code, nil, 16);
 
+	// Bail if this is not an eligible branch.
 	if (PO(theCode) != 0x12)	// b, bl, ba, bla
 		return;
 
+	// Bail if this is not an objc_msgSend variant.
 	if (memcmp(ioComment, "_objc_msgSend", 13))
 		return;
+
+	// Store the variant type locally to reduce string comparisons.
+	UInt32	sendType	= send;
+
+	if (strlen(ioComment) != 13)	// not _objc_msgSend
+	{
+		if (strstr(ioComment, "Super_stret"))
+			sendType	= sendSuper_Stret;
+		else if (strstr(ioComment, "Super"))
+			sendType	= sendSuper;
+		else if (strstr(ioComment, "_stret"))
+			sendType	= send_stret;
+		else	// Someone actually used the variadic variants!
+		{		// I just said 'variadic variants' with a straight face!
+			printf("otx: [PPCProcessor commentForMsgSend]:"
+				"variadic variant detected.\n");
+			return;
+		}
+	}
 
 	char	tempComment[MAX_COMMENT_LENGTH];
 
 	tempComment[0]	= 0;
 
-	if (strlen(ioComment) == 13)	// _objc_msgSend
+	UInt32	receiverRegNum	=
+		(sendType == sendSuper_Stret || sendType == send_stret) ? 4 : 3;
+	UInt32	selectorRegNum	=
+		(sendType == sendSuper_Stret || sendType == send_stret) ? 5 : 4;
+
+	char*	returnTypeString	=
+		(sendType == sendSuper_Stret || sendType == send_stret) ?
+		"(struct)" : "";
+
+	if (!mRegInfos[selectorRegNum].isValid ||
+		!mRegInfos[selectorRegNum].intValue)
+		return;
+
+	if (mRegInfos[receiverRegNum].isValid &&
+		mRegInfos[receiverRegNum].intValue)
 	{
-		if (!mRegInfos[4].isValid || !mRegInfos[4].intValue)
-			return;
+		UInt8	theType		= PointerType;
+		char*	className	= nil;
+		char*	ptr			=
+			GetPointer(mRegInfos[receiverRegNum].intValue, &theType);
 
-		if (mRegInfos[3].isValid && mRegInfos[3].intValue)
+		switch(theType)
 		{
-			UInt8	theType		= PointerType;
-			char*	className	= nil;
-			char*	ptr			= GetPointer(mRegInfos[3].intValue, &theType);
+			case PointerType:
+				className	= ptr;
+				break;
 
-			switch(theType)
-			{
-				case PointerType:
-					className	= ptr;
-					break;
+			case OCGenericType:
+				className	= GetPointer(*(UInt32*)ptr, nil);
+				break;
 
-				case OCGenericType:
-					className	= GetPointer(*(UInt32*)ptr, nil);
-					break;
-
-				default:
-					break;
-			}
-
-			if (className)
-				snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "[%s %s]",
-					className, GetPointer(mRegInfos[4].intValue, nil));
-			else
-				snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "[$r3 %s]",
-					GetPointer(mRegInfos[4].intValue, nil));
+			default:
+				break;
 		}
+
+		if (className)
+			snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
+				(sendType == sendSuper) ?
+				"%s[[%s super] %s]" : "%s[%s %s]",
+				returnTypeString, className,
+				GetPointer(mRegInfos[selectorRegNum].intValue, nil));
 		else
-		{
-			snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "[$r3 %s]",
-				GetPointer(mRegInfos[4].intValue, nil));
-		}
+			snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
+				(sendType == sendSuper) ?
+				"%s[[$r3 super] %s]" : "%s[$r3 %s]",
+				returnTypeString,
+				GetPointer(mRegInfos[selectorRegNum].intValue, nil));
 	}
-	else if (strstr(ioComment, "Super_stret"))
-	{}
-	else if (strstr(ioComment, "Super"))
-	{}
-	else if (strstr(ioComment, "_stret"))
-	{}
+	else
+	{
+		snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
+			(sendType == sendSuper) ? "%s[[$r3 super] %s]" : "%s[$r3 %s]",
+			returnTypeString,
+			GetPointer(mRegInfos[selectorRegNum].intValue, nil));
+	}
 
 	if (tempComment[0])
 		strncpy(ioComment, tempComment, strlen(tempComment) + 1);

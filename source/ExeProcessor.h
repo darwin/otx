@@ -231,6 +231,15 @@ typedef struct
 }
 TextFieldWidths;
 
+// Constants for dealing with objc_msgSend variants.
+enum {
+	send,
+	sendSuper,
+	send_stret,
+	sendSuper_Stret,
+	send_fpret
+};
+
 // Constants that represent which section is being referenced, indicating
 // likely data types.
 enum {
@@ -247,7 +256,7 @@ enum {
 	OCGenericType,			// Obj-C types
 	OCStrObjectType,	// objc_string_object in (__OBJC,__string_object)
 	OCClassType,		// objc_class in (__OBJC,__class)
-	OCModType,			// objc_module in (__OBJC,__module_info)
+	OCModType			// objc_module in (__OBJC,__module_info)
 };
 
 #define MAX_FIELD_SPACING		100		// spaces between fields
