@@ -608,78 +608,126 @@ mReplaceSends	= true;
 	if (strlen(ioComment) != 13)	// not _objc_msgSend
 	{
 		if (strstr(ioComment, "Super_stret"))
-			sendType	= sendSuper_Stret;
+			sendType	= sendSuper_stret;
 		else if (strstr(ioComment, "Super"))
 			sendType	= sendSuper;
 		else if (strstr(ioComment, "_stret"))
 			sendType	= send_stret;
 		else	// Someone actually used the variadic variants!
-		{		// I just said 'variadic variants' with a straight face!
+		{
 			printf("otx: [PPCProcessor commentForMsgSend]:"
 				"variadic variant detected.\n");
+
 			return;
 		}
 	}
 
 	char	tempComment[MAX_COMMENT_LENGTH];
+	BOOL	goodComment	= false;
 
 	tempComment[0]	= 0;
 
 	UInt32	receiverRegNum	=
-		(sendType == sendSuper_Stret || sendType == send_stret) ? 4 : 3;
+		(sendType == sendSuper_stret || sendType == send_stret) ? 4 : 3;
 	UInt32	selectorRegNum	=
-		(sendType == sendSuper_Stret || sendType == send_stret) ? 5 : 4;
+		(sendType == sendSuper_stret || sendType == send_stret) ? 5 : 4;
 
 	char*	returnTypeString	=
-		(sendType == sendSuper_Stret || sendType == send_stret) ?
+		(sendType == sendSuper_stret || sendType == send_stret) ?
 		"(struct)" : "";
 
 	if (!mRegInfos[selectorRegNum].isValid ||
 		!mRegInfos[selectorRegNum].intValue)
 		return;
 
+	// Get at the selector.
+	UInt8	selType		= PointerType;
+	char*	selString	= nil;
+	char*	selPtr		= GetPointer(
+		mRegInfos[selectorRegNum].intValue, &selType);
+
+	switch (selType)
+	{
+		case PointerType:
+			selString	= selPtr;
+
+			break;
+
+		case OCGenericType:
+			if (selPtr)
+			{
+				UInt32	selPtrValue	= *(UInt32*)selPtr;
+
+				if (mSwapped)
+					selPtrValue	= OSSwapInt32(selPtrValue);
+
+				selString	= GetPointer(selPtrValue, nil);
+			}
+
+			break;
+
+		default:
+			printf("otx: [PPCProcessor commentForMsgSend]: "
+				"unsupported selector type: %d\n", selType);
+
+			break;
+	}
+
+	// Bail if we couldn't find the selector.
+	if (!selString)
+		return;
+
 	if (mRegInfos[receiverRegNum].isValid &&
 		mRegInfos[receiverRegNum].intValue)
 	{
-		UInt8	theType		= PointerType;
-		char*	className	= nil;
-		char*	ptr			=
-			GetPointer(mRegInfos[receiverRegNum].intValue, &theType);
+		// Get at the receiver
+		UInt8	receiverType	= PointerType;
+		char*	className		= nil;
+		char*	classPtr		=
+			GetPointer(mRegInfos[receiverRegNum].intValue, &receiverType);
 
-		switch(theType)
+		switch (receiverType)
 		{
 			case PointerType:
-				className	= ptr;
+				className	= classPtr;
+
 				break;
 
 			case OCGenericType:
-				className	= GetPointer(*(UInt32*)ptr, nil);
+				if (classPtr)
+				{
+					UInt32	classPtrValue	= *(UInt32*)classPtr;
+
+					if (mSwapped)
+						classPtrValue	= OSSwapInt32(classPtrValue);
+
+					className	= GetPointer(classPtrValue, nil);
+				}
+
 				break;
 
 			default:
+				printf("otx: [PPCProcessor commentForMsgSend]: "
+					"unsupported receiver type: %d\n", selType);
+
 				break;
 		}
 
 		if (className)
+		{
 			snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
-				(sendType == sendSuper) ?
+				(sendType == sendSuper || sendType == sendSuper_stret) ?
 				"%s[[%s super] %s]" : "%s[%s %s]",
-				returnTypeString, className,
-				GetPointer(mRegInfos[selectorRegNum].intValue, nil));
-		else
-			snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
-				(sendType == sendSuper) ?
-				"%s[[$r3 super] %s]" : "%s[$r3 %s]",
-				returnTypeString,
-				GetPointer(mRegInfos[selectorRegNum].intValue, nil));
+				returnTypeString, className, selString);
+			goodComment	= true;
+		}
 	}
-	else
-	{
+
+	if (!goodComment)
 		snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
-			(sendType == sendSuper) ? "%s[[$r3 super] %s]" : "%s[$r3 %s]",
-			returnTypeString,
-			GetPointer(mRegInfos[selectorRegNum].intValue, nil));
-	}
+			(sendType == sendSuper || sendType == sendSuper_stret) ?
+			"%s[[*r%d super] %s]" : "%s[*r%d %s]",
+			returnTypeString, receiverRegNum, selString);
 
 	if (tempComment[0])
 		strncpy(ioComment, tempComment, strlen(tempComment) + 1);
@@ -714,17 +762,17 @@ mReplaceSends	= true;
 //	resetRegisters:
 // ----------------------------------------------------------------------------
 
-- (void)resetRegisters: (Line*)ioLine
+- (void)resetRegisters: (Line*)inLine
 {
-	if (!ioLine)
+	if (!inLine)
 	{
 		printf("otx: [PPCProcessor resetRegisters]: "
-			"tried to reset with nil ioLine\n");
+			"tried to reset with nil inLine\n");
 		return;
 	}
 
-	mCurrentClass	= ObjcClassPtrFromMethod(ioLine->info.address);
-	mCurrentCat		= ObjcCatPtrFromMethod(ioLine->info.address);
+	mCurrentClass	= ObjcClassPtrFromMethod(inLine->info.address);
+	mCurrentCat		= ObjcCatPtrFromMethod(inLine->info.address);
 
 	bzero(&mRegInfos[0], sizeof(RegisterInfo) * 32);
 
@@ -758,7 +806,7 @@ mReplaceSends	= true;
 // http://developer.apple.com/documentation/DeveloperTools/Conceptual/LowLevelABI/Articles/32bitPowerPC.html
 // http://developer.apple.com/documentation/DeveloperTools/Conceptual/MachOTopics/Articles/dynamic_code.html
 
-- (void)updateRegisters: (Line*)ioLine;
+- (void)updateRegisters: (Line*)inLine;
 {
 	// inLine = nil if this is 1st line of a function. Setup the registers
 	// with default info. r3 is 'self' at the beginning of any Obj-C method,
@@ -766,23 +814,23 @@ mReplaceSends	= true;
 	// called indirectly. In the case of direct calls, r12 will be overwritten
 	// before it is used, if it is used at all.
 
-	if (!ioLine)
+	if (!inLine)
 	{
 		printf("otx: [PPCProcessor updateRegisters]: "
-			"tried to update with nil ioLine\n");
+			"tried to update with nil inLine\n");
 		return;
 	}
 
 	UInt32	theNewValue;
 	UInt32	theCode		= strtoul(
-		(const char*)ioLine->info.code, nil, 16);
+		(const char*)inLine->info.code, nil, 16);
 
 	if (IS_BLOCK_BRANCH(theCode))
 		mEnteringNewBlock	= true;
 
 	if (IS_BRANCH_LINK(theCode))
 	{
-		mLR.intValue	= ioLine->info.address + 4;
+		mLR.intValue	= inLine->info.address + 4;
 		mLR.isValid		= true;
 	}
 
@@ -1153,12 +1201,12 @@ mReplaceSends	= true;
 //	restoreRegisters:
 // ----------------------------------------------------------------------------
 
-- (BOOL)restoreRegisters: (Line*)ioLine
+- (BOOL)restoreRegisters: (Line*)inLine
 {
-	if (!ioLine)
+	if (!inLine)
 	{
 		printf("otx: [PPCProcessor restoreRegisters]: "
-			"tried to restore with nil ioLine\n");
+			"tried to restore with nil inLine\n");
 		return false;
 	}
 
@@ -1176,7 +1224,7 @@ mReplaceSends	= true;
 
 			for (i = 0; i < funcInfo->numBlocks; i++)
 			{
-				if (funcInfo->blocks[i].start == ioLine->info.address)
+				if (funcInfo->blocks[i].start == inLine->info.address)
 				{
 					// Update machine state.
 					MachineState	machState	=
@@ -1192,19 +1240,8 @@ mReplaceSends	= true;
 							sizeof(VarInfo) * machState.numLocalSelves);
 
 					// Optionally add a blank line before this block.
-					if (mIsolateCodeBlocks	&& ioLine->chars[0]	!= '\n')
-					{
+					if (mSeparateLogicalBlocks && inLine->chars[0]	!= '\n')
 						needNewLine	= true;
-				/*		char	origLine[MAX_LINE_LENGTH];
-
-						strncpy(origLine, ioLine->chars, ioLine->length);
-
-						ioLine->chars		= realloc(
-							ioLine->chars, ioLine->length + 2);
-						ioLine->chars[0]	= '\n';
-						strncpy(&ioLine->chars[1], origLine, ioLine->length);
-						ioLine->length++;*/
-					}
 
 					break;
 				}

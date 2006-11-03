@@ -40,6 +40,12 @@
 	mFieldWidths.mnemonic		= 12;
 	mFieldWidths.operands		= 29;
 
+/**/
+
+mReplaceSends	= true;
+
+/**/
+
 	return self;
 }
 
@@ -1080,10 +1086,203 @@
 - (void)commentForMsgSend: (char*)ioComment
 				 fromLine: (Line*)inLine
 {
-	if (memcmp(mLineCommentCString, "_objc_msgSend", 13))
+	UInt8	opcode;
+
+	sscanf(inLine->info.code, "%02hhx", &opcode);
+
+	// Bail if this is not an eligible branch.
+	if (opcode != 0xe8	&&	// calll
+		opcode != 0xe9)		// jmpl
 		return;
 
-	
+	// Bail if this is not an objc_msgSend variant.
+	if (memcmp(ioComment, "_objc_msgSend", 13))
+		return;
+
+/**/
+
+if (inLine->info.address == 0x2e50)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
+	// Store the variant type locally to reduce string comparisons.
+	UInt32	sendType	= send;
+
+	if (strlen(ioComment) != 13)	// not _objc_msgSend
+	{
+		if (strstr(ioComment, "Super_stret"))
+			sendType	= sendSuper_stret;
+		else if (strstr(ioComment, "Super"))
+			sendType	= sendSuper;
+		else if (strstr(ioComment, "_stret"))
+			sendType	= send_stret;
+		else if (strstr(ioComment, "_fpret"))
+			sendType	= send_fpret;
+		else	// Someone actually used the variadic variants!
+		{
+			printf("otx: [X86Processor commentForMsgSend]:"
+				"variadic variant detected.\n");
+
+			return;
+		}
+	}
+
+	UInt32	receiverAddy, selectorAddy;
+
+	// Make sure we know what the selector is.
+	if (sendType == sendSuper_stret || sendType == send_stret)
+	{
+		if (mStack[2].isValid)
+		{
+			selectorAddy	= mStack[2].intValue;
+
+			receiverAddy	= (mStack[1].isValid) ?
+				mStack[1].intValue : 0;
+		}
+		else
+			return;
+	}
+	else
+	{
+		if (mStack[1].isValid)
+		{
+			selectorAddy	= mStack[1].intValue;
+
+			receiverAddy	= (mStack[0].isValid) ?
+				mStack[0].intValue : 0;
+		}
+		else
+			return;
+	}
+
+	// sanity check
+	if (!selectorAddy)
+		return;
+
+	// Get at the selector.
+	UInt8	selType		= PointerType;
+	char*	selString	= nil;
+	char*	selPtr		= GetPointer(selectorAddy, &selType);
+
+	switch (selType)
+	{
+		case PointerType:
+			selString	= selPtr;
+
+			break;
+
+		case OCGenericType:
+			if (selPtr)
+			{
+				UInt32	selPtrValue	= *(UInt32*)selPtr;
+
+				if (mSwapped)
+					selPtrValue	= OSSwapInt32(selPtrValue);
+
+				selString	= GetPointer(selPtrValue, nil);
+			}
+
+			break;
+
+		default:
+			printf("otx: [X86Processor commentForMsgSend]: "
+				"unsupported selector type: %d\n", selType);
+
+			break;
+	}
+
+	// Bail if we couldn't find the selector.
+	if (!selString)
+		return;
+
+	char	tempComment[MAX_COMMENT_LENGTH];
+	BOOL	goodComment	= false;
+
+	tempComment[0]	= 0;
+
+	char*	returnTypeString	=
+		(sendType == sendSuper_stret || sendType == send_stret) ?
+		"(struct)" : (sendType == send_fpret) ? "(double)" : "";
+
+	if (receiverAddy)
+	{
+		// Get at the receiver
+		UInt8	receiverType	= PointerType;
+		char*	className		= nil;
+		char*	classPtr		= GetPointer(receiverAddy, &receiverType);
+
+		switch (receiverType)
+		{
+			case PointerType:
+				className	= classPtr;
+
+				break;
+
+			case OCGenericType:
+				if (classPtr)
+				{
+					UInt32	classPtrValue	= *(UInt32*)classPtr;
+
+					if (mSwapped)
+						classPtrValue	= OSSwapInt32(classPtrValue);
+
+					className	= GetPointer(classPtrValue, nil);
+				}
+
+				break;
+
+			default:
+				printf("otx: [X86Processor commentForMsgSend]: "
+					"unsupported receiver type: %d\n", selType);
+
+				break;
+		}
+
+		if (className)
+		{
+			snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
+				(sendType == sendSuper || sendType == sendSuper_stret) ?
+				"%s[[%s super] %s]" : "%s[%s %s]",
+				returnTypeString, className, selString);
+			goodComment	= true;
+		}
+	}
+
+	if (!goodComment)
+	{
+		char*	formatString;
+
+		switch (sendType)
+		{
+			case send:
+			case send_fpret:
+				formatString	= "%s[*(esp,1) %s]";
+				break;
+
+			case sendSuper:
+				formatString	= "%s[[*(esp,1) super] %s]";
+				break;
+
+			case send_stret:
+				formatString	= "%s[*0x04(esp,1) %s]";
+				break;
+
+			case sendSuper_stret:
+				formatString	= "%s[[*0x04(esp,1) super] %s]";
+				break;
+
+			default:
+				break;
+		}
+
+		snprintf(tempComment, MAX_COMMENT_LENGTH - 1, formatString,
+			returnTypeString, selString);
+	}
+
+	if (tempComment[0])
+		strncpy(ioComment, tempComment, strlen(tempComment) + 1);
 }
 
 //	chooseLine:
@@ -1184,163 +1383,49 @@
 	}
 }
 
-//	updateRegisters:
+//	resetRegisters:
 // ----------------------------------------------------------------------------
 
-- (void)updateRegisters: (Line*)ioLine;
+- (void)resetRegisters: (Line*)ioLine
 {
 	if (!ioLine)
 	{
-		mCurrentClass	= ObjcClassPtrFromMethod(ioLine->info.address);
-		mCurrentCat		= ObjcCatPtrFromMethod(ioLine->info.address);
-		mCurrentThunk	= NO_REG;
-
-		bzero(&mRegInfos[0], sizeof(RegisterInfo) * 8);
-
-		if (mLocalSelves)
-		{
-			free(mLocalSelves);
-			mLocalSelves	= nil;
-			mNumLocalSelves	= 0;
-		}
-
-// this logic was fucked anyway
-//		mCurrentFuncInfoIndex++;
-
-//		if (mCurrentFuncInfoIndex >= mNumFuncInfos)
-//			mCurrentFuncInfoIndex	= -1;
-
+		printf("otx: [X86Processor resetRegisters]: "
+			"tried to reset with nil ioLine\n");
 		return;
 	}
 
+	mCurrentClass	= ObjcClassPtrFromMethod(ioLine->info.address);
+	mCurrentCat		= ObjcCatPtrFromMethod(ioLine->info.address);
+	mCurrentThunk	= NO_REG;
+
+	bzero(&mRegInfos[0], sizeof(RegisterInfo) * 8);
+
+	if (mLocalSelves)
+	{
+		free(mLocalSelves);
+		mLocalSelves	= nil;
+		mNumLocalSelves	= 0;
+	}
+
+// this logic was fucked anyway
+	mCurrentFuncInfoIndex++;
+
+	if (mCurrentFuncInfoIndex >= mNumFuncInfos)
+		mCurrentFuncInfoIndex	= -1;
+}
+
+//	updateRegisters:
+// ----------------------------------------------------------------------------
+
+- (void)updateRegisters: (Line*)inLine;
+{
 	UInt8	opcode;
 	UInt8	opcode2;
 	UInt8	modRM;
 
-	sscanf(ioLine->info.code, "%02hhx", &opcode);
-	sscanf(&ioLine->info.code[2], "%02hhx", &opcode2);
-
-/*
-	// Check if we need to save the machine state.
-	if (mFuncInfos && IS_JUMP(opcode, opcode2) && mCurrentFuncInfoIndex >= 0)
-	{
-		UInt32	jumpTarget;
-		BOOL	validTarget	= false;
-
-		// Retrieve the jump target.
-		if ((opcode >= 0x71 && opcode <= 0x7f) ||
-			opcode == 0xe3 || opcode == 0xeb)
-		{
-			SInt8	rel8;
-
-			sscanf(&ioLine->info.code[2], "%02hhx", &rel8);
-			jumpTarget	= ioLine->info.address + 2 + rel8;
-
-			validTarget	= true;
-		}
-		else if (opcode == 0xe9	||
-			(opcode == 0x0f	&& opcode2 >= 0x81 && opcode2 <= 0x8f))
-		{
-			SInt32	rel32;
-
-			sscanf(&ioLine->info.code[2], "%08x", &rel32);
-			rel32		= OSSwapInt32(rel32);
-			jumpTarget	= ioLine->info.address + 5 + rel32;
-
-			validTarget	= true;
-		}
-
-		if (validTarget)
-		{
-			// Retrieve current FunctionInfo.
-			FunctionInfo*	funcInfo	=
-				&mFuncInfos[mCurrentFuncInfoIndex];
-
-			// Allocate another BlockInfo.
-			funcInfo->numBlocks++;
-
-			if (funcInfo->blocks)
-				funcInfo->blocks	= realloc(funcInfo->blocks,
-					sizeof(BlockInfo) * funcInfo->numBlocks);
-			else
-				funcInfo->blocks	= malloc(sizeof(BlockInfo));
-
-			// Create a new MachineState.
-			RegisterInfo*	savedRegs	= malloc(
-				sizeof(RegisterInfo) * 8);
-
-			memcpy(savedRegs, mRegInfos, sizeof(RegisterInfo) * 8);
-
-			VarInfo*	savedVars	= nil;
-
-			if (mLocalSelves)
-			{
-				savedVars	= malloc(
-					sizeof(VarInfo) * mNumLocalSelves);
-				memcpy(savedVars, mLocalSelves,
-					sizeof(VarInfo) * mNumLocalSelves);
-			}
-
-			MachineState	machState	=
-				{savedRegs, savedVars, mNumLocalSelves};
-
-			// Create and store a new BlockInfo.
-			funcInfo->blocks[funcInfo->numBlocks - 1]	=
-				(BlockInfo){jumpTarget, 0, machState};
-
-			// Remind us to add a \n to the following line.
-			mEnteringNewBlock	= true;
-		}
-	}
-	else if (mFuncInfos)	// Check if we need to restore the machine state.
-	{
-		// search current FunctionInfo for blocks that start at this address.
-		if (mCurrentFuncInfoIndex >= 0)
-		{
-			// Retrieve current funcInfo.
-			FunctionInfo*	funcInfo	=
-				&mFuncInfos[mCurrentFuncInfoIndex];
-
-			if (funcInfo->blocks)
-			{
-				UInt32	i;
-
-				for (i = 0; i < funcInfo->numBlocks; i++)
-				{
-					if (funcInfo->blocks[i].start == ioLine->info.address)
-					{
-						// Update machine state.
-						MachineState	machState	=
-							funcInfo->blocks[i].state;
-
-						memcpy(mRegInfos, machState.regInfos,
-							sizeof(RegisterInfo) * 8);
-
-						if (machState.localSelves)
-							memcpy(mLocalSelves, machState.localSelves,
-								sizeof(VarInfo) * machState.numLocalSelves);
-
-						// Optionally add a blank line before this block.
-						if (mIsolateCodeBlocks	&& ioLine->chars[0]	!= '\n')
-						{
-							char	origLine[MAX_LINE_LENGTH];
-
-							strncpy(origLine, ioLine->chars, ioLine->length);
-
-							ioLine->chars		= realloc(
-								ioLine->chars, ioLine->length + 2);
-							ioLine->chars[0]	= '\n';
-							strncpy(&ioLine->chars[1], origLine, ioLine->length);
-							ioLine->length++;
-						}
-
-						break;
-					}
-				}	// for (i = 0...)
-			}	// if (funcInfo->blocks)
-		}	// if (mCurrentFuncInfoIndex >= 0)
-	}
-*/
+	sscanf(inLine->info.code, "%02hhx", &opcode);
+	sscanf(&inLine->info.code[2], "%02hhx", &opcode2);
 
 	switch (opcode)
 	{
@@ -1348,14 +1433,14 @@
 		// add, or, adc, sbb, and, sub, xor, cmp
 		case 0x83:	// EXTS(imm8),r32
 		{
-			sscanf(&ioLine->info.code[2], "%02hhx", &modRM);
+			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
 			if (!mRegInfos[REG1(modRM)].isValid)
 				break;
 
 			UInt8	imm;
 
-			sscanf(&ioLine->info.code[4], "%02hhx", &imm);
+			sscanf(&inLine->info.code[4], "%02hhx", &imm);
 
 			switch (OPEXT(modRM))
 			{
@@ -1403,7 +1488,7 @@
 
 		case 0x89:	// mov reg to mem
 		{
-			sscanf(&ioLine->info.code[2], "%02hhx", &modRM);
+			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
 			if (MOD(modRM) == MODx)	// reg to reg
 			{
@@ -1425,7 +1510,7 @@
 			if (HAS_SIB(modRM))	// pushing an arg onto stack
 			{
 				if (HAS_DISP8(modRM))
-					sscanf(&ioLine->info.code[6], "%02hhx", &offset);
+					sscanf(&inLine->info.code[6], "%02hhx", &offset);
 
 				if (offset >= 0)
 				{
@@ -1448,7 +1533,7 @@
 				if (!mRegInfos[REG1(modRM)].classPtr)
 					break;
 
-				sscanf(&ioLine->info.code[4], "%02hhx", &offset);
+				sscanf(&inLine->info.code[4], "%02hhx", &offset);
 
 				mNumLocalSelves++;
 
@@ -1466,7 +1551,7 @@
 		}
 
 		case 0x8b:	// mov mem to reg
-			sscanf(&ioLine->info.code[2], "%02hhx", &modRM);
+			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
 			bzero(&mRegInfos[REG1(modRM)], sizeof(RegisterInfo));
 
@@ -1474,7 +1559,7 @@
 			{
 				SInt8	offset;
 
-				sscanf(&ioLine->info.code[4], "%02hhx", &offset);
+				sscanf(&inLine->info.code[4], "%02hhx", &offset);
 
 				if (REG2(modRM) == EBP && offset == 0x8)
 				{	// Copying self from 1st arg to a register.
@@ -1522,7 +1607,7 @@
 
 			bzero(&mRegInfos[REG2(opcode)], sizeof(RegisterInfo));
 
-			sscanf(&ioLine->info.code[2], "%02hhx", &imm);
+			sscanf(&inLine->info.code[2], "%02hhx", &imm);
 			mRegInfos[REG2(opcode)].intValue	= imm;
 			mRegInfos[REG2(opcode)].isValid		= true;
 
@@ -1532,7 +1617,7 @@
 		case 0xa1:	// movl	moffs32,%eax
 			bzero(&mRegInfos[EAX], sizeof(RegisterInfo));
 
-			sscanf(&ioLine->info.code[2], "%08x", &mRegInfos[EAX].intValue);
+			sscanf(&inLine->info.code[2], "%08x", &mRegInfos[EAX].intValue);
 			mRegInfos[EAX].intValue	= OSSwapInt32(mRegInfos[EAX].intValue);
 			mRegInfos[EAX].isValid	= true;
 
@@ -1547,7 +1632,7 @@
 		case 0xbf:	// movl	imm32,%edi
 			bzero(&mRegInfos[REG2(opcode)], sizeof(RegisterInfo));
 
-			sscanf(&ioLine->info.code[2], "%08x",
+			sscanf(&inLine->info.code[2], "%08x",
 				&mRegInfos[REG2(opcode)].intValue);
 			mRegInfos[REG2(opcode)].intValue	=
 				OSSwapInt32(mRegInfos[REG2(opcode)].intValue);
@@ -1555,9 +1640,67 @@
 
 			break;
 
+/**/
+		case 0xe8:	// calll
+			bzero(mStack, sizeof(RegisterInfo) * STACK_SIZE);
+			break;
+/**/
+
 		default:
 			break;
 	}	// switch (opcode)
+}
+
+//	restoreRegisters:
+// ----------------------------------------------------------------------------
+
+- (BOOL)restoreRegisters: (Line*)inLine
+{
+	if (!inLine)
+	{
+		printf("otx: [X86Processor restoreRegisters]: "
+			"tried to restore with nil inLine\n");
+		return false;
+	}
+
+	BOOL	needNewLine	= false;
+
+	if (mCurrentFuncInfoIndex >= 0)
+	{
+		// Search current FunctionInfo for blocks that start at this address.
+		FunctionInfo*	funcInfo	=
+			&mFuncInfos[mCurrentFuncInfoIndex];
+
+		if (funcInfo->blocks)
+		{
+			UInt32	i;
+
+			for (i = 0; i < funcInfo->numBlocks; i++)
+			{
+				if (funcInfo->blocks[i].start == inLine->info.address)
+				{
+					// Update machine state.
+					MachineState	machState	=
+						funcInfo->blocks[i].state;
+
+					memcpy(mRegInfos, machState.regInfos,
+						sizeof(RegisterInfo) * 8);
+
+					if (machState.localSelves)
+						memcpy(mLocalSelves, machState.localSelves,
+							sizeof(VarInfo) * machState.numLocalSelves);
+
+					// Optionally add a blank line before this block.
+					if (mSeparateLogicalBlocks && inLine->chars[0]	!= '\n')
+						needNewLine	= true;
+
+					break;
+				}
+			}	// for (i = 0...)
+		}	// if (funcInfo->blocks)
+	}	// if (mCurrentFuncInfoIndex >= 0)
+
+	return needNewLine;
 }
 
 //	lineIsFunction:

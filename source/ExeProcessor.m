@@ -221,7 +221,7 @@ methodInfo_compare(
 	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
 	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
 	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
-	mIsolateCodeBlocks		= [theDefaults boolForKey: IsolateCodeBlocksKey];
+	mSeparateLogicalBlocks	= [theDefaults boolForKey: IsolateCodeBlocksKey];
 
 	if (![self loadMachHeader])
 	{
@@ -1476,21 +1476,7 @@ methodInfo_compare(
 		return;
 	}
 
-/**/
-
-if ((*ioLine)->info.address == 0x000029ec)
-{
-	UInt8	theBreak	= 9;
-}
-
-/**/
-
 	ChooseLine(ioLine);
-
-// ****************************************************************************
-// the newline added by restoreRegisters: is overwritten below.
-// restoreRegisters: should return a BOOL flag instead.
-// ****************************************************************************
 
 	UInt32	theOrigLength								= (*ioLine)->length;
 	char	addrSpaces[MAX_FIELD_SPACING]				= {0};
@@ -1704,12 +1690,7 @@ if ((*ioLine)->info.address == 0x000029ec)
 			}
 		}
 
-		// Clear registers and update current class.
-//		mCurrentClass	= ObjcClassPtrFromMethod((*ioLine)->info.address);
-//		mCurrentCat		= ObjcCatPtrFromMethod((*ioLine)->info.address);
-
 		ResetRegisters((*ioLine));
-//		UpdateRegisters(nil);
 	}	// if ((*ioLine)->info.isFunction)
 
 	// Find a comment if necessary.
@@ -1898,7 +1879,7 @@ if ((*ioLine)->info.address == 0x000029ec)
 
 	free((*ioLine)->chars);
 
-	if (mIsolateCodeBlocks && mEnteringNewBlock &&
+	if (mSeparateLogicalBlocks && mEnteringNewBlock &&
 		theFinalCString[0] != '\n')
 	{
 		(*ioLine)->length	= strlen(theFinalCString) + 1;
@@ -2165,14 +2146,14 @@ if ((*ioLine)->info.address == 0x000029ec)
 // ----------------------------------------------------------------------------
 //	Subclasses may override.
 
-- (void)resetRegisters: (Line*)ioLine
+- (void)resetRegisters: (Line*)inLine
 {}
 
 //	updateRegisters:
 // ----------------------------------------------------------------------------
 //	Subclasses may override.
 
-- (void)updateRegisters: (Line*)ioLine
+- (void)updateRegisters: (Line*)inLine
 {}
 
 //	restoreRegisters:

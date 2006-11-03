@@ -236,7 +236,7 @@ enum {
 	send,
 	sendSuper,
 	send_stret,
-	sendSuper_Stret,
+	sendSuper_stret,
 	send_fpret
 };
 
@@ -372,7 +372,7 @@ enum {
 	BOOL		mShowIvarTypes;
 	BOOL		mEntabOutput;
 	BOOL		mDemangleCppNames;
-	BOOL		mIsolateCodeBlocks;
+	BOOL		mSeparateLogicalBlocks;
 
 	BOOL		mReplaceSends;
 
@@ -401,6 +401,7 @@ enum {
 	void	(*CommentForMsgSendFromLine)	(id, SEL, char*, Line*);
 	void	(*ResetRegisters)				(id, SEL, Line*);
 	void	(*UpdateRegisters)				(id, SEL, Line*);
+	BOOL	(*RestoreRegisters)				(id, SEL, Line*);
 	char*	(*PrepareNameForDemangling)		(id, SEL, char*);
 
 	objc_class*		(*ObjcClassPtrFromMethod)		(id, SEL, UInt32);
@@ -485,9 +486,9 @@ enum {
 - (void)commentForSystemCall;
 - (void)commentForMsgSend: (char*)ioComment
 				 fromLine: (Line*)inLine;
-- (void)resetRegisters: (Line*)ioLine;
-- (void)updateRegisters: (Line*)ioLine;
-- (BOOL)restoreRegisters: (Line*)ioLine;
+- (void)resetRegisters: (Line*)inLine;
+- (void)updateRegisters: (Line*)inLine;
+- (BOOL)restoreRegisters: (Line*)inLine;
 
 - (void)insertMD5;
 - (char*)prepareNameForDemangling: (char*)inName;
