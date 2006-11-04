@@ -1090,15 +1090,6 @@ mReplaceSends	= true;
 
 	sscanf(inLine->info.code, "%02hhx", &opcode);
 
-/**/
-
-if (inLine->info.address == 0x3084)
-{
-	UInt8	theBreak	= 9;
-}
-
-/**/
-
 	// Bail if this is not an eligible jump.
 	if (opcode != 0xe8	&&	// calll
 		opcode != 0xe9)		// jmpl
@@ -1430,15 +1421,6 @@ if (inLine->info.address == 0x3084)
 	if (IS_JUMP(opcode, opcode2))
 		mEnteringNewBlock	= true;
 
-/**/
-
-if (inLine->info.address >= 0x307d)
-{
-	UInt8	theBreak	= 9;
-}
-
-/**/
-
 	switch (opcode)
 	{
 		// immediate group 1
@@ -1686,15 +1668,6 @@ if (inLine->info.address >= 0x307d)
 	}
 
 	BOOL	needNewLine	= false;
-
-/**/
-
-if (inLine->info.address == 0x2ce1)
-{
-	UInt8	theBreak	= 9;
-}
-
-/**/
 
 	if (mCurrentFuncInfoIndex >= 0)
 	{
