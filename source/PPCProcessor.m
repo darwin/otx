@@ -825,6 +825,7 @@ mReplaceSends	= true;
 	UInt32	theCode		= strtoul(
 		(const char*)inLine->info.code, nil, 16);
 
+	// Remind us to add a \n to the following line.
 	if (IS_BLOCK_BRANCH(theCode))
 		mEnteringNewBlock	= true;
 
@@ -1236,8 +1237,16 @@ mReplaceSends	= true;
 					mCTR	= machState.regInfos[CTRIndex];
 
 					if (machState.localSelves)
+					{
+						if (mLocalSelves)
+							free(mLocalSelves);
+
+						mNumLocalSelves	= machState.numLocalSelves;
+						mLocalSelves	= malloc(
+							sizeof(VarInfo) * machState.numLocalSelves);
 						memcpy(mLocalSelves, machState.localSelves,
 							sizeof(VarInfo) * machState.numLocalSelves);
+					}
 
 					// Optionally add a blank line before this block.
 					if (mSeparateLogicalBlocks && inLine->chars[0]	!= '\n')
@@ -1434,9 +1443,6 @@ mReplaceSends	= true;
 				// Create and store a new BlockInfo.
 				funcInfo->blocks[funcInfo->numBlocks - 1]	=
 					(BlockInfo){branchTarget, 0, machState};
-
-				// Remind us to add a \n to the following line.
-//				mEnteringNewBlock	= true;
 			}
 		}
 

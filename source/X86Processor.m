@@ -534,7 +534,7 @@ mReplaceSends	= true;
 
 				if (HAS_DISP8(modRM))
 					immOffset	+= 2;
-				else if (HAS_DISP32(modRM))
+				else if (HAS_REL_DISP32(modRM))
 					immOffset	+= 8;
 
 				if (HAS_SIB(modRM))
@@ -1090,7 +1090,16 @@ mReplaceSends	= true;
 
 	sscanf(inLine->info.code, "%02hhx", &opcode);
 
-	// Bail if this is not an eligible branch.
+/**/
+
+if (inLine->info.address == 0x3084)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
+
+	// Bail if this is not an eligible jump.
 	if (opcode != 0xe8	&&	// calll
 		opcode != 0xe9)		// jmpl
 		return;
@@ -1099,14 +1108,6 @@ mReplaceSends	= true;
 	if (memcmp(ioComment, "_objc_msgSend", 13))
 		return;
 
-/**/
-
-if (inLine->info.address == 0x2e50)
-{
-	UInt8	theBreak	= 9;
-}
-
-/**/
 	// Store the variant type locally to reduce string comparisons.
 	UInt32	sendType	= send;
 
@@ -1137,7 +1138,6 @@ if (inLine->info.address == 0x2e50)
 		if (mStack[2].isValid)
 		{
 			selectorAddy	= mStack[2].intValue;
-
 			receiverAddy	= (mStack[1].isValid) ?
 				mStack[1].intValue : 0;
 		}
@@ -1149,7 +1149,6 @@ if (inLine->info.address == 0x2e50)
 		if (mStack[1].isValid)
 		{
 			selectorAddy	= mStack[1].intValue;
-
 			receiverAddy	= (mStack[0].isValid) ?
 				mStack[0].intValue : 0;
 		}
@@ -1258,19 +1257,19 @@ if (inLine->info.address == 0x2e50)
 		{
 			case send:
 			case send_fpret:
-				formatString	= "%s[*(esp,1) %s]";
+				formatString	= "%s[*(%%esp,1) %s]";
 				break;
 
 			case sendSuper:
-				formatString	= "%s[[*(esp,1) super] %s]";
+				formatString	= "%s[[*(%%esp,1) super] %s]";
 				break;
 
 			case send_stret:
-				formatString	= "%s[*0x04(esp,1) %s]";
+				formatString	= "%s[*0x04(%%esp,1) %s]";
 				break;
 
 			case sendSuper_stret:
-				formatString	= "%s[[*0x04(esp,1) super] %s]";
+				formatString	= "%s[[*0x04(%%esp,1) super] %s]";
 				break;
 
 			default:
@@ -1426,6 +1425,19 @@ if (inLine->info.address == 0x2e50)
 
 	sscanf(inLine->info.code, "%02hhx", &opcode);
 	sscanf(&inLine->info.code[2], "%02hhx", &opcode2);
+
+	// Remind us to add a \n to the following line.
+	if (IS_JUMP(opcode, opcode2))
+		mEnteringNewBlock	= true;
+
+/**/
+
+if (inLine->info.address >= 0x307d)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
 
 	switch (opcode)
 	{
@@ -1591,6 +1603,16 @@ if (inLine->info.address == 0x2e50)
 					}
 				}
 			}
+			else if (HAS_ABS_DISP32(modRM))
+			{
+				bzero(&mRegInfos[REG1(modRM)], sizeof(RegisterInfo));
+
+				sscanf(&inLine->info.code[4], "%08x",
+					&mRegInfos[REG1(modRM)].intValue);
+				mRegInfos[REG1(modRM)].intValue	=
+					OSSwapInt32(mRegInfos[REG1(modRM)].intValue);
+				mRegInfos[REG1(modRM)].isValid	= true;
+			}
 
 			break;
 
@@ -1622,6 +1644,7 @@ if (inLine->info.address == 0x2e50)
 			mRegInfos[EAX].isValid	= true;
 
 			break;
+
 		case 0xb8:	// movl	imm32,%eax
 		case 0xb9:	// movl	imm32,%ecx
 		case 0xba:	// movl	imm32,%edx
@@ -1640,11 +1663,10 @@ if (inLine->info.address == 0x2e50)
 
 			break;
 
-/**/
 		case 0xe8:	// calll
 			bzero(mStack, sizeof(RegisterInfo) * STACK_SIZE);
+			bzero(&mRegInfos[EAX], sizeof(RegisterInfo));
 			break;
-/**/
 
 		default:
 			break;
@@ -1664,6 +1686,15 @@ if (inLine->info.address == 0x2e50)
 	}
 
 	BOOL	needNewLine	= false;
+
+/**/
+
+if (inLine->info.address == 0x2ce1)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
 
 	if (mCurrentFuncInfoIndex >= 0)
 	{
@@ -1687,8 +1718,16 @@ if (inLine->info.address == 0x2e50)
 						sizeof(RegisterInfo) * 8);
 
 					if (machState.localSelves)
+					{
+						if (mLocalSelves)
+							free(mLocalSelves);
+
+						mNumLocalSelves	= machState.numLocalSelves;
+						mLocalSelves	= malloc(
+							sizeof(VarInfo) * machState.numLocalSelves);
 						memcpy(mLocalSelves, machState.localSelves,
 							sizeof(VarInfo) * machState.numLocalSelves);
+					}
 
 					// Optionally add a blank line before this block.
 					if (mSeparateLogicalBlocks && inLine->chars[0]	!= '\n')
@@ -1778,17 +1817,94 @@ if (inLine->info.address == 0x2e50)
 - (void)gatherFuncInfos
 {
 	Line*	theLine	= mPlainLineListHead;
+	UInt8	opcode, opcode2;
 
 	// Loop thru lines.
 	while (theLine)
 	{
 		if (theLine->info.isCode)
 		{
+			sscanf(theLine->info.code, "%02hhx", &opcode);
+			sscanf(&theLine->info.code[2], "%02hhx", &opcode2);
 
+			if (theLine->info.isFunction)
+				ResetRegisters(theLine);
+			else
+				UpdateRegisters(theLine);
+
+			if (IS_JUMP(opcode, opcode2))
+			{
+				UInt32	jumpTarget;
+				BOOL	validTarget	= false;
+
+				// Retrieve the jump target.
+				if ((opcode >= 0x71 && opcode <= 0x7f) ||
+					opcode == 0xe3 || opcode == 0xeb)
+				{
+					SInt8	rel8;
+
+					sscanf(&theLine->info.code[2], "%02hhx", &rel8);
+					jumpTarget	= theLine->info.address + 2 + rel8;
+
+					validTarget	= true;
+				}
+				else if (opcode == 0xe9	||
+					(opcode == 0x0f	&& opcode2 >= 0x81 && opcode2 <= 0x8f))
+				{
+					SInt32	rel32;
+
+					sscanf(&theLine->info.code[2], "%08x", &rel32);
+					rel32		= OSSwapInt32(rel32);
+					jumpTarget	= theLine->info.address + 5 + rel32;
+
+					validTarget	= true;
+				}
+
+				if (validTarget)
+				{
+					// Retrieve current FunctionInfo.
+					FunctionInfo*	funcInfo	=
+						&mFuncInfos[mCurrentFuncInfoIndex];
+
+					// Allocate another BlockInfo.
+					funcInfo->numBlocks++;
+
+					if (funcInfo->blocks)
+						funcInfo->blocks	= realloc(funcInfo->blocks,
+							sizeof(BlockInfo) * funcInfo->numBlocks);
+					else
+						funcInfo->blocks	= malloc(sizeof(BlockInfo));
+
+					// Create a new MachineState.
+					RegisterInfo*	savedRegs	= malloc(
+						sizeof(RegisterInfo) * 8);
+
+					memcpy(savedRegs, mRegInfos, sizeof(RegisterInfo) * 8);
+
+					VarInfo*	savedVars	= nil;
+
+					if (mLocalSelves)
+					{
+						savedVars	= malloc(
+							sizeof(VarInfo) * mNumLocalSelves);
+						memcpy(savedVars, mLocalSelves,
+							sizeof(VarInfo) * mNumLocalSelves);
+					}
+
+					MachineState	machState	=
+						{savedRegs, savedVars, mNumLocalSelves};
+
+					// Create and store a new BlockInfo.
+					funcInfo->blocks[funcInfo->numBlocks - 1]	=
+						(BlockInfo){jumpTarget, 0, machState};
+				}
+			}
 		}
 
 		theLine	= theLine->next;
 	}
+
+	mCurrentFuncInfoIndex	= -1;
 }
 
 #pragma mark Deobfuscastion
@@ -2015,8 +2131,7 @@ if (inLine->info.address == 0x2e50)
 
 	if (![fileMan changeFileAttributes: permsDict atPath: [newURL path]])
 	{
-		printf(
-			"otx: -[X86Processor fixNops]: "
+		printf("otx: -[X86Processor fixNops]: "
 			"unable to change file permissions for fixed executable\n");
 	}
 

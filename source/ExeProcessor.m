@@ -221,7 +221,7 @@ methodInfo_compare(
 	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
 	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
 	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
-	mSeparateLogicalBlocks	= [theDefaults boolForKey: IsolateCodeBlocksKey];
+	mSeparateLogicalBlocks	= [theDefaults boolForKey: SeparateLogicalBlocksKey];
 
 	if (![self loadMachHeader])
 	{

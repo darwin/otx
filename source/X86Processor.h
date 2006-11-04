@@ -29,24 +29,23 @@ enum {
 };
 
 // Macros for various ugly x86 data
-#define LO(x)			((x) & 0xf)				// bits 0-3
-#define HI(x)			(((x) >> 4) & 0xf)		// bits 4-7
+#define LO(x)				((x) & 0xf)				// bits 0-3
+#define HI(x)				(((x) >> 4) & 0xf)		// bits 4-7
 //#define DIR(x)			(((x) >> 1) & 0x1)		// bit 1
-#define MOD(x)			(((x) >> 6) & 0x3)		// bits 6-7
-#define REG1(x)			(((x) >> 3) & 0x7)		// bits 3-5
-#define REG2(x)			((x) & 0x7)				// bits 0-2
-#define OPEXT(x)		REG1((x))
-#define RM(x)			REG2((x))
-#define HAS_SIB(x)		(MOD((x)) != MODx && REG2((x)) == ESP)
-#define HAS_DISP8(x)	(MOD((x)) == MOD8)
-#define HAS_DISP32(x)	(MOD((x)) == MOD32)
+#define MOD(x)				(((x) >> 6) & 0x3)		// bits 6-7
+#define REG1(x)				(((x) >> 3) & 0x7)		// bits 3-5
+#define REG2(x)				((x) & 0x7)				// bits 0-2
+#define OPEXT(x)			REG1((x))
+#define RM(x)				REG2((x))
+#define HAS_SIB(x)			(MOD((x)) != MODx && REG2((x)) == ESP)
+#define HAS_DISP8(x)		(MOD((x)) == MOD8)
+#define HAS_REL_DISP32(x)	(MOD((x)) == MOD32)
+#define HAS_ABS_DISP32(x)	(MOD((x)) == MODimm && REG2((x)) == EBP)
 
 #define IS_JUMP(o, so)										\
-	(														\
-		(o) == 0xe3 || (o) == 0xe9 || (o) == 0xeb	||		\
+	((o) == 0xe3 || (o) == 0xe9 || (o) == 0xeb	||			\
 		((o) >= 0x71 && (o) <= 0x7f) ||						\
-		((o) == 0x0f && (so) >= 0x81 && (so) <= 0x8f)		\
-	)
+		((o) == 0x0f && (so) >= 0x81 && (so) <= 0x8f))
 
 // ============================================================================
 
