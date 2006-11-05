@@ -1870,7 +1870,7 @@
 
 					// Create and store a new BlockInfo.
 					funcInfo->blocks[funcInfo->numBlocks - 1]	=
-						(BlockInfo){jumpTarget, 0, machState};
+						(BlockInfo){jumpTarget, machState};
 				}
 			}
 		}

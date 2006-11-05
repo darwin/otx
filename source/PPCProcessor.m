@@ -1439,7 +1439,7 @@
 
 				// Create and store a new BlockInfo.
 				funcInfo->blocks[funcInfo->numBlocks - 1]	=
-					(BlockInfo){branchTarget, 0, machState};
+					(BlockInfo){branchTarget, machState};
 			}
 		}
 

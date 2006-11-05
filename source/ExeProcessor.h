@@ -74,7 +74,7 @@ MachineState;
 typedef struct
 {
 	UInt32			start;
-	UInt32			end;
+//	UInt32			end;
 	MachineState	state;
 }
 BlockInfo;

@@ -1881,6 +1881,24 @@
 			E105FE520AFD6BBC00F7D6CA /* PBXTextBookmark */ = E105FE520AFD6BBC00F7D6CA /* PBXTextBookmark */;
 			E105FE530AFD6BBD00F7D6CA /* PBXTextBookmark */ = E105FE530AFD6BBD00F7D6CA /* PBXTextBookmark */;
 			E105FE540AFD6BBD00F7D6CA /* PBXTextBookmark */ = E105FE540AFD6BBD00F7D6CA /* PBXTextBookmark */;
+			E105FE570AFD6CCE00F7D6CA /* PBXTextBookmark */ = E105FE570AFD6CCE00F7D6CA /* PBXTextBookmark */;
+			E105FE580AFD6CCE00F7D6CA /* PBXTextBookmark */ = E105FE580AFD6CCE00F7D6CA /* PBXTextBookmark */;
+			E105FE590AFD6CCE00F7D6CA /* PBXTextBookmark */ = E105FE590AFD6CCE00F7D6CA /* PBXTextBookmark */;
+			E105FE5A0AFD6CCE00F7D6CA /* PBXTextBookmark */ = E105FE5A0AFD6CCE00F7D6CA /* PBXTextBookmark */;
+			E105FE5B0AFD6CCE00F7D6CA /* PBXTextBookmark */ = E105FE5B0AFD6CCE00F7D6CA /* PBXTextBookmark */;
+			E105FE5C0AFD6CCE00F7D6CA /* PBXTextBookmark */ = E105FE5C0AFD6CCE00F7D6CA /* PBXTextBookmark */;
+			E105FE5D0AFD6CCE00F7D6CA /* PBXTextBookmark */ = E105FE5D0AFD6CCE00F7D6CA /* PBXTextBookmark */;
+			E105FE5E0AFD6CCE00F7D6CA /* PBXTextBookmark */ = E105FE5E0AFD6CCE00F7D6CA /* PBXTextBookmark */;
+			E105FE600AFD6D1D00F7D6CA /* PBXTextBookmark */ = E105FE600AFD6D1D00F7D6CA /* PBXTextBookmark */;
+			E105FE610AFD6D1D00F7D6CA /* PBXTextBookmark */ = E105FE610AFD6D1D00F7D6CA /* PBXTextBookmark */;
+			E105FE620AFD6D1D00F7D6CA /* PBXTextBookmark */ = E105FE620AFD6D1D00F7D6CA /* PBXTextBookmark */;
+			E105FE630AFD6D1D00F7D6CA /* PBXTextBookmark */ = E105FE630AFD6D1D00F7D6CA /* PBXTextBookmark */;
+			E105FE640AFD6D2600F7D6CA /* PBXTextBookmark */ = E105FE640AFD6D2600F7D6CA /* PBXTextBookmark */;
+			E105FE650AFD6D2600F7D6CA /* PBXTextBookmark */ = E105FE650AFD6D2600F7D6CA /* PBXTextBookmark */;
+			E105FE660AFD6D2600F7D6CA /* PBXTextBookmark */ = E105FE660AFD6D2600F7D6CA /* PBXTextBookmark */;
+			E105FE690AFD6D2600F7D6CA /* PBXTextBookmark */ = E105FE690AFD6D2600F7D6CA /* PBXTextBookmark */;
+			E105FE6A0AFD6D2600F7D6CA /* PBXTextBookmark */ = E105FE6A0AFD6D2600F7D6CA /* PBXTextBookmark */;
+			E105FE6B0AFD6D2600F7D6CA /* PBXTextBookmark */ = E105FE6B0AFD6D2600F7D6CA /* PBXTextBookmark */;
 		};
 		sourceControlManager = E1C3BA5209A957E100B38A4D /* Source Control */;
 		userBuildSettings = {
@@ -2212,7 +2230,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mAddBlockSpaces;
 		rLen = 0;
-		rLoc = 11558;
+		rLoc = 11560;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -2289,7 +2307,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mAddBlockSpaces;
 		rLen = 0;
-		rLoc = 11558;
+		rLoc = 11560;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -2379,7 +2397,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mAddBlockSpaces;
 		rLen = 0;
-		rLoc = 11558;
+		rLoc = 11560;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -2539,7 +2557,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mAddBlockSpaces;
 		rLen = 0;
-		rLoc = 11558;
+		rLoc = 11560;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -2549,7 +2567,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mEnteringNewBlock;
 		rLen = 17;
-		rLoc = 11591;
+		rLoc = 11593;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -2599,7 +2617,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mEnteringNewBlock;
 		rLen = 17;
-		rLoc = 11591;
+		rLoc = 11593;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -2807,7 +2825,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mEnteringNewBlock;
 		rLen = 17;
-		rLoc = 11591;
+		rLoc = 11593;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -2917,7 +2935,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mEnteringNewBlock;
 		rLen = 17;
-		rLoc = 11591;
+		rLoc = 11593;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -3044,7 +3062,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mEnteringNewBlock;
 		rLen = 17;
-		rLoc = 11591;
+		rLoc = 11593;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -3272,7 +3290,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mEnteringNewBlock;
 		rLen = 17;
-		rLoc = 11591;
+		rLoc = 11593;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -3452,7 +3470,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mEnteringNewBlock;
 		rLen = 17;
-		rLoc = 11591;
+		rLoc = 11593;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 10299;
@@ -3861,7 +3879,7 @@
 		isa = PBXTextBookmark;
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		rLen = 0;
-		rLoc = 18218;
+		rLoc = 18220;
 		rType = 0;
 	};
 	E105F5300AF4662A00F7D6CA /* PBXTextBookmark */ = {
@@ -3869,7 +3887,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mReplaceSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 1588;
 		vrLoc = 10430;
@@ -3945,7 +3963,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mReplaceSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 1588;
 		vrLoc = 10430;
@@ -3995,7 +4013,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mReplaceSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 1588;
 		vrLoc = 10430;
@@ -4125,7 +4143,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mReplaceSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 1588;
 		vrLoc = 10430;
@@ -4313,7 +4331,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mReplaceSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 1588;
 		vrLoc = 10430;
@@ -4423,7 +4441,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mReplaceSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 1588;
 		vrLoc = 10430;
@@ -4473,7 +4491,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mReplaceSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 1588;
 		vrLoc = 10430;
@@ -4693,7 +4711,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mReplaceSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 1588;
 		vrLoc = 10430;
@@ -4703,7 +4721,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = MAX_OPERANDS_LENGTH;
 		rLen = 19;
-		rLoc = 8348;
+		rLoc = 8350;
 		rType = 0;
 		vrLen = 1762;
 		vrLoc = 7970;
@@ -4753,7 +4771,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = MAX_OPERANDS_LENGTH;
 		rLen = 19;
-		rLoc = 8348;
+		rLoc = 8350;
 		rType = 0;
 		vrLen = 1762;
 		vrLoc = 7970;
@@ -4863,7 +4881,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = MAX_OPERANDS_LENGTH;
 		rLen = 19;
-		rLoc = 8348;
+		rLoc = 8350;
 		rType = 0;
 		vrLen = 1762;
 		vrLoc = 7970;
@@ -6673,7 +6691,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mReplaceSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 1588;
 		vrLoc = 10430;
@@ -6683,7 +6701,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (void)commentForMsgSend;";
 		rLen = 74;
-		rLoc = 15990;
+		rLoc = 15992;
 		rType = 0;
 		vrLen = 1937;
 		vrLoc = 14498;
@@ -6911,7 +6929,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (void)commentForMsgSend;";
 		rLen = 74;
-		rLoc = 15990;
+		rLoc = 15992;
 		rType = 0;
 		vrLen = 1937;
 		vrLoc = 14498;
@@ -6921,7 +6939,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: CommentForMsgSend";
 		rLen = 0;
-		rLoc = 12570;
+		rLoc = 12572;
 		rType = 0;
 		vrLen = 1730;
 		vrLoc = 10652;
@@ -7391,7 +7409,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: 476";
 		rLen = 0;
-		rLoc = 16063;
+		rLoc = 16065;
 		rType = 0;
 		vrLen = 2062;
 		vrLoc = 13683;
@@ -7401,7 +7419,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: CommentForMsgSendFromLine";
 		rLen = 0;
-		rLoc = 12572;
+		rLoc = 12574;
 		rType = 0;
 		vrLen = 2058;
 		vrLoc = 11095;
@@ -7498,7 +7516,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: CommentForMsgSendFromLine";
 		rLen = 0;
-		rLoc = 12572;
+		rLoc = 12574;
 		rType = 0;
 		vrLen = 2058;
 		vrLoc = 11095;
@@ -7558,7 +7576,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: CommentForMsgSendFromLine";
 		rLen = 0;
-		rLoc = 12572;
+		rLoc = 12574;
 		rType = 0;
 		vrLen = 2058;
 		vrLoc = 11095;
@@ -7994,7 +8012,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: CommentForMsgSendFromLine";
 		rLen = 0;
-		rLoc = 12572;
+		rLoc = 12574;
 		rType = 0;
 		vrLen = 2058;
 		vrLoc = 11095;
@@ -9722,7 +9740,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = OCGenericType;
 		rLen = 13;
-		rLoc = 8017;
+		rLoc = 8019;
 		rType = 0;
 		vrLen = 1726;
 		vrLoc = 6394;
@@ -9971,7 +9989,7 @@
 		isa = PBXTextBookmark;
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		rLen = 0;
-		rLoc = "-2147478324";
+		rLoc = "-2147478327";
 		rType = 0;
 	};
 	E105F8A00AF811B900F7D6CA /* PBXTextBookmark */ = {
@@ -9979,7 +9997,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1648";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -9998,7 +10016,7 @@
 		isa = PBXTextBookmark;
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		rLen = 0;
-		rLoc = "-2147483190";
+		rLoc = "-2147483188";
 		rType = 0;
 	};
 	E105F8A50AF811B900F7D6CA /* PBXTextBookmark */ = {
@@ -10006,7 +10024,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1935;
 		vrLoc = 14745;
@@ -10036,7 +10054,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -10056,7 +10074,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -10188,7 +10206,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -10198,7 +10216,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -10258,7 +10276,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -10268,7 +10286,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -10328,7 +10346,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -10338,7 +10356,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -10398,7 +10416,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -10408,7 +10426,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -10575,7 +10593,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -10585,7 +10603,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -10645,7 +10663,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -10655,7 +10673,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -10715,7 +10733,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -10725,7 +10743,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -10845,7 +10863,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -10855,7 +10873,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -10982,7 +11000,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -10992,7 +11010,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -11052,7 +11070,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -11062,7 +11080,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -11122,7 +11140,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -11132,7 +11150,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -11212,7 +11230,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -11222,7 +11240,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -11302,7 +11320,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -11312,7 +11330,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -11432,7 +11450,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -11442,7 +11460,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -11542,7 +11560,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -11552,7 +11570,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -11742,7 +11760,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 15182;
+		rLoc = 15184;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14965;
@@ -11752,7 +11770,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = restoreRegisters;
 		rLen = 16;
-		rLoc = 16151;
+		rLoc = 16153;
 		rType = 0;
 		vrLen = 1906;
 		vrLoc = 14965;
@@ -11772,7 +11790,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -11822,7 +11840,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = restoreRegisters;
 		rLen = 16;
-		rLoc = 16151;
+		rLoc = 16153;
 		rType = 0;
 		vrLen = 1906;
 		vrLoc = 14965;
@@ -11842,7 +11860,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: gatherFuncInfos";
 		rLen = 0;
-		rLoc = 41954;
+		rLoc = 41951;
 		rType = 0;
 		vrLen = 1125;
 		vrLoc = 36620;
@@ -11949,7 +11967,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = restoreRegisters;
 		rLen = 16;
-		rLoc = 16151;
+		rLoc = 16153;
 		rType = 0;
 		vrLen = 1906;
 		vrLoc = 14965;
@@ -12019,7 +12037,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = restoreRegisters;
 		rLen = 16;
-		rLoc = 16151;
+		rLoc = 16153;
 		rType = 0;
 		vrLen = 1906;
 		vrLoc = 14965;
@@ -12089,7 +12107,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = restoreRegisters;
 		rLen = 16;
-		rLoc = 16151;
+		rLoc = 16153;
 		rType = 0;
 		vrLen = 1906;
 		vrLoc = 14965;
@@ -12351,7 +12369,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (void)resetRegisters: (Line*)ioLine;";
 		rLen = 39;
-		rLoc = 16064;
+		rLoc = 16066;
 		rType = 0;
 		vrLen = 1911;
 		vrLoc = 14965;
@@ -12361,7 +12379,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: ResetRegisters";
 		rLen = 0;
-		rLoc = 12586;
+		rLoc = 12588;
 		rType = 0;
 		vrLen = 2072;
 		vrLoc = 11057;
@@ -12431,7 +12449,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: ResetRegisters";
 		rLen = 0;
-		rLoc = 12586;
+		rLoc = 12588;
 		rType = 0;
 		vrLen = 2072;
 		vrLoc = 11057;
@@ -12608,7 +12626,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: ResetRegisters";
 		rLen = 0;
-		rLoc = 12586;
+		rLoc = 12588;
 		rType = 0;
 		vrLen = 2072;
 		vrLoc = 11057;
@@ -12698,7 +12716,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: ResetRegisters";
 		rLen = 0;
-		rLoc = 12586;
+		rLoc = 12588;
 		rType = 0;
 		vrLen = 2072;
 		vrLoc = 11057;
@@ -12788,7 +12806,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: ResetRegisters";
 		rLen = 0;
-		rLoc = 12586;
+		rLoc = 12588;
 		rType = 0;
 		vrLen = 2072;
 		vrLoc = 11057;
@@ -12858,7 +12876,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: ResetRegisters";
 		rLen = 0;
-		rLoc = 12586;
+		rLoc = 12588;
 		rType = 0;
 		vrLen = 2072;
 		vrLoc = 11057;
@@ -12995,7 +13013,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: ResetRegisters";
 		rLen = 0;
-		rLoc = 12586;
+		rLoc = 12588;
 		rType = 0;
 		vrLen = 2072;
 		vrLoc = 11057;
@@ -13233,7 +13251,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: ResetRegisters";
 		rLen = 0;
-		rLoc = 12586;
+		rLoc = 12588;
 		rType = 0;
 		vrLen = 2072;
 		vrLoc = 11057;
@@ -13340,7 +13358,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: ResetRegisters";
 		rLen = 0;
-		rLoc = 12586;
+		rLoc = 12588;
 		rType = 0;
 		vrLen = 2072;
 		vrLoc = 11057;
@@ -13350,7 +13368,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16150;
+		rLoc = 16152;
 		rType = 0;
 		vrLen = 1977;
 		vrLoc = 14790;
@@ -13408,7 +13426,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13428,7 +13446,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13448,7 +13466,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13468,7 +13486,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13488,7 +13506,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13508,7 +13526,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13528,7 +13546,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13548,7 +13566,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13568,7 +13586,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13588,7 +13606,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13628,7 +13646,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16150;
+		rLoc = 16152;
 		rType = 0;
 		vrLen = 1977;
 		vrLoc = 14790;
@@ -13638,7 +13656,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13658,7 +13676,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13678,7 +13696,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13698,7 +13716,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13785,7 +13803,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16150;
+		rLoc = 16152;
 		rType = 0;
 		vrLen = 1977;
 		vrLoc = 14790;
@@ -13815,7 +13833,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16150;
+		rLoc = 16152;
 		rType = 0;
 		vrLen = 1977;
 		vrLoc = 14790;
@@ -13825,7 +13843,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13845,7 +13863,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 15235;
@@ -13865,7 +13883,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -13885,7 +13903,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -13905,7 +13923,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -13925,7 +13943,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -13945,7 +13963,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -13965,7 +13983,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -13985,7 +14003,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14005,7 +14023,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14035,7 +14053,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16150;
+		rLoc = 16152;
 		rType = 0;
 		vrLen = 1977;
 		vrLoc = 14790;
@@ -14045,7 +14063,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = sendSuper_Stret;
 		rLen = 15;
-		rLoc = 7364;
+		rLoc = 7366;
 		rType = 0;
 		vrLen = 1551;
 		vrLoc = 6694;
@@ -14079,7 +14097,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14099,7 +14117,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14119,7 +14137,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14139,7 +14157,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14159,7 +14177,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14179,7 +14197,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14199,7 +14217,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14219,7 +14237,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14239,7 +14257,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14259,7 +14277,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14279,7 +14297,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14299,7 +14317,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14329,7 +14347,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = sendSuper_Stret;
 		rLen = 15;
-		rLoc = 7364;
+		rLoc = 7366;
 		rType = 0;
 		vrLen = 1551;
 		vrLoc = 6694;
@@ -14359,7 +14377,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15005;
@@ -14379,7 +14397,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "- (BOOL)restoreRegisters: (Line*)ioLine;";
 		rLen = 41;
-		rLoc = 16143;
+		rLoc = 16145;
 		rType = 0;
 		vrLen = 1240;
 		vrLoc = 15009;
@@ -14389,7 +14407,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mSeparateLogicalBlocks;
 		rLen = 0;
-		rLoc = 11558;
+		rLoc = 11560;
 		rType = 0;
 		vrLen = 730;
 		vrLoc = 11101;
@@ -14436,7 +14454,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mSeparateLogicalBlocks;
 		rLen = 0;
-		rLoc = 11558;
+		rLoc = 11560;
 		rType = 0;
 		vrLen = 730;
 		vrLoc = 11101;
@@ -14500,7 +14518,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14520,7 +14538,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14560,7 +14578,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: 491";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 2051;
 		vrLoc = 14378;
@@ -14570,7 +14588,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: resetRegisters:";
 		rLen = 0;
-		rLoc = 16101;
+		rLoc = 16103;
 		rType = 0;
 		vrLen = 2051;
 		vrLoc = 14378;
@@ -14630,7 +14648,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: resetRegisters:";
 		rLen = 0;
-		rLoc = 16101;
+		rLoc = 16103;
 		rType = 0;
 		vrLen = 2051;
 		vrLoc = 14378;
@@ -14650,7 +14668,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14670,7 +14688,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14690,7 +14708,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14710,7 +14728,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14730,7 +14748,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14750,7 +14768,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14770,7 +14788,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14790,7 +14808,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14810,7 +14828,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14840,7 +14858,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: sendSuper_stret";
 		rLen = 0;
-		rLoc = 7375;
+		rLoc = 7377;
 		rType = 0;
 		vrLen = 1493;
 		vrLoc = 6394;
@@ -14930,7 +14948,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -14948,7 +14966,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: restoreRegisters:";
 		rLen = 0;
-		rLoc = 16182;
+		rLoc = 16184;
 		rType = 0;
 		vrLen = 1208;
 		vrLoc = 15031;
@@ -16830,7 +16848,7 @@
 		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
 		name = "X86Processor.m: 1792";
 		rLen = 0;
-		rLoc = 41880;
+		rLoc = 41877;
 		rType = 0;
 		vrLen = 1033;
 		vrLoc = 38940;
@@ -17123,7 +17141,7 @@
 		isa = PBXTextBookmark;
 		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
 		rLen = 21;
-		rLoc = 33939;
+		rLoc = 33936;
 		rType = 0;
 	};
 	E105FC9E0AFC4C9F00F7D6CA /* PBXTextBookmark */ = {
@@ -17141,7 +17159,7 @@
 		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
 		name = "mCurrentFuncInfoIndex\t= -1;";
 		rLen = 30;
-		rLoc = 33937;
+		rLoc = 33934;
 		rType = 0;
 		vrLen = 501;
 		vrLoc = 33340;
@@ -17906,7 +17924,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mVerboseMsgSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 2063;
 		vrLoc = 11007;
@@ -17916,7 +17934,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = mVerboseMsgSends;
 		rLen = 16;
-		rLoc = 11565;
+		rLoc = 11567;
 		rType = 0;
 		vrLen = 2063;
 		vrLoc = 11007;
@@ -18221,7 +18239,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1469;
 		vrLoc = 6244;
@@ -18311,7 +18329,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1469;
 		vrLoc = 6244;
@@ -18348,7 +18366,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1469;
 		vrLoc = 6244;
@@ -18398,7 +18416,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1469;
 		vrLoc = 6244;
@@ -18438,7 +18456,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1469;
 		vrLoc = 6244;
@@ -18478,7 +18496,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1469;
 		vrLoc = 6244;
@@ -18753,7 +18771,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1469;
 		vrLoc = 6244;
@@ -18793,7 +18811,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1469;
 		vrLoc = 6244;
@@ -18853,7 +18871,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1469;
 		vrLoc = 6244;
@@ -18997,7 +19015,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1469;
 		vrLoc = 6244;
@@ -19007,7 +19025,7 @@
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: send_fpret";
 		rLen = 0;
-		rLoc = 7406;
+		rLoc = 7408;
 		rType = 0;
 		vrLen = 1538;
 		vrLoc = 6596;
@@ -19472,6 +19490,180 @@
 		vrLen = 608;
 		vrLoc = 23227;
 	};
+	E105FE570AFD6CCE00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1644";
+		rLen = 0;
+		rLoc = 36754;
+		rType = 0;
+		vrLen = 732;
+		vrLoc = 26919;
+	};
+	E105FE580AFD6CCE00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = BlockInfo;
+		rLen = 9;
+		rLoc = 3457;
+		rType = 0;
+		vrLen = 482;
+		vrLoc = 3551;
+	};
+	E105FE590AFD6CCE00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
+		name = "PPCProcessor.m: 1442";
+		rLen = 0;
+		rLoc = 33880;
+		rType = 0;
+		vrLen = 666;
+		vrLoc = 33237;
+	};
+	E105FE5A0AFD6CCE00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		rLen = 9;
+		rLoc = 41167;
+		rType = 0;
+	};
+	E105FE5B0AFD6CCE00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1644";
+		rLen = 0;
+		rLoc = 36754;
+		rType = 0;
+		vrLen = 608;
+		vrLoc = 23227;
+	};
+	E105FE5C0AFD6CCE00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */;
+		name = BlockInfo;
+		rLen = 9;
+		rLoc = 3457;
+		rType = 0;
+		vrLen = 482;
+		vrLoc = 3551;
+	};
+	E105FE5D0AFD6CCE00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
+		name = "PPCProcessor.m: 1442";
+		rLen = 0;
+		rLoc = 33880;
+		rType = 0;
+		vrLen = 666;
+		vrLoc = 33237;
+	};
+	E105FE5E0AFD6CCE00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1873";
+		rLen = 0;
+		rLoc = 41858;
+		rType = 0;
+		vrLen = 625;
+		vrLoc = 41496;
+	};
+	E105FE600AFD6D1D00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1644";
+		rLen = 0;
+		rLoc = 36754;
+		rType = 0;
+		vrLen = 732;
+		vrLoc = 26919;
+	};
+	E105FE610AFD6D1D00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1873";
+		rLen = 0;
+		rLoc = 41858;
+		rType = 0;
+		vrLen = 625;
+		vrLoc = 41496;
+	};
+	E105FE620AFD6D1D00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1644";
+		rLen = 0;
+		rLoc = 36754;
+		rType = 0;
+		vrLen = 732;
+		vrLoc = 26919;
+	};
+	E105FE630AFD6D1D00F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1873";
+		rLen = 0;
+		rLoc = 41858;
+		rType = 0;
+		vrLen = 625;
+		vrLoc = 41496;
+	};
+	E105FE640AFD6D2600F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = BlockInfo;
+		rLen = 9;
+		rLoc = 1931;
+		rType = 0;
+		vrLen = 1122;
+		vrLoc = 1263;
+	};
+	E105FE650AFD6D2600F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769C00A60F47E00C03C62 /* X86Processor.m */;
+		name = "X86Processor.m: 1644";
+		rLen = 0;
+		rLoc = 36754;
+		rType = 0;
+		vrLen = 1083;
+		vrLoc = 26709;
+	};
+	E105FE660AFD6D2600F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */;
+		name = "PPCProcessor.m: 1153";
+		rLen = 0;
+		rLoc = 27082;
+		rType = 0;
+		vrLen = 1096;
+		vrLoc = 14972;
+	};
+	E105FE690AFD6D2600F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1167F1C09C8086900E7398D /* StolenDefs.h */;
+		rLen = 1;
+		rLoc = 68;
+		rType = 1;
+	};
+	E105FE6A0AFD6D2600F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1167F1C09C8086900E7398D /* StolenDefs.h */;
+		name = oc_string;
+		rLen = 9;
+		rLoc = 1757;
+		rType = 0;
+		vrLen = 1607;
+		vrLoc = 495;
+	};
+	E105FE6B0AFD6D2600F7D6CA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E105F5340AF4662A00F7D6CA /* msgSends */;
+		name = Super_stret;
+		rLen = 11;
+		rLoc = 1313;
+		rType = 0;
+		vrLen = 1816;
+		vrLoc = 0;
+	};
 	E1167F1C09C8086900E7398D /* StolenDefs.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {584, 924}}";
@@ -19519,9 +19711,9 @@
 	};
 	E135398E0A68185500CBDDE5 /* ExeProcessor.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {884, 6648}}";
-			sepNavSelRange = "{386, 5}";
-			sepNavVisRect = "{{0, 23}, {526, 627}}";
+			sepNavIntBoundsRect = "{{0, 0}, {884, 6660}}";
+			sepNavSelRange = "{1931, 9}";
+			sepNavVisRect = "{{0, 640}, {526, 627}}";
 			sepNavWindowFrame = "{{452, 46}, {565, 700}}";
 		};
 	};
@@ -19544,16 +19736,16 @@
 	E14769570A60E95B00C03C62 /* PPCProcessor.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {668, 17436}}";
-			sepNavSelRange = "{15605, 12}";
+			sepNavSelRange = "{27082, 0}";
 			sepNavVisRect = "{{0, 7969}, {534, 630}}";
 			sepNavWindowFrame = "{{9, 43}, {573, 703}}";
 		};
 	};
 	E14769C00A60F47E00C03C62 /* X86Processor.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {611, 25404}}";
+			sepNavIntBoundsRect = "{{0, 0}, {544, 25404}}";
 			sepNavSelRange = "{36754, 0}";
-			sepNavVisRect = "{{0, 12360}, {611, 324}}";
+			sepNavVisRect = "{{0, 14343}, {544, 630}}";
 			sepNavWindowFrame = "{{423, 43}, {583, 703}}";
 		};
 	};
@@ -19718,8 +19910,8 @@
 	E1D77F2D09B296A300176F18 /* ExeProcessor.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {611, 43428}}";
-			sepNavSelRange = "{45513, 25}";
-			sepNavVisRect = "{{0, 20820}, {611, 324}}";
+			sepNavSelRange = "{3457, 9}";
+			sepNavVisRect = "{{0, 2013}, {611, 324}}";
 			sepNavWindowFrame = "{{410, 43}, {570, 703}}";
 		};
 	};
