@@ -79,9 +79,9 @@
 
 @interface PPCProcessor : ExeProcessor
 {
-	RegisterInfo	mRegInfos[32];
-	RegisterInfo	mLR;
-	RegisterInfo	mCTR;
+	GPRegisterInfo	mRegInfos[32];
+	GPRegisterInfo	mLR;
+	GPRegisterInfo	mCTR;
 }
 
 @end

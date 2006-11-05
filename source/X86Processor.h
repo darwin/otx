@@ -51,7 +51,7 @@ enum {
 
 @interface X86Processor : ExeProcessor
 {
-	RegisterInfo	mRegInfos[8];
+	GPRegisterInfo	mRegInfos[8];
 }
 
 @end

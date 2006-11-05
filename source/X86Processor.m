@@ -360,7 +360,7 @@
 						imm	= OSSwapInt32(imm);
 
 						localAddy	=
-							mRegInfos[mCurrentThunk].intValue + imm;
+							mRegInfos[mCurrentThunk].value + imm;
 					}
 					else
 					{
@@ -436,7 +436,7 @@
 				sscanf(&inLine->info.code[4], "%08x", &imm);
 				imm	= OSSwapInt32(imm);
 
-				localAddy	= mRegInfos[mCurrentThunk].intValue + imm;
+				localAddy	= mRegInfos[mCurrentThunk].value + imm;
 			}
 			else
 			{
@@ -1026,22 +1026,22 @@
 - (void)commentForSystemCall
 {
 	if (!mRegInfos[EAX].isValid ||
-		 mRegInfos[EAX].intValue > SYS_MAXSYSCALL)
+		 mRegInfos[EAX].value > SYS_MAXSYSCALL)
 	{
 		snprintf(mLineCommentCString, 11, "syscall(?)");
 		return;
 	}
 
-	BOOL		isIndirect	= (mRegInfos[EAX].intValue == SYS_syscall);
+	BOOL		isIndirect	= (mRegInfos[EAX].value == SYS_syscall);
 	UInt32		syscallNum;
 	UInt32		syscallArgIndex	= (isIndirect) ? 1 : 0;
 	const char*	theSysString	= nil;
 
 	if (isIndirect && mStack[0].isValid &&
-		mStack[0].intValue <= SYS_MAXSYSCALL)
-		syscallNum	= mStack[0].intValue;
+		mStack[0].value <= SYS_MAXSYSCALL)
+		syscallNum	= mStack[0].value;
 	else
-		syscallNum	= mRegInfos[EAX].intValue;
+		syscallNum	= mRegInfos[EAX].value;
 
 	theSysString	= gSysCalls[syscallNum];
 
@@ -1057,7 +1057,7 @@
 	{
 		case SYS_ptrace:
 			if (mStack[syscallArgIndex].isValid &&
-				mStack[syscallArgIndex].intValue == PT_DENY_ATTACH)
+				mStack[syscallArgIndex].value == PT_DENY_ATTACH)
 				snprintf(mLineCommentCString, 40, "%s(%s)",
 					theTempComment, "PT_DENY_ATTACH");
 			else
@@ -1122,9 +1122,9 @@
 	{
 		if (mStack[2].isValid)
 		{
-			selectorAddy	= mStack[2].intValue;
+			selectorAddy	= mStack[2].value;
 			receiverAddy	= (mStack[1].isValid) ?
-				mStack[1].intValue : 0;
+				mStack[1].value : 0;
 		}
 		else
 			return;
@@ -1133,9 +1133,9 @@
 	{
 		if (mStack[1].isValid)
 		{
-			selectorAddy	= mStack[1].intValue;
+			selectorAddy	= mStack[1].value;
 			receiverAddy	= (mStack[0].isValid) ?
-				mStack[0].intValue : 0;
+				mStack[0].value : 0;
 		}
 		else
 			return;
@@ -1344,7 +1344,7 @@
 
 		if (applyThunk)
 		{
-			mRegInfos[mCurrentThunk].intValue	=
+			mRegInfos[mCurrentThunk].value	=
 				(*ioLine)->next->info.address;
 			mRegInfos[mCurrentThunk].isValid	= true;
 		}
@@ -1366,7 +1366,7 @@
 				found			= true;
 				mCurrentThunk	= mThunks[i].reg;
 
-				mRegInfos[mCurrentThunk].intValue	=
+				mRegInfos[mCurrentThunk].value	=
 					(*ioLine)->next->info.address;
 				mRegInfos[mCurrentThunk].isValid	= true;
 			}
@@ -1390,7 +1390,7 @@
 	mCurrentCat		= ObjcCatPtrFromMethod(ioLine->info.address);
 	mCurrentThunk	= NO_REG;
 
-	bzero(&mRegInfos[0], sizeof(RegisterInfo) * 8);
+	bzero(&mRegInfos[0], sizeof(GPRegisterInfo) * 8);
 
 	if (mLocalSelves)
 	{
@@ -1440,35 +1440,35 @@
 			switch (OPEXT(modRM))
 			{
 				case 0:	// add
-					mRegInfos[REG1(modRM)].intValue	+= (SInt32)imm;
+					mRegInfos[REG1(modRM)].value	+= (SInt32)imm;
 					mRegInfos[REG1(modRM)].classPtr	= nil;
 					mRegInfos[REG1(modRM)].catPtr	= nil;
 
 					break;
 
 				case 1:	// or
-					mRegInfos[REG1(modRM)].intValue	|= (SInt32)imm;
+					mRegInfos[REG1(modRM)].value	|= (SInt32)imm;
 					mRegInfos[REG1(modRM)].classPtr	= nil;
 					mRegInfos[REG1(modRM)].catPtr	= nil;
 
 					break;
 
 				case 4:	// and
-					mRegInfos[REG1(modRM)].intValue	&= (SInt32)imm;
+					mRegInfos[REG1(modRM)].value	&= (SInt32)imm;
 					mRegInfos[REG1(modRM)].classPtr	= nil;
 					mRegInfos[REG1(modRM)].catPtr	= nil;
 
 					break;
 
 				case 5:	// sub
-					mRegInfos[REG1(modRM)].intValue	-= (SInt32)imm;
+					mRegInfos[REG1(modRM)].value	-= (SInt32)imm;
 					mRegInfos[REG1(modRM)].classPtr	= nil;
 					mRegInfos[REG1(modRM)].catPtr	= nil;
 
 					break;
 
 				case 6:	// xor
-					mRegInfos[REG1(modRM)].intValue	^= (SInt32)imm;
+					mRegInfos[REG1(modRM)].value	^= (SInt32)imm;
 					mRegInfos[REG1(modRM)].classPtr	= nil;
 					mRegInfos[REG1(modRM)].catPtr	= nil;
 
@@ -1491,7 +1491,7 @@
 					break;
 
 				memcpy(&mRegInfos[REG2(modRM)], &mRegInfos[REG1(modRM)],
-					sizeof(RegisterInfo));
+					sizeof(GPRegisterInfo));
 
 				break;
 			}
@@ -1548,7 +1548,7 @@
 		case 0x8b:	// mov mem to reg
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			bzero(&mRegInfos[REG1(modRM)], sizeof(RegisterInfo));
+			bzero(&mRegInfos[REG1(modRM)], sizeof(GPRegisterInfo));
 
 			if (MOD(modRM) == MOD8)
 			{
@@ -1577,7 +1577,7 @@
 
 							// If we're accessing a local var copy of self,
 							// copy that info back to the reg in question.
-							bzero(&mRegInfos[REG1(modRM)], sizeof(RegisterInfo));
+							bzero(&mRegInfos[REG1(modRM)], sizeof(GPRegisterInfo));
 							mRegInfos[REG1(modRM)]	= mLocalSelves[i].regInfo;
 
 							// and split.
@@ -1588,12 +1588,12 @@
 			}
 			else if (HAS_ABS_DISP32(modRM))
 			{
-				bzero(&mRegInfos[REG1(modRM)], sizeof(RegisterInfo));
+				bzero(&mRegInfos[REG1(modRM)], sizeof(GPRegisterInfo));
 
 				sscanf(&inLine->info.code[4], "%08x",
-					&mRegInfos[REG1(modRM)].intValue);
-				mRegInfos[REG1(modRM)].intValue	=
-					OSSwapInt32(mRegInfos[REG1(modRM)].intValue);
+					&mRegInfos[REG1(modRM)].value);
+				mRegInfos[REG1(modRM)].value	=
+					OSSwapInt32(mRegInfos[REG1(modRM)].value);
 				mRegInfos[REG1(modRM)].isValid	= true;
 			}
 
@@ -1610,20 +1610,20 @@
 		{
 			UInt8	imm;
 
-			bzero(&mRegInfos[REG2(opcode)], sizeof(RegisterInfo));
+			bzero(&mRegInfos[REG2(opcode)], sizeof(GPRegisterInfo));
 
 			sscanf(&inLine->info.code[2], "%02hhx", &imm);
-			mRegInfos[REG2(opcode)].intValue	= imm;
+			mRegInfos[REG2(opcode)].value	= imm;
 			mRegInfos[REG2(opcode)].isValid		= true;
 
 			break;
 		}
 
 		case 0xa1:	// movl	moffs32,%eax
-			bzero(&mRegInfos[EAX], sizeof(RegisterInfo));
+			bzero(&mRegInfos[EAX], sizeof(GPRegisterInfo));
 
-			sscanf(&inLine->info.code[2], "%08x", &mRegInfos[EAX].intValue);
-			mRegInfos[EAX].intValue	= OSSwapInt32(mRegInfos[EAX].intValue);
+			sscanf(&inLine->info.code[2], "%08x", &mRegInfos[EAX].value);
+			mRegInfos[EAX].value	= OSSwapInt32(mRegInfos[EAX].value);
 			mRegInfos[EAX].isValid	= true;
 
 			break;
@@ -1636,19 +1636,19 @@
 		case 0xbd:	// movl	imm32,%ebp
 		case 0xbe:	// movl	imm32,%esi
 		case 0xbf:	// movl	imm32,%edi
-			bzero(&mRegInfos[REG2(opcode)], sizeof(RegisterInfo));
+			bzero(&mRegInfos[REG2(opcode)], sizeof(GPRegisterInfo));
 
 			sscanf(&inLine->info.code[2], "%08x",
-				&mRegInfos[REG2(opcode)].intValue);
-			mRegInfos[REG2(opcode)].intValue	=
-				OSSwapInt32(mRegInfos[REG2(opcode)].intValue);
+				&mRegInfos[REG2(opcode)].value);
+			mRegInfos[REG2(opcode)].value	=
+				OSSwapInt32(mRegInfos[REG2(opcode)].value);
 			mRegInfos[REG2(opcode)].isValid	= true;
 
 			break;
 
 		case 0xe8:	// calll
-			bzero(mStack, sizeof(RegisterInfo) * STACK_SIZE);
-			bzero(&mRegInfos[EAX], sizeof(RegisterInfo));
+			bzero(mStack, sizeof(GPRegisterInfo) * STACK_SIZE);
+			bzero(&mRegInfos[EAX], sizeof(GPRegisterInfo));
 			break;
 
 		default:
@@ -1689,7 +1689,7 @@
 						funcInfo->blocks[i].state;
 
 					memcpy(mRegInfos, machState.regInfos,
-						sizeof(RegisterInfo) * 8);
+						sizeof(GPRegisterInfo) * 8);
 
 					if (machState.localSelves)
 					{
@@ -1850,10 +1850,10 @@
 						funcInfo->blocks	= malloc(sizeof(BlockInfo));
 
 					// Create a new MachineState.
-					RegisterInfo*	savedRegs	= malloc(
-						sizeof(RegisterInfo) * 8);
+					GPRegisterInfo*	savedRegs	= malloc(
+						sizeof(GPRegisterInfo) * 8);
 
-					memcpy(savedRegs, mRegInfos, sizeof(RegisterInfo) * 8);
+					memcpy(savedRegs, mRegInfos, sizeof(GPRegisterInfo) * 8);
 
 					VarInfo*	savedVars	= nil;
 

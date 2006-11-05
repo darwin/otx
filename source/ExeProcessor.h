@@ -10,7 +10,7 @@
 #import "Optimizations.h"
 #import "StolenDefs.h"
 
-/*	RegisterInfo
+/*	GPRegisterInfo
 
 	Processor-specific subclasses maintain arrays of RegisterInfo's to
 	simulate the state of registers in the CPU as each line of code is
@@ -18,15 +18,15 @@
 */
 typedef struct
 {
-	union {
-		UInt32		intValue;		// used with GPRs
-		double		doubleValue;	// use with FPRs someday
-	};
+//	union {
+		UInt32		value;			// used with GPRs
+//		double		doubleValue;	// use with FPRs someday
+//	};
 	BOOL			isValid;		// value can be trusted
 	objc_class*		classPtr;
 	objc_category*	catPtr;
 }
-RegisterInfo;
+GPRegisterInfo;
 
 /*	VarInfo
 
@@ -35,16 +35,17 @@ RegisterInfo;
 	variables pushed onto the stack in x86 code are maintained in the array
 	mStack[STACK_SIZE]. May be used for other things in future.
 
-	Note the semantic differences regarding stacks:
+	Note the semantic differences regarding stack frames:
 
-					PPC							x86
-					--------------------------------------------------
-	local vars		stack ptr(r1) + offset		base ptr(EBP) - offset
-	arguments		---							base ptr(EBP) + offset
+							PPC							x86
+							--------------------------------------------------
+	local vars				stack ptr(r1) + offset		base ptr(EBP) - offset
+	args to current func	---							base ptr(EBP) + offset
+	args to called func		---							stack ptr(ESP) + offset
 */
 typedef struct
 {
-	RegisterInfo	regInfo;
+	GPRegisterInfo	regInfo;
 	SInt32			offset;
 }
 VarInfo;
@@ -57,7 +58,7 @@ VarInfo;
 */
 typedef struct
 {
-	RegisterInfo*	regInfos;
+	GPRegisterInfo*	regInfos;
 	VarInfo*		localSelves;
 	UInt32			numLocalSelves;
 }
@@ -308,7 +309,7 @@ enum {
 	UInt32				mLocalOffset;			// +420 etc.
 	ThunkInfo*			mThunks;				// x86 only
 	UInt32				mNumThunks;				// x86 only
-	RegisterInfo		mStack[STACK_SIZE];
+	GPRegisterInfo		mStack[STACK_SIZE];
 
 	TextFieldWidths		mFieldWidths;
 

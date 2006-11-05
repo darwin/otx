@@ -182,7 +182,7 @@
 			// Print value of ctr, ignoring the low 2 bits.
 			if (mCTR.isValid)
 				snprintf(mLineCommentCString, 10, "0x%x",
-					mCTR.intValue & ~3);
+					mCTR.value & ~3);
 
 			break;
 
@@ -225,7 +225,7 @@
 			}
 			else
 			{
-				localAddy	= mRegInfos[RA(theCode)].intValue + SIMM(theCode);
+				localAddy	= mRegInfos[RA(theCode)].value + SIMM(theCode);
 				theDummyPtr	= GetPointer(localAddy, nil);
 
 				if (!theDummyPtr)
@@ -305,10 +305,10 @@
 			else	// absolute address
 			{
 				if (opcode == 0x18)	// ori		UIMM
-					localAddy	= mRegInfos[RA(theCode)].intValue |
+					localAddy	= mRegInfos[RA(theCode)].value |
 						UIMM(theCode);
 				else
-					localAddy	= mRegInfos[RA(theCode)].intValue +
+					localAddy	= mRegInfos[RA(theCode)].value +
 						SIMM(theCode);
 
 				UInt8	theType	= PointerType;
@@ -533,13 +533,13 @@
 - (void)commentForSystemCall
 {
 	if (!mRegInfos[0].isValid ||
-		 mRegInfos[0].intValue > SYS_MAXSYSCALL)
+		 mRegInfos[0].value > SYS_MAXSYSCALL)
 	{
 		snprintf(mLineCommentCString, 11, "syscall(?)");
 		return;
 	}
 
-	BOOL		isIndirect		= (mRegInfos[0].intValue == SYS_syscall);
+	BOOL		isIndirect		= (mRegInfos[0].value == SYS_syscall);
 	UInt32		syscallNumReg	= isIndirect ? 3 : 0;
 	UInt32		syscallArg1Reg	= isIndirect ? 4 : 3;
 
@@ -549,7 +549,7 @@
 		return;
 	}
 
-	const char*	theSysString	= gSysCalls[mRegInfos[syscallNumReg].intValue];
+	const char*	theSysString	= gSysCalls[mRegInfos[syscallNumReg].value];
 
 	if (!theSysString)
 		return;
@@ -559,11 +559,11 @@
 	strncpy(theTempComment, theSysString, strlen(theSysString) + 1);
 
 	// Handle various system calls.
-	switch (mRegInfos[syscallNumReg].intValue)
+	switch (mRegInfos[syscallNumReg].value)
 	{
 		case SYS_ptrace:
 			if (mRegInfos[syscallArg1Reg].isValid &&
-				mRegInfos[syscallArg1Reg].intValue == PT_DENY_ATTACH)
+				mRegInfos[syscallArg1Reg].value == PT_DENY_ATTACH)
 				snprintf(mLineCommentCString, 40, "%s(%s)",
 					theTempComment, "PT_DENY_ATTACH");
 			else
@@ -633,14 +633,14 @@
 		"(struct)" : "";
 
 	if (!mRegInfos[selectorRegNum].isValid ||
-		!mRegInfos[selectorRegNum].intValue)
+		!mRegInfos[selectorRegNum].value)
 		return;
 
 	// Get at the selector.
 	UInt8	selType		= PointerType;
 	char*	selString	= nil;
 	char*	selPtr		= GetPointer(
-		mRegInfos[selectorRegNum].intValue, &selType);
+		mRegInfos[selectorRegNum].value, &selType);
 
 	switch (selType)
 	{
@@ -674,13 +674,13 @@
 		return;
 
 	if (mRegInfos[receiverRegNum].isValid &&
-		mRegInfos[receiverRegNum].intValue)
+		mRegInfos[receiverRegNum].value)
 	{
 		// Get at the receiver
 		UInt8	receiverType	= PointerType;
 		char*	className		= nil;
 		char*	namePtr			=
-			GetPointer(mRegInfos[receiverRegNum].intValue, &receiverType);
+			GetPointer(mRegInfos[receiverRegNum].value, &receiverType);
 
 		switch (receiverType)
 		{
@@ -777,15 +777,15 @@
 	mCurrentClass	= ObjcClassPtrFromMethod(inLine->info.address);
 	mCurrentCat		= ObjcCatPtrFromMethod(inLine->info.address);
 
-	bzero(&mRegInfos[0], sizeof(RegisterInfo) * 32);
+	bzero(&mRegInfos[0], sizeof(GPRegisterInfo) * 32);
 
 	mRegInfos[3].classPtr	= mCurrentClass;
 	mRegInfos[3].catPtr		= mCurrentCat;
 	mRegInfos[3].isValid	= true;
-	mRegInfos[12].intValue	= mCurrentFuncPtr;
+	mRegInfos[12].value	= mCurrentFuncPtr;
 	mRegInfos[12].isValid	= true;
-	bzero(&mLR, sizeof(RegisterInfo));
-	bzero(&mCTR, sizeof(RegisterInfo));
+	bzero(&mLR, sizeof(GPRegisterInfo));
+	bzero(&mCTR, sizeof(GPRegisterInfo));
 
 	if (mLocalSelves)
 	{
@@ -834,7 +834,7 @@
 
 	if (IS_BRANCH_LINK(theCode))
 	{
-		mLR.intValue	= inLine->info.address + 4;
+		mLR.value	= inLine->info.address + 4;
 		mLR.isValid		= true;
 	}
 
@@ -844,15 +844,15 @@
 		{
 			if (!mRegInfos[RA(theCode)].isValid)
 			{
-				bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 				break;
 			}
 
 			UInt64	theProduct	=
-				(SInt32)mRegInfos[RA(theCode)].intValue * SIMM(theCode);
+				(SInt32)mRegInfos[RA(theCode)].value * SIMM(theCode);
 
-			bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
-			mRegInfos[RT(theCode)].intValue	= theProduct & 0xffffffff;
+			bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
+			mRegInfos[RT(theCode)].value	= theProduct & 0xffffffff;
 			mRegInfos[RT(theCode)].isValid	= true;
 
 			break;
@@ -861,14 +861,14 @@
 		case 0x08:	// subfic		SIMM
 			if (!mRegInfos[RA(theCode)].isValid)
 			{
-				bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 				break;
 			}
 
-			theNewValue	= mRegInfos[RA(theCode)].intValue - SIMM(theCode);
+			theNewValue	= mRegInfos[RA(theCode)].value - SIMM(theCode);
 
-			bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
-			mRegInfos[RT(theCode)].intValue	= theNewValue;
+			bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
+			mRegInfos[RT(theCode)].value	= theNewValue;
 			mRegInfos[RT(theCode)].isValid	= true;
 
 			break;
@@ -891,7 +891,7 @@
 
 					// If we're accessing a local var copy of self,
 					// copy that info back to the reg in question.
-					bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 					mRegInfos[RT(theCode)]	= mLocalSelves[i].regInfo;
 
 					// and split.
@@ -903,8 +903,8 @@
 
 			if (RA(theCode) == 0)	// li
 			{
-				bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
-				mRegInfos[RT(theCode)].intValue	= UIMM(theCode);
+				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
+				mRegInfos[RT(theCode)].value	= UIMM(theCode);
 				mRegInfos[RT(theCode)].isValid	= true;
 			}
 			else					// addi
@@ -912,17 +912,17 @@
 				// Update rD if we know what rA is.
 				if (!mRegInfos[RA(theCode)].isValid)
 				{
-					bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 					break;
 				}
 
 				mRegInfos[RT(theCode)].classPtr	= nil;
 				mRegInfos[RT(theCode)].catPtr	= nil;
 
-				theNewValue	= mRegInfos[RA(theCode)].intValue + SIMM(theCode);
+				theNewValue	= mRegInfos[RA(theCode)].value + SIMM(theCode);
 
-				bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
-				mRegInfos[RT(theCode)].intValue	= theNewValue;
+				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
+				mRegInfos[RT(theCode)].value	= theNewValue;
 				mRegInfos[RT(theCode)].isValid	= true;
 			}
 
@@ -934,8 +934,8 @@
 
 			if (RA(theCode) == 0)	// lis
 			{
-				bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
-				mRegInfos[RT(theCode)].intValue	=
+				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
+				mRegInfos[RT(theCode)].value	=
 					UIMM(theCode) << 16;
 				mRegInfos[RT(theCode)].isValid	= true;
 				break;
@@ -943,15 +943,15 @@
 
 			if (!mRegInfos[RA(theCode)].isValid)	// addis
 			{
-				bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 				break;
 			}
 
-			theNewValue	= mRegInfos[RA(theCode)].intValue +
+			theNewValue	= mRegInfos[RA(theCode)].value +
 				(SIMM(theCode) << 16);
 
-			bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
-			mRegInfos[RT(theCode)].intValue	= theNewValue;
+			bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
+			mRegInfos[RT(theCode)].value	= theNewValue;
 			mRegInfos[RT(theCode)].isValid	= true;
 
 			break;
@@ -966,7 +966,7 @@
 			if (!LK(theCode))	// bl, bla
 				break;
 
-			bzero(&mRegInfos[3], sizeof(RegisterInfo));
+			bzero(&mRegInfos[3], sizeof(GPRegisterInfo));
 
 			break;
 		}
@@ -974,12 +974,12 @@
 		{
 			if (!mRegInfos[RT(theCode)].isValid)
 			{
-				bzero(&mRegInfos[RA(theCode)], sizeof(RegisterInfo));
+				bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
 				break;
 			}
 
 			UInt32	rotatedRT	=
-				rotl(mRegInfos[RT(theCode)].intValue, RB(theCode));
+				rotl(mRegInfos[RT(theCode)].value, RB(theCode));
 			UInt32	theMask		= 0x0;
 			UInt8	i;
 
@@ -988,8 +988,8 @@
 
 			theNewValue	= rotatedRT & theMask;
 
-			bzero(&mRegInfos[RA(theCode)], sizeof(RegisterInfo));
-			mRegInfos[RA(theCode)].intValue	= theNewValue;
+			bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
+			mRegInfos[RA(theCode)].value	= theNewValue;
 			mRegInfos[RA(theCode)].isValid	= true;
 
 			break;
@@ -998,15 +998,15 @@
 		case 0x18:	// ori
 			if (!mRegInfos[RT(theCode)].isValid)
 			{
-				bzero(&mRegInfos[RA(theCode)], sizeof(RegisterInfo));
+				bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
 				break;
 			}
 
 			theNewValue	=
-				mRegInfos[RT(theCode)].intValue	| (UInt32)UIMM(theCode);
+				mRegInfos[RT(theCode)].value	| (UInt32)UIMM(theCode);
 
-			bzero(&mRegInfos[RA(theCode)], sizeof(RegisterInfo));
-			mRegInfos[RA(theCode)].intValue	= theNewValue;
+			bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
+			mRegInfos[RA(theCode)].value	= theNewValue;
 			mRegInfos[RA(theCode)].isValid	= true;
 
 			break;
@@ -1015,7 +1015,7 @@
 			switch (SO(theCode))
 			{
 				case 23:	// lwzx
-					bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 					break;
 
 				case 8:		// subfc
@@ -1023,27 +1023,27 @@
 					if (!mRegInfos[RA(theCode)].isValid ||
 						!mRegInfos[RB(theCode)].isValid)
 					{
-						bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+						bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 						break;
 					}
 
 					// 2's complement subtraction
 					theNewValue	=
-						(mRegInfos[RA(theCode)].intValue ^= 0xffffffff) +
-						mRegInfos[RB(theCode)].intValue + 1;
+						(mRegInfos[RA(theCode)].value ^= 0xffffffff) +
+						mRegInfos[RB(theCode)].value + 1;
 
-					bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
-					mRegInfos[RT(theCode)].intValue	= theNewValue;
+					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
+					mRegInfos[RT(theCode)].value	= theNewValue;
 					mRegInfos[RT(theCode)].isValid	= true;
 
 					break;
 
 				case 339:	// mfspr
-					bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 
 					if (SPR(theCode) == LR)	// from LR
 					{	// Copy LR into rD.
-						mRegInfos[RT(theCode)].intValue	= mLR.intValue;
+						mRegInfos[RT(theCode)].value	= mLR.value;
 						mRegInfos[RT(theCode)].isValid	= true;
 					}
 
@@ -1053,16 +1053,16 @@
 					if (!mRegInfos[RT(theCode)].isValid ||
 						!mRegInfos[RB(theCode)].isValid)
 					{
-						bzero(&mRegInfos[RA(theCode)], sizeof(RegisterInfo));
+						bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
 						break;
 					}
 
 					theNewValue	=
-						(mRegInfos[RT(theCode)].intValue |
-						 mRegInfos[RB(theCode)].intValue);
+						(mRegInfos[RT(theCode)].value |
+						 mRegInfos[RB(theCode)].value);
 
-					bzero(&mRegInfos[RA(theCode)], sizeof(RegisterInfo));
-					mRegInfos[RA(theCode)].intValue	= theNewValue;
+					bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
+					mRegInfos[RA(theCode)].value	= theNewValue;
 					mRegInfos[RA(theCode)].isValid	= true;
 
 					// If we just copied a register, copy the
@@ -1082,11 +1082,11 @@
 					{
 						if (!mRegInfos[RS(theCode)].isValid)
 						{
-							bzero(&mCTR, sizeof(RegisterInfo));
+							bzero(&mCTR, sizeof(GPRegisterInfo));
 							break;
 						}
 
-						mCTR.intValue	= mRegInfos[RS(theCode)].intValue;
+						mCTR.value	= mRegInfos[RS(theCode)].value;
 						mCTR.isValid	= true;
 					}
 
@@ -1096,16 +1096,16 @@
 					if (!mRegInfos[RS(theCode)].isValid	||
 						!mRegInfos[RB(theCode)].isValid)
 					{
-						bzero(&mRegInfos[RA(theCode)], sizeof(RegisterInfo));
+						bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
 						break;
 					}
 
 					theNewValue	=
-						mRegInfos[RS(theCode)].intValue >>
-						(mRegInfos[RB(theCode)].intValue & 0x1f);
+						mRegInfos[RS(theCode)].value >>
+						(mRegInfos[RB(theCode)].value & 0x1f);
 
-					bzero(&mRegInfos[RA(theCode)], sizeof(RegisterInfo));
-					mRegInfos[RA(theCode)].intValue	= theNewValue;
+					bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
+					mRegInfos[RA(theCode)].value	= theNewValue;
 					mRegInfos[RA(theCode)].isValid	= true;
 
 					break;
@@ -1120,37 +1120,37 @@
 		case 0x22:	// lbz
 			if (RA(theCode) == 0)
 			{
-				bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
-				mRegInfos[RT(theCode)].intValue	= SIMM(theCode);
+				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
+				mRegInfos[RT(theCode)].value	= SIMM(theCode);
 				mRegInfos[RT(theCode)].isValid	= true;
 			}
 			else if (mRegInfos[RA(theCode)].isValid	&&
 					!mRegInfos[RA(theCode)].classPtr)
 			{
 				UInt32	tempPtr	= (UInt32)GetPointer(
-					mRegInfos[RA(theCode)].intValue + SIMM(theCode), nil);
+					mRegInfos[RA(theCode)].value + SIMM(theCode), nil);
 
 				if (tempPtr)
 				{
-					mRegInfos[RT(theCode)].intValue	= *(UInt32*)tempPtr;
+					mRegInfos[RT(theCode)].value	= *(UInt32*)tempPtr;
 					mRegInfos[RT(theCode)].isValid	= true;
 				}
 				else
-					bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 			}
 			else
 			{
-				bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 			}
 
 			break;
 
 /*		case 0x22:	// lbz
-			bzero(&mRegInfos[RT(theCode)], sizeof(RegisterInfo));
+			bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 
 			if (RA(theCode) == 0)
 			{
-				mRegInfos[RT(theCode)].intValue	= SIMM(theCode);
+				mRegInfos[RT(theCode)].value	= SIMM(theCode);
 				mRegInfos[RT(theCode)].isValid	= true;
 			}
 
@@ -1229,7 +1229,7 @@
 						funcInfo->blocks[i].state;
 
 					memcpy(mRegInfos, machState.regInfos,
-						sizeof(RegisterInfo) * 32);
+						sizeof(GPRegisterInfo) * 32);
 					mLR		= machState.regInfos[LRIndex];
 					mCTR	= machState.regInfos[CTRIndex];
 
@@ -1417,10 +1417,10 @@
 					funcInfo->blocks	= malloc(sizeof(BlockInfo));
 
 				// Create a new MachineState.
-				RegisterInfo*	savedRegs	= malloc(
-					sizeof(RegisterInfo) * 34);
+				GPRegisterInfo*	savedRegs	= malloc(
+					sizeof(GPRegisterInfo) * 34);
 
-				memcpy(savedRegs, mRegInfos, sizeof(RegisterInfo) * 32);
+				memcpy(savedRegs, mRegInfos, sizeof(GPRegisterInfo) * 32);
 				savedRegs[LRIndex]	= mLR;
 				savedRegs[CTRIndex]	= mCTR;
 
