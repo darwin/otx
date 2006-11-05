@@ -40,12 +40,6 @@
 	mFieldWidths.mnemonic		= 12;
 	mFieldWidths.operands		= 29;
 
-/**/
-
-mReplaceSends	= true;
-
-/**/
-
 	return self;
 }
 
@@ -1201,31 +1195,38 @@ mReplaceSends	= true;
 		// Get at the receiver
 		UInt8	receiverType	= PointerType;
 		char*	className		= nil;
-		char*	classPtr		= GetPointer(receiverAddy, &receiverType);
+		char*	namePtr			= GetPointer(receiverAddy, &receiverType);
 
 		switch (receiverType)
 		{
 			case PointerType:
-				className	= classPtr;
+				className	= namePtr;
 
 				break;
 
 			case OCGenericType:
-				if (classPtr)
+				if (namePtr)
 				{
-					UInt32	classPtrValue	= *(UInt32*)classPtr;
+					UInt32	namePtrValue	= *(UInt32*)namePtr;
 
 					if (mSwapped)
-						classPtrValue	= OSSwapInt32(classPtrValue);
+						namePtrValue	= OSSwapInt32(namePtrValue);
 
-					className	= GetPointer(classPtrValue, nil);
+					className	= GetPointer(namePtrValue, nil);
 				}
 
 				break;
 
+			// Receiver can be a static string in these sections, but we
+			// only want to display class names as receivers.
+			case CFStringType:
+			case ImpPtrType:
+			case OCStrObjectType:
+				break;
+
 			default:
 				printf("otx: [X86Processor commentForMsgSend]: "
-					"unsupported receiver type: %d\n", selType);
+					"unsupported receiver type: %d\n", receiverType);
 
 				break;
 		}
@@ -1248,19 +1249,19 @@ mReplaceSends	= true;
 		{
 			case send:
 			case send_fpret:
-				formatString	= "%s[*(%%esp,1) %s]";
+				formatString	= "%s[(%%esp,1) %s]";
 				break;
 
 			case sendSuper:
-				formatString	= "%s[[*(%%esp,1) super] %s]";
+				formatString	= "%s[[(%%esp,1) super] %s]";
 				break;
 
 			case send_stret:
-				formatString	= "%s[*0x04(%%esp,1) %s]";
+				formatString	= "%s[0x04(%%esp,1) %s]";
 				break;
 
 			case sendSuper_stret:
-				formatString	= "%s[[*0x04(%%esp,1) super] %s]";
+				formatString	= "%s[[0x04(%%esp,1) super] %s]";
 				break;
 
 			default:

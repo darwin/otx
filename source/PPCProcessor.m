@@ -40,12 +40,6 @@
 	mFieldWidths.mnemonic		= 9;
 	mFieldWidths.operands		= 17;
 
-/**/
-
-mReplaceSends	= true;
-
-/**/
-
 	return self;
 }
 
@@ -137,45 +131,45 @@ mReplaceSends	= true;
 		{
 			UInt32	target	= LI(theCode) | 0xfc000000;
 
-			if (mReplaceSends)
+			// ignore non-absolute branches
+			if (!AA(theCode))
+				break;
+
+			switch (target)
 			{
-				if (AA(theCode) && target == kRTAddress_objc_msgSend)
+				case kRTAddress_objc_msgSend:
 				{
-					// handle rtp here
+					char	tempComment[MAX_COMMENT_LENGTH];
+
+					strncpy(tempComment, kRTName_objc_msgSend,
+						strlen(kRTName_objc_msgSend) + 1);
+
+					if (mVerboseMsgSends)
+						CommentForMsgSendFromLine(tempComment, inLine);
+
+					strncpy(mLineCommentCString, tempComment,
+						strlen(tempComment) + 1);
 
 					break;
 				}
 
-				
-			}
-			else
-			{
-				// ignore non-absolute branches
-				if (!AA(theCode))
+				case kRTAddress_objc_assign_ivar:
+					strncpy(mLineCommentCString, kRTName_objc_assign_ivar,
+						strlen(kRTName_objc_assign_ivar) + 1);
 					break;
 
-				switch (target)
-				{
-					case kRTAddress_objc_msgSend:
-						strncpy(mLineCommentCString, kRTName_objc_msgSend,
-							strlen(kRTName_objc_msgSend) + 1);
-						break;
-					case kRTAddress_objc_assign_ivar:
-						strncpy(mLineCommentCString, kRTName_objc_assign_ivar,
-							strlen(kRTName_objc_assign_ivar) + 1);
-						break;
-					case kRTAddress_objc_assign_global:
-						strncpy(mLineCommentCString, kRTName_objc_assign_global,
-							strlen(kRTName_objc_assign_global) + 1);
-						break;
-					case kRTAddress_objc_assign_strongCast:
-						strncpy(mLineCommentCString, kRTName_objc_assign_strongCast,
-							strlen(kRTName_objc_assign_strongCast) + 1);
-						break;
+				case kRTAddress_objc_assign_global:
+					strncpy(mLineCommentCString, kRTName_objc_assign_global,
+						strlen(kRTName_objc_assign_global) + 1);
+					break;
 
-					default:
-						break;
-				}
+				case kRTAddress_objc_assign_strongCast:
+					strncpy(mLineCommentCString, kRTName_objc_assign_strongCast,
+						strlen(kRTName_objc_assign_strongCast) + 1);
+					break;
+
+				default:
+					break;
 			}
 
 			break;
@@ -613,6 +607,8 @@ mReplaceSends	= true;
 			sendType	= sendSuper;
 		else if (strstr(ioComment, "_stret"))
 			sendType	= send_stret;
+		else if (strstr(ioComment, "_rtp"))
+			sendType	= send_rtp;
 		else	// Someone actually used the variadic variants!
 		{
 			printf("otx: [PPCProcessor commentForMsgSend]:"
@@ -683,32 +679,39 @@ mReplaceSends	= true;
 		// Get at the receiver
 		UInt8	receiverType	= PointerType;
 		char*	className		= nil;
-		char*	classPtr		=
+		char*	namePtr			=
 			GetPointer(mRegInfos[receiverRegNum].intValue, &receiverType);
 
 		switch (receiverType)
 		{
 			case PointerType:
-				className	= classPtr;
+				className	= namePtr;
 
 				break;
 
 			case OCGenericType:
-				if (classPtr)
+				if (namePtr)
 				{
-					UInt32	classPtrValue	= *(UInt32*)classPtr;
+					UInt32	namePtrValue	= *(UInt32*)namePtr;
 
 					if (mSwapped)
-						classPtrValue	= OSSwapInt32(classPtrValue);
+						namePtrValue	= OSSwapInt32(namePtrValue);
 
-					className	= GetPointer(classPtrValue, nil);
+					className	= GetPointer(namePtrValue, nil);
 				}
 
 				break;
 
+			// Receiver can be a static string in these sections, but we
+			// only want to display class names as receivers.
+			case CFStringType:
+			case ImpPtrType:
+			case OCStrObjectType:
+				break;
+
 			default:
 				printf("otx: [PPCProcessor commentForMsgSend]: "
-					"unsupported receiver type: %d\n", selType);
+					"unsupported receiver type: %d\n", receiverType);
 
 				break;
 		}
@@ -726,7 +729,7 @@ mReplaceSends	= true;
 	if (!goodComment)
 		snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
 			(sendType == sendSuper || sendType == sendSuper_stret) ?
-			"%s[[*r%d super] %s]" : "%s[*r%d %s]",
+			"%s[[r%d super] %s]" : "%s[r%d %s]",
 			returnTypeString, receiverRegNum, selString);
 
 	if (tempComment[0])
@@ -963,13 +966,7 @@ mReplaceSends	= true;
 			if (!LK(theCode))	// bl, bla
 				break;
 
-			// At each branch link, we must assume that r3 will be trampled.
-			// In the case that the object is being inited, r3 will be trampled
-			// with the same class, so leave it alone.
-//			if (mIsIniting)
-//				mIsIniting	= false;
-//			else
-				bzero(&mRegInfos[3], sizeof(RegisterInfo));
+			bzero(&mRegInfos[3], sizeof(RegisterInfo));
 
 			break;
 		}

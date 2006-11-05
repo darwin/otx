@@ -51,6 +51,7 @@
 		@"YES",		ShowMD5Key,
 		@"YES",		ShowMethodReturnTypesKey,
 		@"0",		UseCustomNameKey,
+		@"YES",		VerboseMsgSendsKey,
 		nil];
 
 	[theController setInitialValues: theValues];

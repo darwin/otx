@@ -234,10 +234,11 @@ TextFieldWidths;
 // Constants for dealing with objc_msgSend variants.
 enum {
 	send,
+	send_rtp,			// ppc only
 	sendSuper,
 	send_stret,
 	sendSuper_stret,
-	send_fpret
+	send_fpret			// x86 only
 };
 
 // Constants that represent which section is being referenced, indicating
@@ -366,15 +367,14 @@ enum {
 	UInt32		mAddrDyldFuncLookupPointer;
 
 	// saved prefs for speed
-	BOOL		mShowLocalOffsets;
-	BOOL		mShowDataSection;
-	BOOL		mShowMethReturnTypes;
-	BOOL		mShowIvarTypes;
-	BOOL		mEntabOutput;
 	BOOL		mDemangleCppNames;
+	BOOL		mEntabOutput;
 	BOOL		mSeparateLogicalBlocks;
-
-	BOOL		mReplaceSends;
+	BOOL		mShowDataSection;
+	BOOL		mShowIvarTypes;
+	BOOL		mShowLocalOffsets;
+	BOOL		mShowMethReturnTypes;
+	BOOL		mVerboseMsgSends;
 
 	BOOL		mEnteringNewBlock;
 

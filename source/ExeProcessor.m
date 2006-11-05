@@ -115,11 +115,6 @@ methodInfo_compare(
 
 	[self speedyDelivery];
 
-/**/
-
-	mReplaceSends	= true;
-
-/**/
 	return self;
 }
 
@@ -215,13 +210,14 @@ methodInfo_compare(
 	// Save some prefs for speed.
 	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
 
-	mShowLocalOffsets		= [theDefaults boolForKey: ShowLocalOffsetsKey];
-	mShowDataSection		= [theDefaults boolForKey: ShowDataSectionKey];
-	mShowMethReturnTypes	= [theDefaults boolForKey: ShowMethodReturnTypesKey];
-	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
-	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
 	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
+	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
 	mSeparateLogicalBlocks	= [theDefaults boolForKey: SeparateLogicalBlocksKey];
+	mShowDataSection		= [theDefaults boolForKey: ShowDataSectionKey];
+	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
+	mShowLocalOffsets		= [theDefaults boolForKey: ShowLocalOffsetsKey];
+	mShowMethReturnTypes	= [theDefaults boolForKey: ShowMethodReturnTypesKey];
+	mVerboseMsgSends		= [theDefaults boolForKey: VerboseMsgSendsKey];
 
 	if (![self loadMachHeader])
 	{
@@ -1742,10 +1738,8 @@ methodInfo_compare(
 	}	// if (!theCommentCString[0])
 	else	// otool gave us a comment.
 	{	// Optionally modify otool's comment.
-		if (mReplaceSends)
-		{
+		if (mVerboseMsgSends)
 			CommentForMsgSendFromLine(theCommentCString, *ioLine);
-		}
 	}
 
 	// Demangle operands if necessary.

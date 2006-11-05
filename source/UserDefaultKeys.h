@@ -16,3 +16,4 @@
 #define ShowMD5Key					@"ShowMD5"
 #define ShowMethodReturnTypesKey	@"ShowMethodReturnTypes"
 #define UseCustomNameKey			@"UseCustomName"
+#define VerboseMsgSendsKey			@"VerboseMsgSends"
