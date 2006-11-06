@@ -32,7 +32,7 @@
 #define LI(x)	((x) & 0x03fffffc)			// bits 2 - 25
 #define AA(x)	(((x) >> 1) & 0x1)			// bit 1
 #define LK(x)	((x) & 0x1)					// bit 0
-#define BD(x)	((x) & 0xfffc)				// bits 2 - 15
+#define BD(x)	(SInt16)((x) & 0xfffc)		// bits 2 - 15
 
 // SPR values
 #define LR			8

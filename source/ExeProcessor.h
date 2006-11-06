@@ -4,10 +4,12 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Kernel/mach/machine.h>
+#import <mach-o/nlist.h>
 #import <objc/objc-class.h>
 
 #import "LangDefs.h"
 #import "Optimizations.h"
+#import "Selectors.h"
 #import "StolenDefs.h"
 
 /*	GPRegisterInfo
@@ -362,6 +364,7 @@ enum {
 	objc_category*		mCurrentCat;
 	VarInfo*			mLocalSelves;			// 'self' copied to local variables
 	UInt32				mNumLocalSelves;
+	BOOL				mReturnValueIsKnown;
 
 	// dyld stuff
 	UInt32		mAddrDyldStubBindingHelper;
@@ -552,3 +555,39 @@ enum {
 - (void)printSymbol: (nlist)inSym;
 
 @end
+
+// ----------------------------------------------------------------------------
+// Comparison functions for qsort(3) and bsearch(3)
+
+static int
+Sym_Compare(
+	nlist**	sym1,
+	nlist**	sym2)
+{
+	if ((*sym1)->n_value < (*sym2)->n_value)
+		return -1;
+
+	return ((*sym1)->n_value > (*sym2)->n_value);
+}
+
+static int
+MethodInfo_Compare(
+	MethodInfo*	mi1,
+	MethodInfo*	mi2)
+{
+	if (mi1->m.method_imp < mi2->m.method_imp)
+		return -1;
+
+	return (mi1->m.method_imp > mi2->m.method_imp);
+}
+
+static int
+CheckedString_Compare(
+	CheckedString*	cs1,
+	CheckedString*	cs2)
+{
+	if (cs1->crc < cs2->crc)
+		return -1;
+
+	return (cs1->crc > cs2->crc);
+}

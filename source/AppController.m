@@ -117,6 +117,7 @@
 	[mMainWindow setFrameAutosaveName: [mMainWindow title]];
 	[mMainWindow center];
 	[mMainWindow makeKeyAndOrderFront: nil];
+
 }
 
 //	windowDidResize:

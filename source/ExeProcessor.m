@@ -8,7 +8,6 @@
 #import <libkern/OSByteOrder.h>
 #import <mach-o/fat.h>
 #import <mach-o/loader.h>
-#import <mach-o/nlist.h>
 #import <mach-o/swap.h>
 #import <objc/objc-runtime.h>
 #import <sys/ptrace.h>
@@ -18,31 +17,6 @@
 
 #import "ExeProcessor.h"
 #import "UserDefaultKeys.h"
-
-// ----------------------------------------------------------------------------
-// Comparison functions for qsort(3) and bsearch(3)
-
-static int
-sym_compare(
-	nlist**	sym1,
-	nlist**	sym2)
-{
-	if ((*sym1)->n_value < (*sym2)->n_value)
-		return -1;
-
-	return ((*sym1)->n_value > (*sym2)->n_value);
-}
-
-static int
-methodInfo_compare(
-	MethodInfo*	mi1,
-	MethodInfo*	mi2)
-{
-	if (mi1->m.method_imp < mi2->m.method_imp)
-		return -1;
-
-	return (mi1->m.method_imp > mi2->m.method_imp);
-}
 
 // ============================================================================
 
@@ -632,7 +606,7 @@ methodInfo_compare(
 
 	// Sort the symbols so we can use binary searches later.
 	qsort(mFuncSyms, mNumFuncSyms, sizeof(nlist*),
-		(int (*)(const void*, const void*))sym_compare);
+		(int (*)(const void*, const void*))Sym_Compare);
 }
 
 //	loadDySymbols:
@@ -921,9 +895,9 @@ methodInfo_compare(
 
 	// Sort MethodInfos.
 	qsort(mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
-		(int (*)(const void*, const void*))methodInfo_compare);
+		(int (*)(const void*, const void*))MethodInfo_Compare);
 	qsort(mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
-		(int (*)(const void*, const void*))methodInfo_compare);
+		(int (*)(const void*, const void*))MethodInfo_Compare);
 }
 
 //	loadCStringSection:
@@ -2689,7 +2663,7 @@ methodInfo_compare(
 
 	BOOL	symbolExists	= (bsearch(&searchKey,
 		mFuncSyms, mNumFuncSyms, sizeof(nlist*),
-		(int (*)(const void*, const void*))sym_compare) != nil);
+		(int (*)(const void*, const void*))Sym_Compare) != nil);
 
 	free(searchKey);
 
@@ -2715,7 +2689,7 @@ methodInfo_compare(
 
 	*outMI	= bsearch(&searchKey,
 		mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
-		(int (*)(const void*, const void*))methodInfo_compare);
+		(int (*)(const void*, const void*))MethodInfo_Compare);
 
 	return (*outMI != nil);
 }
@@ -2739,7 +2713,7 @@ methodInfo_compare(
 
 	*outMI	= bsearch(&searchKey,
 		mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
-		(int (*)(const void*, const void*))methodInfo_compare);
+		(int (*)(const void*, const void*))MethodInfo_Compare);
 
 	return (*outMI != nil);
 }

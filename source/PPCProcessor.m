@@ -13,6 +13,7 @@
 #import <sys/syscall.h>
 
 #import "PPCProcessor.h"
+#import "Selectors.h"
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
@@ -673,6 +674,30 @@
 	if (!selString)
 		return;
 
+	// Check if the selector is friendly.
+	UInt32			selLength	= strlen(selString);
+	UInt32			selCRC		= crc32(0, selString, selLength);
+	CheckedString	searchKey	= {selCRC, nil};
+
+/**/
+
+if (inLine->info.address == 0x3444)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
+
+	CheckedString*	friendlySel	= bsearch(&searchKey,
+		gFriendlySels, NUM_FRIENDLY_SELS, sizeof(CheckedString),
+		(int (*)(const void*, const void*))CheckedString_Compare);
+
+	if (friendlySel && friendlySel->length == selLength)
+	{	// found a matching CRC, make sure it's not a collision.
+		if (!strncmp(friendlySel->string, selString, selLength))
+			mReturnValueIsKnown	= true;
+	}
+
 	if (mRegInfos[receiverRegNum].isValid &&
 		mRegInfos[receiverRegNum].value)
 	{
@@ -966,7 +991,10 @@
 			if (!LK(theCode))	// bl, bla
 				break;
 
-			bzero(&mRegInfos[3], sizeof(GPRegisterInfo));
+			if (mReturnValueIsKnown)
+				mReturnValueIsKnown	= false;
+			else
+				bzero(&mRegInfos[3], sizeof(GPRegisterInfo));
 
 			break;
 		}
@@ -1210,6 +1238,15 @@
 
 	BOOL	needNewLine	= false;
 
+/**/
+
+if (inLine->info.address == 0x6ddc)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
+
 	if (mCurrentFuncInfoIndex >= 0)
 	{
 		// Search current FunctionInfo for blocks that start at this address.
@@ -1391,6 +1428,15 @@
 				ResetRegisters(theLine);
 			else
 				UpdateRegisters(theLine);
+
+/**/
+
+if (theLine->info.address == 0x6e64)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
 
 			// Check if we need to save the machine state.
 			if (IS_BLOCK_BRANCH(theCode) && mCurrentFuncInfoIndex >= 0)
