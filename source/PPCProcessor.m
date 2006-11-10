@@ -792,6 +792,11 @@
 		return;
 	}
 
+	// Setup the registers with default info. r3 is 'self' at the beginning
+	// of any Obj-C method, and r12 holds the address of the 1st instruction
+	// if the function was called indirectly. In the case of direct calls,
+	// r12 will be overwritten before it is used, if it is used at all.
+
 	mCurrentClass	= ObjcClassPtrFromMethod(inLine->info.address);
 	mCurrentCat		= ObjcCatPtrFromMethod(inLine->info.address);
 
@@ -828,12 +833,6 @@
 
 - (void)updateRegisters: (Line*)inLine;
 {
-	// inLine = nil if this is 1st line of a function. Setup the registers
-	// with default info. r3 is 'self' at the beginning of any Obj-C method,
-	// and r12 holds the address of the 1st instruction if the function was
-	// called indirectly. In the case of direct calls, r12 will be overwritten
-	// before it is used, if it is used at all.
-
 	if (!inLine)
 	{
 		printf("otx: [PPCProcessor updateRegisters]: "
