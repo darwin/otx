@@ -1399,7 +1399,6 @@
 		mNumLocalSelves	= 0;
 	}
 
-// this logic was fucked anyway
 	mCurrentFuncInfoIndex++;
 
 	if (mCurrentFuncInfoIndex >= mNumFuncInfos)
