@@ -20,10 +20,7 @@
 */
 typedef struct
 {
-//	union {
-		UInt32		value;			// used with GPRs
-//		double		doubleValue;	// use with FPRs someday
-//	};
+	UInt32			value;
 	BOOL			isValid;		// value can be trusted
 	objc_class*		classPtr;
 	objc_category*	catPtr;
@@ -70,13 +67,10 @@ MachineState;
 
 	Info pertaining to a logical block of code. 'state' is the saved
 	MachineState that should be restored upon entering this block.
-	'required' is true if the state actually changes. Normal processing
-	uses only required blocks, block-separating uses all blocks.
 */
 typedef struct
 {
 	UInt32			start;
-//	UInt32			end;
 	MachineState	state;
 }
 BlockInfo;
@@ -278,9 +272,10 @@ enum {
 // Refresh progress bar after processing this many lines.
 #define PROGRESS_FREQ			2500
 
-// Toggle these to print symbol descriptions to standard out.
+// Toggle these to print symbol descriptions and blocks to standard out.
 #define _OTX_DEBUG_SYMBOLS_		0
 #define _OTX_DEBUG_DYSYMBOLS_	0
+#define _OTX_DEBUG_BLOCKS_		0
 
 // Options for cplus_demangle()
 #define DEMANGLE_OPTS			\
@@ -553,6 +548,7 @@ enum {
 
 - (void)speedyDelivery;
 - (void)printSymbol: (nlist)inSym;
+- (void)printBlocks: (UInt32)inFuncIndex;
 
 @end
 

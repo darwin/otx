@@ -29,10 +29,15 @@
 #define SPR(x)	((((x) >> 6) & 0x3e0) | (((x) >> 16) & 0x1f))
 #define UIMM(x)	((x) & 0xffff)				// bits 0 - 15
 #define SIMM(x)	(SInt16)((x) & 0xffff)		// bits 0 - 15
-#define LI(x)	((x) & 0x03fffffc)			// bits 2 - 25
 #define AA(x)	(((x) >> 1) & 0x1)			// bit 1
 #define LK(x)	((x) & 0x1)					// bit 0
 #define BD(x)	(SInt16)((x) & 0xfffc)		// bits 2 - 15
+
+	// bits 2 - 25, sign extended
+#define LI(x)	(SInt32)					\
+	(((x) & 0x02000000) ?					\
+	((x) & 0x03fffffc) | 0xfc000000	:		\
+	((x) & 0x03fffffc))
 
 // SPR values
 #define LR			8

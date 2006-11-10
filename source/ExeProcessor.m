@@ -1234,6 +1234,10 @@
 	[mProgText setStringValue: @"Gathering info"];
 	[mProgText display];
 	[self gatherLineInfos];
+
+	// Gather info about logical blocks. The second pass applies info
+	// for backward branches.
+	[self gatherFuncInfos];
 	[self gatherFuncInfos];
 
 	UInt32	progCounter	= 0;
@@ -1661,6 +1665,7 @@
 		}
 
 		ResetRegisters((*ioLine));
+
 	}	// if ((*ioLine)->info.isFunction)
 
 	// Find a comment if necessary.
@@ -3489,6 +3494,8 @@
 		[self methodForSelector: ResetRegistersSel];
 	UpdateRegisters				= UpdateRegistersFuncType
 		[self methodForSelector: UpdateRegistersSel];
+	RestoreRegisters			= RestoreRegistersFuncType
+		[self methodForSelector: RestoreRegistersSel];
 	PrepareNameForDemangling	= PrepareNameForDemanglingFuncType
 		[self methodForSelector: PrepareNameForDemanglingSel];
 	ObjcClassPtrFromMethod		= ObjcClassPtrFromMethodFuncType
@@ -3519,7 +3526,7 @@
 
 //	printSymbol:
 // ----------------------------------------------------------------------------
-//	Originally used for symbol debugging, may come in handy.
+//	Used for symbol debugging.
 
 - (void)printSymbol: (nlist)inSym
 {
@@ -3588,5 +3595,12 @@
 
 	printf("\n");
 }
+
+//	printBlocks:
+// ----------------------------------------------------------------------------
+//	Used for block debugging. Sublclasses may override.
+
+- (void)printBlocks: (UInt32)inFuncIndex;
+{}
 
 @end

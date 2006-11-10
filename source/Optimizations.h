@@ -23,6 +23,7 @@
 #define CommentForMsgSendFromLineFuncType	(void			(*)(id, SEL, char*, Line*))
 #define ResetRegistersFuncType				(void			(*)(id, SEL, Line*))
 #define UpdateRegistersFuncType				(void			(*)(id, SEL, Line*))
+#define RestoreRegistersFuncType			(BOOL			(*)(id, SEL, Line*))
 #define PrepareNameForDemanglingFuncType	(char*			(*)(id, SEL, char*))
 #define ObjcClassPtrFromMethodFuncType		(objc_class*	(*)(id, SEL, UInt32))
 #define ObjcCatPtrFromMethodFuncType		(objc_category*	(*)(id, SEL, UInt32))
@@ -55,6 +56,7 @@
 #define CommentForMsgSendFromLineSel	@selector(commentForMsgSend:fromLine:)
 #define ResetRegistersSel				@selector(resetRegisters:)
 #define UpdateRegistersSel				@selector(updateRegisters:)
+#define RestoreRegistersSel				@selector(restoreRegisters:)
 #define PrepareNameForDemanglingSel		@selector(prepareNameForDemangling:)
 #define ObjcClassPtrFromMethodSel		@selector(objcClassPtrFromMethod:)
 #define ObjcCatPtrFromMethodSel			@selector(objcCatPtrFromMethod:)
@@ -104,6 +106,8 @@
 		ResetRegisters(self, ResetRegistersSel, (a))
 #define UpdateRegisters(a)														\
 		UpdateRegisters(self, UpdateRegistersSel, (a))
+#define RestoreRegisters(a)														\
+		RestoreRegisters(self, RestoreRegistersSel, (a))
 #define PrepareNameForDemangling(a)												\
 		PrepareNameForDemangling(self, PrepareNameForDemanglingSel, (a))
 #define ObjcClassPtrFromMethod(a)												\

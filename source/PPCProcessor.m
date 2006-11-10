@@ -17,6 +17,8 @@
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
+#define _OTX_REUSE_BLOCKS_ 1
+
 // ============================================================================
 
 @implementation PPCProcessor
@@ -130,11 +132,11 @@
 		// 16-bit limitation.
 		case 0x12:	// b, ba, bl, bla
 		{
-			UInt32	target	= LI(theCode) | 0xfc000000;
-
 			// ignore non-absolute branches
 			if (!AA(theCode))
 				break;
+
+			UInt32	target	= LI(theCode) /*| 0xfc000000*/;
 
 			switch (target)
 			{
@@ -677,16 +679,7 @@
 	// Check if the selector is friendly.
 	UInt32			selLength	= strlen(selString);
 	UInt32			selCRC		= crc32(0, selString, selLength);
-	CheckedString	searchKey	= {selCRC, nil};
-
-/**/
-
-if (inLine->info.address == 0x3444)
-{
-	UInt8	theBreak	= 9;
-}
-
-/**/
+	CheckedString	searchKey	= {selCRC, 0, nil};
 
 	CheckedString*	friendlySel	= bsearch(&searchKey,
 		gFriendlySels, NUM_FRIENDLY_SELS, sizeof(CheckedString),
@@ -819,7 +812,6 @@ if (inLine->info.address == 0x3444)
 		mNumLocalSelves	= 0;
 	}
 
-// this logic was fucked anyway
 	mCurrentFuncInfoIndex++;
 
 	if (mCurrentFuncInfoIndex >= mNumFuncInfos)
@@ -1238,59 +1230,50 @@ if (inLine->info.address == 0x3444)
 
 	BOOL	needNewLine	= false;
 
-/**/
+	if (mCurrentFuncInfoIndex < 0)
+		return false;
 
-if (inLine->info.address == 0x6ddc)
-{
-	UInt8	theBreak	= 9;
-}
+	// Search current FunctionInfo for blocks that start at this address.
+	FunctionInfo*	funcInfo	=
+		&mFuncInfos[mCurrentFuncInfoIndex];
 
-/**/
+	if (!funcInfo->blocks)
+		return false;
 
-	if (mCurrentFuncInfoIndex >= 0)
+	UInt32	i;
+
+	for (i = 0; i < funcInfo->numBlocks; i++)
 	{
-		// Search current FunctionInfo for blocks that start at this address.
-		FunctionInfo*	funcInfo	=
-			&mFuncInfos[mCurrentFuncInfoIndex];
+		if (funcInfo->blocks[i].start != inLine->info.address)
+			continue;
 
-		if (funcInfo->blocks)
+		// Update machine state.
+		MachineState	machState	=
+			funcInfo->blocks[i].state;
+
+		memcpy(mRegInfos, machState.regInfos,
+			sizeof(GPRegisterInfo) * 32);
+		mLR		= machState.regInfos[LRIndex];
+		mCTR	= machState.regInfos[CTRIndex];
+
+		if (machState.localSelves)
 		{
-			UInt32	i;
+			if (mLocalSelves)
+				free(mLocalSelves);
 
-			for (i = 0; i < funcInfo->numBlocks; i++)
-			{
-				if (funcInfo->blocks[i].start == inLine->info.address)
-				{
-					// Update machine state.
-					MachineState	machState	=
-						funcInfo->blocks[i].state;
+			mNumLocalSelves	= machState.numLocalSelves;
+			mLocalSelves	= malloc(
+				sizeof(VarInfo) * machState.numLocalSelves);
+			memcpy(mLocalSelves, machState.localSelves,
+				sizeof(VarInfo) * machState.numLocalSelves);
+		}
 
-					memcpy(mRegInfos, machState.regInfos,
-						sizeof(GPRegisterInfo) * 32);
-					mLR		= machState.regInfos[LRIndex];
-					mCTR	= machState.regInfos[CTRIndex];
+		// Optionally add a blank line before this block.
+		if (mSeparateLogicalBlocks && inLine->chars[0]	!= '\n')
+			needNewLine	= true;
 
-					if (machState.localSelves)
-					{
-						if (mLocalSelves)
-							free(mLocalSelves);
-
-						mNumLocalSelves	= machState.numLocalSelves;
-						mLocalSelves	= malloc(
-							sizeof(VarInfo) * machState.numLocalSelves);
-						memcpy(mLocalSelves, machState.localSelves,
-							sizeof(VarInfo) * machState.numLocalSelves);
-					}
-
-					// Optionally add a blank line before this block.
-					if (mSeparateLogicalBlocks && inLine->chars[0]	!= '\n')
-						needNewLine	= true;
-
-					break;
-				}
-			}	// for (i = 0...)
-		}	// if (funcInfo->blocks)
-	}	// if (mCurrentFuncInfoIndex >= 0)
+		break;
+	}	// for (i = 0...)
 
 	return needNewLine;
 }
@@ -1420,79 +1403,146 @@ if (inLine->info.address == 0x6ddc)
 	// Loop thru lines.
 	while (theLine)
 	{
-		if (theLine->info.isCode)
+		if (!theLine->info.isCode)
 		{
-			theCode	= strtoul(theLine->info.code, nil, 16);
+			theLine	= theLine->next;
+			continue;
+		}
 
-			if (theLine->info.isFunction)
-				ResetRegisters(theLine);
-			else
-				UpdateRegisters(theLine);
+		theCode	= strtoul(theLine->info.code, nil, 16);
 
-/**/
+		if (theLine->info.isFunction)
+			ResetRegisters(theLine);
+		else
+		{
+			RestoreRegisters(theLine);
+			UpdateRegisters(theLine);
+		}
 
-if (theLine->info.address == 0x6e64)
-{
-	UInt8	theBreak	= 9;
-}
+		// Check if we need to save the machine state.
+		if (IS_BLOCK_BRANCH(theCode) && mCurrentFuncInfoIndex >= 0)
+		{
+			UInt32	branchTarget;
 
-/**/
+			// Retrieve the branch target.
+			if (PO(theCode) == 0x12)	// b
+				branchTarget	= theLine->info.address + LI(theCode);
+			else	// bc
+				branchTarget	= theLine->info.address + BD(theCode);
 
-			// Check if we need to save the machine state.
-			if (IS_BLOCK_BRANCH(theCode) && mCurrentFuncInfoIndex >= 0)
-			{
-				UInt32	branchTarget;
+			// Retrieve current FunctionInfo.
+			FunctionInfo*	funcInfo	=
+				&mFuncInfos[mCurrentFuncInfoIndex];
 
-				// Retrieve the branch target.
-				if (PO(theCode) == 0x12)	// b
-					branchTarget	= theLine->info.address + LI(theCode);
-				else	// bc
-					branchTarget	= theLine->info.address + BD(theCode);
+			// 'currentBlock' will point to either an existing block which
+			// we will update, or a newly allocated block.
+			BlockInfo*	currentBlock	= nil;
+			UInt32		i;
 
-				// Retrieve current FunctionInfo.
-				FunctionInfo*	funcInfo	=
-					&mFuncInfos[mCurrentFuncInfoIndex];
-
-				// Allocate another BlockInfo.
-				funcInfo->numBlocks++;
-
-				if (funcInfo->blocks)
-					funcInfo->blocks	= realloc(funcInfo->blocks,
-						sizeof(BlockInfo) * funcInfo->numBlocks);
-				else
-					funcInfo->blocks	= malloc(sizeof(BlockInfo));
-
-				// Create a new MachineState.
-				GPRegisterInfo*	savedRegs	= malloc(
-					sizeof(GPRegisterInfo) * 34);
-
-				memcpy(savedRegs, mRegInfos, sizeof(GPRegisterInfo) * 32);
-				savedRegs[LRIndex]	= mLR;
-				savedRegs[CTRIndex]	= mCTR;
-
-				VarInfo*	savedVars	= nil;
-
-				if (mLocalSelves)
+			if (funcInfo->blocks)
+			{	// Blocks exist, find 1st one matching this address.
+				// This is an exhaustive search, but the speed hit should
+				// only be an issue with extremely long functions.
+				for (i = 0; i < funcInfo->numBlocks; i++)
 				{
-					savedVars	= malloc(
-						sizeof(VarInfo) * mNumLocalSelves);
-					memcpy(savedVars, mLocalSelves,
-						sizeof(VarInfo) * mNumLocalSelves);
+					if (funcInfo->blocks[i].start == branchTarget)
+					{
+						currentBlock	= &funcInfo->blocks[i];
+						break;
+					}
 				}
 
-				MachineState	machState	=
-					{savedRegs, savedVars, mNumLocalSelves};
-
-				// Create and store a new BlockInfo.
-				funcInfo->blocks[funcInfo->numBlocks - 1]	=
-					(BlockInfo){branchTarget, machState};
+				if (!currentBlock)
+				{
+					// No matching blocks found, so allocate a new one.
+					funcInfo->numBlocks++;
+					funcInfo->blocks	= realloc(funcInfo->blocks,
+						sizeof(BlockInfo) * funcInfo->numBlocks);
+					currentBlock		=
+						&funcInfo->blocks[funcInfo->numBlocks - 1];
+					bzero(currentBlock, sizeof(BlockInfo));
+				}
 			}
+			else
+			{	// No existing blocks, allocate one.
+				funcInfo->numBlocks++;
+				funcInfo->blocks	= malloc(sizeof(BlockInfo));
+				currentBlock		= funcInfo->blocks;
+				bzero(currentBlock, sizeof(BlockInfo));
+			}
+
+			// sanity check
+			if (!currentBlock)
+			{
+				printf("otx: [PPCProcessor gatherFuncInfos] "
+					"currentBlock is nil. Flame the dev.\n");
+				return;
+			}
+
+			// Create a new MachineState.
+			GPRegisterInfo*	savedRegs	= malloc(
+				sizeof(GPRegisterInfo) * 34);
+
+			memcpy(savedRegs, mRegInfos, sizeof(GPRegisterInfo) * 32);
+			savedRegs[LRIndex]	= mLR;
+			savedRegs[CTRIndex]	= mCTR;
+
+			VarInfo*	savedVars	= nil;
+
+			if (mLocalSelves)
+			{
+				savedVars	= malloc(
+					sizeof(VarInfo) * mNumLocalSelves);
+				memcpy(savedVars, mLocalSelves,
+					sizeof(VarInfo) * mNumLocalSelves);
+			}
+
+			MachineState	machState	=
+				{savedRegs, savedVars, mNumLocalSelves};
+
+			// Store the new BlockInfo.
+			BlockInfo	blockInfo	= {branchTarget, machState};
+
+			memcpy(currentBlock, &blockInfo, sizeof(BlockInfo));
 		}
 
 		theLine	= theLine->next;
 	}
 
 	mCurrentFuncInfoIndex	= -1;
+}
+
+//	printBlocks:
+// ----------------------------------------------------------------------------
+
+- (void)printBlocks: (UInt32)inFuncIndex;
+{
+	if (!mFuncInfos)
+		return;
+
+	FunctionInfo*	funcInfo	= &mFuncInfos[inFuncIndex];
+
+	if (!funcInfo || !funcInfo->blocks)
+		return;
+
+	UInt32	i, j;
+
+	printf("\nfunction at 0x%x:\n\n", funcInfo->address);
+	printf("%d blocks\n", funcInfo->numBlocks);
+
+	for (i = 0; i < funcInfo->numBlocks; i++)
+	{
+		printf("\nblock %d at 0x%x:\n\n", i + 1, funcInfo->blocks[i].start);
+
+		for (j = 0; j < 32; j++)
+		{
+			if (!funcInfo->blocks[i].state.regInfos[j].isValid)
+				continue;
+
+			printf("\t\tr%d: 0x%x\n", j,
+				funcInfo->blocks[i].state.regInfos[j].value);
+		}
+	}
 }
 
 @end
