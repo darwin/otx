@@ -14,7 +14,7 @@ typedef struct
 }
 CheckedString;
 
-#define NUM_FRIENDLY_SELS	98
+#define NUM_FRIENDLY_SELS	102
 
 static const CheckedString	gFriendlySels[] =
 {
@@ -26,11 +26,13 @@ static const CheckedString	gFriendlySels[] =
 	{0x08c572ce,  21, "initWithBytes:length:"},
 	{0x0b8604cc,  41, "initWithContentsOfURL:usedEncoding:error:"},
 	{0x140da9fa,  29, "initWithContentsOfMappedFile:"},
+	{0x1587ff39,   6, "retain"},
 	{0x15d11f95,  14, "URLWithString:"},
 	{0x1643cdf8,  37, "initWithContentsOfFile:options:error:"},
 	{0x1e035eb1,  30, "initWithBytes:length:encoding:"},
 	{0x1efada87,  14, "valueWithSize:"},
 	{0x1fa0e526,  10, "dictionary"},
+	{0x24425680,  13, "defaultCenter"},
 	{0x2835dceb,  16, "initWithObjects:"},
 	{0x2962f760,  14, "valueWithRect:"},
 	{0x2bfbf0f5,  14, "defaultManager"},
@@ -43,6 +45,7 @@ static const CheckedString	gFriendlySels[] =
 	{0x384a2b14,  32, "initWithFormat:locale:arguments:"},
 	{0x3c685b15,  40, "stringWithContentsOfFile:encoding:error:"},
 	{0x40d8bf8d,  19, "initWithUTF8String:"},
+	{0x4d124a65,  11, "autorelease"},
 	{0x4d573d17,  37, "initWithContentsOfURL:encoding:error:"},
 	{0x4e1b2873,  15, "valueWithPoint:"},
 	{0x50a89cab,  27, "valueWithNonretainedObject:"},
@@ -78,6 +81,7 @@ static const CheckedString	gFriendlySels[] =
 	{0x8d5ad9db,  30, "dictionaryWithObjects:forKeys:"},
 	{0x92091043,  44, "stringWithContentsOfFile:usedEncoding:error:"},
 	{0x981f37d5,  24, "arrayWithContentsOfFile:"},
+	{0x9e47031d,   7, "release"},
 	{0x9e5dbc90,  40, "dataWithBytesNoCopy:length:freeWhenDone:"},
 	{0x9ebeb2a9,   6, "string"},
 	{0x9f1c97a5,  28, "dictionaryWithContentsOfURL:"},
