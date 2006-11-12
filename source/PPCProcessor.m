@@ -17,8 +17,6 @@
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
-#define _OTX_REUSE_BLOCKS_ 1
-
 // ============================================================================
 
 @implementation PPCProcessor
@@ -583,65 +581,39 @@
 	}
 }
 
-//	commentForMsgSend:fromLine:
+#pragma mark -
+//	selectorForMsgSend:
 // ----------------------------------------------------------------------------
 
-- (void)commentForMsgSend: (char*)ioComment
-				 fromLine: (Line*)inLine
+- (char*)selectorForMsgSend: (char*)ioComment
+				   fromLine: (Line*)inLine
 {
-	UInt32	theCode	= strtoul(inLine->info.code, nil, 16);
+	char*	selString	= nil;
+	UInt32	theCode		= strtoul(inLine->info.code, nil, 16);
 
 	// Bail if this is not an eligible branch.
 	if (PO(theCode) != 0x12)	// b, bl, ba, bla
-		return;
+		return nil;
 
 	// Bail if this is not an objc_msgSend variant.
 	if (memcmp(ioComment, "_objc_msgSend", 13))
-		return;
+		return nil;
 
-	// Store the variant type locally to reduce string comparisons.
-	UInt32	sendType	= send;
+	UInt8	sendType	= SendTypeFromMsgSend(ioComment);
 
-	if (strlen(ioComment) != 13)	// not _objc_msgSend
-	{
-		if (strstr(ioComment, "Super_stret"))
-			sendType	= sendSuper_stret;
-		else if (strstr(ioComment, "Super"))
-			sendType	= sendSuper;
-		else if (strstr(ioComment, "_stret"))
-			sendType	= send_stret;
-		else if (strstr(ioComment, "_rtp"))
-			sendType	= send_rtp;
-		else	// Someone actually used the variadic variants!
-		{
-			printf("otx: [PPCProcessor commentForMsgSend]:"
-				"variadic variant detected.\n");
+	// Bail for variadics.
+	if (sendType == send_variadic)
+		return nil;
 
-			return;
-		}
-	}
-
-	char	tempComment[MAX_COMMENT_LENGTH];
-	BOOL	goodComment	= false;
-
-	tempComment[0]	= 0;
-
-	UInt32	receiverRegNum	=
-		(sendType == sendSuper_stret || sendType == send_stret) ? 4 : 3;
 	UInt32	selectorRegNum	=
 		(sendType == sendSuper_stret || sendType == send_stret) ? 5 : 4;
 
-	char*	returnTypeString	=
-		(sendType == sendSuper_stret || sendType == send_stret) ?
-		"(struct)" : "";
-
 	if (!mRegInfos[selectorRegNum].isValid ||
 		!mRegInfos[selectorRegNum].value)
-		return;
+		return nil;
 
 	// Get at the selector.
 	UInt8	selType		= PointerType;
-	char*	selString	= nil;
 	char*	selPtr		= GetPointer(
 		mRegInfos[selectorRegNum].value, &selType);
 
@@ -672,24 +644,35 @@
 			break;
 	}
 
+	return selString;
+}
+
+//	commentForMsgSend:fromLine:
+// ----------------------------------------------------------------------------
+
+- (void)commentForMsgSend: (char*)ioComment
+				 fromLine: (Line*)inLine
+{
+	char*	selString	= SelectorForMsgSend(ioComment, inLine);
+
 	// Bail if we couldn't find the selector.
 	if (!selString)
 		return;
 
-	// Check if the selector is friendly.
-	UInt32			selLength	= strlen(selString);
-	UInt32			selCRC		= crc32(0, selString, selLength);
-	CheckedString	searchKey	= {selCRC, 0, nil};
+	// FIXME move this out of this function
+	mReturnValueIsKnown	= SelectorIsFriendly(selString);
 
-	CheckedString*	friendlySel	= bsearch(&searchKey,
-		gFriendlySels, NUM_FRIENDLY_SELS, sizeof(CheckedString),
-		(int (*)(const void*, const void*))CheckedString_Compare);
+	UInt8	sendType			= SendTypeFromMsgSend(ioComment);
+	UInt32	receiverRegNum		=
+		(sendType == sendSuper_stret || sendType == send_stret) ? 4 : 3;
+	char*	returnTypeString	=
+		(sendType == sendSuper_stret || sendType == send_stret) ?
+		"(struct)" : "";
 
-	if (friendlySel && friendlySel->length == selLength)
-	{	// found a matching CRC, make sure it's not a collision.
-		if (!strncmp(friendlySel->string, selString, selLength))
-			mReturnValueIsKnown	= true;
-	}
+	char	tempComment[MAX_COMMENT_LENGTH];
+	BOOL	goodComment	= false;
+
+	tempComment[0]	= 0;
 
 	if (mRegInfos[receiverRegNum].isValid &&
 		mRegInfos[receiverRegNum].value)
@@ -780,6 +763,7 @@
 	}
 }
 
+#pragma mark -
 //	resetRegisters:
 // ----------------------------------------------------------------------------
 

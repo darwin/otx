@@ -235,7 +235,8 @@ enum {
 	sendSuper,
 	send_stret,
 	sendSuper_stret,
-	send_fpret			// x86 only
+	send_fpret,			// x86 only
+	send_variadic
 };
 
 // Constants that represent which section is being referenced, indicating
@@ -401,6 +402,9 @@ enum {
 	void	(*ResetRegisters)				(id, SEL, Line*);
 	void	(*UpdateRegisters)				(id, SEL, Line*);
 	BOOL	(*RestoreRegisters)				(id, SEL, Line*);
+	char*	(*SelectorForMsgSend)			(id, SEL, char*, Line*);
+	BOOL	(*SelectorIsFriendly)			(id, SEL, const char*);
+	UInt8	(*SendTypeFromMsgSend)			(id, SEL, char*);
 	char*	(*PrepareNameForDemangling)		(id, SEL, char*);
 
 	objc_class*		(*ObjcClassPtrFromMethod)		(id, SEL, UInt32);
@@ -481,10 +485,17 @@ enum {
 - (void)entabLine: (Line*)ioLine;
 - (char*)getPointer: (UInt32)inAddr
 			andType: (UInt8*)outType;
+
 - (void)commentForLine: (Line*)inLine;
 - (void)commentForSystemCall;
 - (void)commentForMsgSend: (char*)ioComment
 				 fromLine: (Line*)inLine;
+
+- (char*)selectorForMsgSend: (char*)ioComment
+				   fromLine: (Line*)inLine;
+- (BOOL)selectorIsFriendly: (const char*)inSel;
+- (UInt8)sendTypeFromMsgSend: (char*)inString;
+
 - (void)resetRegisters: (Line*)inLine;
 - (void)updateRegisters: (Line*)inLine;
 - (BOOL)restoreRegisters: (Line*)inLine;

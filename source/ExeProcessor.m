@@ -2115,6 +2115,75 @@
 - (void)chooseLine: (Line**)ioLine
 {}
 
+#pragma mark -
+//	selectorForMsgSend:
+// ----------------------------------------------------------------------------
+//	Subclasses may override.
+
+- (char*)selectorForMsgSend: (char*)ioComment
+				   fromLine: (Line*)inLine
+{
+	return nil;
+}
+
+//	selectorIsFriendly:
+// ----------------------------------------------------------------------------
+//	A selector is friendly if it's associated method either:
+//	- returns an id of the same class that sent the message
+//	- doesn't alter the 'return' register (r3 or eax)
+
+- (BOOL)selectorIsFriendly: (const char*)inSel
+{
+	if (!inSel)
+		return false;
+
+	UInt32			selLength	= strlen(inSel);
+	UInt32			selCRC		= crc32(0, inSel, selLength);
+	CheckedString	searchKey	= {selCRC, 0, nil};
+
+	// Search for inSel in our list of friendly sels.
+	CheckedString*	friendlySel	= bsearch(&searchKey,
+		gFriendlySels, NUM_FRIENDLY_SELS, sizeof(CheckedString),
+		(int (*)(const void*, const void*))CheckedString_Compare);
+
+	if (friendlySel && friendlySel->length == selLength)
+	{	// found a matching CRC, make sure it's not a collision.
+		if (!strncmp(friendlySel->string, inSel, selLength))
+			return true;
+	}
+
+	return false;
+}
+
+//	sendTypeFromMsgSend:
+// ----------------------------------------------------------------------------
+
+- (UInt8)sendTypeFromMsgSend: (char*)inString
+{
+	UInt8	sendType	= send;
+
+	if (strlen(inString) != 13)	// not _objc_msgSend
+	{
+		if (strstr(inString, "Super_stret"))
+			sendType	= sendSuper_stret;
+		else if (strstr(inString, "Super"))
+			sendType	= sendSuper;
+		else if (strstr(inString, "_stret"))
+			sendType	= send_stret;
+		else if (strstr(inString, "_rtp"))
+			sendType	= send_rtp;
+		else	// Holy va_list!
+		{
+			sendType	= send_variadic;
+			printf("otx: [ExeProcessor sendTypeFromMsgSend]:"
+				"variadic variant detected.\n");
+		}
+	}
+
+	return sendType;
+}
+
+#pragma mark -
 //	resetRegisters:
 // ----------------------------------------------------------------------------
 //	Subclasses may override.
@@ -2138,6 +2207,7 @@
 	return false;
 }
 
+#pragma mark -
 //	insertMD5
 // ----------------------------------------------------------------------------
 
@@ -3490,12 +3560,18 @@
 		[self methodForSelector: CommentForSystemCallSel];
 	CommentForMsgSendFromLine	= CommentForMsgSendFromLineFuncType
 		[self methodForSelector: CommentForMsgSendFromLineSel];
+	SelectorForMsgSend			= SelectorForMsgSendFuncType
+		[self methodForSelector: SelectorForMsgSendSel];
+	SelectorIsFriendly			= SelectorIsFriendlyFuncType
+		[self methodForSelector: SelectorIsFriendlySel];
 	ResetRegisters				= ResetRegistersFuncType
 		[self methodForSelector: ResetRegistersSel];
 	UpdateRegisters				= UpdateRegistersFuncType
 		[self methodForSelector: UpdateRegistersSel];
 	RestoreRegisters			= RestoreRegistersFuncType
 		[self methodForSelector: RestoreRegistersSel];
+	SendTypeFromMsgSend			= SendTypeFromMsgSendFuncType
+		[self methodForSelector: SendTypeFromMsgSendSel];
 	PrepareNameForDemangling	= PrepareNameForDemanglingFuncType
 		[self methodForSelector: PrepareNameForDemanglingSel];
 	ObjcClassPtrFromMethod		= ObjcClassPtrFromMethodFuncType

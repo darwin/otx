@@ -1074,12 +1074,15 @@
 	}
 }
 
-//	commentForMsgSend:fromLine:
+#pragma mark -
+//	selectorForMsgSend:
 // ----------------------------------------------------------------------------
 
-- (void)commentForMsgSend: (char*)ioComment
-				 fromLine: (Line*)inLine
+- (char*)selectorForMsgSend: (char*)ioComment
+				   fromLine: (Line*)inLine
 {
+	char*	selString	= nil;
+
 	UInt8	opcode;
 
 	sscanf(inLine->info.code, "%02hhx", &opcode);
@@ -1087,35 +1090,21 @@
 	// Bail if this is not an eligible jump.
 	if (opcode != 0xe8	&&	// calll
 		opcode != 0xe9)		// jmpl
-		return;
+		return nil;
 
 	// Bail if this is not an objc_msgSend variant.
 	if (memcmp(ioComment, "_objc_msgSend", 13))
-		return;
+		return nil;
 
 	// Store the variant type locally to reduce string comparisons.
-	UInt32	sendType	= send;
+	UInt32	sendType	= SendTypeFromMsgSend(ioComment);
 
-	if (strlen(ioComment) != 13)	// not _objc_msgSend
-	{
-		if (strstr(ioComment, "Super_stret"))
-			sendType	= sendSuper_stret;
-		else if (strstr(ioComment, "Super"))
-			sendType	= sendSuper;
-		else if (strstr(ioComment, "_stret"))
-			sendType	= send_stret;
-		else if (strstr(ioComment, "_fpret"))
-			sendType	= send_fpret;
-		else	// Someone actually used the variadic variants!
-		{
-			printf("otx: [X86Processor commentForMsgSend]:"
-				"variadic variant detected.\n");
+	// Bail for variadics.
+	if (sendType == send_variadic)
+		return nil;
 
-			return;
-		}
-	}
-
-	UInt32	receiverAddy, selectorAddy;
+	UInt32	receiverAddy;
+	UInt32	selectorAddy;
 
 	// Make sure we know what the selector is.
 	if (sendType == sendSuper_stret || sendType == send_stret)
@@ -1127,7 +1116,7 @@
 				mStack[1].value : 0;
 		}
 		else
-			return;
+			return nil;
 	}
 	else
 	{
@@ -1138,16 +1127,15 @@
 				mStack[0].value : 0;
 		}
 		else
-			return;
+			return nil;
 	}
 
 	// sanity check
 	if (!selectorAddy)
-		return;
+		return nil;
 
 	// Get at the selector.
 	UInt8	selType		= PointerType;
-	char*	selString	= nil;
 	char*	selPtr		= GetPointer(selectorAddy, &selType);
 
 	switch (selType)
@@ -1177,18 +1165,37 @@
 			break;
 	}
 
+	return selString;
+}
+
+//	commentForMsgSend:fromLine:
+// ----------------------------------------------------------------------------
+
+- (void)commentForMsgSend: (char*)ioComment
+				 fromLine: (Line*)inLine
+{
+	char*	selString	= SelectorForMsgSend(ioComment, inLine);
+
 	// Bail if we couldn't find the selector.
 	if (!selString)
 		return;
+
+	// FIXME move this out of this function
+	mReturnValueIsKnown	= SelectorIsFriendly(selString);
+
+	UInt8	sendType			= SendTypeFromMsgSend(ioComment);
+	UInt32	receiverAddy		=
+		(sendType == sendSuper_stret || sendType == send_stret) ?
+		((mStack[1].isValid) ? mStack[1].value : 0) :
+		((mStack[0].isValid) ? mStack[0].value : 0);
+	char*	returnTypeString	=
+		(sendType == sendSuper_stret || sendType == send_stret) ?
+		"(struct)" : (sendType == send_fpret) ? "(double)" : "";
 
 	char	tempComment[MAX_COMMENT_LENGTH];
 	BOOL	goodComment	= false;
 
 	tempComment[0]	= 0;
-
-	char*	returnTypeString	=
-		(sendType == sendSuper_stret || sendType == send_stret) ?
-		"(struct)" : (sendType == send_fpret) ? "(double)" : "";
 
 	if (receiverAddy)
 	{
@@ -1374,6 +1381,7 @@
 	}
 }
 
+#pragma mark -
 //	resetRegisters:
 // ----------------------------------------------------------------------------
 
@@ -1853,6 +1861,10 @@
 	// At this point, the x86 logic departs from the PPC logic. We get
 	// better results by not reusing blocks.
 
+/**/
+// check this after adding friendly sel recognition
+/**/
+
 			// Allocate another BlockInfo.
 			funcInfo->numBlocks++;
 
@@ -1892,6 +1904,7 @@
 	mCurrentFuncInfoIndex	= -1;
 }
 
+#pragma mark -
 #pragma mark Deobfuscastion
 //	verifyNops:
 // ----------------------------------------------------------------------------

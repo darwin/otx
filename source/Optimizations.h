@@ -21,6 +21,9 @@
 #define CommentForLineFuncType				(void			(*)(id, SEL, Line*))
 #define CommentForSystemCallFuncType		(void			(*)(id, SEL))
 #define CommentForMsgSendFromLineFuncType	(void			(*)(id, SEL, char*, Line*))
+#define SelectorForMsgSendFuncType			(char*			(*)(id, SEL, char*, Line*))
+#define SelectorIsFriendlyFuncType			(BOOL			(*)(id, SEL, const char*))
+#define SendTypeFromMsgSendFuncType			(UInt8			(*)(id, SEL, char*))
 #define ResetRegistersFuncType				(void			(*)(id, SEL, Line*))
 #define UpdateRegistersFuncType				(void			(*)(id, SEL, Line*))
 #define RestoreRegistersFuncType			(BOOL			(*)(id, SEL, Line*))
@@ -54,6 +57,9 @@
 #define CommentForLineSel				@selector(commentForLine:)
 #define CommentForSystemCallSel			@selector(commentForSystemCall)
 #define CommentForMsgSendFromLineSel	@selector(commentForMsgSend:fromLine:)
+#define SelectorForMsgSendSel			@selector(selectorForMsgSend:fromLine:)
+#define SelectorIsFriendlySel			@selector(selectorIsFriendly:)
+#define SendTypeFromMsgSendSel			@selector(sendTypeFromMsgSend:)
 #define ResetRegistersSel				@selector(resetRegisters:)
 #define UpdateRegistersSel				@selector(updateRegisters:)
 #define RestoreRegistersSel				@selector(restoreRegisters:)
@@ -102,6 +108,12 @@
 		CommentForSystemCall(self, CommentForSystemCallSel)
 #define CommentForMsgSendFromLine(a, b)											\
 		CommentForMsgSendFromLine(self, CommentForMsgSendFromLineSel, (a), (b))
+#define SelectorForMsgSend(a, b)												\
+		SelectorForMsgSend(self, SelectorForMsgSendSel, (a), (b))
+#define SelectorIsFriendly(a)													\
+		SelectorIsFriendly(self, SelectorIsFriendlySel, (a))
+#define SendTypeFromMsgSend(a)													\
+		SendTypeFromMsgSend(self, SendTypeFromMsgSendSel, (a))
 #define ResetRegisters(a)														\
 		ResetRegisters(self, ResetRegistersSel, (a))
 #define UpdateRegisters(a)														\
