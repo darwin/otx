@@ -1525,7 +1525,7 @@
 		// Squash the new block flag, just in case.
 		mEnteringNewBlock	= false;
 
-		// New function, new local offset count.
+		// New function, new local offset count and current func.
 		mLocalOffset	= 0;
 		mCurrentFuncPtr	= (*ioLine)->info.address;
 
@@ -1719,6 +1719,11 @@
 	{	// Optionally modify otool's comment.
 		if (mVerboseMsgSends)
 			CommentForMsgSendFromLine(theCommentCString, *ioLine);
+
+		// Check whether we should trample r3/eax.
+		char*	selString	= SelectorForMsgSend(theCommentCString, *ioLine);
+
+		mReturnValueIsKnown	= SelectorIsFriendly(selString);
 	}
 
 	// Demangle operands if necessary.
