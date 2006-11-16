@@ -1425,7 +1425,7 @@
 	sscanf(inLine->info.code, "%02hhx", &opcode);
 	sscanf(&inLine->info.code[2], "%02hhx", &opcode2);
 
-	// Remind us to add a \n to the following line.
+	// Remind us to prepend a \n to the following line.
 	if (IS_JUMP(opcode, opcode2))
 		mEnteringNewBlock	= true;
 
@@ -1503,8 +1503,7 @@
 				break;
 			}
 
-			if (!mRegInfos[REG1(modRM)].isValid	||
-				(REG2(modRM) != EBP && !HAS_SIB(modRM)))
+			if ((REG2(modRM) != EBP && !HAS_SIB(modRM)))
 				break;
 
 			SInt8	offset	= 0;
@@ -1524,10 +1523,12 @@
 					}
 
 					// Convert offset to array index.
-					if (offset != 0)
 						offset /= 4;
 
-					mStack[offset]	= mRegInfos[REG1(modRM)];
+					if (mRegInfos[REG1(modRM)].isValid)
+						mStack[offset]	= mRegInfos[REG1(modRM)];
+					else
+						bzero(&mStack[offset], sizeof(GPRegisterInfo));
 				}
 			}
 			else	// Copying self from a register to a local var.
@@ -1577,6 +1578,9 @@
 					{
 						UInt32	i;
 
+						// Zero the destination regardless.
+						bzero(&mRegInfos[REG1(modRM)], sizeof(GPRegisterInfo));
+
 						for (i = 0; i < mNumLocalSelves; i++)
 						{
 							if (mLocalSelves[i].offset != offset)
@@ -1584,7 +1588,6 @@
 
 							// If we're accessing a local var copy of self,
 							// copy that info back to the reg in question.
-							bzero(&mRegInfos[REG1(modRM)], sizeof(GPRegisterInfo));
 							mRegInfos[REG1(modRM)]	= mLocalSelves[i].regInfo;
 
 							// and split.
@@ -1655,7 +1658,13 @@
 
 		case 0xe8:	// calll
 			if (mReturnValueIsKnown)
+			{
 				mReturnValueIsKnown	= false;
+
+				// Copy receiver back to eax.
+				if (mStack[0].isValid)
+					mRegInfos[EAX]	= mStack[0];
+			}
 			else
 			{
 				bzero(mStack, sizeof(GPRegisterInfo) * STACK_SIZE);
@@ -1826,6 +1835,7 @@
 			UpdateRegisters(theLine);
 		}
 
+		// Check if we need to save the machine state.
 		if (IS_JUMP(opcode, opcode2) && mCurrentFuncInfoIndex >= 0)
 		{
 			UInt32	jumpTarget;
@@ -1864,12 +1874,8 @@
 			FunctionInfo*	funcInfo	=
 				&mFuncInfos[mCurrentFuncInfoIndex];
 
-	// At this point, the x86 logic departs from the PPC logic. We get
-	// better results by not reusing blocks.
-
-/**/
-// check this after adding friendly sel recognition
-/**/
+	// At this point, the x86 logic departs from the PPC logic. We seem
+	// to get better results by not reusing blocks.
 
 			// Allocate another BlockInfo.
 			funcInfo->numBlocks++;
@@ -1902,6 +1908,77 @@
 			// Create and store a new BlockInfo.
 			funcInfo->blocks[funcInfo->numBlocks - 1]	=
 				(BlockInfo){jumpTarget, machState};
+
+/*
+			// 'currentBlock' will point to either an existing block which
+			// we will update, or a newly allocated block.
+			BlockInfo*	currentBlock	= nil;
+			UInt32		i;
+
+			if (funcInfo->blocks)
+			{	// Blocks exist, find 1st one matching this address.
+				// This is an exhaustive search, but the speed hit should
+				// only be an issue with extremely long functions.
+				for (i = 0; i < funcInfo->numBlocks; i++)
+				{
+					if (funcInfo->blocks[i].start == jumpTarget)
+					{
+						currentBlock	= &funcInfo->blocks[i];
+						break;
+					}
+				}
+
+				if (!currentBlock)
+				{
+					// No matching blocks found, so allocate a new one.
+					funcInfo->numBlocks++;
+					funcInfo->blocks	= realloc(funcInfo->blocks,
+						sizeof(BlockInfo) * funcInfo->numBlocks);
+					currentBlock		=
+						&funcInfo->blocks[funcInfo->numBlocks - 1];
+					bzero(currentBlock, sizeof(BlockInfo));
+				}
+			}
+			else
+			{	// No existing blocks, allocate one.
+				funcInfo->numBlocks++;
+				funcInfo->blocks	= malloc(sizeof(BlockInfo));
+				currentBlock		= funcInfo->blocks;
+				bzero(currentBlock, sizeof(BlockInfo));
+			}
+
+			// sanity check
+			if (!currentBlock)
+			{
+				printf("otx: [X86Processor gatherFuncInfos] "
+					"currentBlock is nil. Flame the dev.\n");
+				return;
+			}
+
+			// Create a new MachineState.
+			GPRegisterInfo*	savedRegs	= malloc(
+				sizeof(GPRegisterInfo) * 8);
+
+			memcpy(savedRegs, mRegInfos, sizeof(GPRegisterInfo) * 8);
+
+			VarInfo*	savedVars	= nil;
+
+			if (mLocalSelves)
+			{
+				savedVars	= malloc(
+					sizeof(VarInfo) * mNumLocalSelves);
+				memcpy(savedVars, mLocalSelves,
+					sizeof(VarInfo) * mNumLocalSelves);
+			}
+
+			MachineState	machState	=
+				{savedRegs, savedVars, mNumLocalSelves};
+
+			// Store the new BlockInfo.
+			BlockInfo	blockInfo	= {jumpTarget, machState};
+
+			memcpy(currentBlock, &blockInfo, sizeof(BlockInfo));
+*/
 		}
 
 		theLine	= theLine->next;
