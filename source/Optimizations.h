@@ -6,7 +6,7 @@
 */
 
 // Function types
-#define GetDescriptionFuncType				(BOOL			(*)(id, SEL, char*, const char*))
+#define GetDescriptionFuncType				(void			(*)(id, SEL, char*, const char*))
 #define LineIsCodeFuncType					(BOOL			(*)(id, SEL, const char*))
 #define LineIsFunctionFuncType				(BOOL			(*)(id, SEL, Line*))
 #define AddressFromLineFuncType				(UInt32			(*)(id, SEL, const char*))

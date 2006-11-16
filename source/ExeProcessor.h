@@ -384,7 +384,7 @@ enum {
 	char		mLineOperandsCString[MAX_OPERANDS_LENGTH];
 
 	// C function pointers- see Optimizations.h and speedyDelivery
-	BOOL	(*GetDescription)				(id, SEL, char*, const char*);
+	void	(*GetDescription)				(id, SEL, char*, const char*);
 	BOOL	(*LineIsCode)					(id, SEL, const char*);
 	BOOL	(*LineIsFunction)				(id, SEL, Line*);
 	UInt32	(*AddressFromLine)				(id, SEL, const char*);
