@@ -1180,9 +1180,6 @@
 	if (!selString)
 		return;
 
-	// FIXME move this out of this function
-//	mReturnValueIsKnown	= SelectorIsFriendly(selString);
-
 	UInt8	sendType			= SendTypeFromMsgSend(ioComment);
 	UInt32	receiverAddy		=
 		(sendType == sendSuper_stret || sendType == send_stret) ?

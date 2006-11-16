@@ -659,9 +659,6 @@
 	if (!selString)
 		return;
 
-	// FIXME move this out of this function
-//	mReturnValueIsKnown	= SelectorIsFriendly(selString);
-
 	UInt8	sendType			= SendTypeFromMsgSend(ioComment);
 	UInt32	receiverRegNum		=
 		(sendType == sendSuper_stret || sendType == send_stret) ? 4 : 3;
