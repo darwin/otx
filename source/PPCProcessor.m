@@ -828,7 +828,7 @@
 	UInt32	theCode		= strtoul(
 		(const char*)inLine->info.code, nil, 16);
 
-	// Remind us to add a \n to the following line.
+	// Remind us to prepend a \n to the following line.
 	if (IS_BLOCK_BRANCH(theCode))
 		mEnteringNewBlock	= true;
 
