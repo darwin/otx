@@ -1654,8 +1654,14 @@
 			break;
 
 		case 0xe8:	// calll
-			bzero(mStack, sizeof(GPRegisterInfo) * STACK_SIZE);
-			bzero(&mRegInfos[EAX], sizeof(GPRegisterInfo));
+			if (mReturnValueIsKnown)
+				mReturnValueIsKnown	= false;
+			else
+			{
+				bzero(mStack, sizeof(GPRegisterInfo) * STACK_SIZE);
+				bzero(&mRegInfos[EAX], sizeof(GPRegisterInfo));
+			}
+
 			break;
 
 		default:
