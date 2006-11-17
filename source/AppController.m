@@ -391,8 +391,7 @@
 		case CPU_TYPE_I386:
 		{
 			X86Processor*	theProcessor	=
-				[[X86Processor alloc] initWithURL: mOFile
-				progText: mProgText progBar: mProgBar];
+				[[X86Processor alloc] initWithURL: mOFile andController: self];
 
 			if (!theProcessor)
 			{
@@ -475,8 +474,7 @@
 		case CPU_TYPE_I386:
 		{
 			X86Processor*	theProcessor	=
-				[[X86Processor alloc] initWithURL: mOFile
-				progText: mProgText progBar: mProgBar];
+				[[X86Processor alloc] initWithURL: mOFile andController: self];
 
 			if (!theProcessor)
 			{
@@ -719,67 +717,50 @@
 		return;
 	}
 
+	Class	procClass	= nil;
+
 	switch (mArchSelector)
 	{
 		case CPU_TYPE_POWERPC:
-		{
-			PPCProcessor*	theProcessor	=
-				[[PPCProcessor alloc] initWithURL: mOFile
-				progText: mProgText progBar: mProgBar];
-
-			if (!theProcessor)
-			{
-				printf("otx: -[AppController drawerDidOpen]: "
-					"unable to create processor.\n");
-				return;
-			}
-
-			if (![theProcessor processExe: mOutputFilePath])
-			{
-				printf("otx: possible permission error\n");
-				[self doErrorAlertSheet];
-				[theProcessor release];
-				[mProgDrawer close];
-				return;
-			}
-
-			[theProcessor release];
-
+			procClass	= [PPCProcessor class];
 			break;
-		}
 
 		case CPU_TYPE_I386:
-		{
-			X86Processor*	theProcessor	=
-				[[X86Processor alloc] initWithURL: mOFile
-				progText: mProgText progBar: mProgBar];
-
-			if (!theProcessor)
-			{
-				printf("otx: -[AppController drawerDidOpen]: "
-					"unable to create processor.\n");
-				return;
-			}
-
-			if (![theProcessor processExe: mOutputFilePath])
-			{
-				printf("otx: -[AppController drawerDidOpen]: "
-					"possible permission error.\n");
-				[self doErrorAlertSheet];
-				[theProcessor release];
-				[mProgDrawer close];
-				return;
-			}
-
-			[theProcessor release];
-
+			procClass	= [X86Processor class];
 			break;
-		}
 
 		default:
+			printf("otx: [AppController drawerDidOpen]: "
+				"unknown arch type: %d", mArchSelector);
 			break;
 	}
 
+	if (!procClass)
+	{
+		[mProgDrawer close];
+		return;
+	}
+
+	id	theProcessor	=
+		[[procClass alloc] initWithURL: mOFile andController: self];
+
+	if (!theProcessor)
+	{
+		printf("otx: -[AppController drawerDidOpen]: "
+			"unable to create processor.\n");
+		return;
+	}
+
+	if (![theProcessor processExe: mOutputFilePath])
+	{
+		printf("otx: possible permission error\n");
+		[self doErrorAlertSheet];
+		[theProcessor release];
+		[mProgDrawer close];
+		return;
+	}
+
+	[theProcessor release];
 	[mProgDrawer close];
 
 	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
@@ -957,6 +938,65 @@
 	[theAnim autorelease];
 
 	mPrefsCurrentViewIndex	= theNewIndex;
+}
+
+//	reportProgress:
+// ----------------------------------------------------------------------------
+
+- (void)reportProgress: (ProgressState*)inState
+{
+	if (!inState)
+	{
+		printf("otx: <reportProgress:> nil inState\n");
+		return;
+	}
+
+	if (inState->description)
+	{
+		[mProgText setStringValue: inState->description];
+		[mProgText display];
+	}
+
+	if (inState->setIndeterminate)
+	{
+		if (inState->indeterminate == false)
+		{
+			if (!inState->value)
+			{
+				printf("otx: <reportProgress:> nil inState->value\n");
+				return;
+			}
+
+			[mProgBar setDoubleValue: *(inState->value)];
+		}
+
+		[mProgBar setIndeterminate: inState->indeterminate];
+		[mProgBar display];
+	}
+
+	switch (inState->refcon)
+	{
+		case Nudge:
+			[mProgBar animate: self];
+			[mProgBar display];
+
+			break;
+
+		case GeneratingFile:
+			if (!inState->value)
+			{
+				printf("otx: <reportProgress:> nil inState->value\n");
+				break;
+			}
+
+			[mProgBar setDoubleValue: *(inState->value)];
+			[mProgBar display];
+
+			break;
+
+		default:
+			break;
+	}
 }
 
 @end

@@ -5,13 +5,15 @@
 #import <Cocoa/Cocoa.h>
 #import <Kernel/mach-o/loader.h>
 
+#import "ProgressReporter.h"
+
 #define kOutputTextTag		100
 #define kOutputFileBaseTag	200
 #define kOutputFileExtTag	201
 
 // ============================================================================
 
-@interface AppController : NSObject
+@interface AppController : NSObject <ProgressReporter>
 {
 // main window
 	IBOutlet NSWindow*				mMainWindow;
@@ -78,5 +80,8 @@
 - (void)doLipoAlertSheet;
 - (void)doErrorAlertSheet;
 - (void)doDrillErrorAlert: (NSString*)inExePath;
+
+// ProgressReporter protocol
+- (void)reportProgress: (ProgressState*)inState;
 
 @end

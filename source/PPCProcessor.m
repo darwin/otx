@@ -21,15 +21,14 @@
 
 @implementation PPCProcessor
 
-//	initWithURL:progText:progBar:
+//	initWithURL:andController:
 // ----------------------------------------------------------------------------
 
 - (id)initWithURL: (NSURL*)inURL
-		 progText: (NSTextField*)inText
-		  progBar: (NSProgressIndicator*)inProg
+	andController: (id)inController
 {
 	if ((self = [super initWithURL: inURL
-		progText: inText progBar: inProg]) == nil)
+		andController: inController]) == nil)
 		return nil;
 
 	strncpy(mArchString, "ppc", 4);

@@ -30,23 +30,20 @@
 // re-initialized before destruction. Do not reuse a single instance of
 // those subclasses class for multiple processings.
 
-//	initWithURL:progText:progBar:
+//	initWithURL:andController:
 // ----------------------------------------------------------------------------
 
 - (id)initWithURL: (NSURL*)inURL
-		 progText: (NSTextField*)inText
-		  progBar: (NSProgressIndicator*)inProg
+	andController: (id)inController
 {
-	if (!inURL || !inText || !inProg)
+	if (!inURL || !inController)
 		return nil;
 
 	if ((self = [super init]) == nil)
 		return nil;
 
-	mOFile		= inURL;
-	mProgText	= inText;
-	mProgBar	= inProg;
-
+	mController				= inController;
+	mOFile					= inURL;
 	mCurrentFuncInfoIndex	= -1;
 
 	// Load exe into RAM.
@@ -201,8 +198,9 @@
 
 	[self loadLCommands];
 
-	[mProgText setStringValue: @"Calling otool"];
-	[mProgText display];
+	ProgressState	progState	= {false, false, 0, nil, @"Calling otool"};
+
+	[mController reportProgress: &progState];
 
 	// Create temp files.
 	NSURL*	theVerboseFile	= nil;
@@ -259,8 +257,10 @@
 	// subsequent calls append to the file. The order in which sections are
 	// printed may not reflect their order in the executable.
 
-	[mProgBar animate: self];
-	[mProgBar display];
+	ProgressState	progState	=
+		{false, false, Nudge, nil, nil};	// wink wink, say no more...
+
+	[mController reportProgress: &progState];
 
 	// Create verbose temp file.
 	otoolString	= [NSString stringWithFormat:
@@ -270,8 +270,7 @@
 	if (system(CSTRING(otoolString)) != noErr)
 		return;
 
-	[mProgBar animate: self];
-	[mProgBar display];
+	[mController reportProgress: &progState];
 
 	// Create non-verbose temp file.
 	otoolString	= [NSString stringWithFormat:
@@ -279,8 +278,7 @@
 		cmdString, oPath, plainPath];
 	system(CSTRING(otoolString));
 
-	[mProgBar animate: self];
-	[mProgBar display];
+	[mController reportProgress: &progState];
 
 	// Append to verbose temp file.
 	otoolString	= [NSString stringWithFormat:
@@ -288,8 +286,7 @@
 		cmdString, oPath, verbosePath];
 	system(CSTRING(otoolString));
 
-	[mProgBar animate: self];
-	[mProgBar display];
+	[mController reportProgress: &progState];
 
 	// Append to non-verbose temp file.
 	otoolString	= [NSString stringWithFormat:
@@ -297,8 +294,7 @@
 		cmdString, oPath, plainPath];
 	system(CSTRING(otoolString));
 
-	[mProgBar animate: self];
-	[mProgBar display];
+	[mController reportProgress: &progState];
 
 	// Append to verbose temp file.
 	otoolString	= [NSString stringWithFormat:
@@ -306,8 +302,7 @@
 		cmdString, oPath, verbosePath];
 	system(CSTRING(otoolString));
 
-	[mProgBar animate: self];
-	[mProgBar display];
+	[mController reportProgress: &progState];
 
 	// Append to non-verbose temp file.
 	otoolString	= [NSString stringWithFormat:
@@ -1230,9 +1225,11 @@
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: ShowMD5Key])
 		[self insertMD5];
 
+	ProgressState	progState	= {false, false, 0, nil, @"Gathering info"};
+
+	[mController reportProgress: &progState];
+
 	// Gather info about lines while they're virgin.
-	[mProgText setStringValue: @"Gathering info"];
-	[mProgText display];
 	[self gatherLineInfos];
 
 	// Gather info about logical blocks. The second pass applies info
@@ -1241,12 +1238,12 @@
 	[self gatherFuncInfos];
 
 	UInt32	progCounter	= 0;
+	double	progValue	= 0.0;
 
-	[mProgBar setIndeterminate: false];
-	[mProgBar setDoubleValue: 0];
-	[mProgText setStringValue: @"Generating file"];
-	[mProgBar display];
-	[mProgText display];
+	progState	= (ProgressState)
+		{true, false, GeneratingFile, &progValue, @"Generating file"};
+
+	[mController reportProgress: &progState];
 
 	Line*	theLine	= mPlainLineListHead;
 
@@ -1255,9 +1252,11 @@
 	{
 		if (!(progCounter % PROGRESS_FREQ))
 		{
-			[mProgBar setDoubleValue:
-				(double)progCounter / mNumLines * 100];
-			[mProgBar display];
+			progValue	= (double)progCounter / mNumLines * 100;
+			progState	= (ProgressState)
+				{false, false, GeneratingFile, &progValue, nil};
+
+			[mController reportProgress: &progState];
 		}
 
 		if (theLine->info.isCode)
@@ -1274,10 +1273,9 @@
 		progCounter++;
 	}
 
-	[mProgText setStringValue: @"Writing __TEXT segment"];
-	[mProgBar setIndeterminate: true];
-	[mProgText display];
-	[mProgBar display];
+	progState	= (ProgressState){true, true, 0, nil, @"Writing file"};
+
+	[mController reportProgress: &progState];
 
 	// Create output file.
 	if (![self printLinesFromList: mPlainLineListHead])
@@ -1285,11 +1283,6 @@
 
 	if (mShowDataSection)
 	{
-		[mProgText setStringValue: @"Writing __DATA segment"];
-		[mProgBar animate: self];
-		[mProgText display];
-		[mProgBar display];
-
 		if (![self printDataSections])
 			return false;
 	}
@@ -1311,8 +1304,10 @@
 	{
 		if (!(progCounter % (PROGRESS_FREQ * 3)))
 		{
-			[mProgBar animate: self];
-			[mProgBar display];
+			ProgressState	progState	=
+				{false, false, Nudge, nil, nil};
+
+			[mController reportProgress: &progState];
 		}
 
 		if (LineIsCode(theLine->chars))
@@ -1429,7 +1424,7 @@
 					// copy cpName and terminate it.
 					strncpy(ioLine->chars, cpName, ioLine->length + 1);
 
-					// add '\n' and terminate it
+					// add '\n' and terminate it.
 					strncat(ioLine->chars, "\n", 1);
 				}
 
@@ -1872,8 +1867,8 @@
 		strncpy((*ioLine)->chars, theFinalCString, (*ioLine)->length + 1);
 	}
 
-	// The test above can fail even if mEnteringNewBlock was true, so it's
-	// better to reset it here.
+	// The test above can fail even if mEnteringNewBlock was true, so we
+	// should reset it here.
 	mEnteringNewBlock	= false;
 
 	UpdateRegisters(*ioLine);

@@ -9,6 +9,7 @@
 
 #import "LangDefs.h"
 #import "Optimizations.h"
+#import "ProgressReporter.h"
 #import "Selectors.h"
 #import "StolenDefs.h"
 
@@ -258,6 +259,16 @@ enum {
 	OCModType			// objc_module in (__OBJC,__module_info)
 };
 
+// Constants to indicate various stages of processing to the ProgressReporter
+// protocol.
+enum {
+	Nudge,
+	CallingOtool,
+	GatheringInfo,
+	GeneratingFile,
+	WritingFile
+};
+
 #define MAX_FIELD_SPACING		100		// spaces between fields
 #define MAX_FORMAT_LENGTH		50		// snprintf() format string
 #define MAX_OPERANDS_LENGTH		1000
@@ -287,9 +298,11 @@ enum {
 @interface ExeProcessor : NSObject
 {
 @protected
+	id		mController;
+
 	// UI
-	NSTextField*			mProgText;
-	NSProgressIndicator*	mProgBar;
+//	NSTextField*			mProgText;
+//	NSProgressIndicator*	mProgBar;
 
 	// guts
 	NSURL*				mOFile;					// exe on disk
@@ -424,8 +437,7 @@ enum {
 }
 
 - (id)initWithURL: (NSURL*)inURL
-		 progText: (NSTextField*)inText
-		  progBar: (NSProgressIndicator*)inProg;
+	andController: (id)inController;
 - (void)deleteFuncInfos;
 
 // processors
