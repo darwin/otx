@@ -187,10 +187,6 @@
 		return nil;
 	}
 
-/**/
-//mArchSelector	= CPU_TYPE_POWERPC;
-/**/
-
 	NSUserDefaults*	defaults	= [NSUserDefaults standardUserDefaults];
 
 	[defaults setBool: localOffsets forKey: ShowLocalOffsetsKey];
@@ -217,18 +213,6 @@
 	if (mExeName)
 		[mExeName release];
 
-//	if (mOutputFileLabel)
-//		[mOutputFileLabel release];
-
-//	if (mOutputFileName)
-//		[mOutputFileName release];
-
-//	if (mOutputFilePath)
-//		[mOutputFilePath release];
-
-//	if (mPrefsViews)
-//		free(mPrefsViews);
-
 	[super dealloc];
 }
 
@@ -240,11 +224,7 @@
 
 - (void)newPackageFile: (NSURL*)inPackageFile
 {
-//	if (mOutputFilePath)
-//		[mOutputFilePath release];
-
 	NSString*	origPath	= [inPackageFile path];
-//	[mOutputFilePath retain];
 
 	NSString*		theExeName	=
 		[[origPath stringByDeletingPathExtension] lastPathComponent];
@@ -275,17 +255,6 @@
 	mOFile	= inOFile;
 	[mOFile retain];
 
-/*	if (inNeedsPath)
-	{
-		if (mOutputFilePath)
-			[mOutputFilePath release];
-
-		mOutputFilePath	= [mOFile path];
-		[mOutputFilePath retain];
-	}
-
-	mExeName	= [[mOutputFilePath
-		stringByDeletingPathExtension] lastPathComponent];*/
 	mExeName	= [[[inOFile path]
 		stringByDeletingPathExtension] lastPathComponent];
 	[mExeName retain];
@@ -305,7 +274,6 @@
 	if ([self checkOtool] != noErr)
 	{
 		printf("otx: otool not found\n");
-//		[self doOtoolAlertSheet];
 		return;
 	}
 
@@ -344,18 +312,11 @@
 	{
 		printf("otx: -[CLIController processFile]: "
 			"possible permission error\n");
-//		[self doErrorAlertSheet];
 		[theProcessor release];
 		return;
 	}
 
 	[theProcessor release];
-
-//	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
-
-//	if ([theDefaults boolForKey: OpenOutputFileKey])
-//		[[NSWorkspace sharedWorkspace] openFile: mOutputFilePath
-//			withApplication: [theDefaults objectForKey: OutputAppKey]];
 }
 
 //	verifyNops:
