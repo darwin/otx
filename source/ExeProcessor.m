@@ -2240,8 +2240,6 @@
 	// which signal is offensive, block them all.
 
 	// Block all signals.
-//	sigset_t	oldSigs	= 0;
-//	sigset_t	newSigs	= 0xffffffff;
 	sigset_t	oldSigs, newSigs;
 
 	sigemptyset(&oldSigs);

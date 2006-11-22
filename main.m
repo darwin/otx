@@ -16,7 +16,10 @@ int main(
 	char*	argv[])
 {
 	if (NSAppKitVersionNumber < floor(NSAppKitVersionNumber10_4))
-		return noErr;
+	{
+		printf("otx requires Mac OS X 10.4 or higher.\n");
+		return -1;
+	}
 
 #ifdef _OTX_CLI_
 

@@ -96,6 +96,15 @@
 	if (UnsanitySCR_CanInstall(&authRequired))
 		UnsanitySCR_Install(authRequired ? kUnsanitySCR_GlobalInstall : 0);
 
+	// Set mArchSelector to the host architecture by default. This code was
+	// lifted from http://developer.apple.com/technotes/tn/tn2086.html
+	mach_msg_type_number_t	infoCount	= HOST_BASIC_INFO_COUNT;
+
+	host_info(mach_host_self(), HOST_BASIC_INFO,
+		(host_info_t)&mHostInfo, &infoCount);
+
+	mArchSelector	= mHostInfo.cpu_type;
+
 	// Setup prefs window
 	UInt32	numViews	= [mPrefsViewPicker segmentCount];
 	UInt32	i;
@@ -118,7 +127,6 @@
 	[mMainWindow setFrameAutosaveName: [mMainWindow title]];
 	[mMainWindow center];
 	[mMainWindow makeKeyAndOrderFront: nil];
-
 }
 
 //	windowDidResize:
@@ -559,7 +567,7 @@
 	{
 		theData	= [theFileH readDataOfLength: sizeof(mArchMagic)];
 	}
-	@catch(NSException* e)
+	@catch (NSException* e)
 	{
 		printf("otx: -[AppController syncDescriptionText]: "
 			"unable to read from executable file. %s\n",
@@ -592,18 +600,18 @@
 		mOutputFileLabel	= nil;
 	}
 
+	mArchSelector	= mHostInfo.cpu_type;
+
 	switch (mArchMagic)
 	{
 		case MH_MAGIC:
-			if (OSHostByteOrder() == OSBigEndian)
+			if (mHostInfo.cpu_type == CPU_TYPE_POWERPC)
 			{
-				mArchSelector	= CPU_TYPE_POWERPC;
 				[mTypeText setStringValue: @"PPC"];
 				[mVerifyButton setEnabled: false];
 			}
-			else
+			else if (mHostInfo.cpu_type == CPU_TYPE_I386)
 			{
-				mArchSelector	= CPU_TYPE_I386;
 				[mTypeText setStringValue: @"x86"];
 				[mVerifyButton setEnabled: true];
 			}
@@ -611,13 +619,13 @@
 			break;
 
 		case MH_CIGAM:
-			if (OSHostByteOrder() == OSBigEndian)
+			if (mHostInfo.cpu_type == CPU_TYPE_POWERPC)
 			{
 				mArchSelector	= CPU_TYPE_I386;
 				[mTypeText setStringValue: @"x86"];
 				[mVerifyButton setEnabled: true];
 			}
-			else
+			else if (mHostInfo.cpu_type == CPU_TYPE_I386)
 			{
 				mArchSelector	= CPU_TYPE_POWERPC;
 				[mTypeText setStringValue: @"PPC"];
@@ -628,15 +636,13 @@
 
 		case FAT_MAGIC:
 		case FAT_CIGAM:
-			if (OSHostByteOrder() == OSBigEndian)
+			if (mHostInfo.cpu_type == CPU_TYPE_POWERPC)
 			{
-				mArchSelector		= CPU_TYPE_POWERPC;
 				mOutputFileLabel	= @"_PPC";
 				[mVerifyButton setEnabled: false];
 			}
-			else
+			else if (mHostInfo.cpu_type == CPU_TYPE_I386)
 			{
-				mArchSelector		= CPU_TYPE_I386;
 				mOutputFileLabel	= @"_x86";
 				[mVerifyButton setEnabled: true];
 			}

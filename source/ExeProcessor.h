@@ -14,8 +14,6 @@
 #import "ProgressReporter.h"
 #import "Selectors.h"
 
-//#import "StolenDefs.h"
-
 /*	GPRegisterInfo
 
 	Processor-specific subclasses maintain arrays of RegisterInfo's to

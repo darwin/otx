@@ -70,6 +70,24 @@
 	if (!self)
 		return nil;
 
+	// Set mArchSelector to the host architecture by default. This code was
+	// lifted from http://developer.apple.com/technotes/tn/tn2086.html
+	host_basic_info_data_t	hostInfo	= {0};
+	mach_msg_type_number_t	infoCount	= HOST_BASIC_INFO_COUNT;
+
+	host_info(mach_host_self(), HOST_BASIC_INFO,
+		(host_info_t)&hostInfo, &infoCount);
+
+	mArchSelector	= hostInfo.cpu_type;
+
+	if (mArchSelector != CPU_TYPE_POWERPC	&&
+		mArchSelector != CPU_TYPE_I386)
+	{
+		printf("otx: I shouldn't be here...\n");
+		[self release];
+		return nil;
+	}
+
 	BOOL	localOffsets			= true;		// l
 	BOOL	entabOutput				= true;		// e
 	BOOL	dataSections			= true;		// d
@@ -86,50 +104,68 @@
 	{
 		if (argv[i][0] == '-')
 		{
-			for (j = 1; argv[i][j] != '\0'; j++)
+			if (!strncmp(&argv[i][1], "arch", 5))
 			{
-				switch (argv[i][j])
-				{
-					case 'l':
-						localOffsets	= !localOffsets;
-						break;
-					case 'e':
-						entabOutput	= !entabOutput;
-						break;
-					case 'd':
-						dataSections	= !dataSections;
-						break;
-					case 'c':
-						checksum	= !checksum;
-						break;
-					case 'm':
-						verboseMsgSends	= !verboseMsgSends;
-						break;
-					case 'b':
-						separateLogicalBlocks	= !separateLogicalBlocks;
-						break;
-					case 'n':
-						demangleCPNames	= !demangleCPNames;
-						break;
-					case 'r':
-						returnTypes	= !returnTypes;
-						break;
-					case 'v':
-						variableTypes	= !variableTypes;
-						break;
-					case 'V':
-						mVerify	= !mVerify;
-						break;
+				char*	archString	= argv[++i];
 
-					default:
-						fprintf(stderr, "otx: unknown argument: '%c'\n",
-							argv[i][j]);
-						break;
+				if (!strncmp(archString, "ppc", 4))
+					mArchSelector	= CPU_TYPE_POWERPC;
+				else if (!strncmp(archString, "i386", 5))
+					mArchSelector	= CPU_TYPE_I386;
+				else
+				{
+					printf("otx: unknown architecture: %s\n", argv[i]);
+					[self release];
+					return nil;
 				}
+			}
+			else
+			{
+				for (j = 1; argv[i][j] != '\0'; j++)
+				{
+					switch (argv[i][j])
+					{
+						case 'l':
+							localOffsets	= !localOffsets;
+							break;
+						case 'e':
+							entabOutput	= !entabOutput;
+							break;
+						case 'd':
+							dataSections	= !dataSections;
+							break;
+						case 'c':
+							checksum	= !checksum;
+							break;
+						case 'm':
+							verboseMsgSends	= !verboseMsgSends;
+							break;
+						case 'b':
+							separateLogicalBlocks	= !separateLogicalBlocks;
+							break;
+						case 'n':
+							demangleCPNames	= !demangleCPNames;
+							break;
+						case 'r':
+							returnTypes	= !returnTypes;
+							break;
+						case 'v':
+							variableTypes	= !variableTypes;
+							break;
+						case 'V':
+							mVerify	= !mVerify;
+							break;
+
+						default:
+							fprintf(stderr, "otx: unknown argument: '%c'\n",
+								argv[i][j]);
+							break;
+					}	// switch (argv[i][j])
+				}	// for (j = 1; argv[i][j] != '\0'; j++)
 			}
 
 			NSString*	origFilePath	= [NSString stringWithCString:
-				&argv[i + 1][0] encoding: NSMacOSRomanStringEncoding];
+				&argv[++i][0] encoding: NSMacOSRomanStringEncoding];
 
 			mOFile	= [NSURL fileURLWithPath: origFilePath];
 		}
@@ -152,7 +188,7 @@
 	}
 
 /**/
-mArchSelector	= CPU_TYPE_POWERPC;
+//mArchSelector	= CPU_TYPE_POWERPC;
 /**/
 
 	NSUserDefaults*	defaults	= [NSUserDefaults standardUserDefaults];

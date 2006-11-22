@@ -36,19 +36,20 @@
 	IBOutlet NSView*				mPrefsOutputView;
 
 @private
-	NSURL*				mOFile;
-	char*				mRAMFile;
-	cpu_type_t			mArchSelector;
-	UInt32				mArchMagic;
-	BOOL				mExeIsFat;
-	BOOL				mFileIsValid;
-	BOOL				mIgnoreArch;
-	NSString*			mExeName;
-	NSString*			mOutputFileLabel;
-	NSString*			mOutputFileName;
-	NSString*			mOutputFilePath;
-	NSView**			mPrefsViews;
-	UInt32				mPrefsCurrentViewIndex;
+	NSURL*					mOFile;
+	char*					mRAMFile;
+	cpu_type_t				mArchSelector;
+	UInt32					mArchMagic;
+	BOOL					mExeIsFat;
+	BOOL					mFileIsValid;
+	BOOL					mIgnoreArch;
+	NSString*				mExeName;
+	NSString*				mOutputFileLabel;
+	NSString*				mOutputFileName;
+	NSString*				mOutputFilePath;
+	NSView**				mPrefsViews;
+	UInt32					mPrefsCurrentViewIndex;
+	host_basic_info_data_t	mHostInfo;
 }
 
 - (SInt32)checkOtool;
