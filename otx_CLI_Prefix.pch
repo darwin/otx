@@ -2,7 +2,7 @@
 	otx_Prefix.pch
 */
 
-#define MAC_OS_X_VERSION_MIN_REQUIRED MAC_OS_X_VERSION_10_4
+/*#define MAC_OS_X_VERSION_MIN_REQUIRED MAC_OS_X_VERSION_10_4
 
 #ifndef NSAppKitVersionNumber10_4
 	#define	NSAppKitVersionNumber10_4 824
@@ -14,6 +14,7 @@
 
 // for binutils
 #define HAVE_STDLIB_H	1
-#define HAVE_STRING_H	1
+#define HAVE_STRING_H	1*/
+#include "otx_Prefix.pch"
 
 #define _OTX_CLI_		1
