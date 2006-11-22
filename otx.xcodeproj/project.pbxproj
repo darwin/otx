@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
-		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E125C39D0A86B2D000098114 /* App Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = E125C39C0A86B2D000098114 /* App Icon.icns */; };
 		E13539830A6817C700CBDDE5 /* ObjcSwap.c in Sources */ = {isa = PBXBuildFile; fileRef = E13539820A6817C700CBDDE5 /* ObjcSwap.c */; };
@@ -30,6 +29,26 @@
 		E1F81ADD0AE1EEEC003D8E2C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */; };
 		E1F81B090AE1EF07003D8E2C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */; };
 		E1F81B3F0AE1EF2D003D8E2C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81B0A0AE1EF2C003D8E2C /* Security.framework */; };
+		E1FA33D80B10081B0060060A /* CDropBox.m in Sources */ = {isa = PBXBuildFile; fileRef = E18201E609AFAAAC00584B07 /* CDropBox.m */; };
+		E1FA33D90B10081B0060060A /* ExeProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */; };
+		E1FA33DA0B10081B0060060A /* PPCProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E14769570A60E95B00C03C62 /* PPCProcessor.m */; };
+		E1FA33DB0B10081B0060060A /* X86Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = E14769C00A60F47E00C03C62 /* X86Processor.m */; };
+		E1FA33DC0B10081B0060060A /* ObjcSwap.c in Sources */ = {isa = PBXBuildFile; fileRef = E13539820A6817C700CBDDE5 /* ObjcSwap.c */; };
+		E1FA33DD0B10081B0060060A /* cp-demangle.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152640AA364A600324ED3 /* cp-demangle.c */; };
+		E1FA33DE0B10081B0060060A /* cp-demint.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152660AA364A600324ED3 /* cp-demint.c */; };
+		E1FA33DF0B10081B0060060A /* cplus-dem.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152670AA364A600324ED3 /* cplus-dem.c */; };
+		E1FA33E00B10081B0060060A /* safe-ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152680AA364A600324ED3 /* safe-ctype.c */; };
+		E1FA33E10B10081B0060060A /* xexit.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152690AA364A600324ED3 /* xexit.c */; };
+		E1FA33E20B10081B0060060A /* xmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526A0AA364A600324ED3 /* xmalloc.c */; };
+		E1FA33E30B10081B0060060A /* xstrdup.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526B0AA364A600324ED3 /* xstrdup.c */; };
+		E1FA33E40B1008290060060A /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */; };
+		E1FA33E50B1008290060060A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		E1FA33E60B1008290060060A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */; };
+		E1FA33E70B1008290060060A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81B0A0AE1EF2C003D8E2C /* Security.framework */; };
+		E1FA33E80B1008290060060A /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */; };
+		E1FA34030B100D060060060A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA34020B100D060060060A /* main.m */; };
+		E1FA34500B105E4F0060060A /* CLIController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA344F0B105E4E0060060A /* CLIController.m */; };
+		E1FA36570B12EE0A0060060A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA34020B100D060060060A /* main.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildStyle section */
@@ -50,7 +69,6 @@
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
-		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -94,6 +112,11 @@
 		E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		E1F81B0A0AE1EF2C003D8E2C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		E1FA31F00B0D65180060060A /* ProgressReporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProgressReporter.h; path = source/ProgressReporter.h; sourceTree = "<group>"; };
+		E1FA33D10B1005450060060A /* otx */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = otx; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1FA34020B100D060060060A /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E1FA344F0B105E4E0060060A /* CLIController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CLIController.m; path = source/CLIController.m; sourceTree = "<group>"; };
+		E1FA34510B105E6F0060060A /* CLIController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CLIController.h; path = source/CLIController.h; sourceTree = "<group>"; };
+		E1FA368B0B12F1FE0060060A /* otx_CLI_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = otx_CLI_Prefix.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +132,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E1FA33CF0B1005450060060A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1FA33E40B1008290060060A /* Carbon.framework in Frameworks */,
+				E1FA33E50B1008290060060A /* Cocoa.framework in Frameworks */,
+				E1FA33E60B1008290060060A /* CoreFoundation.framework in Frameworks */,
+				E1FA33E70B1008290060060A /* Security.framework in Frameworks */,
+				E1FA33E80B1008290060060A /* SmartCrashReportsInstall.o in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -117,6 +152,7 @@
 			children = (
 				E13539860A68183800CBDDE5 /* Headers */,
 				E182007009AE4CD800584B07 /* AppController.m */,
+				E1FA344F0B105E4E0060060A /* CLIController.m */,
 				E18201E609AFAAAC00584B07 /* CDropBox.m */,
 				E1D77F2D09B296A300176F18 /* ExeProcessor.m */,
 				E14769570A60E95B00C03C62 /* PPCProcessor.m */,
@@ -150,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* otx.app */,
+				E1FA33D10B1005450060060A /* otx */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -157,8 +194,9 @@
 		29B97314FDCFA39411CA2CEA /* otx */ = {
 			isa = PBXGroup;
 			children = (
+				E1FA34020B100D060060060A /* main.m */,
 				32CA4F630368D1EE00C91783 /* otx_Prefix.pch */,
-				29B97316FDCFA39411CA2CEA /* main.m */,
+				E1FA368B0B12F1FE0060060A /* otx_CLI_Prefix.pch */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -208,6 +246,7 @@
 			isa = PBXGroup;
 			children = (
 				E13539900A68185500CBDDE5 /* AppController.h */,
+				E1FA34510B105E6F0060060A /* CLIController.h */,
 				E135398F0A68185500CBDDE5 /* CDropBox.h */,
 				E135398E0A68185500CBDDE5 /* ExeProcessor.h */,
 				E135398C0A68185500CBDDE5 /* PPCProcessor.h */,
@@ -264,9 +303,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D1107260486CEB800E47090 /* otx */ = {
+		8D1107260486CEB800E47090 /* otx gui */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "otx" */;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "otx gui" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
@@ -278,11 +317,43 @@
 			};
 			dependencies = (
 			);
-			name = otx;
+			name = "otx gui";
 			productInstallPath = "$(HOME)/Applications";
 			productName = otx;
 			productReference = 8D1107320486CEB800E47090 /* otx.app */;
 			productType = "com.apple.product-type.application";
+		};
+		E1FA33D00B1005450060060A /* otx cli */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E1FA33D30B1005670060060A /* Build configuration list for PBXNativeTarget "otx cli" */;
+			buildPhases = (
+				E1FA33CE0B1005450060060A /* Sources */,
+				E1FA33CF0B1005450060060A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "otx cli";
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+			);
+			name = "otx cli";
+			productName = "otx cli";
+			productReference = E1FA33D10B1005450060060A /* otx */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -300,7 +371,8 @@
 			mainGroup = 29B97314FDCFA39411CA2CEA /* otx */;
 			projectDirPath = "";
 			targets = (
-				8D1107260486CEB800E47090 /* otx */,
+				8D1107260486CEB800E47090 /* otx gui */,
+				E1FA33D00B1005450060060A /* otx cli */,
 			);
 		};
 /* End PBXProject section */
@@ -324,7 +396,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				E182007209AE4CD800584B07 /* AppController.m in Sources */,
 				E18201E709AFAAAC00584B07 /* CDropBox.m in Sources */,
 				E1D77F2E09B296A300176F18 /* ExeProcessor.m in Sources */,
@@ -338,6 +409,28 @@
 				E1A152700AA364A600324ED3 /* xexit.c in Sources */,
 				E1A152710AA364A600324ED3 /* xmalloc.c in Sources */,
 				E1A152720AA364A600324ED3 /* xstrdup.c in Sources */,
+				E1FA34030B100D060060060A /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E1FA33CE0B1005450060060A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1FA33D80B10081B0060060A /* CDropBox.m in Sources */,
+				E1FA33D90B10081B0060060A /* ExeProcessor.m in Sources */,
+				E1FA33DA0B10081B0060060A /* PPCProcessor.m in Sources */,
+				E1FA33DB0B10081B0060060A /* X86Processor.m in Sources */,
+				E1FA33DC0B10081B0060060A /* ObjcSwap.c in Sources */,
+				E1FA33DD0B10081B0060060A /* cp-demangle.c in Sources */,
+				E1FA33DE0B10081B0060060A /* cp-demint.c in Sources */,
+				E1FA33DF0B10081B0060060A /* cplus-dem.c in Sources */,
+				E1FA33E00B10081B0060060A /* safe-ctype.c in Sources */,
+				E1FA33E10B10081B0060060A /* xexit.c in Sources */,
+				E1FA33E20B10081B0060060A /* xmalloc.c in Sources */,
+				E1FA33E30B10081B0060060A /* xstrdup.c in Sources */,
+				E1FA34500B105E4F0060060A /* CLIController.m in Sources */,
+				E1FA36570B12EE0A0060060A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +464,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = otx_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = otx;
@@ -388,6 +482,8 @@
 				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = otx_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = otx;
@@ -441,10 +537,58 @@
 			};
 			name = Release;
 		};
+		E1FA33D40B1005670060060A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = otx_CLI_Prefix.pch;
+				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lz",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = otx;
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		E1FA33D50B1005670060060A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = otx_CLI_Prefix.pch;
+				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+					"-lz",
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = otx;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "otx" */ = {
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "otx gui" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
@@ -458,6 +602,15 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E1FA33D30B1005670060060A /* Build configuration list for PBXNativeTarget "otx cli" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1FA33D40B1005670060060A /* Debug */,
+				E1FA33D50B1005670060060A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

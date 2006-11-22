@@ -3,7 +3,7 @@
 */
 
 #import <Cocoa/Cocoa.h>
-#import <Kernel/mach-o/loader.h>
+//#import <Kernel/mach-o/loader.h>
 
 #import "ProgressReporter.h"
 
@@ -76,9 +76,9 @@
 - (IBAction)switchPrefsViews: (id)sender;
 
 // alerts
-- (void)doOtoolAlertSheet;
-- (void)doLipoAlertSheet;
-- (void)doErrorAlertSheet;
+- (void)doOtoolAlert;
+- (void)doLipoAlert;
+- (void)doErrorAlert;
 - (void)doDrillErrorAlert: (NSString*)inExePath;
 
 // ProgressReporter protocol

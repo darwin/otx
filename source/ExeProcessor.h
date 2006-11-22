@@ -8,10 +8,13 @@
 #import <objc/objc-class.h>
 
 #import "LangDefs.h"
+#import "StolenDefs.h"
+
 #import "Optimizations.h"
 #import "ProgressReporter.h"
 #import "Selectors.h"
-#import "StolenDefs.h"
+
+//#import "StolenDefs.h"
 
 /*	GPRegisterInfo
 
@@ -121,10 +124,10 @@ NopList;
 	This URL describes Apple's approach to PIC and indirect addressing in
 	PPC assembly. The idea is to use the address of an instruction as a
 	base address, from which some data can be referenced by some offset.
-	The address of the next instruction is stored in the program counter
-	register, which is not directly accessible by user-level code. Since
-	it's not directly accessible, Apple uses CPU-specific techniques to
-	access it indirectly.
+	The address of the next instruction to be executed is stored in the
+	program counter register, which is not directly accessible by user-level
+	code. Since it's not directly accessible, Apple uses CPU-specific
+	techniques to access it indirectly.
 
 	In PPC asm, they save the link register then use the bcl instruction
 	to load the link register with the address of the following instruction.
@@ -156,11 +159,11 @@ ___i686.get_pc_thunk.bx:
 	otool reports the ___i686.get_pc_thunk.bx calls like a champ. Our only
 	problem occurs when symbols are stripped in x86 code. In that case, otool
 	cannot display the name of the routine, only the address being called.
-	This is why we need ThunkInfos. otx makes 2 passes over otool's output.
-	During the first pass, it recognizes the code pattern of these get_pc_thunk
-	routines, and saves their addresses in an array of ThunkInfo's. Having
-	this data available during the 2nd pass makes it possible to reference
-	whatever data we need in the calling function.
+	This is why we need ThunkInfos. otx makes several passes over otool's
+	output. During the first pass, it recognizes the code pattern of these
+	get_pc_thunk routines, and saves their addresses in an array of
+	ThunkInfo's. Having this data available during the 2nd pass makes it
+	possible to reference whatever data we need in the calling function.
 */
 typedef struct
 {
@@ -263,10 +266,10 @@ enum {
 // protocol.
 enum {
 	Nudge,
-	CallingOtool,
-	GatheringInfo,
+//	CallingOtool,
+//	GatheringInfo,
 	GeneratingFile,
-	WritingFile
+//	WritingFile
 };
 
 #define MAX_FIELD_SPACING		100		// spaces between fields
@@ -287,7 +290,7 @@ enum {
 // Toggle these to print symbol descriptions and blocks to standard out.
 #define _OTX_DEBUG_SYMBOLS_		0
 #define _OTX_DEBUG_DYSYMBOLS_	0
-#define _OTX_DEBUG_BLOCKS_		0
+#define _OTX_DEBUG_BLOCKS_		0	// too numerous, add it yourself.
 
 // Options for cplus_demangle()
 #define DEMANGLE_OPTS			\

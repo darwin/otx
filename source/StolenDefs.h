@@ -4,6 +4,8 @@
 	Definitions stolen from, or inspired by, Darwin & cctools.
 */
 
+//#import <mach-o/loader.h>
+
 #define rotr(x, n)   (((x) >> ((int)(n))) | ((x) << (32 - (int)(n))))
 #define rotl(x, n)   (((x) << ((int)(n))) | ((x) >> (32 - (int)(n))))
 

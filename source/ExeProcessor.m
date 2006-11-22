@@ -1888,8 +1888,15 @@
 
 - (BOOL)printDataSections
 {
-	const char*	outPath		= CSTRING(mOutputFilePath);
-	FILE*		outFile		= fopen(outPath, "a");
+	FILE*	outFile;
+
+	if (mOutputFilePath)
+	{
+		const char*	outPath		= CSTRING(mOutputFilePath);
+		outFile					= fopen(outPath, "a");
+	}
+	else
+		outFile	= stdout;
 
 	if (!outFile)
 	{
@@ -1930,10 +1937,13 @@
 		[self printDataSection: &mCoalDataNTSect toFile: outFile];
 	}
 
-	if (fclose(outFile) != 0)
+	if (mOutputFilePath)
 	{
-		perror("otx: unable to close output file");
-		return false;
+		if (fclose(outFile) != 0)
+		{
+			perror("otx: unable to close output file");
+			return false;
+		}
 	}
 
 	return true;
@@ -2225,9 +2235,34 @@
 		return;
 	}
 
+	// In CLI mode, fgets(3) fails with EINTR "Interrupted system call". The
+	// fix is to temporarily block the offending signal. Since we don't know
+	// which signal is offensive, block them all.
+
+	// Block all signals.
+//	sigset_t	oldSigs	= 0;
+//	sigset_t	newSigs	= 0xffffffff;
+	sigset_t	oldSigs, newSigs;
+
+	sigemptyset(&oldSigs);
+	sigfillset(&newSigs);
+
+	if (sigprocmask(SIG_BLOCK, &newSigs, &oldSigs) == -1)
+	{
+		perror("otx: unable to block signals");
+		return;
+	}
+
 	if (!fgets(md5Line, MAX_MD5_LINE, md5Pipe))
 	{
 		perror("otx: unable to read from md5 pipe");
+		return;
+	}
+
+	// Restore the signal mask to it's former glory.
+	if (sigprocmask(SIG_SETMASK, &oldSigs, nil) == -1)
+	{
+		perror("otx: unable to restore signals");
 		return;
 	}
 
@@ -2485,14 +2520,24 @@
 
 	data type		encoding
 	ÑÑÑÑÑÑÑÑÑ		ÑÑÑÑÑÑÑÑ
-	BOOL			c
 	char			c
-	BOOL[100]		[100c]
+	BOOL			c
 	char[100]		[100c]
+	BOOL[100]		[100c]
 
-	Any occurence of 'c' may be a char or a BOOL. The best option I can see is
-	to treat arrays as char arrays and atomic values as BOOL, and maybe let
-	the user disagree via preferences. Since the data type of an array is
+	from <objc/objc.h>:
+		typedef signed char		BOOL; 
+		// BOOL is explicitly signed so @encode(BOOL) == "c" rather than "C" 
+		// even if -funsigned-char is used.
+
+	Ok, so BOOL is just a synonym for signed char, and the @encode directive
+	can't be expected to desynonize that. Fair enough, but for our purposes,
+	it would be nicer if BOOL was synonized to unsigned char instead. As they
+	say- if wishes were recursive calls, beggars would have stack overflows.
+
+	So, any occurence of 'c' may be a char or a BOOL. The best option I can
+	see is to treat arrays as char arrays and atomic values as BOOL, and maybe
+	let the user disagree via preferences. Since the data type of an array is
 	decoded with a recursive call, we can use the following static variable
 	for this purpose.
 
@@ -3428,9 +3473,15 @@
 
 - (BOOL)printLinesFromList: (Line*)listHead
 {
-	const char*	outPath	= CSTRING(mOutputFilePath);
-	Line*	theLine		= listHead;
-	FILE*	outFile		= fopen(outPath, "w");
+	FILE*	outFile;
+
+	if (mOutputFilePath)
+	{
+		const char*	outPath		= CSTRING(mOutputFilePath);
+		outFile					= fopen(outPath, "a");
+	}
+	else
+		outFile	= stdout;
 
 	if (!outFile)
 	{
@@ -3438,6 +3489,7 @@
 		return false;
 	}
 
+	Line*	theLine	= listHead;
 	SInt32	fileNum	= fileno(outFile);
 
 	while (theLine)
@@ -3446,8 +3498,11 @@
 		{
 			perror("otx: unable to write to output file");
 
-			if (fclose(outFile) != 0)
-				perror("otx: unable to close output file");
+			if (mOutputFilePath)
+			{
+				if (fclose(outFile) != 0)
+					perror("otx: unable to close output file");
+			}
 
 			return false;
 		}
@@ -3455,10 +3510,13 @@
 		theLine	= theLine->next;
 	}
 
-	if (fclose(outFile) != 0)
+	if (mOutputFilePath)
 	{
-		perror("otx: unable to close output file");
-		return false;
+		if (fclose(outFile) != 0)
+		{
+			perror("otx: unable to close output file");
+			return false;
+		}
 	}
 
 	return true;

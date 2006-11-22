@@ -3,6 +3,7 @@
 */
 
 #import <mach-o/fat.h>
+#import <mach-o/loader.h>
 #import <sys/types.h>
 #import <sys/ptrace.h>
 #import <sys/syscall.h>
@@ -18,15 +19,6 @@
 // ============================================================================
 
 @implementation AppController
-
-//	init
-// ----------------------------------------------------------------------------
-
-- (id)init
-{
-	self = [super init];	// with apologies to Wil Shipley
-	return self;
-}
 
 //	initialize
 // ----------------------------------------------------------------------------
@@ -56,6 +48,15 @@
 
 	[theController setInitialValues: theValues];
 	[[theController defaults] registerDefaults: theValues];
+}
+
+//	init
+// ----------------------------------------------------------------------------
+
+- (id)init
+{
+	self = [super init];	// with apologies to Wil Shipley
+	return self;
 }
 
 //	dealloc
@@ -376,7 +377,7 @@
 		(mArchSelector == CPU_TYPE_POWERPC) ? "ppc" : "i386"];
 
 	if (system(CSTRING(lipoString)) != 0)
-		[self doLipoAlertSheet];
+		[self doLipoAlert];
 }
 
 //	verifyNops:
@@ -712,7 +713,7 @@
 	if ([self checkOtool] != noErr)
 	{
 		printf("otx: otool not found\n");
-		[self doOtoolAlertSheet];
+		[self doOtoolAlert];
 		[mProgDrawer close];
 		return;
 	}
@@ -754,7 +755,7 @@
 	if (![theProcessor processExe: mOutputFilePath])
 	{
 		printf("otx: possible permission error\n");
-		[self doErrorAlertSheet];
+		[self doErrorAlert];
 		[theProcessor release];
 		[mProgDrawer close];
 		return;
@@ -795,10 +796,10 @@
 	return system(CSTRING(otoolString));
 }
 
-//	doOtoolAlertSheet
+//	doOtoolAlert
 // ----------------------------------------------------------------------------
 
-- (void)doOtoolAlertSheet
+- (void)doOtoolAlert
 {
 	NSAlert*	theAlert	= [[NSAlert alloc] init];
 
@@ -810,10 +811,10 @@
 	[theAlert release];
 }
 
-//	doLipoAlertSheet
+//	doLipoAlert
 // ----------------------------------------------------------------------------
 
-- (void)doLipoAlertSheet
+- (void)doLipoAlert
 {
 	NSAlert*	theAlert	= [[NSAlert alloc] init];
 
@@ -825,10 +826,10 @@
 	[theAlert release];
 }
 
-//	doErrorAlertSheet
+//	doErrorAlert
 // ----------------------------------------------------------------------------
 
-- (void)doErrorAlertSheet
+- (void)doErrorAlert
 {
 	NSAlert*	theAlert	= [[NSAlert alloc] init];
 
@@ -963,7 +964,8 @@
 		{
 			if (!inState->value)
 			{
-				printf("otx: <reportProgress:> nil inState->value\n");
+				printf("otx: <reportProgress:> nil inState->value "
+					"when setIndeterminate == false\n");
 				return;
 			}
 
@@ -985,7 +987,8 @@
 		case GeneratingFile:
 			if (!inState->value)
 			{
-				printf("otx: <reportProgress:> nil inState->value\n");
+				printf("otx: <reportProgress:> nil inState->value"
+					"when inState->refcon == GeneratingFile\n");
 				break;
 			}
 
