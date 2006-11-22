@@ -5,7 +5,8 @@
 #import <AppKit/NSApplication.h>
 #import <Cocoa/Cocoa.h>
 
-#ifdef _OTX_CLI_
+//#ifdef _OTX_CLI_
+#ifdef OTX_CLI
 #import "CLIController.h"
 #endif
 
@@ -21,7 +22,11 @@ int main(
 		return -1;
 	}
 
-#ifdef _OTX_CLI_
+
+//#ifdef _OTX_CLI_
+// much thanx to Slava Karpenko and MS for this
+#ifdef OTX_CLI
+//#if defined(OTX_CLI)
 
 	NSAutoreleasePool*	pool	= [[NSAutoreleasePool alloc] init];
 

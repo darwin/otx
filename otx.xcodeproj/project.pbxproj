@@ -549,6 +549,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = otx_CLI_Prefix.pch;
 				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_CFLAGS = (
+					"-falign-loops=16",
+					"-DOTX_CLI",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -572,6 +576,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = otx_CLI_Prefix.pch;
 				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_CFLAGS = (
+					"-falign-loops=16",
+					"-DOTX_CLI",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,

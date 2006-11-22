@@ -17,4 +17,4 @@
 #define HAVE_STRING_H	1*/
 #include "otx_Prefix.pch"
 
-#define _OTX_CLI_		1
+//#define _OTX_CLI_		1
