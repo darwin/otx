@@ -268,6 +268,7 @@ enum {
 //	GatheringInfo,
 	GeneratingFile,
 //	WritingFile
+	Complete
 };
 
 #define MAX_FIELD_SPACING		100		// spaces between fields

@@ -1273,7 +1273,8 @@
 		progCounter++;
 	}
 
-	progState	= (ProgressState){true, true, 0, nil, @"Writing file"};
+//	progState	= (ProgressState){true, true, 0, nil, @"Writing file"};
+	progState	= (ProgressState){false, false, Complete, nil, nil};
 
 	[mController reportProgress: &progState];
 

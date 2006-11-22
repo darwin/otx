@@ -65,6 +65,12 @@
 - (id)initWithArgs: (char**) argv
 			 count: (SInt32) argc
 {
+	if (argc < 2)
+	{
+//		usage;
+		return nil;
+	}
+
 	self = [super init];
 
 	if (!self)
@@ -490,6 +496,31 @@
 
 - (void)reportProgress: (ProgressState*)inState
 {
+	if (!inState)
+	{
+		printf("otx: CLIController<reportProgress:> nil inState\n");
+		return;
+	}
+
+	if (inState->description)
+		printf("\n%s", CSTRING(inState->description));
+
+	switch (inState->refcon)
+	{
+		case Nudge:
+		case GeneratingFile:
+			printf("%c", '.');
+
+			break;
+
+		case Complete:
+			printf("\n\n");
+
+			break;
+
+		default:
+			break;
+	}
 }
 
 @end
