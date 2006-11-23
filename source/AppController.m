@@ -9,7 +9,6 @@
 #import <sys/syscall.h>
 
 #import "AppController.h"
-#import "ErrorStrings.h"
 #import "ExeProcessor.h"
 #import "PPCProcessor.h"
 #import "X86Processor.h"
@@ -855,11 +854,9 @@
 - (void)doDrillErrorAlert: (NSString*)inExePath
 {
 	NSAlert*	theAlert		= [[NSAlert alloc] init];
-//	NSString*	theErrorString	= [NSString stringWithFormat:
-//		@"No executable file found at %@. Please locate the executable "
-//		"file and try again.", inExePath];
 	NSString*	theErrorString	= [NSString stringWithFormat:
-		NSSTRING(gDrillErrorString), inExePath];
+		@"No executable file found at %@. Please locate the executable "
+		"file and try again.", inExePath];
 
 	[theAlert addButtonWithTitle: @"OK"];
 	[theAlert setMessageText: @"Could not find executable file."];

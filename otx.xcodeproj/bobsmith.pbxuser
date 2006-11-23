@@ -1438,6 +1438,29 @@
 			E1FA39DD0B1591F00060060A /* PBXTextBookmark */ = E1FA39DD0B1591F00060060A /* PBXTextBookmark */;
 			E1FA39E00B1591F80060060A /* PBXTextBookmark */ = E1FA39E00B1591F80060060A /* PBXTextBookmark */;
 			E1FA39E10B1591F80060060A /* PBXTextBookmark */ = E1FA39E10B1591F80060060A /* PBXTextBookmark */;
+			E1FA3A2E0B16599D0060060A /* PBXBookmark */ = E1FA3A2E0B16599D0060060A /* PBXBookmark */;
+			E1FA3A2F0B1659ED0060060A /* PBXBookmark */ = E1FA3A2F0B1659ED0060060A /* PBXBookmark */;
+			E1FA3A330B165B8E0060060A /* PBXTextBookmark */ = E1FA3A330B165B8E0060060A /* PBXTextBookmark */;
+			E1FA3A360B165B8E0060060A /* PBXTextBookmark */ = E1FA3A360B165B8E0060060A /* PBXTextBookmark */;
+			E1FA3A370B165B8E0060060A /* PBXTextBookmark */ = E1FA3A370B165B8E0060060A /* PBXTextBookmark */;
+			E1FA3A380B165B8E0060060A /* PBXTextBookmark */ = E1FA3A380B165B8E0060060A /* PBXTextBookmark */;
+			E1FA3A3F0B165C270060060A /* PBXTextBookmark */ = E1FA3A3F0B165C270060060A /* PBXTextBookmark */;
+			E1FA3A400B165C270060060A /* PBXTextBookmark */ = E1FA3A400B165C270060060A /* PBXTextBookmark */;
+			E1FA3A440B1663900060060A /* PBXTextBookmark */ = E1FA3A440B1663900060060A /* PBXTextBookmark */;
+			E1FA3A450B1663910060060A /* PBXTextBookmark */ = E1FA3A450B1663910060060A /* PBXTextBookmark */;
+			E1FA3A460B1663910060060A /* PBXTextBookmark */ = E1FA3A460B1663910060060A /* PBXTextBookmark */;
+			E1FA3A470B1663940060060A /* PBXTextBookmark */ = E1FA3A470B1663940060060A /* PBXTextBookmark */;
+			E1FA3A480B1663940060060A /* PBXTextBookmark */ = E1FA3A480B1663940060060A /* PBXTextBookmark */;
+			E1FA3A490B1663AB0060060A /* PBXBookmark */ = E1FA3A490B1663AB0060060A /* PBXBookmark */;
+			E1FA3A4C0B1663BB0060060A /* PBXTextBookmark */ = E1FA3A4C0B1663BB0060060A /* PBXTextBookmark */;
+			E1FA3A4D0B1663BB0060060A /* PBXTextBookmark */ = E1FA3A4D0B1663BB0060060A /* PBXTextBookmark */;
+			E1FA3A500B1663BB0060060A /* PBXTextBookmark */ = E1FA3A500B1663BB0060060A /* PBXTextBookmark */;
+			E1FA3A520B16659E0060060A /* PBXTextBookmark */ = E1FA3A520B16659E0060060A /* PBXTextBookmark */;
+			E1FA3A530B16659E0060060A /* PBXTextBookmark */ = E1FA3A530B16659E0060060A /* PBXTextBookmark */;
+			E1FA3A540B1665CA0060060A /* PBXTextBookmark */ = E1FA3A540B1665CA0060060A /* PBXTextBookmark */;
+			E1FA3A550B1665CA0060060A /* PBXTextBookmark */ = E1FA3A550B1665CA0060060A /* PBXTextBookmark */;
+			E1FA3A560B1665CA0060060A /* PBXTextBookmark */ = E1FA3A560B1665CA0060060A /* PBXTextBookmark */;
+			E1FA3A570B1665CB0060060A /* PBXTextBookmark */ = E1FA3A570B1665CB0060060A /* PBXTextBookmark */;
 		};
 		sourceControlManager = E1C3BA5209A957E100B38A4D /* Source Control */;
 		userBuildSettings = {
@@ -1591,9 +1614,9 @@
 	};
 	E182007009AE4CD800584B07 /* AppController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {778, 12180}}";
-			sepNavSelRange = "{17252, 0}";
-			sepNavVisRect = "{{0, 8533}, {778, 395}}";
+			sepNavIntBoundsRect = "{{0, 0}, {501, 12180}}";
+			sepNavSelRange = "{20667, 0}";
+			sepNavVisRect = "{{0, 9789}, {501, 630}}";
 			sepNavWindowFrame = "{{414, 43}, {540, 703}}";
 		};
 	};
@@ -2651,7 +2674,7 @@
 		comments = "error: parse error before 'theProcessor'";
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		rLen = 0;
-		rLoc = 751;
+		rLoc = 750;
 		rType = 1;
 	};
 	E1FA31CC0B0C3ACA0060060A /* PBXTextBookmark */ = {
@@ -2669,7 +2692,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "procClass\ttheProcessor\t=";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 679;
 		vrLoc = 17069;
@@ -2679,7 +2702,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 750";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 672;
 		vrLoc = 17069;
@@ -2689,7 +2712,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 750";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 672;
 		vrLoc = 17069;
@@ -2699,7 +2722,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 750";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 672;
 		vrLoc = 17069;
@@ -2805,7 +2828,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 750";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 672;
 		vrLoc = 17069;
@@ -2840,7 +2863,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 750";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 672;
 		vrLoc = 17069;
@@ -2860,7 +2883,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 750";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 672;
 		vrLoc = 17069;
@@ -2880,7 +2903,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 750";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 672;
 		vrLoc = 17069;
@@ -3069,7 +3092,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 750";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 672;
 		vrLoc = 17069;
@@ -3089,7 +3112,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 750";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 672;
 		vrLoc = 17069;
@@ -3109,7 +3132,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 750";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 672;
 		vrLoc = 17069;
@@ -3129,7 +3152,7 @@
 		comments = "error: 'inValue' undeclared (first use in this function)";
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		rLen = 1;
-		rLoc = 980;
+		rLoc = 977;
 		rType = 1;
 	};
 	E1FA323B0B0D769B0060060A /* PBXTextBookmark */ = {
@@ -3137,7 +3160,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 1007";
 		rLen = 0;
-		rLoc = 24062;
+		rLoc = 23932;
 		rType = 0;
 		vrLen = 635;
 		vrLoc = 23910;
@@ -3157,7 +3180,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 1007";
 		rLen = 0;
-		rLoc = 24062;
+		rLoc = 23932;
 		rType = 0;
 		vrLen = 635;
 		vrLoc = 23910;
@@ -3177,7 +3200,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 1007";
 		rLen = 0;
-		rLoc = 24062;
+		rLoc = 23932;
 		rType = 0;
 		vrLen = 635;
 		vrLoc = 23910;
@@ -3196,7 +3219,7 @@
 		isa = PBXTextBookmark;
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		rLen = 0;
-		rLoc = "-2147482866";
+		rLoc = "-2147482996";
 		rType = 0;
 	};
 	E1FA32470B0D77F70060060A /* PBXTextBookmark */ = {
@@ -3204,7 +3227,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 1024";
 		rLen = 0;
-		rLoc = 24257;
+		rLoc = 24127;
 		rType = 0;
 		vrLen = 1043;
 		vrLoc = 23760;
@@ -3331,7 +3354,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 1013";
 		rLen = 0;
-		rLoc = 24062;
+		rLoc = 23932;
 		rType = 0;
 		vrLen = 617;
 		vrLoc = 23910;
@@ -3351,7 +3374,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 1013";
 		rLen = 0;
-		rLoc = 24062;
+		rLoc = 23932;
 		rType = 0;
 		vrLen = 617;
 		vrLoc = 23910;
@@ -3371,7 +3394,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 1013";
 		rLen = 0;
-		rLoc = 24062;
+		rLoc = 23932;
 		rType = 0;
 		vrLen = 617;
 		vrLoc = 23910;
@@ -3391,7 +3414,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 993";
 		rLen = 0;
-		rLoc = 23609;
+		rLoc = 23479;
 		rType = 0;
 		vrLen = 617;
 		vrLoc = 23910;
@@ -3409,7 +3432,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 993";
 		rLen = 0;
-		rLoc = 23609;
+		rLoc = 23479;
 		rType = 0;
 		vrLen = 617;
 		vrLoc = 23910;
@@ -3674,7 +3697,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = reportProgress;
 		rLen = 14;
-		rLoc = 23547;
+		rLoc = 23417;
 		rType = 0;
 		vrLen = 859;
 		vrLoc = 24019;
@@ -3724,7 +3747,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 767";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 606;
 		vrLoc = 17410;
@@ -3752,7 +3775,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 767";
 		rLen = 0;
-		rLoc = 17600;
+		rLoc = 17575;
 		rType = 0;
 		vrLen = 606;
 		vrLoc = 17410;
@@ -4120,7 +4143,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = reportProgress;
 		rLen = 14;
-		rLoc = 23547;
+		rLoc = 23417;
 		rType = 0;
 		vrLen = 1011;
 		vrLoc = 23998;
@@ -4227,7 +4250,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = reportProgress;
 		rLen = 14;
-		rLoc = 23547;
+		rLoc = 23417;
 		rType = 0;
 		vrLen = 1011;
 		vrLoc = 23998;
@@ -4307,7 +4330,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = reportProgress;
 		rLen = 14;
-		rLoc = 23547;
+		rLoc = 23417;
 		rType = 0;
 		vrLen = 1011;
 		vrLoc = 23998;
@@ -4515,7 +4538,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = reportProgress;
 		rLen = 14;
-		rLoc = 23547;
+		rLoc = 23417;
 		rType = 0;
 		vrLen = 1011;
 		vrLoc = 23998;
@@ -4612,7 +4635,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 763";
 		rLen = 0;
-		rLoc = 18014;
+		rLoc = 17989;
 		rType = 0;
 		vrLen = 455;
 		vrLoc = 16829;
@@ -4639,7 +4662,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 763";
 		rLen = 0;
-		rLoc = 18014;
+		rLoc = 17989;
 		rType = 0;
 		vrLen = 455;
 		vrLoc = 16829;
@@ -4795,7 +4818,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = animate;
 		rLen = 7;
-		rLoc = 24207;
+		rLoc = 24077;
 		rType = 0;
 		vrLen = 465;
 		vrLoc = 23478;
@@ -4822,7 +4845,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = animate;
 		rLen = 7;
-		rLoc = 24207;
+		rLoc = 24077;
 		rType = 0;
 		vrLen = 465;
 		vrLoc = 23478;
@@ -4982,7 +5005,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = ProgressState;
 		rLen = 13;
-		rLoc = 23564;
+		rLoc = 23434;
 		rType = 0;
 		vrLen = 986;
 		vrLoc = 22904;
@@ -5258,7 +5281,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 967";
 		rLen = 0;
-		rLoc = 23992;
+		rLoc = 23862;
 		rType = 0;
 		vrLen = 873;
 		vrLoc = 23189;
@@ -5312,7 +5335,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 967";
 		rLen = 0;
-		rLoc = 23992;
+		rLoc = 23862;
 		rType = 0;
 		vrLen = 873;
 		vrLoc = 23189;
@@ -5573,12 +5596,10 @@
 	};
 	E1FA33D20B1005450060060A /* otx cli */ = {
 		isa = PBXExecutable;
-		activeArgIndex = 0;
+		activeArgIndex = 2147483647;
 		activeArgIndices = (
-			YES,
 		);
 		argumentStrings = (
-			/Volumes/Ananke/Dev/SUX/SyncupX.app/,
 		);
 		autoAttachOnCrash = 1;
 		configStateDict = {
@@ -5667,7 +5688,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 967";
 		rLen = 0;
-		rLoc = 23992;
+		rLoc = 23862;
 		rType = 0;
 		vrLen = 873;
 		vrLoc = 23189;
@@ -5707,7 +5728,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 967";
 		rLen = 0;
-		rLoc = 23992;
+		rLoc = 23862;
 		rType = 0;
 		vrLen = 873;
 		vrLoc = 23189;
@@ -5751,7 +5772,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 967";
 		rLen = 0;
-		rLoc = 23992;
+		rLoc = 23862;
 		rType = 0;
 		vrLen = 873;
 		vrLoc = 23189;
@@ -5988,7 +6009,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 967";
 		rLen = 0;
-		rLoc = 23992;
+		rLoc = 23862;
 		rType = 0;
 		vrLen = 873;
 		vrLoc = 23189;
@@ -6048,7 +6069,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 967";
 		rLen = 0;
-		rLoc = 23992;
+		rLoc = 23862;
 		rType = 0;
 		vrLen = 873;
 		vrLoc = 23189;
@@ -6135,9 +6156,9 @@
 	};
 	E1FA344F0B105E4E0060060A /* CLIController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {774, 6432}}";
-			sepNavSelRange = "{1619, 0}";
-			sepNavVisRect = "{{0, 2171}, {774, 303}}";
+			sepNavIntBoundsRect = "{{0, 0}, {778, 6324}}";
+			sepNavSelRange = "{169, 0}";
+			sepNavVisRect = "{{0, 0}, {778, 395}}";
 			sepNavWindowFrame = "{{105, 43}, {594, 703}}";
 		};
 	};
@@ -6164,7 +6185,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "case MH_MAGIC:";
 		rLen = 17;
-		rLoc = 14484;
+		rLoc = 14459;
 		rType = 0;
 		vrLen = 572;
 		vrLoc = 13847;
@@ -6241,7 +6262,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "case MH_MAGIC:";
 		rLen = 17;
-		rLoc = 14484;
+		rLoc = 14459;
 		rType = 0;
 		vrLen = 572;
 		vrLoc = 13847;
@@ -6596,7 +6617,7 @@
 		comments = "error: 'mMainWindow' undeclared (first use in this function)";
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		rLen = 1;
-		rLoc = 370;
+		rLoc = 369;
 		rType = 1;
 	};
 	E1FA34A40B1157C30060060A /* PBXTextBookmark */ = {
@@ -6614,7 +6635,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "modalDelegate: self didEndSelector:";
 		rLen = 41;
-		rLoc = 8929;
+		rLoc = 8904;
 		rType = 0;
 		vrLen = 964;
 		vrLoc = 4732;
@@ -6641,7 +6662,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "modalDelegate: self didEndSelector:";
 		rLen = 41;
-		rLoc = 8929;
+		rLoc = 8904;
 		rType = 0;
 		vrLen = 964;
 		vrLoc = 4732;
@@ -6671,7 +6692,7 @@
 		comments = "error: 'mOutputFilePath' undeclared (first use in this function)";
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		rLen = 1;
-		rLoc = 433;
+		rLoc = 432;
 		rType = 1;
 	};
 	E1FA34B70B115D800060060A /* PBXTextBookmark */ = {
@@ -6679,7 +6700,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 74";
 		rLen = 0;
-		rLoc = 5752;
+		rLoc = 5727;
 		rType = 0;
 		vrLen = 986;
 		vrLoc = 1059;
@@ -6699,7 +6720,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 294";
 		rLen = 0;
-		rLoc = 10286;
+		rLoc = 10261;
 		rType = 0;
 		vrLen = 584;
 		vrLoc = 6288;
@@ -6719,7 +6740,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 294";
 		rLen = 0;
-		rLoc = 10286;
+		rLoc = 10261;
 		rType = 0;
 		vrLen = 584;
 		vrLoc = 6288;
@@ -6739,7 +6760,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 294";
 		rLen = 0;
-		rLoc = 10286;
+		rLoc = 10261;
 		rType = 0;
 		vrLen = 584;
 		vrLoc = 6288;
@@ -6759,7 +6780,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 294";
 		rLen = 0;
-		rLoc = 10286;
+		rLoc = 10261;
 		rType = 0;
 		vrLen = 584;
 		vrLoc = 6288;
@@ -6779,7 +6800,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 294";
 		rLen = 0;
-		rLoc = 10286;
+		rLoc = 10261;
 		rType = 0;
 		vrLen = 584;
 		vrLoc = 6288;
@@ -6799,7 +6820,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 31";
 		rLen = 0;
-		rLoc = 699;
+		rLoc = 676;
 		rType = 0;
 		vrLen = 687;
 		vrLoc = 0;
@@ -6809,7 +6830,7 @@
 		comments = "error: parse error before 'argv'";
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		rLen = 1;
-		rLoc = 65;
+		rLoc = 64;
 		rType = 1;
 	};
 	E1FA34D10B1160BE0060060A /* PBXTextBookmark */ = {
@@ -6817,7 +6838,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 308";
 		rLen = 0;
-		rLoc = 10286;
+		rLoc = 10261;
 		rType = 0;
 		vrLen = 646;
 		vrLoc = 6253;
@@ -6827,7 +6848,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 31";
 		rLen = 0;
-		rLoc = 699;
+		rLoc = 676;
 		rType = 0;
 		vrLen = 687;
 		vrLoc = 0;
@@ -6837,7 +6858,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 32";
 		rLen = 0;
-		rLoc = 1470;
+		rLoc = 1445;
 		rType = 0;
 		vrLen = 649;
 		vrLoc = 313;
@@ -6857,7 +6878,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 32";
 		rLen = 0;
-		rLoc = 1470;
+		rLoc = 1445;
 		rType = 0;
 		vrLen = 649;
 		vrLoc = 313;
@@ -6877,7 +6898,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 32";
 		rLen = 0;
-		rLoc = 1470;
+		rLoc = 1445;
 		rType = 0;
 		vrLen = 649;
 		vrLoc = 313;
@@ -6897,7 +6918,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 121";
 		rLen = 0;
-		rLoc = 6650;
+		rLoc = 6625;
 		rType = 0;
 		vrLen = 1076;
 		vrLoc = 3009;
@@ -6907,7 +6928,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 43";
 		rLen = 0;
-		rLoc = 4255;
+		rLoc = 4230;
 		rType = 0;
 		vrLen = 970;
 		vrLoc = 0;
@@ -6947,7 +6968,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: initWithArgs:count:";
 		rLen = 0;
-		rLoc = 673;
+		rLoc = 650;
 		rType = 0;
 		vrLen = 1191;
 		vrLoc = 0;
@@ -7007,7 +7028,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 847";
 		rLen = 0;
-		rLoc = 20410;
+		rLoc = 20385;
 		rType = 0;
 		vrLen = 1541;
 		vrLoc = 19448;
@@ -7027,7 +7048,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 32";
 		rLen = 0;
-		rLoc = 1476;
+		rLoc = 1451;
 		rType = 0;
 		vrLen = 634;
 		vrLoc = 313;
@@ -7047,7 +7068,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 32";
 		rLen = 0;
-		rLoc = 1476;
+		rLoc = 1451;
 		rType = 0;
 		vrLen = 643;
 		vrLoc = 313;
@@ -7057,7 +7078,7 @@
 		comments = "warning: 'gLocalOffsets' defined but not used";
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		rLen = 1;
-		rLoc = 11;
+		rLoc = 9;
 		rType = 1;
 	};
 	E1FA34F70B118A510060060A /* PBXTextBookmark */ = {
@@ -7065,7 +7086,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 32";
 		rLen = 0;
-		rLoc = 1476;
+		rLoc = 1451;
 		rType = 0;
 		vrLen = 643;
 		vrLoc = 313;
@@ -7075,7 +7096,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: gLocalOffsets";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7095,7 +7116,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: gLocalOffsets";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7115,7 +7136,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7135,7 +7156,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7155,7 +7176,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7175,7 +7196,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7195,7 +7216,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7215,7 +7236,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: initWithArgs:count:";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3026;
 		rType = 0;
 		vrLen = 876;
 		vrLoc = 244;
@@ -7225,7 +7246,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 31";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 1116;
 		vrLoc = 244;
@@ -7235,7 +7256,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 1168;
 		vrLoc = 0;
@@ -7245,7 +7266,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 1162;
 		vrLoc = 0;
@@ -7321,7 +7342,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 847";
 		rLen = 0;
-		rLoc = 20410;
+		rLoc = 20385;
 		rType = 0;
 		vrLen = 1541;
 		vrLoc = 19448;
@@ -7341,7 +7362,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7361,7 +7382,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7381,7 +7402,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7401,7 +7422,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = gVerify;
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 754;
 		vrLoc = 95;
@@ -7411,7 +7432,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 102";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3026;
 		rType = 0;
 		vrLen = 467;
 		vrLoc = 818;
@@ -7421,7 +7442,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 103";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3026;
 		rType = 0;
 		vrLen = 426;
 		vrLoc = 1046;
@@ -7431,7 +7452,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 1162;
 		vrLoc = 0;
@@ -7481,7 +7502,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 847";
 		rLen = 0;
-		rLoc = 20410;
+		rLoc = 20385;
 		rType = 0;
 		vrLen = 1541;
 		vrLoc = 19448;
@@ -7501,7 +7522,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7521,7 +7542,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7541,7 +7562,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7561,7 +7582,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7581,7 +7602,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7601,7 +7622,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7621,7 +7642,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 100";
 		rLen = 0;
-		rLoc = 3945;
+		rLoc = 3920;
 		rType = 0;
 		vrLen = 1001;
 		vrLoc = 1257;
@@ -7631,7 +7652,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 1162;
 		vrLoc = 0;
@@ -7681,7 +7702,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 847";
 		rLen = 0;
-		rLoc = 20410;
+		rLoc = 20385;
 		rType = 0;
 		vrLen = 1541;
 		vrLoc = 19448;
@@ -7701,7 +7722,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7711,7 +7732,7 @@
 		comments = "error: parse error before '}' token";
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		rLen = 0;
-		rLoc = 181;
+		rLoc = 180;
 		rType = 1;
 	};
 	E1FA354F0B1192B40060060A /* PBXTextBookmark */ = {
@@ -7719,7 +7740,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 685;
 		vrLoc = 0;
@@ -7729,7 +7750,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 675;
 		vrLoc = 1814;
@@ -7749,7 +7770,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 675;
 		vrLoc = 1814;
@@ -7769,7 +7790,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 675;
 		vrLoc = 1814;
@@ -7789,7 +7810,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -7809,7 +7830,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -7829,7 +7850,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -7849,7 +7870,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -7869,7 +7890,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -7889,7 +7910,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -7909,7 +7930,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -7929,7 +7950,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -7949,7 +7970,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -7969,7 +7990,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -7989,7 +8010,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 746;
 		vrLoc = 1809;
@@ -8009,7 +8030,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 116";
 		rLen = 0;
-		rLoc = 4473;
+		rLoc = 4448;
 		rType = 0;
 		vrLen = 1029;
 		vrLoc = 1809;
@@ -8019,7 +8040,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: 12";
 		rLen = 0;
-		rLoc = 137;
+		rLoc = 114;
 		rType = 0;
 		vrLen = 1162;
 		vrLoc = 0;
@@ -8029,7 +8050,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = NSURL;
 		rLen = 5;
-		rLoc = 285;
+		rLoc = 262;
 		rType = 0;
 		vrLen = 1162;
 		vrLoc = 0;
@@ -8079,7 +8100,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 847";
 		rLen = 0;
-		rLoc = 20410;
+		rLoc = 20385;
 		rType = 0;
 		vrLen = 1541;
 		vrLoc = 19448;
@@ -8099,7 +8120,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8119,7 +8140,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8139,7 +8160,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8159,7 +8180,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8179,7 +8200,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8199,7 +8220,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8219,7 +8240,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8239,7 +8260,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8259,7 +8280,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8279,7 +8300,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8299,7 +8320,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8319,7 +8340,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1809;
@@ -8339,7 +8360,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1812;
@@ -8359,7 +8380,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1812;
@@ -8379,7 +8400,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1812;
@@ -8399,7 +8420,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1812;
@@ -8419,7 +8440,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1812;
@@ -8439,7 +8460,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1813;
@@ -8459,7 +8480,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1813;
@@ -8479,7 +8500,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 111";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 749;
 		vrLoc = 1813;
@@ -8499,7 +8520,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 760;
 		vrLoc = 1788;
@@ -8519,7 +8540,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1769;
@@ -8539,7 +8560,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1769;
@@ -8559,7 +8580,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1769;
@@ -8579,7 +8600,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1769;
@@ -8599,7 +8620,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1769;
@@ -8619,7 +8640,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1769;
@@ -8639,7 +8660,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1775;
@@ -8659,7 +8680,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1775;
@@ -8679,7 +8700,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1775;
@@ -8699,7 +8720,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1781;
@@ -8719,7 +8740,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1781;
@@ -8739,7 +8760,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1781;
@@ -8759,7 +8780,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1781;
@@ -8779,7 +8800,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1781;
@@ -8799,7 +8820,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1781;
@@ -8819,7 +8840,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1781;
@@ -8839,7 +8860,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1781;
@@ -8859,7 +8880,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 117";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 829;
 		vrLoc = 1781;
@@ -8883,7 +8904,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 152";
 		rLen = 0;
-		rLoc = 4249;
+		rLoc = 4224;
 		rType = 0;
 		vrLen = 724;
 		vrLoc = 2069;
@@ -8903,7 +8924,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 847";
 		rLen = 0;
-		rLoc = 20410;
+		rLoc = 20385;
 		rType = 0;
 		vrLen = 1541;
 		vrLoc = 19448;
@@ -8913,7 +8934,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -8923,7 +8944,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 60";
 		rLen = 0;
-		rLoc = 3051;
+		rLoc = 3026;
 		rType = 0;
 		vrLen = 1198;
 		vrLoc = 1288;
@@ -8933,7 +8954,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 15";
 		rLen = 0;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -8990,7 +9011,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = NSURL;
 		rLen = 5;
-		rLoc = 285;
+		rLoc = 262;
 		rType = 0;
 		vrLen = 1162;
 		vrLoc = 0;
@@ -9000,7 +9021,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: mVerify";
 		rLen = 0;
-		rLoc = 472;
+		rLoc = 449;
 		rType = 0;
 		vrLen = 1151;
 		vrLoc = 0;
@@ -9030,7 +9051,7 @@
 		comments = "warning: 'gVerboseMsgSends' defined but not used";
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		rLen = 0;
-		rLoc = 18;
+		rLoc = 17;
 		rType = 1;
 	};
 	E1FA35FC0B12D47E0060060A /* PBXTextBookmark */ = {
@@ -9038,7 +9059,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 890;
 		vrLoc = 73;
@@ -9058,7 +9079,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 890;
 		vrLoc = 73;
@@ -9078,7 +9099,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 890;
 		vrLoc = 73;
@@ -9098,7 +9119,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 890;
 		vrLoc = 73;
@@ -9118,7 +9139,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 890;
 		vrLoc = 73;
@@ -9138,7 +9159,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 890;
 		vrLoc = 73;
@@ -9158,7 +9179,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 890;
 		vrLoc = 73;
@@ -9178,7 +9199,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 890;
 		vrLoc = 73;
@@ -9198,7 +9219,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 890;
 		vrLoc = 73;
@@ -9218,7 +9239,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 935;
 		vrLoc = 143;
@@ -9236,7 +9257,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 18";
 		rLen = 0;
-		rLoc = 335;
+		rLoc = 310;
 		rType = 0;
 		vrLen = 935;
 		vrLoc = 143;
@@ -9406,7 +9427,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 156";
 		rLen = 0;
-		rLoc = 4592;
+		rLoc = 4567;
 		rType = 0;
 		vrLen = 1415;
 		vrLoc = 2786;
@@ -9416,7 +9437,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -9456,7 +9477,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: mVerify";
 		rLen = 0;
-		rLoc = 472;
+		rLoc = 449;
 		rType = 0;
 		vrLen = 1151;
 		vrLoc = 0;
@@ -9516,7 +9537,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 758";
 		rLen = 0;
-		rLoc = 17924;
+		rLoc = 17899;
 		rType = 0;
 		vrLen = 718;
 		vrLoc = 17203;
@@ -9544,7 +9565,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 758";
 		rLen = 0;
-		rLoc = 17924;
+		rLoc = 17899;
 		rType = 0;
 		vrLen = 718;
 		vrLoc = 17203;
@@ -9794,7 +9815,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 156";
 		rLen = 0;
-		rLoc = 4592;
+		rLoc = 4567;
 		rType = 0;
 		vrLen = 1415;
 		vrLoc = 2786;
@@ -9804,7 +9825,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 156";
 		rLen = 0;
-		rLoc = 4592;
+		rLoc = 4567;
 		rType = 0;
 		vrLen = 1195;
 		vrLoc = 1679;
@@ -9824,7 +9845,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -9878,7 +9899,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 156";
 		rLen = 0;
-		rLoc = 4592;
+		rLoc = 4567;
 		rType = 0;
 		vrLen = 1195;
 		vrLoc = 1679;
@@ -9898,7 +9919,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -10166,7 +10187,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 156";
 		rLen = 0;
-		rLoc = 4592;
+		rLoc = 4567;
 		rType = 0;
 		vrLen = 1195;
 		vrLoc = 1679;
@@ -10186,7 +10207,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -10330,7 +10351,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 156";
 		rLen = 0;
-		rLoc = 4592;
+		rLoc = 4567;
 		rType = 0;
 		vrLen = 1195;
 		vrLoc = 1679;
@@ -10350,7 +10371,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -10480,7 +10501,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 156";
 		rLen = 0;
-		rLoc = 4592;
+		rLoc = 4567;
 		rType = 0;
 		vrLen = 1195;
 		vrLoc = 1679;
@@ -10500,7 +10521,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -10760,7 +10781,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 156";
 		rLen = 0;
-		rLoc = 4592;
+		rLoc = 4567;
 		rType = 0;
 		vrLen = 1195;
 		vrLoc = 1679;
@@ -10780,7 +10801,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -11050,7 +11071,7 @@
 		comments = "warning: passing argument 1 of 'strncmp' makes pointer from integer without a cast";
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		rLen = 1;
-		rLoc = 114;
+		rLoc = 113;
 		rType = 1;
 	};
 	E1FA37680B13D9FC0060060A /* PBXTextBookmark */ = {
@@ -11068,7 +11089,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11088,7 +11109,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11108,7 +11129,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11128,7 +11149,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11148,7 +11169,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11168,7 +11189,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11188,7 +11209,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11208,7 +11229,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11228,7 +11249,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11248,7 +11269,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11268,7 +11289,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11288,7 +11309,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 89";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 778;
 		vrLoc = 1644;
@@ -11308,7 +11329,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 789;
 		vrLoc = 1644;
@@ -11328,7 +11349,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 789;
 		vrLoc = 1644;
@@ -11348,7 +11369,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 842;
 		vrLoc = 1644;
@@ -11368,7 +11389,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 842;
 		vrLoc = 1644;
@@ -11388,7 +11409,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 842;
 		vrLoc = 1644;
@@ -11408,7 +11429,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 73";
 		rLen = 0;
-		rLoc = 1856;
+		rLoc = 1831;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 1287;
@@ -11624,7 +11645,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: mVerify";
 		rLen = 0;
-		rLoc = 470;
+		rLoc = 447;
 		rType = 0;
 		vrLen = 1153;
 		vrLoc = 0;
@@ -11634,7 +11655,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: mVerify";
 		rLen = 0;
-		rLoc = 470;
+		rLoc = 447;
 		rType = 0;
 		vrLen = 1153;
 		vrLoc = 0;
@@ -11654,7 +11675,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -11684,7 +11705,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 842;
 		vrLoc = 1644;
@@ -11704,7 +11725,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 73";
 		rLen = 0;
-		rLoc = 1856;
+		rLoc = 1831;
 		rType = 0;
 		vrLen = 1199;
 		vrLoc = 1287;
@@ -11789,7 +11810,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: mVerify";
 		rLen = 0;
-		rLoc = 470;
+		rLoc = 447;
 		rType = 0;
 		vrLen = 1153;
 		vrLoc = 0;
@@ -11809,7 +11830,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -11843,7 +11864,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 106";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 842;
 		vrLoc = 1644;
@@ -11863,7 +11884,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 74";
 		rLen = 0;
-		rLoc = 1805;
+		rLoc = 1780;
 		rType = 0;
 		vrLen = 1209;
 		vrLoc = 1388;
@@ -11883,7 +11904,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "#import \"UserDefaultKeys.h\"";
 		rLen = 28;
-		rLoc = 269;
+		rLoc = 244;
 		rType = 0;
 		vrLen = 1296;
 		vrLoc = 0;
@@ -11893,7 +11914,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "- (void)syncDescriptionText";
 		rLen = 28;
-		rLoc = 13414;
+		rLoc = 13389;
 		rType = 0;
 		vrLen = 1005;
 		vrLoc = 13745;
@@ -11978,7 +11999,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: mVerify";
 		rLen = 0;
-		rLoc = 470;
+		rLoc = 447;
 		rType = 0;
 		vrLen = 1153;
 		vrLoc = 0;
@@ -12018,7 +12039,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12038,7 +12059,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12058,7 +12079,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12078,7 +12099,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12098,7 +12119,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12118,7 +12139,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12138,7 +12159,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12158,7 +12179,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12178,7 +12199,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12198,7 +12219,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12218,7 +12239,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12238,7 +12259,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12258,7 +12279,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12278,7 +12299,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12298,7 +12319,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12318,7 +12339,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12338,7 +12359,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12358,7 +12379,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12408,7 +12429,7 @@
 		fRef = E1FA34510B105E6F0060060A /* CLIController.h */;
 		name = "CLIController.h: mVerify";
 		rLen = 0;
-		rLoc = 470;
+		rLoc = 447;
 		rType = 0;
 		vrLen = 1153;
 		vrLoc = 0;
@@ -12436,7 +12457,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12456,7 +12477,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12476,7 +12497,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12496,7 +12517,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12516,7 +12537,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12536,7 +12557,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12556,7 +12577,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12576,7 +12597,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12596,7 +12617,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12616,7 +12637,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12636,7 +12657,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12656,7 +12677,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 107";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 920;
 		vrLoc = 1644;
@@ -12676,7 +12697,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12696,7 +12717,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12716,7 +12737,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12736,7 +12757,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12756,7 +12777,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12776,7 +12797,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12796,7 +12817,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12816,7 +12837,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12836,7 +12857,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12856,7 +12877,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12876,7 +12897,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12896,7 +12917,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12916,7 +12937,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12936,7 +12957,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12956,7 +12977,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12976,7 +12997,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -12996,7 +13017,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13016,7 +13037,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13036,7 +13057,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13056,7 +13077,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13076,7 +13097,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13096,7 +13117,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13116,7 +13137,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13136,7 +13157,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13156,7 +13177,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13196,7 +13217,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 517";
 		rLen = 0;
-		rLoc = 11954;
+		rLoc = 12056;
 		rType = 0;
 		vrLen = 909;
 		vrLoc = 10884;
@@ -13243,7 +13264,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 984";
 		rLen = 0;
-		rLoc = 24150;
+		rLoc = 24020;
 		rType = 0;
 		vrLen = 865;
 		vrLoc = 23553;
@@ -13253,7 +13274,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13277,7 +13298,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13297,7 +13318,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13317,7 +13338,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13337,7 +13358,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13357,7 +13378,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13417,7 +13438,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 517";
 		rLen = 0;
-		rLoc = 11954;
+		rLoc = 12056;
 		rType = 0;
 		vrLen = 909;
 		vrLoc = 10884;
@@ -13447,7 +13468,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 984";
 		rLen = 0;
-		rLoc = 24150;
+		rLoc = 24020;
 		rType = 0;
 		vrLen = 865;
 		vrLoc = 23553;
@@ -13457,7 +13478,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13477,7 +13498,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13497,7 +13518,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13547,7 +13568,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 517";
 		rLen = 0;
-		rLoc = 11954;
+		rLoc = 12056;
 		rType = 0;
 		vrLen = 909;
 		vrLoc = 10884;
@@ -13577,7 +13598,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 984";
 		rLen = 0;
-		rLoc = 24150;
+		rLoc = 24020;
 		rType = 0;
 		vrLen = 865;
 		vrLoc = 23553;
@@ -13587,7 +13608,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13607,7 +13628,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 899;
 		vrLoc = 1640;
@@ -13647,7 +13668,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 517";
 		rLen = 0;
-		rLoc = 11954;
+		rLoc = 12056;
 		rType = 0;
 		vrLen = 909;
 		vrLoc = 10884;
@@ -13677,7 +13698,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 984";
 		rLen = 0;
-		rLoc = 24150;
+		rLoc = 24020;
 		rType = 0;
 		vrLen = 865;
 		vrLoc = 23553;
@@ -13687,7 +13708,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13707,7 +13728,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13727,7 +13748,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13757,7 +13778,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 517";
 		rLen = 0;
-		rLoc = 11954;
+		rLoc = 12056;
 		rType = 0;
 		vrLen = 1239;
 		vrLoc = 437;
@@ -13797,7 +13818,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 984";
 		rLen = 0;
-		rLoc = 24150;
+		rLoc = 24020;
 		rType = 0;
 		vrLen = 865;
 		vrLoc = 23553;
@@ -13807,7 +13828,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13827,7 +13848,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13847,7 +13868,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13867,7 +13888,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13887,7 +13908,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13907,7 +13928,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13927,7 +13948,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13947,7 +13968,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13967,7 +13988,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 113";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 718;
@@ -13997,7 +14018,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 517";
 		rLen = 0;
-		rLoc = 11954;
+		rLoc = 12056;
 		rType = 0;
 		vrLen = 1239;
 		vrLoc = 437;
@@ -14037,12 +14058,18 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 984";
 		rLen = 0;
-		rLoc = 24150;
+		rLoc = 24020;
 		rType = 0;
 		vrLen = 865;
 		vrLoc = 23553;
 	};
 	E1FA39380B155AEF0060060A /* ErrorStrings.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = ErrorStrings.h;
+		path = /Volumes/Venus/Dev/otx/project/trunk/source/ErrorStrings.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {527, 428}}";
 			sepNavSelRange = "{152, 0}";
@@ -14055,7 +14082,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 114";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 861;
 		vrLoc = 697;
@@ -14089,7 +14116,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 517";
 		rLen = 0;
-		rLoc = 11954;
+		rLoc = 12056;
 		rType = 0;
 		vrLen = 1018;
 		vrLoc = 9705;
@@ -14099,7 +14126,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 12";
 		rLen = 0;
-		rLoc = 192;
+		rLoc = 169;
 		rType = 0;
 		vrLen = 1313;
 		vrLoc = 0;
@@ -14108,7 +14135,7 @@
 		isa = PBXTextBookmark;
 		fRef = E1FA39380B155AEF0060060A /* ErrorStrings.h */;
 		rLen = 0;
-		rLoc = "-2147483635";
+		rLoc = 152;
 		rType = 0;
 	};
 	E1FA394D0B15621F0060060A /* PBXTextBookmark */ = {
@@ -14126,7 +14153,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 984";
 		rLen = 0;
-		rLoc = 24150;
+		rLoc = 24020;
 		rType = 0;
 		vrLen = 865;
 		vrLoc = 23553;
@@ -14135,8 +14162,8 @@
 		isa = PBXTextBookmark;
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 858";
-		rLen = 89;
-		rLoc = 20570;
+		rLen = 87;
+		rLoc = 20541;
 		rType = 0;
 		vrLen = 1574;
 		vrLoc = 19911;
@@ -14212,7 +14239,7 @@
 		comments = "error: parse error before string constant";
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		rLen = 1;
-		rLoc = 493;
+		rLoc = 488;
 		rType = 1;
 	};
 	E1FA395C0B1565050060060A /* PBXTextBookmark */ = {
@@ -14220,7 +14247,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 114";
 		rLen = 0;
-		rLoc = 2688;
+		rLoc = 2663;
 		rType = 0;
 		vrLen = 861;
 		vrLoc = 697;
@@ -14266,7 +14293,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 492";
 		rLen = 0;
-		rLoc = 11459;
+		rLoc = 11561;
 		rType = 0;
 		vrLen = 688;
 		vrLoc = 11008;
@@ -14286,7 +14313,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 492";
 		rLen = 0;
-		rLoc = 11459;
+		rLoc = 11561;
 		rType = 0;
 		vrLen = 688;
 		vrLoc = 11008;
@@ -14306,7 +14333,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 492";
 		rLen = 0;
-		rLoc = 11459;
+		rLoc = 11561;
 		rType = 0;
 		vrLen = 688;
 		vrLoc = 11008;
@@ -14326,7 +14353,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 492";
 		rLen = 0;
-		rLoc = 11459;
+		rLoc = 11561;
 		rType = 0;
 		vrLen = 688;
 		vrLoc = 11008;
@@ -14346,7 +14373,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 492";
 		rLen = 0;
-		rLoc = 11459;
+		rLoc = 11561;
 		rType = 0;
 		vrLen = 688;
 		vrLoc = 11008;
@@ -14366,7 +14393,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 492";
 		rLen = 0;
-		rLoc = 11459;
+		rLoc = 11561;
 		rType = 0;
 		vrLen = 688;
 		vrLoc = 11008;
@@ -14386,7 +14413,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 492";
 		rLen = 0;
-		rLoc = 11459;
+		rLoc = 11561;
 		rType = 0;
 		vrLen = 688;
 		vrLoc = 11008;
@@ -14406,7 +14433,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 492";
 		rLen = 0;
-		rLoc = 11459;
+		rLoc = 11561;
 		rType = 0;
 		vrLen = 688;
 		vrLoc = 11008;
@@ -14426,7 +14453,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 492";
 		rLen = 0;
-		rLoc = 11459;
+		rLoc = 11561;
 		rType = 0;
 		vrLen = 688;
 		vrLoc = 11008;
@@ -14436,7 +14463,7 @@
 		comments = "Compiling /Volumes/Venus/Dev/otx/project/trunk/source/AppController.m";
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		rLen = 0;
-		rLoc = 728;
+		rLoc = 727;
 		rType = 1;
 	};
 	E1FA39790B1567240060060A /* PBXTextBookmark */ = {
@@ -14444,7 +14471,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 492";
 		rLen = 0;
-		rLoc = 11459;
+		rLoc = 11561;
 		rType = 0;
 		vrLen = 688;
 		vrLoc = 11008;
@@ -14454,7 +14481,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 728";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16885;
@@ -14474,7 +14501,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14494,7 +14521,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14514,7 +14541,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 506";
 		rLen = 0;
-		rLoc = 11744;
+		rLoc = 11846;
 		rType = 0;
 		vrLen = 849;
 		vrLoc = 11028;
@@ -14524,7 +14551,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 863";
 		rLen = 0;
-		rLoc = 20772;
+		rLoc = 20642;
 		rType = 0;
 		vrLen = 1747;
 		vrLoc = 19475;
@@ -14581,7 +14608,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14601,7 +14628,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14621,7 +14648,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14641,7 +14668,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14661,7 +14688,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14681,7 +14708,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14701,7 +14728,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14721,7 +14748,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14741,7 +14768,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14761,7 +14788,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14781,7 +14808,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14801,7 +14828,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14821,7 +14848,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14841,7 +14868,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14861,7 +14888,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14871,7 +14898,7 @@
 		comments = "warning: passing argument 1 of 'isFilePackageAtPath:' from distinct Objective-C type";
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		rLen = 0;
-		rLoc = 184;
+		rLoc = 183;
 		rType = 1;
 	};
 	E1FA39BA0B158DC50060060A /* PBXTextBookmark */ = {
@@ -14879,7 +14906,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 729";
 		rLen = 0;
-		rLoc = 17252;
+		rLoc = 17227;
 		rType = 0;
 		vrLen = 632;
 		vrLoc = 16909;
@@ -14889,7 +14916,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 901;
 		vrLoc = 3963;
@@ -14909,7 +14936,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 901;
 		vrLoc = 3963;
@@ -14929,7 +14956,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 901;
 		vrLoc = 3963;
@@ -14949,7 +14976,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 901;
 		vrLoc = 3963;
@@ -14969,7 +14996,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 901;
 		vrLoc = 3963;
@@ -14989,7 +15016,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 191";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 827;
 		vrLoc = 3990;
@@ -15009,7 +15036,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 191";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 827;
 		vrLoc = 3990;
@@ -15029,7 +15056,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 827;
 		vrLoc = 3990;
@@ -15049,7 +15076,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 827;
 		vrLoc = 3990;
@@ -15069,7 +15096,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 827;
 		vrLoc = 3990;
@@ -15089,7 +15116,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 827;
 		vrLoc = 3990;
@@ -15109,7 +15136,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 827;
 		vrLoc = 3990;
@@ -15129,7 +15156,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 827;
 		vrLoc = 3990;
@@ -15149,7 +15176,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 827;
 		vrLoc = 3990;
@@ -15169,7 +15196,7 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: 186";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 968;
 		vrLoc = 3990;
@@ -15189,12 +15216,222 @@
 		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
 		name = "CLIController.m: newPackageFile";
 		rLen = 0;
-		rLoc = 4389;
+		rLoc = 4364;
 		rType = 0;
 		vrLen = 968;
 		vrLoc = 3990;
 	};
 	E1FA39E10B1591F80060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = Kernel/mach/machine.h;
+		rLen = 21;
+		rLoc = 56;
+		rType = 0;
+		vrLen = 525;
+		vrLoc = 0;
+	};
+	E1FA3A2E0B16599D0060060A /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
+	};
+	E1FA3A2F0B1659ED0060060A /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+	};
+	E1FA3A330B165B8E0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 861";
+		rLen = 0;
+		rLoc = 20642;
+		rType = 0;
+		vrLen = 1826;
+		vrLoc = 19226;
+	};
+	E1FA3A360B165B8E0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
+		name = "CLIController.m: 491";
+		rLen = 0;
+		rLoc = 11561;
+		rType = 0;
+		vrLen = 1260;
+		vrLoc = 10515;
+	};
+	E1FA3A370B165B8E0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = Complete;
+		rLen = 8;
+		rLoc = 8279;
+		rType = 0;
+		vrLen = 1606;
+		vrLoc = 7073;
+	};
+	E1FA3A380B165B8E0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1FA31F00B0D65180060060A /* ProgressReporter.h */;
+		name = "ProgressReporter.h: 20";
+		rLen = 0;
+		rLoc = 282;
+		rType = 0;
+		vrLen = 282;
+		vrLoc = 0;
+	};
+	E1FA3A3F0B165C270060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = Complete;
+		rLen = 8;
+		rLoc = 8279;
+		rType = 0;
+		vrLen = 1606;
+		vrLoc = 7073;
+	};
+	E1FA3A400B165C270060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1FA31F00B0D65180060060A /* ProgressReporter.h */;
+		name = "ProgressReporter.h: 20";
+		rLen = 0;
+		rLoc = 282;
+		rType = 0;
+		vrLen = 282;
+		vrLoc = 0;
+	};
+	E1FA3A440B1663900060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: ErrorStrings.h: No such file or directory";
+		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
+		rLen = 1;
+		rLoc = 11;
+		rType = 1;
+	};
+	E1FA3A450B1663910060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
+		name = "CLIController.m: 12";
+		rLen = 0;
+		rLoc = 169;
+		rType = 0;
+		vrLen = 776;
+		vrLoc = 0;
+	};
+	E1FA3A460B1663910060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = Kernel/mach/machine.h;
+		rLen = 21;
+		rLoc = 56;
+		rType = 0;
+		vrLen = 525;
+		vrLoc = 0;
+	};
+	E1FA3A470B1663940060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = Complete;
+		rLen = 8;
+		rLoc = 8279;
+		rType = 0;
+		vrLen = 1606;
+		vrLoc = 7073;
+	};
+	E1FA3A480B1663940060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1FA31F00B0D65180060060A /* ProgressReporter.h */;
+		name = "ProgressReporter.h: 20";
+		rLen = 0;
+		rLoc = 282;
+		rType = 0;
+		vrLen = 282;
+		vrLoc = 0;
+	};
+	E1FA3A490B1663AB0060060A /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+	};
+	E1FA3A4C0B1663BB0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = Complete;
+		rLen = 8;
+		rLoc = 8279;
+		rType = 0;
+		vrLen = 1606;
+		vrLoc = 7073;
+	};
+	E1FA3A4D0B1663BB0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1FA31F00B0D65180060060A /* ProgressReporter.h */;
+		name = "ProgressReporter.h: 20";
+		rLen = 0;
+		rLoc = 282;
+		rType = 0;
+		vrLen = 282;
+		vrLoc = 0;
+	};
+	E1FA3A500B1663BB0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 12";
+		rLen = 0;
+		rLoc = 169;
+		rType = 0;
+		vrLen = 1296;
+		vrLoc = 0;
+	};
+	E1FA3A520B16659E0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = Complete;
+		rLen = 8;
+		rLoc = 8279;
+		rType = 0;
+		vrLen = 1606;
+		vrLoc = 7073;
+	};
+	E1FA3A530B16659E0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1FA31F00B0D65180060060A /* ProgressReporter.h */;
+		name = "ProgressReporter.h: 20";
+		rLen = 0;
+		rLoc = 282;
+		rType = 0;
+		vrLen = 282;
+		vrLoc = 0;
+	};
+	E1FA3A540B1665CA0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
+		name = "CLIController.m: 12";
+		rLen = 0;
+		rLoc = 169;
+		rType = 0;
+		vrLen = 776;
+		vrLoc = 0;
+	};
+	E1FA3A550B1665CA0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
+		name = Kernel/mach/machine.h;
+		rLen = 21;
+		rLoc = 56;
+		rType = 0;
+		vrLen = 525;
+		vrLoc = 0;
+	};
+	E1FA3A560B1665CA0060060A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1FA344F0B105E4E0060060A /* CLIController.m */;
+		name = "CLIController.m: 12";
+		rLen = 0;
+		rLoc = 169;
+		rType = 0;
+		vrLen = 776;
+		vrLoc = 0;
+	};
+	E1FA3A570B1665CB0060060A /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = E135398E0A68185500CBDDE5 /* ExeProcessor.h */;
 		name = Kernel/mach/machine.h;

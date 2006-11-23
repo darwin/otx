@@ -9,7 +9,6 @@
 #import <sys/syscall.h>
 
 #import "CLIController.h"
-#import "ErrorStrings.h"
 #import "ExeProcessor.h"
 #import "PPCProcessor.h"
 #import "X86Processor.h"
@@ -470,13 +469,7 @@
 
 - (void)doOtoolAlert
 {
-}
-
-//	doLipoAlert
-// ----------------------------------------------------------------------------
-
-- (void)doLipoAlert
-{
+	printf("otx: otool was not found. Please install otool and try again.");
 }
 
 //	doErrorAlert
@@ -484,6 +477,8 @@
 
 - (void)doErrorAlert
 {
+	printf("otx: Could not create file. You must have write permission "
+		"for the destination folder.");
 }
 
 //	doDrillErrorAlert:
@@ -491,7 +486,8 @@
 
 - (void)doDrillErrorAlert: (NSString*)inExePath
 {
-	printf(gDrillErrorString, CSTRING(inExePath));
+	printf("No executable file found at %@. Please locate the executable "
+		"file and try again.", CSTRING(inExePath));
 }
 
 #pragma mark -

@@ -7,8 +7,6 @@
 
 #import "ProgressReporter.h"
 
-//#define _OTX_CLI_	1
-
 // ============================================================================
 
 @interface CLIController : NSObject <ProgressReporter>
@@ -47,7 +45,6 @@
 
 // alerts
 - (void)doOtoolAlert;
-- (void)doLipoAlert;
 - (void)doErrorAlert;
 - (void)doDrillErrorAlert: (NSString*)inExePath;
 
