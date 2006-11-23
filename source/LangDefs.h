@@ -25,3 +25,5 @@
 
 // why not
 #define CSTRING(s)	[(s) cStringUsingEncoding: NSMacOSRomanStringEncoding]
+#define NSSTRING(s)	\
+	[NSString stringWithCString: (s) encoding: NSMacOSRomanStringEncoding]

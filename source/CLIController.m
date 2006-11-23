@@ -9,6 +9,7 @@
 #import <sys/syscall.h>
 
 #import "CLIController.h"
+#import "ErrorStrings.h"
 #import "ExeProcessor.h"
 #import "PPCProcessor.h"
 #import "X86Processor.h"
@@ -104,7 +105,8 @@
 	BOOL	returnTypes				= true;		// r
 	BOOL	variableTypes			= true;		// v
 
-	UInt32	i, j;
+	NSString*	origFilePath	= nil;
+	UInt32		i, j;
 
 	for (i = 1; i < argc; i++)
 	{
@@ -170,19 +172,20 @@
 				}	// for (j = 1; argv[i][j] != '\0'; j++)
 			}
 
-			NSString*	origFilePath	= [NSString stringWithCString:
+			origFilePath	= [NSString stringWithCString:
 				&argv[++i][0] encoding: NSMacOSRomanStringEncoding];
-
-			mOFile	= [NSURL fileURLWithPath: origFilePath];
 		}
 		else	// no flags, grab the file path
 		{
-			NSString*	origFilePath	= [NSString stringWithCString: &argv[i][0]
+			origFilePath	= [NSString stringWithCString: &argv[i][0]
 				encoding: NSMacOSRomanStringEncoding];
-
-			mOFile	= [NSURL fileURLWithPath: origFilePath];
 		}
 	}
+
+	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: origFilePath])
+		[self newPackageFile: [NSURL fileURLWithPath: origFilePath]];
+	else
+		[self newOFile: [NSURL fileURLWithPath: origFilePath] needsPath: true];
 
 	if (mOFile)
 		[mOFile retain];
@@ -488,6 +491,7 @@
 
 - (void)doDrillErrorAlert: (NSString*)inExePath
 {
+	printf(gDrillErrorString, CSTRING(inExePath));
 }
 
 #pragma mark -

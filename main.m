@@ -5,7 +5,6 @@
 #import <AppKit/NSApplication.h>
 #import <Cocoa/Cocoa.h>
 
-//#ifdef _OTX_CLI_
 #ifdef OTX_CLI
 #import "CLIController.h"
 #endif
@@ -22,16 +21,13 @@ int main(
 		return -1;
 	}
 
-
-//#ifdef _OTX_CLI_
-// much thanx to Slava Karpenko and MS for this
+// OTX_CLI is defined in the CLI target settings. Much thanx to Slava Karpenko
+// and Mike Solomon for telling me about the -D flag.
 #ifdef OTX_CLI
-//#if defined(OTX_CLI)
 
-	NSAutoreleasePool*	pool	= [[NSAutoreleasePool alloc] init];
-
-	CLIController*	controller	= [[CLIController alloc] initWithArgs:
-		argv count: argc];
+	NSAutoreleasePool*	pool		= [[NSAutoreleasePool alloc] init];
+	CLIController*		controller	=
+		[[CLIController alloc] initWithArgs: argv count: argc];
 
 	if (!controller)
 		return -1;
