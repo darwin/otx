@@ -458,18 +458,6 @@
 
 				break;
 			}
-/*			case LC_DYSYMTAB:
-			{
-				// Re-cast the original ptr as a dysymtab_command.
-				dysymtab_command*	dySymTab	= (dysymtab_command*)ptr;
-
-				if (mSwapped)
-					swap_dysymtab_command(dySymTab, OSHostByteOrder());
-
-				[self loadDySymbols: dySymTab];
-
-				break;
-			}*/
 
 			default:
 				break;
@@ -549,11 +537,6 @@
 			if (!strcmp(theSect->sectname, "__pointers"))
 				[self loadImpPtrSection: theSect];
 		}
-
-//		else if (!strncmp(theSect->sectname, "__picsymbol_stub", 16))
-//			fprintf(stderr, "found PIC section.\n");
-//		else if (!strcmp(theSect->sectname, "__symbol_stub"))
-//			fprintf(stderr, "found indirect symbol stub section.\n");
 
 		ptr	+= sizeof(section);
 	}
@@ -3200,12 +3183,6 @@
 		if (outType)
 			*outType	= OCClassType;
 	}
-/*	else	// (__OBJC,__instance_vars) (objc_method_list)
-	if (inAddr >= mIVarSect.s.addr &&
-		inAddr < mIVarSect.s.addr + mIVarSect.size)
-	{
-		thePtr	= (mIVarSect.contents + (inAddr - mIVarSect.s.addr));
-	}*/
 	else	// (__OBJC,__module_info) (objc_module)
 	if (inAddr >= mObjcModSect.s.addr &&
 		inAddr < mObjcModSect.s.addr + mObjcModSect.size)
@@ -3216,12 +3193,6 @@
 		if (outType)
 			*outType	= OCModType;
 	}
-/*	else	// (__OBJC,__symbols) (objc_symtab)
-	if (inAddr >= mObjcSymSect.s.addr &&
-		inAddr < mObjcSymSect.s.addr + mObjcSymSect.size)
-	{
-		thePtr	= (mObjcSymSect.contents + (inAddr - mObjcSymSect.s.addr));
-	}*/
 
 			//  (__OBJC, ??) (char*)
 			// __message_refs, __class_refs, __instance_vars, __symbols
@@ -3360,26 +3331,6 @@
 		if (outType)
 			*outType	= DYLDType;
 	}
-/*	else	// (__DATA,__la_symbol_ptr) (func ptr)
-	if (inAddr >= mLASymSect.s.addr &&
-		inAddr < mLASymSect.s.addr + mLASymSect.size)
-	{
-		thePtr	= (char*)((UInt32)mLASymSect.contents +
-			(inAddr - mLASymSect.s.addr));
-
-		if (outType)
-			*outType	= LASymType;
-	}
-	else	// (__DATA,__la_sym_ptr2) (func ptr)
-	if (inAddr >= mLASym2Sect.s.addr &&
-		inAddr < mLASym2Sect.s.addr + mLASym2Sect.size)
-	{
-		thePtr	= (char*)((UInt32)mLASym2Sect.contents +
-			(inAddr - mLASym2Sect.s.addr));
-
-		if (outType)
-			*outType	= LASymType;
-	}*/
 
 	// should implement these if they ever contain CFStrings or NSStrings
 /*	else	// (__DATA, __coalesced_data) (?)
