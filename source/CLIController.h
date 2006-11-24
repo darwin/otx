@@ -21,6 +21,7 @@
 	BOOL				mIgnoreArch;
 	NSString*			mExeName;
 	BOOL				mVerify;
+	BOOL				mShowProgress;
 //	NSString*			mOutputFileLabel;
 //	NSString*			mOutputFileName;
 //	NSString*			mOutputFilePath;
