@@ -17,7 +17,7 @@ int main(
 {
 	if (NSAppKitVersionNumber < floor(NSAppKitVersionNumber10_4))
 	{
-		printf("otx requires Mac OS X 10.4 or higher.\n");
+		fprintf(stderr, "otx requires Mac OS X 10.4 or higher.\n");
 		return -1;
 	}
 

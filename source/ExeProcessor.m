@@ -53,7 +53,7 @@
 
 	if (!theData)
 	{
-		printf("otx: error loading executable from disk: %s\n",
+		fprintf(stderr, "otx: error loading executable from disk: %s\n",
 			CSTRING([theError localizedFailureReason]));
 		[self release];
 		return nil;
@@ -63,7 +63,7 @@
 
 	if (mRAMFileSize < sizeof(mArchMagic))
 	{
-		printf("otx: truncated executable file\n");
+		fprintf(stderr, "otx: truncated executable file\n");
 		[theData release];
 		[self release];
 		return nil;
@@ -73,7 +73,7 @@
 
 	if (!mRAMFile)
 	{
-		printf("otx: not enough memory to allocate mRAMFile\n");
+		fprintf(stderr, "otx: not enough memory to allocate mRAMFile\n");
 		[theData release];
 		[self release];
 		return nil;
@@ -171,7 +171,7 @@
 {
 	if (!mArchMagic)
 	{
-		printf("otx: tried to process non-machO file\n");
+		fprintf(stderr, "otx: tried to process non-machO file\n");
 		return false;
 	}
 
@@ -192,7 +192,7 @@
 
 	if (![self loadMachHeader])
 	{
-		printf("otx: failed to load mach header\n");
+		fprintf(stderr, "otx: failed to load mach header\n");
 		return false;
 	}
 
@@ -210,14 +210,14 @@
 
 	if (!theVerboseFile || !thePlainFile)
 	{
-		printf("otx: could not create temp files\n");
+		fprintf(stderr, "otx: could not create temp files\n");
 		return false;
 	}
 
 	// Get the party started.
 	if (![self processVerboseFile: theVerboseFile andPlainFile: thePlainFile])
 	{
-		printf("otx: unable to process temp files\n");
+		fprintf(stderr, "otx: unable to process temp files\n");
 		return false;
 	}
 
@@ -237,18 +237,23 @@
 - (void)createVerboseFile: (NSURL**)outVerbosePath
 			 andPlainFile: (NSURL**)outPlainPath
 {
-	NSString*	oPath			= [mOFile path];
-	NSString*	otoolString;
-	char		cmdString[100]	= {0};
-	char*		cmdFormatString	= mExeIsFat ? "otool -arch %s" : "otool";
+	NSString*		oPath			= [mOFile path];
+	NSString*		otoolString;
+	char			cmdString[100]	= {0};
+	char*			cmdFormatString	= mExeIsFat ? "otool -arch %s" : "otool";
+	NSProcessInfo*	procInfo		= [NSProcessInfo processInfo];
 
 	snprintf(cmdString, MAX_ARCH_STRING_LENGTH + 1,
 		cmdFormatString, mArchString);
 
 	NSString*	verbosePath	= [NSTemporaryDirectory()
-		stringByAppendingPathComponent: @"temp1.otx"];
+		stringByAppendingPathComponent:
+		[NSString stringWithFormat: @"temp_%@.otx",
+		[procInfo globallyUniqueString]]];
 	NSString*	plainPath	= [NSTemporaryDirectory()
-		stringByAppendingPathComponent: @"temp2.otx"];
+		stringByAppendingPathComponent:
+		[NSString stringWithFormat: @"temp_%@.otx",
+		[procInfo globallyUniqueString]]];
 
 	// The following lines call otool twice for each section we want, once
 	// with verbosity, once without. sed removes the 1st line from sections
@@ -359,7 +364,7 @@
 		}
 
 		if (!mMachHeader)
-			printf("otx: architecture not found in unibin\n");
+			fprintf(stderr, "otx: architecture not found in unibin\n");
 	}
 	else	// not a unibin, so mach header = start of file.
 	{
@@ -372,14 +377,14 @@
 				break;
 
 			default:
-				printf("otx: unknown magic value: 0x%x\n", mArchMagic);
+				fprintf(stderr, "otx: unknown magic value: 0x%x\n", mArchMagic);
 				break;
 		}
 	}
 
 	if (!mMachHeader)
 	{
-		printf("otx: mach header not found\n");
+		fprintf(stderr, "otx: mach header not found\n");
 		return false;
 	}
 
@@ -546,9 +551,9 @@
 		}
 
 //		else if (!strncmp(theSect->sectname, "__picsymbol_stub", 16))
-//			printf("found PIC section.\n");
+//			fprintf(stderr, "found PIC section.\n");
 //		else if (!strcmp(theSect->sectname, "__symbol_stub"))
-//			printf("found indirect symbol stub section.\n");
+//			fprintf(stderr, "found indirect symbol stub section.\n");
 
 		ptr	+= sizeof(section);
 	}
@@ -795,7 +800,7 @@
 
 					if (theMetaClass.ivars)
 					{	// trigger this code and win a free beer.
-						printf("otx: found meta class ivars!\n");
+						fprintf(stderr, "otx: found meta class ivars!\n");
 					}
 				}	// theMetaClass != nil
 			}
@@ -1163,7 +1168,7 @@
 			theFileError	= ferror(verboseFile);
 
 			if (theFileError)
-				printf("otx: error reading from verbose temp file: %d\n",
+				fprintf(stderr, "otx: error reading from verbose temp file: %d\n",
 					theFileError);
 
 			break;
@@ -1174,7 +1179,7 @@
 			theFileError	= ferror(plainFile);
 
 			if (theFileError)
-				printf("otx: error reading from plain temp file: %d\n",
+				fprintf(stderr, "otx: error reading from plain temp file: %d\n",
 					theFileError);
 
 			break;
@@ -1442,7 +1447,7 @@
 {
 	if (!ioLine || !(*ioLine) || !((*ioLine)->chars))
 	{
-		printf("otx: tried to process nil code line\n");
+		fprintf(stderr, "otx: tried to process nil code line\n");
 		return;
 	}
 
@@ -2186,7 +2191,7 @@
 		else	// Holy va_list!
 		{
 			sendType	= send_variadic;
-			printf("otx: [ExeProcessor sendTypeFromMsgSend]:"
+			fprintf(stderr, "otx: [ExeProcessor sendTypeFromMsgSend]:"
 				"variadic variant detected.\n");
 		}
 	}
@@ -2232,7 +2237,7 @@
 
 	if (!md5Pipe)
 	{
-		printf("otx: unable to open md5 pipe\n");
+		fprintf(stderr, "otx: unable to open md5 pipe\n");
 		return;
 	}
 
@@ -2267,7 +2272,7 @@
 
 	if (pclose(md5Pipe) == -1)
 	{
-		printf("otx: error closing md5 pipe\n");
+		fprintf(stderr, "otx: error closing md5 pipe\n");
 		return;
 	}
 
@@ -2675,7 +2680,7 @@
 
 		default:
 			strncpy(theTypeCString, "?", 2);
-			printf("otx: unknown encoded type: %c\n", inTypeCode[theNextChar]);
+			fprintf(stderr, "otx: unknown encoded type: %c\n", inTypeCode[theNextChar]);
 
 			break;
 	}
@@ -3663,61 +3668,61 @@
 
 - (void)printSymbol: (nlist)inSym
 {
-	printf("----------------\n\n");
-	printf(" n_strx = 0x%08x\n", inSym.n_un.n_strx);
-	printf(" n_type = 0x%02x\n", inSym.n_type);
-	printf(" n_sect = 0x%02x\n", inSym.n_sect);
-	printf(" n_desc = 0x%04x\n", inSym.n_desc);
-	printf("n_value = 0x%08x (%u)\n\n", inSym.n_value, inSym.n_value);
+	fprintf(stderr, "----------------\n\n");
+	fprintf(stderr, " n_strx = 0x%08x\n", inSym.n_un.n_strx);
+	fprintf(stderr, " n_type = 0x%02x\n", inSym.n_type);
+	fprintf(stderr, " n_sect = 0x%02x\n", inSym.n_sect);
+	fprintf(stderr, " n_desc = 0x%04x\n", inSym.n_desc);
+	fprintf(stderr, "n_value = 0x%08x (%u)\n\n", inSym.n_value, inSym.n_value);
 
 	if ((inSym.n_type & N_STAB) != 0)
 	{	// too complicated, see <mach-o/stab.h>
-		printf("STAB symbol\n");
+		fprintf(stderr, "STAB symbol\n");
 	}
 	else	// not a STAB
 	{
 		if ((inSym.n_type & N_PEXT) != 0)
-			printf("Private external symbol\n\n");
+			fprintf(stderr, "Private external symbol\n\n");
 		else if ((inSym.n_type & N_EXT) != 0)
-			printf("External symbol\n\n");
+			fprintf(stderr, "External symbol\n\n");
 
 		UInt8	theNType	= inSym.n_type & N_TYPE;
 		UInt16	theRefType	= inSym.n_desc & REFERENCE_TYPE;
 
-		printf("Symbol type: ");
+		fprintf(stderr, "Symbol type: ");
 
 		if (theNType == N_ABS)
-			printf("Absolute\n");
+			fprintf(stderr, "Absolute\n");
 		else if (theNType == N_SECT)
-			printf("Defined in section %u\n", inSym.n_sect);
+			fprintf(stderr, "Defined in section %u\n", inSym.n_sect);
 		else if (theNType == N_INDR)
-			printf("Indirect\n");
+			fprintf(stderr, "Indirect\n");
 		else
 		{
 			if (theNType == N_UNDF)
-				printf("Undefined\n");
+				fprintf(stderr, "Undefined\n");
 			else if (theNType == N_PBUD)
-				printf("Prebound undefined\n");
+				fprintf(stderr, "Prebound undefined\n");
 
 			switch (theRefType)
 			{
 				case REFERENCE_FLAG_UNDEFINED_NON_LAZY:
-					printf("REFERENCE_FLAG_UNDEFINED_NON_LAZY\n");
+					fprintf(stderr, "REFERENCE_FLAG_UNDEFINED_NON_LAZY\n");
 					break;
 				case REFERENCE_FLAG_UNDEFINED_LAZY:
-					printf("REFERENCE_FLAG_UNDEFINED_LAZY\n");
+					fprintf(stderr, "REFERENCE_FLAG_UNDEFINED_LAZY\n");
 					break;
 				case REFERENCE_FLAG_DEFINED:
-					printf("REFERENCE_FLAG_DEFINED\n");
+					fprintf(stderr, "REFERENCE_FLAG_DEFINED\n");
 					break;
 				case REFERENCE_FLAG_PRIVATE_DEFINED:
-					printf("REFERENCE_FLAG_PRIVATE_DEFINED\n");
+					fprintf(stderr, "REFERENCE_FLAG_PRIVATE_DEFINED\n");
 					break;
 				case REFERENCE_FLAG_PRIVATE_UNDEFINED_NON_LAZY:
-					printf("REFERENCE_FLAG_PRIVATE_UNDEFINED_NON_LAZY\n");
+					fprintf(stderr, "REFERENCE_FLAG_PRIVATE_UNDEFINED_NON_LAZY\n");
 					break;
 				case REFERENCE_FLAG_PRIVATE_UNDEFINED_LAZY:
-					printf("REFERENCE_FLAG_PRIVATE_UNDEFINED_LAZY\n");
+					fprintf(stderr, "REFERENCE_FLAG_PRIVATE_UNDEFINED_LAZY\n");
 					break;
 
 				default:
@@ -3726,7 +3731,7 @@
 		}
 	}
 
-	printf("\n");
+	fprintf(stderr, "\n");
 }
 
 //	printBlocks:

@@ -262,7 +262,7 @@
 {
 	if (!mMainWindow)
 	{
-		printf("otx: failed to load MainMenu.nib\n");
+		fprintf(stderr, "otx: failed to load MainMenu.nib\n");
 		return;
 	}
 
@@ -404,7 +404,7 @@
 
 			if (!theProcessor)
 			{
-				printf("otx: -[AppController verifyNops]: "
+				fprintf(stderr, "otx: -[AppController verifyNops]: "
 					"unable to create processor.\n");
 				return;
 			}
@@ -465,7 +465,7 @@
 
 	if (!contextInfo)
 	{
-		printf("otx: tried to fix nops with nil contextInfo\n");
+		fprintf(stderr, "otx: tried to fix nops with nil contextInfo\n");
 		return;
 	}
 
@@ -473,7 +473,7 @@
 
 	if (!theNops->list)
 	{
-		printf("otx: tried to fix nops with nil NopList.list\n");
+		fprintf(stderr, "otx: tried to fix nops with nil NopList.list\n");
 		free(theNops);
 		return;
 	}
@@ -487,7 +487,7 @@
 
 			if (!theProcessor)
 			{
-				printf("otx: -[AppController nopAlertDidEnd]: "
+				fprintf(stderr, "otx: -[AppController nopAlertDidEnd]: "
 					"unable to create processor.\n");
 				return;
 			}
@@ -501,7 +501,7 @@
 				[self newOFile: fixedFile needsPath: true];
 			}
 			else
-				printf("otx: unable to fix nops\n");
+				fprintf(stderr, "otx: unable to fix nops\n");
 
 			break;
 		}
@@ -556,7 +556,7 @@
 
 	if (!theFileH)
 	{
-		printf("otx: -[AppController syncDescriptionText]: "
+		fprintf(stderr, "otx: -[AppController syncDescriptionText]: "
 			"unable to open executable file.\n");
 		return;
 	}
@@ -569,7 +569,7 @@
 	}
 	@catch (NSException* e)
 	{
-		printf("otx: -[AppController syncDescriptionText]: "
+		fprintf(stderr, "otx: -[AppController syncDescriptionText]: "
 			"unable to read from executable file. %s\n",
 			CSTRING([e reason]));
 		return;
@@ -577,7 +577,7 @@
 
 	if ([theData length] < sizeof(mArchMagic))
 	{
-		printf("otx: -[AppController syncDescriptionText]: "
+		fprintf(stderr, "otx: -[AppController syncDescriptionText]: "
 			"truncated executable file.\n");
 		return;
 	}
@@ -718,7 +718,7 @@
 
 	if ([self checkOtool] != noErr)
 	{
-		printf("otx: otool not found\n");
+		fprintf(stderr, "otx: otool not found\n");
 		[self doOtoolAlert];
 		[mProgDrawer close];
 		return;
@@ -737,7 +737,7 @@
 			break;
 
 		default:
-			printf("otx: [AppController drawerDidOpen]: "
+			fprintf(stderr, "otx: [AppController drawerDidOpen]: "
 				"unknown arch type: %d", mArchSelector);
 			break;
 	}
@@ -753,14 +753,14 @@
 
 	if (!theProcessor)
 	{
-		printf("otx: -[AppController drawerDidOpen]: "
+		fprintf(stderr, "otx: -[AppController drawerDidOpen]: "
 			"unable to create processor.\n");
 		return;
 	}
 
 	if (![theProcessor processExe: mOutputFilePath])
 	{
-		printf("otx: possible permission error\n");
+		fprintf(stderr, "otx: possible permission error\n");
 		[self doErrorAlert];
 		[theProcessor release];
 		[mProgDrawer close];
@@ -874,7 +874,7 @@
 {
 	if (!mPrefsWindow)
 	{
-		printf("otx: failed to load Preferences.nib\n");
+		fprintf(stderr, "otx: failed to load Preferences.nib\n");
 		return;
 	}
 
@@ -954,7 +954,7 @@
 {
 	if (!inState)
 	{
-		printf("otx: AppController<reportProgress:> nil inState\n");
+		fprintf(stderr, "otx: AppController<reportProgress:> nil inState\n");
 		return;
 	}
 
@@ -970,7 +970,7 @@
 		{
 			if (!inState->value)
 			{
-				printf("otx: <reportProgress:> nil inState->value "
+				fprintf(stderr, "otx: <reportProgress:> nil inState->value "
 					"when setIndeterminate == false\n");
 				return;
 			}
@@ -993,7 +993,7 @@
 		case GeneratingFile:
 			if (!inState->value)
 			{
-				printf("otx: <reportProgress:> nil inState->value"
+				fprintf(stderr, "otx: <reportProgress:> nil inState->value"
 					"when inState->refcon == GeneratingFile\n");
 				break;
 			}

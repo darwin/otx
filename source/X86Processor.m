@@ -1158,7 +1158,7 @@
 			break;
 
 		default:
-			printf("otx: [X86Processor commentForMsgSend]: "
+			fprintf(stderr, "otx: [X86Processor commentForMsgSend]: "
 				"unsupported selector type: %d\n", selType);
 
 			break;
@@ -1228,7 +1228,7 @@
 				break;
 
 			default:
-				printf("otx: [X86Processor commentForMsgSend]: "
+				fprintf(stderr, "otx: [X86Processor commentForMsgSend]: "
 					"unsupported receiver type: %d\n", receiverType);
 
 				break;
@@ -1385,7 +1385,7 @@
 {
 	if (!inLine)
 	{
-		printf("otx: [X86Processor resetRegisters]: "
+		fprintf(stderr, "otx: [X86Processor resetRegisters]: "
 			"tried to reset with nil ioLine\n");
 		return;
 	}
@@ -1513,7 +1513,7 @@
 				{
 					if (offset / 4 > STACK_SIZE - 1)
 					{
-						printf("otx: out of stack bounds: "
+						fprintf(stderr, "otx: out of stack bounds: "
 							"stack size needs to be %d", (offset / 4) + 1);
 						break;
 					}
@@ -1681,7 +1681,7 @@
 {
 	if (!inLine)
 	{
-		printf("otx: [X86Processor restoreRegisters]: "
+		fprintf(stderr, "otx: [X86Processor restoreRegisters]: "
 			"tried to restore with nil inLine\n");
 		return false;
 	}
@@ -1946,7 +1946,7 @@
 			// sanity check
 			if (!currentBlock)
 			{
-				printf("otx: [X86Processor gatherFuncInfos] "
+				fprintf(stderr, "otx: [X86Processor gatherFuncInfos] "
 					"currentBlock is nil. Flame the dev.\n");
 				return;
 			}
@@ -1993,7 +1993,7 @@
 {
 	if (![self loadMachHeader])
 	{
-		printf("otx: failed to load mach header\n");
+		fprintf(stderr, "otx: failed to load mach header\n");
 		return false;
 	}
 
@@ -2070,14 +2070,14 @@
 {
 	if (!inList)
 	{
-		printf("otx: -[X86Processor fixNops]: "
+		fprintf(stderr, "otx: -[X86Processor fixNops]: "
 			"tried to fix nil NopList.\n");
 		return nil;
 	}
 
 	if (!inOutputFilePath)
 	{
-		printf("otx: -[X86Processor fixNops]: "
+		fprintf(stderr, "otx: -[X86Processor fixNops]: "
 			"inOutputFilePath was nil.\n");
 		return nil;
 	}
@@ -2163,7 +2163,7 @@
 
 	if (!newFile)
 	{
-		printf("otx: -[X86Processor fixNops]: "
+		fprintf(stderr, "otx: -[X86Processor fixNops]: "
 			"unable to create NSData for new file.\n");
 		return nil;
 	}
@@ -2180,11 +2180,11 @@
 		error: &error])
 	{
 		if (error)
-			printf("otx: -[X86Processor fixNops]: "
+			fprintf(stderr, "otx: -[X86Processor fixNops]: "
 				"unable to write to new file. %s\n",
 				CSTRING([error localizedDescription]));
 		else
-			printf("otx: -[X86Processor fixNops]: "
+			fprintf(stderr, "otx: -[X86Processor fixNops]: "
 				"unable to write to new file.\n");
 
 		return nil;
@@ -2197,7 +2197,7 @@
 
 	if (!fileAttrs)
 	{
-		printf("otx: -[X86Processor fixNops]: "
+		fprintf(stderr, "otx: -[X86Processor fixNops]: "
 			"unable to read attributes from executable\n");
 		return nil;
 	}
@@ -2208,7 +2208,7 @@
 
 	if (![fileMan changeFileAttributes: permsDict atPath: [newURL path]])
 	{
-		printf("otx: -[X86Processor fixNops]: "
+		fprintf(stderr, "otx: -[X86Processor fixNops]: "
 			"unable to change file permissions for fixed executable\n");
 	}
 

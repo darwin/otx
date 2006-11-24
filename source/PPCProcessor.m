@@ -637,7 +637,7 @@
 			break;
 
 		default:
-			printf("otx: [PPCProcessor commentForMsgSend]: "
+			fprintf(stderr, "otx: [PPCProcessor commentForMsgSend]: "
 				"unsupported selector type: %d\n", selType);
 
 			break;
@@ -707,7 +707,7 @@
 				break;
 
 			default:
-				printf("otx: [PPCProcessor commentForMsgSend]: "
+				fprintf(stderr, "otx: [PPCProcessor commentForMsgSend]: "
 					"unsupported receiver type: %d\n", receiverType);
 
 				break;
@@ -767,7 +767,7 @@
 {
 	if (!inLine)
 	{
-		printf("otx: [PPCProcessor resetRegisters]: "
+		fprintf(stderr, "otx: [PPCProcessor resetRegisters]: "
 			"tried to reset with nil inLine\n");
 		return;
 	}
@@ -815,7 +815,7 @@
 {
 	if (!inLine)
 	{
-		printf("otx: [PPCProcessor updateRegisters]: "
+		fprintf(stderr, "otx: [PPCProcessor updateRegisters]: "
 			"tried to update with nil inLine\n");
 		return;
 	}
@@ -1202,7 +1202,7 @@
 {
 	if (!inLine)
 	{
-		printf("otx: [PPCProcessor restoreRegisters]: "
+		fprintf(stderr, "otx: [PPCProcessor restoreRegisters]: "
 			"tried to restore with nil inLine\n");
 		return false;
 	}
@@ -1453,7 +1453,7 @@
 			// sanity check
 			if (!currentBlock)
 			{
-				printf("otx: [PPCProcessor gatherFuncInfos] "
+				fprintf(stderr, "otx: [PPCProcessor gatherFuncInfos] "
 					"currentBlock is nil. Flame the dev.\n");
 				return;
 			}
@@ -1506,19 +1506,20 @@
 
 	UInt32	i, j;
 
-	printf("\nfunction at 0x%x:\n\n", funcInfo->address);
-	printf("%d blocks\n", funcInfo->numBlocks);
+	fprintf(stderr, "\nfunction at 0x%x:\n\n", funcInfo->address);
+	fprintf(stderr, "%d blocks\n", funcInfo->numBlocks);
 
 	for (i = 0; i < funcInfo->numBlocks; i++)
 	{
-		printf("\nblock %d at 0x%x:\n\n", i + 1, funcInfo->blocks[i].start);
+		fprintf(stderr, "\nblock %d at 0x%x:\n\n", i + 1,
+			funcInfo->blocks[i].start);
 
 		for (j = 0; j < 32; j++)
 		{
 			if (!funcInfo->blocks[i].state.regInfos[j].isValid)
 				continue;
 
-			printf("\t\tr%d: 0x%x\n", j,
+			fprintf(stderr, "\t\tr%d: 0x%x\n", j,
 				funcInfo->blocks[i].state.regInfos[j].value);
 		}
 	}

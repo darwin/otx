@@ -44,7 +44,6 @@
 		   contextInfo: (void*)contextInfo;
 
 // alerts
-- (void)doOtoolAlert;
 - (void)doErrorAlert;
 - (void)doDrillErrorAlert: (NSString*)inExePath;
 

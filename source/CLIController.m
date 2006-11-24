@@ -88,8 +88,8 @@
 
 	if (mArchSelector != CPU_TYPE_POWERPC	&&
 		mArchSelector != CPU_TYPE_I386)
-	{
-		printf("otx: I shouldn't be here...\n");
+	{	// We're running on a machine that doesn't exist.
+		fprintf(stderr, "otx: I shouldn't be here...\n");
 		[self release];
 		return nil;
 	}
@@ -121,7 +121,8 @@
 					mArchSelector	= CPU_TYPE_I386;
 				else
 				{
-					printf("otx: unknown architecture: %s\n", argv[i]);
+					fprintf(stderr, "otx: unknown architecture: %s\n",
+						argv[i]);
 					[self release];
 					return nil;
 				}
@@ -161,6 +162,9 @@
 							break;
 						case 'V':
 							mVerify	= !mVerify;
+							break;
+						case 'p':
+							mShowProgress	= !mShowProgress;
 							break;
 
 						default:
@@ -281,7 +285,8 @@
 
 	if ([self checkOtool] != noErr)
 	{
-		printf("otx: otool not found\n");
+		fprintf(stderr,
+			"otx: otool was not found. Please install otool and try again.\n");
 		return;
 	}
 
@@ -298,7 +303,7 @@
 			break;
 
 		default:
-			printf("otx: [CLIController processFile]: "
+			fprintf(stderr, "otx: [CLIController processFile]: "
 				"unknown arch type: %d", mArchSelector);
 			break;
 	}
@@ -311,14 +316,14 @@
 
 	if (!theProcessor)
 	{
-		printf("otx: -[CLIController processFile]: "
+		fprintf(stderr, "otx: -[CLIController processFile]: "
 			"unable to create processor.\n");
 		return;
 	}
 
 	if (![theProcessor processExe: nil])
 	{
-		printf("otx: -[CLIController processFile]: "
+		fprintf(stderr, "otx: -[CLIController processFile]: "
 			"possible permission error\n");
 		[theProcessor release];
 		return;
@@ -343,7 +348,7 @@
 
 			if (!theProcessor)
 			{
-				printf("otx: -[CLIController verifyNops]: "
+				fprintf(stderr, "otx: -[CLIController verifyNops]: "
 					"unable to create processor.\n");
 				return;
 			}
@@ -402,7 +407,7 @@
 
 	if (!contextInfo)
 	{
-		printf("otx: tried to fix nops with nil contextInfo\n");
+		fprintf(stderr, "otx: tried to fix nops with nil contextInfo\n");
 		return;
 	}
 
@@ -410,7 +415,7 @@
 
 	if (!theNops->list)
 	{
-		printf("otx: tried to fix nops with nil NopList.list\n");
+		fprintf(stderr, "otx: tried to fix nops with nil NopList.list\n");
 		free(theNops);
 		return;
 	}
@@ -424,7 +429,7 @@
 
 			if (!theProcessor)
 			{
-				printf("otx: -[CLIController nopAlertDidEnd]: "
+				fprintf(stderr, "otx: -[CLIController nopAlertDidEnd]: "
 					"unable to create processor.\n");
 				return;
 			}
@@ -438,7 +443,7 @@
 				[self newOFile: fixedFile needsPath: true];
 			}
 			else
-				printf("otx: unable to fix nops\n");
+				fprintf(stderr, "otx: unable to fix nops\n");
 
 			break;
 		}
@@ -464,21 +469,13 @@
 	return system(CSTRING(otoolString));
 }
 
-//	doOtoolAlert
-// ----------------------------------------------------------------------------
-
-- (void)doOtoolAlert
-{
-	printf("otx: otool was not found. Please install otool and try again.");
-}
-
 //	doErrorAlert
 // ----------------------------------------------------------------------------
 
 - (void)doErrorAlert
 {
-	printf("otx: Could not create file. You must have write permission "
-		"for the destination folder.");
+	fprintf(stderr, "otx: Could not create file. You must have write "
+		"permission for the destination folder.\n");
 }
 
 //	doDrillErrorAlert:
@@ -486,8 +483,8 @@
 
 - (void)doDrillErrorAlert: (NSString*)inExePath
 {
-	printf("No executable file found at %@. Please locate the executable "
-		"file and try again.", CSTRING(inExePath));
+	fprintf(stderr, "otx: No executable file found at %@. Please locate the "
+		"executable file and try again.\n", CSTRING(inExePath));
 }
 
 #pragma mark -
@@ -496,25 +493,28 @@
 
 - (void)reportProgress: (ProgressState*)inState
 {
+	if (!mShowProgress)
+		return;
+
 	if (!inState)
 	{
-		printf("otx: CLIController<reportProgress:> nil inState\n");
+		fprintf(stderr, "otx: [CLIController reportProgress:] nil inState\n");
 		return;
 	}
 
 	if (inState->description)
-		printf("\n%s", CSTRING(inState->description));
+		fprintf(stderr, "\n%s", CSTRING(inState->description));
 
 	switch (inState->refcon)
 	{
 		case Nudge:
 		case GeneratingFile:
-			printf("%c", '.');
+			fprintf(stderr, "%c", '.');
 
 			break;
 
 		case Complete:
-			printf("\n\n");
+			fprintf(stderr, "\n\n");
 
 			break;
 
