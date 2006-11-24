@@ -28,7 +28,7 @@
 // one of those subclasses class for each processing, and deletes the
 // instance as soon as possible. Member variables may or may not be
 // re-initialized before destruction. Do not reuse a single instance of
-// those subclasses class for multiple processings.
+// those subclasses for multiple processings.
 
 //	initWithURL:andController:
 // ----------------------------------------------------------------------------
