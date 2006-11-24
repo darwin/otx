@@ -3,7 +3,6 @@
 */
 
 #import <Cocoa/Cocoa.h>
-//#import <Kernel/mach-o/loader.h>
 
 #import "ProgressReporter.h"
 
@@ -32,6 +31,7 @@
 - (id)initWithArgs: (char**) argv
 			 count: (SInt32) argc;
 
+- (void)usage;
 - (SInt32)checkOtool;
 
 - (IBAction)processFile: (id)sender;

@@ -67,7 +67,7 @@
 {
 	if (argc < 2)
 	{
-//		usage;
+		[self usage];
 		return nil;
 	}
 
@@ -160,11 +160,11 @@
 						case 'v':
 							variableTypes	= !variableTypes;
 							break;
-						case 'V':
-							mVerify	= !mVerify;
-							break;
 						case 'p':
 							mShowProgress	= !mShowProgress;
+							break;
+						case 'o':
+							mVerify	= !mVerify;
 							break;
 
 						default:
@@ -212,6 +212,25 @@
 	[defaults setBool: variableTypes forKey: ShowIvarTypesKey];
 
 	return self;
+}
+
+//	usage
+// ----------------------------------------------------------------------------
+
+- (void)usage
+{
+	printf("Usage: otx [-ledcmbnrvpo] <object file>\n");
+	printf("\t-l don't show local offsets\n");
+	printf("\t-e don't entab output\n");
+	printf("\t-d don't show data sections\n");
+	printf("\t-c don't show md5 checksum\n");
+	printf("\t-m don't show verbose objc_msgSend\n");
+	printf("\t-b separate logical blocks\n");
+	printf("\t-n don't demangle C++ symbol names\n");
+	printf("\t-r don't show Obj-C method return types\n");
+	printf("\t-v don't show Obj-C member variable types\n");
+	printf("\t-p display progress\n");
+	printf("\t-o only check the executable for obfuscation\n");
 }
 
 //	dealloc
