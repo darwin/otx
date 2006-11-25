@@ -504,6 +504,7 @@ enum {
 			   andMethods: (objc_method**)outMethods
 			  fromAddress: (UInt32)inAddress;
 
+/*	moved to ListUtils
 // Line list manipulators
 - (void)insertLine: (Line*)inLine
 			before: (Line*)nextLine
@@ -516,6 +517,7 @@ enum {
 			 inList: (Line**)listHead;
 - (BOOL)printLinesFromList: (Line*)listHead;
 - (void)deleteLinesFromList: (Line*)listHead;
+*/
 
 // binary searches
 - (BOOL)findSymbolByAddress: (UInt32)inAddress;

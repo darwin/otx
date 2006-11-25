@@ -30,6 +30,8 @@
 		E1B132680B180BAC002EB674 /* X86Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B132660B180BAC002EB674 /* X86Processor.m */; };
 		E1B132790B180D0C002EB674 /* ObjectLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B132780B180D0C002EB674 /* ObjectLoader.m */; };
 		E1B1327A0B180D0C002EB674 /* ObjectLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B132780B180D0C002EB674 /* ObjectLoader.m */; };
+		E1B132800B181029002EB674 /* ListUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B1327F0B181029002EB674 /* ListUtils.m */; };
+		E1B132810B181029002EB674 /* ListUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B1327F0B181029002EB674 /* ListUtils.m */; };
 		E1F81AC50AE1EE02003D8E2C /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */; };
 		E1F81ADD0AE1EEEC003D8E2C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */; };
 		E1F81B090AE1EF07003D8E2C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */; };
@@ -110,6 +112,8 @@
 		E1B132730B180C97002EB674 /* ProgressReporter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ProgressReporter.h; path = source/Processors/Protocols/ProgressReporter.h; sourceTree = "<group>"; };
 		E1B132740B180CEA002EB674 /* ObjectLoader.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ObjectLoader.h; path = source/Processors/Categories/ObjectLoader.h; sourceTree = "<group>"; };
 		E1B132780B180D0C002EB674 /* ObjectLoader.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ObjectLoader.m; path = source/Processors/Categories/ObjectLoader.m; sourceTree = "<group>"; };
+		E1B1327E0B181029002EB674 /* ListUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ListUtils.h; path = source/Processors/Categories/ListUtils.h; sourceTree = "<group>"; };
+		E1B1327F0B181029002EB674 /* ListUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListUtils.m; path = source/Processors/Categories/ListUtils.m; sourceTree = "<group>"; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
 		E1F81AC20AE1EDC0003D8E2C /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = "source/Smart Crash Reports/SmartCrashReportsInstall.h"; sourceTree = "<group>"; };
 		E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = "source/Smart Crash Reports/SmartCrashReportsInstall.o"; sourceTree = "<group>"; };
@@ -247,8 +251,8 @@
 				E13539900A68185500CBDDE5 /* AppController.h */,
 				E1FA34510B105E6F0060060A /* CLIController.h */,
 				E135398F0A68185500CBDDE5 /* CDropBox.h */,
-				E1B1325A0B180ADF002EB674 /* Processors */,
 				E1B1316E0B17EF84002EB674 /* SystemIncludes.h */,
+				E1B1325A0B180ADF002EB674 /* Processors */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -292,10 +296,10 @@
 			isa = PBXGroup;
 			children = (
 				E1B132610B180B2F002EB674 /* ExeProcessor.h */,
-				E1B1326C0B180C52002EB674 /* Categories */,
 				E1B132650B180B70002EB674 /* PPCProcessor.h */,
-				E1B132720B180C85002EB674 /* Protocols */,
 				E1B132690B180BB4002EB674 /* X86Processor.h */,
+				E1B1326C0B180C52002EB674 /* Categories */,
+				E1B132720B180C85002EB674 /* Protocols */,
 			);
 			name = Processors;
 			sourceTree = "<group>";
@@ -304,9 +308,9 @@
 			isa = PBXGroup;
 			children = (
 				E1B1325E0B180B25002EB674 /* ExeProcessor.m */,
-				E1B132770B180CFB002EB674 /* Categories */,
 				E1B132620B180B66002EB674 /* PPCProcessor.m */,
 				E1B132660B180BAC002EB674 /* X86Processor.m */,
+				E1B132770B180CFB002EB674 /* Categories */,
 			);
 			name = Processors;
 			sourceTree = "<group>";
@@ -314,6 +318,7 @@
 		E1B1326C0B180C52002EB674 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				E1B1327E0B181029002EB674 /* ListUtils.h */,
 				E1B132740B180CEA002EB674 /* ObjectLoader.h */,
 			);
 			name = Categories;
@@ -330,6 +335,7 @@
 		E1B132770B180CFB002EB674 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				E1B1327F0B181029002EB674 /* ListUtils.m */,
 				E1B132780B180D0C002EB674 /* ObjectLoader.m */,
 			);
 			name = Categories;
@@ -455,6 +461,7 @@
 				E1B132640B180B66002EB674 /* PPCProcessor.m in Sources */,
 				E1B132680B180BAC002EB674 /* X86Processor.m in Sources */,
 				E1B1327A0B180D0C002EB674 /* ObjectLoader.m in Sources */,
+				E1B132810B181029002EB674 /* ListUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -477,6 +484,7 @@
 				E1B132630B180B66002EB674 /* PPCProcessor.m in Sources */,
 				E1B132670B180BAC002EB674 /* X86Processor.m in Sources */,
 				E1B132790B180D0C002EB674 /* ObjectLoader.m in Sources */,
+				E1B132800B181029002EB674 /* ListUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

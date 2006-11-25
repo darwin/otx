@@ -179,6 +179,10 @@
 			E1B132550B180A41002EB674 /* PBXTextBookmark */ = E1B132550B180A41002EB674 /* PBXTextBookmark */;
 			E1B132560B180A41002EB674 /* PBXTextBookmark */ = E1B132560B180A41002EB674 /* PBXTextBookmark */;
 			E1B132570B180A41002EB674 /* PBXTextBookmark */ = E1B132570B180A41002EB674 /* PBXTextBookmark */;
+			E1B132AF0B181272002EB674 /* PBXTextBookmark */ = E1B132AF0B181272002EB674 /* PBXTextBookmark */;
+			E1B132B00B181272002EB674 /* PBXTextBookmark */ = E1B132B00B181272002EB674 /* PBXTextBookmark */;
+			E1B132B10B181272002EB674 /* PBXTextBookmark */ = E1B132B10B181272002EB674 /* PBXTextBookmark */;
+			E1B132B20B181272002EB674 /* PBXTextBookmark */ = E1B132B20B181272002EB674 /* PBXTextBookmark */;
 			E1FA31140B0C0FDB0060060A = E1FA31140B0C0FDB0060060A /* PBXBookmark */;
 			E1FA31170B0C111C0060060A = E1FA31170B0C111C0060060A /* PBXBookmark */;
 			E1FA31180B0C11330060060A = E1FA31180B0C11330060060A /* PBXBookmark */;
@@ -1651,9 +1655,9 @@
 	E13539810A68178D00CBDDE5 /* SyscallStrings.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {512, 3852}}";
-			sepNavSelRange = "{161, 38}";
+			sepNavSelRange = "{160, 0}";
 			sepNavVisRect = "{{0, 0}, {512, 630}}";
-			sepNavWindowFrame = "{{396, 43}, {551, 703}}";
+			sepNavWindowFrame = "{{455, 43}, {551, 703}}";
 		};
 	};
 	E13539820A6817C700CBDDE5 /* ObjcSwap.c */ = {
@@ -1999,6 +2003,7 @@
 	};
 	E1B131910B17F106002EB674 /* objc-runtime.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = "objc-runtime.h";
 		path = "/Developer/SDKs/MacOSX10.4u.sdk/usr/include/objc/objc-runtime.h";
 		sourceTree = "<absolute>";
@@ -2006,6 +2011,7 @@
 			sepNavIntBoundsRect = "{{0, 0}, {692, 2412}}";
 			sepNavSelRange = "{1462, 21}";
 			sepNavVisRect = "{{0, 373}, {584, 563}}";
+			sepNavWindowFrame = "{{318, 110}, {623, 636}}";
 		};
 	};
 	E1B131920B17F106002EB674 /* PBXTextBookmark */ = {
@@ -2607,6 +2613,126 @@
 		rLoc = 169;
 		rType = 0;
 		vrLen = 1296;
+		vrLoc = 0;
+	};
+	E1B1325E0B180B25002EB674 /* ExeProcessor.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {554, 34908}}";
+			sepNavSelRange = "{212, 0}";
+			sepNavVisRect = "{{0, 0}, {520, 630}}";
+			sepNavWindowFrame = "{{291, 43}, {559, 703}}";
+		};
+	};
+	E1B132610B180B2F002EB674 /* ExeProcessor.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {884, 6996}}";
+			sepNavSelRange = "{175, 0}";
+			sepNavVisRect = "{{0, 0}, {520, 630}}";
+			sepNavWindowFrame = "{{416, 43}, {559, 703}}";
+		};
+	};
+	E1B132620B180B66002EB674 /* PPCProcessor.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {668, 18288}}";
+			sepNavSelRange = "{84, 0}";
+			sepNavVisRect = "{{0, 0}, {520, 630}}";
+			sepNavWindowFrame = "{{15, 38}, {559, 703}}";
+		};
+	};
+	E1B132650B180B70002EB674 /* PPCProcessor.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {554, 1140}}";
+			sepNavSelRange = "{22, 0}";
+			sepNavVisRect = "{{0, 0}, {520, 630}}";
+			sepNavWindowFrame = "{{325, 23}, {559, 703}}";
+		};
+	};
+	E1B132660B180BAC002EB674 /* X86Processor.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {542, 25716}}";
+			sepNavSelRange = "{158, 0}";
+			sepNavVisRect = "{{0, 0}, {520, 630}}";
+			sepNavWindowFrame = "{{264, 43}, {559, 703}}";
+		};
+	};
+	E1B132690B180BB4002EB674 /* X86Processor.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {520, 708}}";
+			sepNavSelRange = "{48, 0}";
+			sepNavVisRect = "{{0, 0}, {520, 630}}";
+			sepNavWindowFrame = "{{401, 43}, {559, 703}}";
+		};
+	};
+	E1B132740B180CEA002EB674 /* ObjectLoader.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {520, 630}}";
+			sepNavSelRange = "{57, 0}";
+			sepNavVisRect = "{{0, 0}, {520, 630}}";
+			sepNavWindowFrame = "{{329, 41}, {559, 703}}";
+		};
+	};
+	E1B132780B180D0C002EB674 /* ObjectLoader.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {524, 9516}}";
+			sepNavSelRange = "{90, 0}";
+			sepNavVisRect = "{{0, 0}, {520, 630}}";
+			sepNavWindowFrame = "{{442, 42}, {559, 703}}";
+		};
+	};
+	E1B1327E0B181029002EB674 /* ListUtils.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {469, 416}}";
+			sepNavSelRange = "{164, 0}";
+			sepNavVisRect = "{{0, 0}, {469, 416}}";
+			sepNavWindowFrame = "{{287, 257}, {508, 489}}";
+		};
+	};
+	E1B1327F0B181029002EB674 /* ListUtils.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {520, 1992}}";
+			sepNavSelRange = "{3103, 0}";
+			sepNavVisRect = "{{0, 0}, {520, 630}}";
+			sepNavWindowFrame = "{{21, 43}, {559, 703}}";
+		};
+	};
+	E1B132AF0B181272002EB674 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B131910B17F106002EB674 /* objc-runtime.h */;
+		name = "typedef struct objc_symtab *Symtab;";
+		rLen = 36;
+		rLoc = 1425;
+		rType = 0;
+		vrLen = 698;
+		vrLoc = 1074;
+	};
+	E1B132B00B181272002EB674 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E13539820A6817C700CBDDE5 /* ObjcSwap.c */;
+		name = "ObjcSwap.c: 12";
+		rLen = 0;
+		rLoc = 166;
+		rType = 0;
+		vrLen = 684;
+		vrLoc = 0;
+	};
+	E1B132B10B181272002EB674 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B131910B17F106002EB674 /* objc-runtime.h */;
+		name = "typedef struct objc_symtab *Symtab;";
+		rLen = 36;
+		rLoc = 1425;
+		rType = 0;
+		vrLen = 698;
+		vrLoc = 1074;
+	};
+	E1B132B20B181272002EB674 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E13539820A6817C700CBDDE5 /* ObjcSwap.c */;
+		name = "ObjcSwap.c: 12";
+		rLen = 0;
+		rLoc = 166;
+		rType = 0;
+		vrLen = 684;
 		vrLoc = 0;
 	};
 	E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {
@@ -7002,7 +7128,7 @@
 	E1FA344F0B105E4E0060060A /* CLIController.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {555, 6552}}";
-			sepNavSelRange = "{169, 25}";
+			sepNavSelRange = "{142, 0}";
 			sepNavVisRect = "{{0, 0}, {555, 630}}";
 			sepNavWindowFrame = "{{284, 43}, {594, 703}}";
 		};

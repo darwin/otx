@@ -2,7 +2,9 @@
 	PPCProcessor.h
 */
 
-#import "ObjectLoader.h"
+#import "ExeProcessor.h"
+//#import "ListUtils.h"
+//#import "ObjectLoader.h"
 
 // from cctools-590/otool/ppc-disasm.c
 // The various macros defined in that file get their names from the field

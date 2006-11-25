@@ -5,20 +5,15 @@
 	available from: http://www.opensource.apple.com/darwinsource/
 */
 
-/*#import <libkern/OSByteOrder.h>
-#import <mach-o/fat.h>
-#import <mach-o/loader.h>
-#import <mach-o/swap.h>
-#import <objc/objc-runtime.h>*/
-
 #import "SystemIncludes.h"
 
-#import <sys/ptrace.h>
-#import <sys/syscall.h>
+//#import <sys/ptrace.h>
+//#import <sys/syscall.h>
 
 #import "demangle.h"
 
 #import "ExeProcessor.h"
+#import "ListUtils.h"
 #import "ObjectLoader.h"
 #import "UserDefaultKeys.h"
 
@@ -2564,6 +2559,7 @@
 	return thePtr;
 }
 
+/*
 #pragma mark -
 #pragma mark Line list manipulators
 
@@ -2718,7 +2714,7 @@
 			theLine	= nil;
 		}
 	}
-}
+}*/
 
 #pragma mark -
 //	verifyNops:numFound:

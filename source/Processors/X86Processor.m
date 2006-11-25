@@ -5,6 +5,8 @@
 */
 
 #import "X86Processor.h"
+#import "ListUtils.h"
+#import "ObjectLoader.h"
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
