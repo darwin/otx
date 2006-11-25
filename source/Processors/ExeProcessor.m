@@ -1532,14 +1532,14 @@
 }
 
 #pragma mark -
-//	objcClassPtrFromMethod:
+//	getObjcClassPtr:fromMethod:
 // ----------------------------------------------------------------------------
 //	Given a method imp address, return the class to which it belongs. This func
 //	is called each time a new function is detected. If that function is known
 //	to be an Obj-C method, it's class is returned. Otherwise this returns nil.
 
-- (BOOL)objcClassPtr: (objc_class**)outClass
-		  fromMethod: (UInt32)inAddress;
+- (BOOL)getObjcClassPtr: (objc_class**)outClass
+			 fromMethod: (UInt32)inAddress;
 {
 	*outClass	= nil;
 

@@ -482,9 +482,8 @@ enum {
 - (char*)prepareNameForDemangling: (char*)inName;
 
 // Obj-C accessors
-- (BOOL)objcClassPtr: (objc_class**)outClass
-		  fromMethod: (UInt32)inAddress;
-
+- (BOOL)getObjcClassPtr: (objc_class**)outClass
+			 fromMethod: (UInt32)inAddress;
 - (BOOL)getObjcCatPtr: (objc_category**)outCat
 		   fromMethod: (UInt32)inAddress;
 - (BOOL)getObjcMethod: (MethodInfo**)outMI
