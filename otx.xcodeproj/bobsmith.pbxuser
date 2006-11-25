@@ -1886,6 +1886,12 @@
 		};
 	};
 	E1B1313A0B16D5F3002EB674 /* ObjectLoader.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = ObjectLoader.h;
+		path = /Volumes/Venus/Dev/otx/project/trunk/source/ObjectLoader.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {584, 563}}";
 			sepNavSelRange = "{150, 0}";
@@ -1894,6 +1900,12 @@
 		};
 	};
 	E1B1313B0B16D5F3002EB674 /* ObjectLoader.m */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.objc;
+		name = ObjectLoader.m;
+		path = /Volumes/Venus/Dev/otx/project/trunk/source/ObjectLoader.m;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {631, 9540}}";
 			sepNavSelRange = "{93, 0}";
@@ -3705,6 +3717,12 @@
 		vrLoc = 36752;
 	};
 	E1FA31F00B0D65180060060A /* ProgressReporter.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = ProgressReporter.h;
+		path = /Volumes/Venus/Dev/otx/project/trunk/source/ProgressReporter.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {434, 280}}";
 			sepNavSelRange = "{282, 0}";
