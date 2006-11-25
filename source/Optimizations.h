@@ -31,7 +31,7 @@
 #define ObjcClassPtrFromMethodFuncType		(objc_class*	(*)(id, SEL, UInt32))
 #define ObjcCatPtrFromMethodFuncType		(objc_category*	(*)(id, SEL, UInt32))
 #define ObjcMethodFromAddressFuncType		(MethodInfo*	(*)(id, SEL, UInt32))
-#define ObjcClassFromNameFuncType			(BOOL			(*)(id, SEL, objc_class*, const char*))
+#define GetObjcClassFromNameFuncType		(BOOL			(*)(id, SEL, objc_class*, const char*))
 #define ObjcDescriptionFromObjectFuncType	(char*			(*)(id, SEL, const char*, UInt8))
 #define InsertLineBeforeFuncType			(void			(*)(id, SEL, Line*, Line*, Line**))
 #define InsertLineAfterFuncType				(void			(*)(id, SEL, Line*, Line*, Line**))
@@ -67,7 +67,7 @@
 #define ObjcClassPtrFromMethodSel		@selector(objcClassPtrFromMethod:)
 #define ObjcCatPtrFromMethodSel			@selector(objcCatPtrFromMethod:)
 #define ObjcMethodFromAddressSel		@selector(objcMethodFromAddress:)
-#define ObjcClassFromNameSel			@selector(objcClass:fromName:)
+#define GetObjcClassFromNameSel			@selector(getObjcClass:fromName:)
 #define ObjcDescriptionFromObjectSel	@selector(objcDescriptionFromObject:type:)
 #define InsertLineBeforeSel				@selector(insertLine:before:inList:)
 #define InsertLineAfterSel				@selector(insertLine:after:inList:)
@@ -128,8 +128,8 @@
 		ObjcCatPtrFromMethod(self, ObjcCatPtrFromMethodSel, (a))
 #define ObjcMethodFromAddress(a)												\
 		ObjcMethodFromAddress(self, ObjcMethodFromAddressSel, (a))
-#define ObjcClassFromName(a, b)													\
-		ObjcClassFromName(self, ObjcClassFromNameSel, (a), (b))
+#define GetObjcClassFromName(a, b)												\
+		GetObjcClassFromName(self, GetObjcClassFromNameSel, (a), (b))
 #define ObjcDescriptionFromObject(a, b)											\
 		ObjcDescriptionFromObject(self, ObjcDescriptionFromObjectSel, (a), (b))
 #define InsertLineBefore(a, b, c)												\

@@ -417,7 +417,7 @@ enum {
 	objc_class*		(*ObjcClassPtrFromMethod)		(id, SEL, UInt32);
 	objc_category*	(*ObjcCatPtrFromMethod)			(id, SEL, UInt32);
 	MethodInfo*		(*ObjcMethodFromAddress)		(id, SEL, UInt32);
-	BOOL			(*ObjcClassFromName)			(id, SEL, objc_class*, const char*);
+	BOOL			(*GetObjcClassFromName)			(id, SEL, objc_class*, const char*);
 	char*			(*ObjcDescriptionFromObject)	(id, SEL, const char*, UInt8);
 
 	void	(*InsertLineBefore)	(id, SEL, Line*, Line*, Line**);
@@ -485,17 +485,16 @@ enum {
 - (objc_class*)objcClassPtrFromMethod: (UInt32)inAddress;
 - (objc_category*)objcCatPtrFromMethod: (UInt32)inAddress;
 - (MethodInfo*)objcMethodFromAddress: (UInt32)inAddress;
-- (BOOL)objcClass: (objc_class*)outClass
-		 fromName: (const char*)inName;
 - (char*)objcDescriptionFromObject: (const char*)inObject
 							  type: (UInt8)inType;
 
-// stolen from cctools, mostly
 - (BOOL)getObjcSymtab: (objc_symtab*)outSymTab
 			  andDefs: (void***)outDefs
 		   fromModule: (objc_module*)inModule;
 - (BOOL)getObjcClass: (objc_class*)outClass
 			 fromDef: (UInt32)inDef;
+- (BOOL)getObjcClass: (objc_class*)outClass
+			fromName: (const char*)inName;
 - (BOOL)getObjcCategory: (objc_category*)outCat
 				fromDef: (UInt32)inDef;
 - (BOOL)getObjcMetaClass: (objc_class*)outClass
@@ -503,18 +502,6 @@ enum {
 - (BOOL)getObjcMethodList: (objc_method_list*)outList
 			   andMethods: (objc_method**)outMethods
 			  fromAddress: (UInt32)inAddress;
-
-/*	moved to Searchers category
-// binary searches
-- (BOOL)findSymbolByAddress: (UInt32)inAddress;
-- (BOOL)findClassMethod: (MethodInfo**)outMI
-			  byAddress: (UInt32)inAddress;
-- (BOOL)findCatMethod: (MethodInfo**)outMI
-			byAddress: (UInt32)inAddress;
-- (BOOL)findIvar: (objc_ivar*)outIvar
-		 inClass: (objc_class*)inClass
-	  withOffset: (UInt32)inOffset;
-*/
 
 - (void)speedyDelivery;
 

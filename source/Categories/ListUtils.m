@@ -92,7 +92,7 @@
 	if (mOutputFilePath)
 	{
 		const char*	outPath		= CSTRING(mOutputFilePath);
-		outFile					= fopen(outPath, "a");
+		outFile					= fopen(outPath, "w");
 	}
 	else
 		outFile	= stdout;

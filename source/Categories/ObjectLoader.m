@@ -485,7 +485,7 @@
 
 				// Categories are linked to classes by name only. Try to 
 				// find the class for this category. May be nil.
-				ObjcClassFromName(&theClass,
+				GetObjcClassFromName(&theClass,
 					GetPointer((UInt32)theCat.class_name, nil));
 
 				// Save category instance method info.

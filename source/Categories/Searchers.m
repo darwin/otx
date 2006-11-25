@@ -106,7 +106,7 @@
 			if (!theSuperName)
 				break;
 
-			if (!ObjcClassFromName(&theDummyClass, theSuperName))
+			if (!GetObjcClassFromName(&theDummyClass, theSuperName))
 				break;
 
 			theClassPtr	= &theDummyClass;
@@ -157,7 +157,7 @@
 		if (!theSuperName)
 			break;
 
-		if (!ObjcClassFromName(&theDummyClass, theSuperName))
+		if (!GetObjcClassFromName(&theDummyClass, theSuperName))
 			break;
 
 		theClassPtr	= &theDummyClass;
