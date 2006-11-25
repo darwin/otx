@@ -1962,6 +1962,7 @@
 	strncpy(ioLine->chars, entabbedLine, ioLine->length + 1);
 }
 
+/*
 #pragma mark -
 #pragma mark Binary searches
 
@@ -2121,6 +2122,7 @@
 
 	return false;
 }
+*/
 
 #pragma mark -
 #pragma mark Stolen

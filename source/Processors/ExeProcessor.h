@@ -504,6 +504,7 @@ enum {
 			   andMethods: (objc_method**)outMethods
 			  fromAddress: (UInt32)inAddress;
 
+/*	moved to Searchers category
 // binary searches
 - (BOOL)findSymbolByAddress: (UInt32)inAddress;
 - (BOOL)findClassMethod: (MethodInfo**)outMI
@@ -513,6 +514,7 @@ enum {
 - (BOOL)findIvar: (objc_ivar*)outIvar
 		 inClass: (objc_class*)inClass
 	  withOffset: (UInt32)inOffset;
+*/
 
 - (void)speedyDelivery;
 

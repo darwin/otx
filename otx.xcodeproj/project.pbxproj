@@ -32,6 +32,8 @@
 		E1B132ED0B1824D7002EB674 /* ListUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B132EB0B1824D7002EB674 /* ListUtils.m */; };
 		E1B132EE0B1824D7002EB674 /* ObjectLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B132EA0B1824D7002EB674 /* ObjectLoader.m */; };
 		E1B132EF0B1824D7002EB674 /* ListUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B132EB0B1824D7002EB674 /* ListUtils.m */; };
+		E1B133960B182788002EB674 /* Searchers.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B133940B182788002EB674 /* Searchers.m */; };
+		E1B133970B182788002EB674 /* Searchers.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B133940B182788002EB674 /* Searchers.m */; };
 		E1F81AC50AE1EE02003D8E2C /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */; };
 		E1F81ADD0AE1EEEC003D8E2C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */; };
 		E1F81B090AE1EF07003D8E2C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */; };
@@ -115,6 +117,8 @@
 		E1B132EB0B1824D7002EB674 /* ListUtils.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ListUtils.m; path = source/Categories/ListUtils.m; sourceTree = "<group>"; };
 		E1B132FB0B182599002EB674 /* Deobfuscator.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Deobfuscator.h; path = source/Protocols/Deobfuscator.h; sourceTree = "<group>"; };
 		E1B132FC0B182599002EB674 /* ProgressReporter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ProgressReporter.h; path = source/Protocols/ProgressReporter.h; sourceTree = "<group>"; };
+		E1B133940B182788002EB674 /* Searchers.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = Searchers.m; path = source/Categories/Searchers.m; sourceTree = "<group>"; };
+		E1B133950B182788002EB674 /* Searchers.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Searchers.h; path = source/Categories/Searchers.h; sourceTree = "<group>"; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
 		E1F81AC20AE1EDC0003D8E2C /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = "source/Smart Crash Reports/SmartCrashReportsInstall.h"; sourceTree = "<group>"; };
 		E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = "source/Smart Crash Reports/SmartCrashReportsInstall.o"; sourceTree = "<group>"; };
@@ -322,6 +326,8 @@
 				E1B132EB0B1824D7002EB674 /* ListUtils.m */,
 				E1B132E90B1824D7002EB674 /* ObjectLoader.h */,
 				E1B132EA0B1824D7002EB674 /* ObjectLoader.m */,
+				E1B133950B182788002EB674 /* Searchers.h */,
+				E1B133940B182788002EB674 /* Searchers.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -456,6 +462,7 @@
 				E1B132680B180BAC002EB674 /* X86Processor.m in Sources */,
 				E1B132EE0B1824D7002EB674 /* ObjectLoader.m in Sources */,
 				E1B132EF0B1824D7002EB674 /* ListUtils.m in Sources */,
+				E1B133970B182788002EB674 /* Searchers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -479,6 +486,7 @@
 				E1B132670B180BAC002EB674 /* X86Processor.m in Sources */,
 				E1B132EC0B1824D7002EB674 /* ObjectLoader.m in Sources */,
 				E1B132ED0B1824D7002EB674 /* ListUtils.m in Sources */,
+				E1B133960B182788002EB674 /* Searchers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
