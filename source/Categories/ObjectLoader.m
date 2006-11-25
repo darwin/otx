@@ -5,6 +5,7 @@
 */
 
 #import "ObjectLoader.h"
+#import "ObjcAccessors.h"
 
 @implementation ExeProcessor (ObjectLoader)
 

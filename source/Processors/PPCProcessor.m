@@ -6,6 +6,7 @@
 
 #import "PPCProcessor.h"
 #import "ListUtils.h"
+#import "ObjcAccessors.h"
 #import "ObjectLoader.h"
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
