@@ -4,6 +4,8 @@
 
 #import "ExeProcessor.h"
 
+#import "Deobfuscator.h"
+
 // Addressing modes in mod field of mod r/m byte.
 // See table 2.2 in the Pentium manual.
 #define MODimm	0	// [reg]
@@ -49,7 +51,7 @@ enum {
 
 // ============================================================================
 
-@interface X86Processor : ExeProcessor
+@interface X86Processor : ExeProcessor <Deobfuscator>
 {
 	GPRegisterInfo	mRegInfos[8];
 }

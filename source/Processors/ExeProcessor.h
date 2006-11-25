@@ -504,21 +504,6 @@ enum {
 			   andMethods: (objc_method**)outMethods
 			  fromAddress: (UInt32)inAddress;
 
-/*	moved to ListUtils
-// Line list manipulators
-- (void)insertLine: (Line*)inLine
-			before: (Line*)nextLine
-			inList: (Line**)listHead;
-- (void)insertLine: (Line*)inLine
-			 after: (Line*)prevLine
-			inList: (Line**)listHead;
-- (void)replaceLine: (Line*)inLine
-		   withLine: (Line*)newLine
-			 inList: (Line**)listHead;
-- (BOOL)printLinesFromList: (Line*)listHead;
-- (void)deleteLinesFromList: (Line*)listHead;
-*/
-
 // binary searches
 - (BOOL)findSymbolByAddress: (UInt32)inAddress;
 - (BOOL)findClassMethod: (MethodInfo**)outMI
@@ -528,15 +513,6 @@ enum {
 - (BOOL)findIvar: (objc_ivar*)outIvar
 		 inClass: (objc_class*)inClass
 	  withOffset: (UInt32)inOffset;
-
-// deobfuscation
-- (BOOL)verifyNops: (unsigned char***)outList
-		  numFound: (UInt32*)outFound;
-- (unsigned char**)searchForNopsIn: (unsigned char*)inHaystack
-						  ofLength: (UInt32)inHaystackLength
-						  numFound: (UInt32*)outFound;
-- (NSURL*)fixNops: (NopList*)inList
-		   toPath: (NSString*)inOutputFilePath;
 
 - (void)speedyDelivery;
 

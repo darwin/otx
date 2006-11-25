@@ -114,6 +114,7 @@
 		E1B132780B180D0C002EB674 /* ObjectLoader.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ObjectLoader.m; path = source/Processors/Categories/ObjectLoader.m; sourceTree = "<group>"; };
 		E1B1327E0B181029002EB674 /* ListUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ListUtils.h; path = source/Processors/Categories/ListUtils.h; sourceTree = "<group>"; };
 		E1B1327F0B181029002EB674 /* ListUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListUtils.m; path = source/Processors/Categories/ListUtils.m; sourceTree = "<group>"; };
+		E1B132CA0B1821D9002EB674 /* Deobfuscator.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Deobfuscator.h; path = source/Processors/Protocols/Deobfuscator.h; sourceTree = "<group>"; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
 		E1F81AC20AE1EDC0003D8E2C /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = "source/Smart Crash Reports/SmartCrashReportsInstall.h"; sourceTree = "<group>"; };
 		E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = "source/Smart Crash Reports/SmartCrashReportsInstall.o"; sourceTree = "<group>"; };
@@ -201,6 +202,8 @@
 			children = (
 				E1FA34020B100D060060060A /* main.m */,
 				32CA4F630368D1EE00C91783 /* otx_Prefix.pch */,
+				E1B1326C0B180C52002EB674 /* Categories */,
+				E1B132720B180C85002EB674 /* Protocols */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -298,8 +301,6 @@
 				E1B132610B180B2F002EB674 /* ExeProcessor.h */,
 				E1B132650B180B70002EB674 /* PPCProcessor.h */,
 				E1B132690B180BB4002EB674 /* X86Processor.h */,
-				E1B1326C0B180C52002EB674 /* Categories */,
-				E1B132720B180C85002EB674 /* Protocols */,
 			);
 			name = Processors;
 			sourceTree = "<group>";
@@ -310,7 +311,6 @@
 				E1B1325E0B180B25002EB674 /* ExeProcessor.m */,
 				E1B132620B180B66002EB674 /* PPCProcessor.m */,
 				E1B132660B180BAC002EB674 /* X86Processor.m */,
-				E1B132770B180CFB002EB674 /* Categories */,
 			);
 			name = Processors;
 			sourceTree = "<group>";
@@ -319,6 +319,8 @@
 			isa = PBXGroup;
 			children = (
 				E1B1327E0B181029002EB674 /* ListUtils.h */,
+				E1B1327F0B181029002EB674 /* ListUtils.m */,
+				E1B132780B180D0C002EB674 /* ObjectLoader.m */,
 				E1B132740B180CEA002EB674 /* ObjectLoader.h */,
 			);
 			name = Categories;
@@ -327,18 +329,10 @@
 		E1B132720B180C85002EB674 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				E1B132CA0B1821D9002EB674 /* Deobfuscator.h */,
 				E1B132730B180C97002EB674 /* ProgressReporter.h */,
 			);
 			name = Protocols;
-			sourceTree = "<group>";
-		};
-		E1B132770B180CFB002EB674 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				E1B1327F0B181029002EB674 /* ListUtils.m */,
-				E1B132780B180D0C002EB674 /* ObjectLoader.m */,
-			);
-			name = Categories;
 			sourceTree = "<group>";
 		};
 		E1F81ABB0AE1ED62003D8E2C /* Smart Crash Reports */ = {
