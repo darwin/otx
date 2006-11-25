@@ -298,10 +298,6 @@ enum {
 @protected
 	id		mController;
 
-	// UI
-//	NSTextField*			mProgText;
-//	NSProgressIndicator*	mProgBar;
-
 	// guts
 	NSURL*				mOFile;					// exe on disk
 	char*				mRAMFile;				// exe in RAM
@@ -443,37 +439,6 @@ enum {
 - (void)createVerboseFile: (NSURL**)outVerbosePath
 			 andPlainFile: (NSURL**)outPlainPath;
 
-/*	moved to ObjectLoader category
-- (BOOL)loadMachHeader;
-- (void)loadLCommands;
-- (void)loadSegment: (segment_command*)inSegPtr;
-- (void)loadSymbols: (symtab_command*)inSymPtr;
-- (void)loadDySymbols: (dysymtab_command*)inSymPtr;
-- (void)loadObjcSection: (section*)inSect;
-- (void)loadObjcModules;
-- (void)loadCStringSection: (section*)inSect;
-- (void)loadNSStringSection: (section*)inSect;
-- (void)loadClassSection: (section*)inSect;
-- (void)loadMetaClassSection: (section*)inSect;
-- (void)loadIVarSection: (section*)inSect;
-- (void)loadObjcModSection: (section*)inSect;
-- (void)loadObjcSymSection: (section*)inSect;
-- (void)loadLit4Section: (section*)inSect;
-- (void)loadLit8Section: (section*)inSect;
-- (void)loadTextSection: (section*)inSect;
-- (void)loadCoalTextSection: (section*)inSect;
-- (void)loadCoalTextNTSection: (section*)inSect;
-- (void)loadConstTextSection: (section*)inSect;
-- (void)loadDataSection: (section*)inSect;
-- (void)loadCoalDataSection: (section*)inSect;
-- (void)loadCoalDataNTSection: (section*)inSect;
-- (void)loadConstDataSection: (section*)inSect;
-- (void)loadDyldDataSection: (section*)inSect;
-- (void)loadCFStringSection: (section*)inSect;
-- (void)loadNonLazySymbolSection: (section*)inSect;
-- (void)loadImpPtrSection: (section*)inSect;
-*/
-
 // customizers
 - (BOOL)processVerboseFile: (NSURL*)inVerboseFile
 			  andPlainFile: (NSURL*)inPlainFile;
@@ -516,6 +481,7 @@ enum {
 - (void)insertMD5;
 - (char*)prepareNameForDemangling: (char*)inName;
 
+// Obj-C accessors
 - (objc_class*)objcClassPtrFromMethod: (UInt32)inAddress;
 - (objc_category*)objcCatPtrFromMethod: (UInt32)inAddress;
 - (MethodInfo*)objcMethodFromAddress: (UInt32)inAddress;
@@ -571,6 +537,7 @@ enum {
 		   toPath: (NSString*)inOutputFilePath;
 
 - (void)speedyDelivery;
+
 - (void)printSymbol: (nlist)inSym;
 - (void)printBlocks: (UInt32)inFuncIndex;
 
