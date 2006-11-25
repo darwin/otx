@@ -454,8 +454,14 @@
 						case OCStrObjectType:
 						case OCClassType:
 						case OCModType:
-							theDummyPtr	= [self objcDescriptionFromObject:
-								theSymPtr type: theType];
+// TESTING
+//							theDummyPtr	= [self objcDescriptionFromObject:
+//								theSymPtr type: theType];
+
+// some dumbass forgot to optimize this
+							if (![self getObjcDescription: &theDummyPtr
+								fromObject: theSymPtr type: theType])
+								break;
 
 							if (theDummyPtr)
 							{
@@ -771,8 +777,11 @@
 	// if the function was called indirectly. In the case of direct calls,
 	// r12 will be overwritten before it is used, if it is used at all.
 
-	mCurrentClass	= ObjcClassPtrFromMethod(inLine->info.address);
-	mCurrentCat		= ObjcCatPtrFromMethod(inLine->info.address);
+//	mCurrentClass	= ObjcClassPtrFromMethod(inLine->info.address);
+	GetObjcClassPtrFromMethod(&mCurrentClass, inLine->info.address);
+
+//	mCurrentCat		= ObjcCatPtrFromMethod(inLine->info.address);
+	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
 
 	bzero(&mRegInfos[0], sizeof(GPRegisterInfo) * 32);
 

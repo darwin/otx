@@ -732,10 +732,13 @@
 		mCurrentFuncPtr	= (*ioLine)->info.address;
 
 		// Try to build the method name.
-		MethodInfo*	theInfo			=
-			ObjcMethodFromAddress(mCurrentFuncPtr);
+//		MethodInfo*	theInfo			=
+//			ObjcMethodFromAddress(mCurrentFuncPtr);
 
-		if (theInfo != nil)
+		MethodInfo*	theInfo	= nil;
+
+		if (GetObjcMethodFromAddress(&theInfo, mCurrentFuncPtr))
+//		if (theInfo != nil)
 		{
 			char*	className	= nil;
 			char*	catName		= nil;
@@ -1535,60 +1538,69 @@
 //	is called each time a new function is detected. If that function is known
 //	to be an Obj-C method, it's class is returned. Otherwise this returns nil.
 
-- (objc_class*)objcClassPtrFromMethod: (UInt32)inAddress;
+- (BOOL)objcClassPtr: (objc_class**)outClass
+		  fromMethod: (UInt32)inAddress;
 {
+	*outClass	= nil;
+
 	MethodInfo*	theInfo	= nil;
 
 	FindClassMethodByAddress(&theInfo, inAddress);
 
 	if (theInfo)
-		return &theInfo->oc_class;
+		*outClass	= &theInfo->oc_class;
 
-	return nil;
+	return (*outClass != nil);
 }
 
-//	objcCatPtrFromMethod:
+//	getObjcCatPtr:fromMethod:
 // ----------------------------------------------------------------------------
 //	Same as above, for categories.
 
-- (objc_category*)objcCatPtrFromMethod: (UInt32)inAddress;
+- (BOOL)getObjcCatPtr: (objc_category**)outCat
+		   fromMethod: (UInt32)inAddress;
 {
+	*outCat	= nil;
+
 	MethodInfo*	theInfo	= nil;
 
 	FindCatMethodByAddress(&theInfo, inAddress);
 
 	if (theInfo)
-		return &theInfo->oc_cat;
+		*outCat	= &theInfo->oc_cat;
 
-	return nil;
+	return (*outCat != nil);
 }
 
-//	objcMethodFromAddress:
+//	getObjcMethod:fromAddress:
 // ----------------------------------------------------------------------------
 //	Given a method imp address, return the MethodInfo for it.
 
-- (MethodInfo*)objcMethodFromAddress: (UInt32)inAddress;
+- (BOOL)getObjcMethod: (MethodInfo**)outMI
+		  fromAddress: (UInt32)inAddress;
 {
-	MethodInfo*	theInfo	= nil;
+	*outMI	= nil;
 
-	FindClassMethodByAddress(&theInfo, inAddress);
+	FindClassMethodByAddress(outMI, inAddress);
 
-	if (theInfo)
-		return theInfo;
+	if (*outMI)
+		return true;
 
-	FindCatMethodByAddress(&theInfo, inAddress);
+	FindCatMethodByAddress(outMI, inAddress);
 
-	return theInfo;
+	return (*outMI != nil);
 }
 
-//	objcDescriptionFromObject:type:
+//	getObjcDescription:fromObject:type:
 // ----------------------------------------------------------------------------
 //	Given an Obj-C object, return it's description.
 
-- (char*)objcDescriptionFromObject: (const char*)inObject
-							  type: (UInt8)inType
+- (BOOL)getObjcDescription: (char**)outDescription
+				fromObject: (const char*)inObject
+					  type: (UInt8)inType
 {
-	char*	thePtr		= nil;
+	*outDescription	= nil;
+
 	UInt32	theValue	= 0;
 
 	switch (inType)
@@ -1627,15 +1639,16 @@
 			break;
 
 		default:
+			return false;
 			break;
 	}
 
 	if (mSwapped)
 		theValue	= OSSwapInt32(theValue);
 
-	thePtr	= GetPointer(theValue, nil);
+	*outDescription	= GetPointer(theValue, nil);
 
-	return thePtr;
+	return (*outDescription != nil);
 }
 
 #pragma mark -
@@ -2411,73 +2424,73 @@
 
 - (void)speedyDelivery
 {
-	GetDescription				= GetDescriptionFuncType
+	GetDescription					= GetDescriptionFuncType
 		[self methodForSelector: GetDescriptionSel];
-	LineIsCode					= LineIsCodeFuncType
+	LineIsCode						= LineIsCodeFuncType
 		[self methodForSelector: LineIsCodeSel];
-	LineIsFunction				= LineIsFunctionFuncType
+	LineIsFunction					= LineIsFunctionFuncType
 		[self methodForSelector: LineIsFunctionSel];
-	AddressFromLine				= AddressFromLineFuncType
+	AddressFromLine					= AddressFromLineFuncType
 		[self methodForSelector: AddressFromLineSel];
-	CodeFromLine				= CodeFromLineFuncType
+	CodeFromLine					= CodeFromLineFuncType
 		[self methodForSelector: CodeFromLineSel];
-	CheckThunk					= CheckThunkFuncType
-		[self methodForSelector: CheckThunkSel];
-	ProcessLine					= ProcessLineFuncType
+	CheckThunk						= CheckThunkFuncType
+		[self methodForSelector	: CheckThunkSel];
+	ProcessLine						= ProcessLineFuncType
 		[self methodForSelector: ProcessLineSel];
-	ProcessCodeLine				= ProcessCodeLineFuncType
+	ProcessCodeLine					= ProcessCodeLineFuncType
 		[self methodForSelector: ProcessCodeLineSel];
-	PostProcessCodeLine			= PostProcessCodeLineFuncType
+	PostProcessCodeLine				= PostProcessCodeLineFuncType
 		[self methodForSelector: PostProcessCodeLineSel];
-	ChooseLine					= ChooseLineFuncType
+	ChooseLine						= ChooseLineFuncType
 		[self methodForSelector: ChooseLineSel];
-	EntabLine					= EntabLineFuncType
+	EntabLine						= EntabLineFuncType
 		[self methodForSelector: EntabLineSel];
-	GetPointer					= GetPointerFuncType
+	GetPointer						= GetPointerFuncType
 		[self methodForSelector: GetPointerSel];
-	CommentForLine				= CommentForLineFuncType
+	CommentForLine					= CommentForLineFuncType
 		[self methodForSelector: CommentForLineSel];
-	CommentForSystemCall		= CommentForSystemCallFuncType
+	CommentForSystemCall			= CommentForSystemCallFuncType
 		[self methodForSelector: CommentForSystemCallSel];
-	CommentForMsgSendFromLine	= CommentForMsgSendFromLineFuncType
+	CommentForMsgSendFromLine		= CommentForMsgSendFromLineFuncType
 		[self methodForSelector: CommentForMsgSendFromLineSel];
-	SelectorForMsgSend			= SelectorForMsgSendFuncType
+	SelectorForMsgSend				= SelectorForMsgSendFuncType
 		[self methodForSelector: SelectorForMsgSendSel];
-	SelectorIsFriendly			= SelectorIsFriendlyFuncType
+	SelectorIsFriendly				= SelectorIsFriendlyFuncType
 		[self methodForSelector: SelectorIsFriendlySel];
-	ResetRegisters				= ResetRegistersFuncType
+	ResetRegisters					= ResetRegistersFuncType
 		[self methodForSelector: ResetRegistersSel];
-	UpdateRegisters				= UpdateRegistersFuncType
+	UpdateRegisters					= UpdateRegistersFuncType
 		[self methodForSelector: UpdateRegistersSel];
-	RestoreRegisters			= RestoreRegistersFuncType
+	RestoreRegisters				= RestoreRegistersFuncType
 		[self methodForSelector: RestoreRegistersSel];
-	SendTypeFromMsgSend			= SendTypeFromMsgSendFuncType
+	SendTypeFromMsgSend				= SendTypeFromMsgSendFuncType
 		[self methodForSelector: SendTypeFromMsgSendSel];
-	PrepareNameForDemangling	= PrepareNameForDemanglingFuncType
+	PrepareNameForDemangling		= PrepareNameForDemanglingFuncType
 		[self methodForSelector: PrepareNameForDemanglingSel];
-	ObjcClassPtrFromMethod		= ObjcClassPtrFromMethodFuncType
-		[self methodForSelector: ObjcClassPtrFromMethodSel];
-	ObjcCatPtrFromMethod		= ObjcCatPtrFromMethodFuncType
-		[self methodForSelector: ObjcCatPtrFromMethodSel];
-	ObjcMethodFromAddress		= ObjcMethodFromAddressFuncType
-		[self methodForSelector: ObjcMethodFromAddressSel];
-	GetObjcClassFromName		= GetObjcClassFromNameFuncType
+	GetObjcClassPtrFromMethod		= GetObjcClassPtrFromMethodFuncType
+		[self methodForSelector: GetObjcClassPtrFromMethodSel];
+	GetObjcCatPtrFromMethod			= GetObjcCatPtrFromMethodFuncType
+		[self methodForSelector: GetObjcCatPtrFromMethodSel];
+	GetObjcMethodFromAddress		= GetObjcMethodFromAddressFuncType
+		[self methodForSelector: GetObjcMethodFromAddressSel];
+	GetObjcClassFromName			= GetObjcClassFromNameFuncType
 		[self methodForSelector: GetObjcClassFromNameSel];
-	ObjcDescriptionFromObject	= ObjcDescriptionFromObjectFuncType
-		[self methodForSelector: ObjcDescriptionFromObjectSel];
-	InsertLineBefore			= InsertLineBeforeFuncType
+	GetObjcDescriptionFromObject	= GetObjcDescriptionFromObjectFuncType
+		[self methodForSelector: GetObjcDescriptionFromObjectSel];
+	InsertLineBefore				= InsertLineBeforeFuncType
 		[self methodForSelector: InsertLineBeforeSel];
-	InsertLineAfter				= InsertLineAfterFuncType
+	InsertLineAfter					= InsertLineAfterFuncType
 		[self methodForSelector: InsertLineAfterSel];
-	ReplaceLine					= ReplaceLineFuncType
+	ReplaceLine						= ReplaceLineFuncType
 		[self methodForSelector: ReplaceLineSel];
-	FindIvar					= FindIvarFuncType
+	FindIvar						= FindIvarFuncType
 		[self methodForSelector: FindIvarSel];
-	FindSymbolByAddress			= FindSymbolByAddressFuncType
+	FindSymbolByAddress				= FindSymbolByAddressFuncType
 		[self methodForSelector: FindSymbolByAddressSel];
-	FindClassMethodByAddress	= FindClassMethodByAddressFuncType
+	FindClassMethodByAddress		= FindClassMethodByAddressFuncType
 		[self methodForSelector: FindClassMethodByAddressSel];
-	FindCatMethodByAddress		= FindCatMethodByAddressFuncType
+	FindCatMethodByAddress			= FindCatMethodByAddressFuncType
 		[self methodForSelector: FindCatMethodByAddressSel];
 }
 

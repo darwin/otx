@@ -414,11 +414,11 @@ enum {
 	UInt8	(*SendTypeFromMsgSend)			(id, SEL, char*);
 	char*	(*PrepareNameForDemangling)		(id, SEL, char*);
 
-	objc_class*		(*ObjcClassPtrFromMethod)		(id, SEL, UInt32);
-	objc_category*	(*ObjcCatPtrFromMethod)			(id, SEL, UInt32);
-	MethodInfo*		(*ObjcMethodFromAddress)		(id, SEL, UInt32);
-	BOOL			(*GetObjcClassFromName)			(id, SEL, objc_class*, const char*);
-	char*			(*ObjcDescriptionFromObject)	(id, SEL, const char*, UInt8);
+	BOOL	(*GetObjcClassPtrFromMethod)	(id, SEL, objc_class**, UInt32);
+	BOOL	(*GetObjcCatPtrFromMethod)		(id, SEL, objc_category**, UInt32);
+	BOOL	(*GetObjcMethodFromAddress)		(id, SEL, MethodInfo**, UInt32);
+	BOOL	(*GetObjcClassFromName)			(id, SEL, objc_class*, const char*);
+	BOOL	(*GetObjcDescriptionFromObject)	(id, SEL, char**, const char*, UInt8);
 
 	void	(*InsertLineBefore)	(id, SEL, Line*, Line*, Line**);
 	void	(*InsertLineAfter)	(id, SEL, Line*, Line*, Line**);
@@ -482,12 +482,16 @@ enum {
 - (char*)prepareNameForDemangling: (char*)inName;
 
 // Obj-C accessors
-- (objc_class*)objcClassPtrFromMethod: (UInt32)inAddress;
-- (objc_category*)objcCatPtrFromMethod: (UInt32)inAddress;
-- (MethodInfo*)objcMethodFromAddress: (UInt32)inAddress;
-- (char*)objcDescriptionFromObject: (const char*)inObject
-							  type: (UInt8)inType;
+- (BOOL)objcClassPtr: (objc_class**)outClass
+		  fromMethod: (UInt32)inAddress;
 
+- (BOOL)getObjcCatPtr: (objc_category**)outCat
+		   fromMethod: (UInt32)inAddress;
+- (BOOL)getObjcMethod: (MethodInfo**)outMI
+		  fromAddress: (UInt32)inAddress;
+- (BOOL)getObjcDescription: (char**)outDescription
+				fromObject: (const char*)inObject
+					  type: (UInt8)inType;
 - (BOOL)getObjcSymtab: (objc_symtab*)outSymTab
 			  andDefs: (void***)outDefs
 		   fromModule: (objc_module*)inModule;

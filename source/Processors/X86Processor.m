@@ -988,8 +988,13 @@
 				case OCStrObjectType:
 				case OCClassType:
 				case OCModType:
-					theSymPtr	= [self objcDescriptionFromObject:
-						theDummyPtr type: theType];
+// TESTING
+//					theSymPtr	= [self objcDescriptionFromObject:
+//						theDummyPtr type: theType];
+
+// some dumbass forgot to optimize this
+					[self getObjcDescription: &theSymPtr
+						fromObject: theDummyPtr type: theType];
 
 					break;
 
@@ -1384,8 +1389,12 @@
 		return;
 	}
 
-	mCurrentClass	= ObjcClassPtrFromMethod(inLine->info.address);
-	mCurrentCat		= ObjcCatPtrFromMethod(inLine->info.address);
+//	mCurrentClass	= ObjcClassPtrFromMethod(inLine->info.address);
+	GetObjcClassPtrFromMethod(&mCurrentClass, inLine->info.address);
+
+//	mCurrentCat		= ObjcCatPtrFromMethod(inLine->info.address);
+	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
+
 	mCurrentThunk	= NO_REG;
 
 	bzero(&mRegInfos[0], sizeof(GPRegisterInfo) * 8);
