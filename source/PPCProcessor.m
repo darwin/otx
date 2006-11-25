@@ -535,7 +535,8 @@
 	UInt32		syscallNumReg	= isIndirect ? 3 : 0;
 	UInt32		syscallArg1Reg	= isIndirect ? 4 : 3;
 
-	if (!mRegInfos[syscallNumReg].isValid)
+	if (!mRegInfos[syscallNumReg].isValid	||
+		mRegInfos[syscallNumReg].value > SYS_MAXSYSCALL)
 	{
 		snprintf(mLineCommentCString, 11, "syscall(?)");
 		return;
