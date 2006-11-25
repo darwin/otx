@@ -7,9 +7,6 @@
 
 #import "SystemIncludes.h"
 
-//#import <sys/ptrace.h>
-//#import <sys/syscall.h>
-
 #import "demangle.h"
 
 #import "ExeProcessor.h"
