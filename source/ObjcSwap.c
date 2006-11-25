@@ -4,10 +4,12 @@
 	Functions adapted from cctools-590/otool/print_objc.c
 */
 
-#import <libkern/OSByteOrder.h>
-#import <objc/objc-runtime.h>
+//#import <libkern/OSByteOrder.h>
+//#import <objc/objc-runtime.h>
 
-#import "LangDefs.h"
+//#import "LangDefs.h"
+
+#import "SystemIncludes.h"
 
 //	swap_objc_module
 // ----------------------------------------------------------------------------

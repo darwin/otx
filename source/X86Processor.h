@@ -2,7 +2,7 @@
 	X86Processor.h
 */
 
-#import "ExeProcessor.h"
+#import "ObjectLoader.h"
 
 // Addressing modes in mod field of mod r/m byte.
 // See table 2.2 in the Pentium manual.

@@ -3,13 +3,9 @@
 */
 
 #import <Cocoa/Cocoa.h>
-#import <Kernel/mach/machine.h>
-#import <mach-o/nlist.h>
-#import <objc/objc-class.h>
 
-#import "LangDefs.h"
+#import "SystemIncludes.h"
 #import "StolenDefs.h"
-
 #import "Optimizations.h"
 #import "ProgressReporter.h"
 #import "Selectors.h"
@@ -446,6 +442,8 @@ enum {
 - (BOOL)processExe: (NSString*)inOutputFilePath;
 - (void)createVerboseFile: (NSURL**)outVerbosePath
 			 andPlainFile: (NSURL**)outPlainPath;
+
+/*	moved to ObjectLoader category
 - (BOOL)loadMachHeader;
 - (void)loadLCommands;
 - (void)loadSegment: (segment_command*)inSegPtr;
@@ -474,6 +472,7 @@ enum {
 - (void)loadCFStringSection: (section*)inSect;
 - (void)loadNonLazySymbolSection: (section*)inSect;
 - (void)loadImpPtrSection: (section*)inSect;
+*/
 
 // customizers
 - (BOOL)processVerboseFile: (NSURL*)inVerboseFile

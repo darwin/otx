@@ -4,14 +4,6 @@
 	A subclass of ExeProcessor that handles x86-specific issues.
 */
 
-#import <libkern/OSByteOrder.h>
-#import <mach-o/loader.h>
-#import <mach-o/nlist.h>
-#import <mach-o/swap.h>
-#import <objc/objc-runtime.h>
-#import <sys/ptrace.h>
-#import <sys/syscall.h>
-
 #import "X86Processor.h"
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"

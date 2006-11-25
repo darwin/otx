@@ -24,6 +24,8 @@
 		E1A152700AA364A600324ED3 /* xexit.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A152690AA364A600324ED3 /* xexit.c */; };
 		E1A152710AA364A600324ED3 /* xmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526A0AA364A600324ED3 /* xmalloc.c */; };
 		E1A152720AA364A600324ED3 /* xstrdup.c in Sources */ = {isa = PBXBuildFile; fileRef = E1A1526B0AA364A600324ED3 /* xstrdup.c */; };
+		E1B1313C0B16D5F4002EB674 /* ObjectLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B1313B0B16D5F3002EB674 /* ObjectLoader.m */; };
+		E1B1313D0B16D5F4002EB674 /* ObjectLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B1313B0B16D5F3002EB674 /* ObjectLoader.m */; };
 		E1D77F2E09B296A300176F18 /* ExeProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = E1D77F2D09B296A300176F18 /* ExeProcessor.m */; };
 		E1F81AC50AE1EE02003D8E2C /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */; };
 		E1F81ADD0AE1EEEC003D8E2C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */; };
@@ -87,7 +89,6 @@
 		E13539900A68185500CBDDE5 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AppController.h; path = source/AppController.h; sourceTree = "<group>"; };
 		E14769570A60E95B00C03C62 /* PPCProcessor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = PPCProcessor.m; path = source/PPCProcessor.m; sourceTree = "<group>"; };
 		E14769C00A60F47E00C03C62 /* X86Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = X86Processor.m; path = source/X86Processor.m; sourceTree = "<group>"; };
-		E160C7D609B97223005074DB /* LangDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LangDefs.h; path = source/LangDefs.h; sourceTree = "<group>"; };
 		E16222240A4F80F4007ECB26 /* Optimizations.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Optimizations.h; path = source/Optimizations.h; sourceTree = "<group>"; };
 		E182007009AE4CD800584B07 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppController.m; path = source/AppController.m; sourceTree = "<group>"; wrapsLines = 0; };
 		E18201E609AFAAAC00584B07 /* CDropBox.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDropBox.m; path = source/CDropBox.m; sourceTree = "<group>"; };
@@ -104,6 +105,9 @@
 		E1A152690AA364A600324ED3 /* xexit.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xexit.c; path = "source/binutils-2.17/libiberty/xexit.c"; sourceTree = SOURCE_ROOT; };
 		E1A1526A0AA364A600324ED3 /* xmalloc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xmalloc.c; path = "source/binutils-2.17/libiberty/xmalloc.c"; sourceTree = SOURCE_ROOT; };
 		E1A1526B0AA364A600324ED3 /* xstrdup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xstrdup.c; path = "source/binutils-2.17/libiberty/xstrdup.c"; sourceTree = SOURCE_ROOT; };
+		E1B1313A0B16D5F3002EB674 /* ObjectLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ObjectLoader.h; path = source/ObjectLoader.h; sourceTree = "<group>"; };
+		E1B1313B0B16D5F3002EB674 /* ObjectLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ObjectLoader.m; path = source/ObjectLoader.m; sourceTree = "<group>"; };
+		E1B1316E0B17EF84002EB674 /* SystemIncludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SystemIncludes.h; path = source/SystemIncludes.h; sourceTree = "<group>"; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
 		E1D77F2D09B296A300176F18 /* ExeProcessor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ExeProcessor.m; path = source/ExeProcessor.m; sourceTree = "<group>"; };
 		E1F81AC20AE1EDC0003D8E2C /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = "source/Smart Crash Reports/SmartCrashReportsInstall.h"; sourceTree = "<group>"; };
@@ -155,6 +159,7 @@
 				E18201E609AFAAAC00584B07 /* CDropBox.m */,
 				E1D77F2D09B296A300176F18 /* ExeProcessor.m */,
 				E14769570A60E95B00C03C62 /* PPCProcessor.m */,
+				E1B1313B0B16D5F3002EB674 /* ObjectLoader.m */,
 				E14769C00A60F47E00C03C62 /* X86Processor.m */,
 			);
 			name = Classes;
@@ -207,7 +212,6 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				E160C7D609B97223005074DB /* LangDefs.h */,
 				E13539820A6817C700CBDDE5 /* ObjcSwap.c */,
 				E16222240A4F80F4007ECB26 /* Optimizations.h */,
 				E10500110AFF022100F7D6CA /* Selectors.h */,
@@ -249,7 +253,9 @@
 				E135398E0A68185500CBDDE5 /* ExeProcessor.h */,
 				E135398C0A68185500CBDDE5 /* PPCProcessor.h */,
 				E135398D0A68185500CBDDE5 /* X86Processor.h */,
+				E1B1313A0B16D5F3002EB674 /* ObjectLoader.h */,
 				E1FA31F00B0D65180060060A /* ProgressReporter.h */,
+				E1B1316E0B17EF84002EB674 /* SystemIncludes.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -408,6 +414,7 @@
 				E1A152710AA364A600324ED3 /* xmalloc.c in Sources */,
 				E1A152720AA364A600324ED3 /* xstrdup.c in Sources */,
 				E1FA34030B100D060060060A /* main.m in Sources */,
+				E1B1313D0B16D5F4002EB674 /* ObjectLoader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -429,6 +436,7 @@
 				E1FA33E30B10081B0060060A /* xstrdup.c in Sources */,
 				E1FA34500B105E4F0060060A /* CLIController.m in Sources */,
 				E1FA36570B12EE0A0060060A /* main.m in Sources */,
+				E1B1313C0B16D5F4002EB674 /* ObjectLoader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

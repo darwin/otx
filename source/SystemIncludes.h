@@ -1,6 +1,16 @@
 /*
-	LangDefs.h
+	SystemIncludes.h
 */
+
+#import <libkern/OSByteOrder.h>
+#import <mach/machine.h>
+#import <mach-o/fat.h>
+#import <mach-o/loader.h>
+#import <mach-o/nlist.h>
+#import <mach-o/swap.h>
+#import <objc/objc-runtime.h>
+#import <sys/ptrace.h>
+#import <sys/syscall.h>
 
 // I refuse to type 'struct' 1,000 times.
 #define fat_header			struct fat_header
