@@ -5,6 +5,7 @@
 */
 
 #import "X86Processor.h"
+#import "ArchSpecifics.h"
 #import "ListUtils.h"
 #import "ObjcAccessors.h"
 #import "ObjectLoader.h"

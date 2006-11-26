@@ -443,7 +443,7 @@ enum {
 - (BOOL)processVerboseFile: (NSURL*)inVerboseFile
 			  andPlainFile: (NSURL*)inPlainFile;
 - (void)gatherLineInfos;
-- (void)gatherFuncInfos;
+//- (void)gatherFuncInfos;
 - (void)decodeMethodReturnType: (const char*)inTypeCode
 						output: (char*)outCString;
 - (void)getDescription: (char*)ioCString
@@ -452,31 +452,31 @@ enum {
 - (void)printDataSection: (section_info*)inSect
 				  toFile: (FILE*)outFile;
 - (BOOL)lineIsCode: (const char*)inLine;
-- (BOOL)lineIsFunction: (Line*)inLine;
+//- (BOOL)lineIsFunction: (Line*)inLine;
 - (UInt32)addressFromLine: (const char*)inLine;
-- (void)codeFromLine: (Line*)inLine;
-- (void)checkThunk: (Line*)inLine;
+//- (void)codeFromLine: (Line*)inLine;
+//- (void)checkThunk: (Line*)inLine;
 - (void)processLine: (Line*)ioLine;
 - (void)processCodeLine: (Line**)ioLine;
-- (void)postProcessCodeLine: (Line**)ioLine;
+//- (void)postProcessCodeLine: (Line**)ioLine;
 - (void)chooseLine: (Line**)ioLine;
 - (void)entabLine: (Line*)ioLine;
 - (char*)getPointer: (UInt32)inAddr
 			andType: (UInt8*)outType;
 
-- (void)commentForLine: (Line*)inLine;
-- (void)commentForSystemCall;
-- (void)commentForMsgSend: (char*)ioComment
-				 fromLine: (Line*)inLine;
+//- (void)commentForLine: (Line*)inLine;
+//- (void)commentForSystemCall;
+//- (void)commentForMsgSend: (char*)ioComment
+//				 fromLine: (Line*)inLine;
 
 - (char*)selectorForMsgSend: (char*)ioComment
 				   fromLine: (Line*)inLine;
 - (BOOL)selectorIsFriendly: (const char*)inSel;
 - (UInt8)sendTypeFromMsgSend: (char*)inString;
 
-- (void)resetRegisters: (Line*)inLine;
-- (void)updateRegisters: (Line*)inLine;
-- (BOOL)restoreRegisters: (Line*)inLine;
+//- (void)resetRegisters: (Line*)inLine;
+//- (void)updateRegisters: (Line*)inLine;
+//- (BOOL)restoreRegisters: (Line*)inLine;
 
 - (void)insertMD5;
 - (char*)prepareNameForDemangling: (char*)inName;

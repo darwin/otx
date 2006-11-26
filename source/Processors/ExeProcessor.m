@@ -10,6 +10,7 @@
 #import "demangle.h"
 
 #import "ExeProcessor.h"
+#import "ArchSpecifics.h"
 #import "ListUtils.h"
 #import "ObjcAccessors.h"
 #import "ObjectLoader.h"
@@ -566,12 +567,12 @@
 	mEndOfText	= mTextSect.s.addr + mTextSect.s.size;
 }
 
-//	gatherFuncInfos
+/*//	gatherFuncInfos
 // ----------------------------------------------------------------------------
 //	Subclasses may override
 
 - (void)gatherFuncInfos
-{}
+{}*/
 
 //	processLine:
 // ----------------------------------------------------------------------------
@@ -1086,12 +1087,12 @@
 	PostProcessCodeLine(ioLine);
 }
 
-//	postProcessCodeLine:
+/*//	postProcessCodeLine:
 // ----------------------------------------------------------------------------
 //	Subclasses may override.
 
 - (void)postProcessCodeLine: (Line**)ioLine
-{}
+{}*/
 
 //	printDataSections
 // ----------------------------------------------------------------------------
@@ -1284,7 +1285,7 @@
 	return theAddress;
 }
 
-//	lineIsFunction:
+/*//	lineIsFunction:
 // ----------------------------------------------------------------------------
 //	Subclasses may override
 
@@ -1327,7 +1328,7 @@
 
 - (void)commentForMsgSend: (char*)ioComment
 				 fromLine: (Line*)inLine
-{}
+{}*/
 
 //	chooseLine:
 // ----------------------------------------------------------------------------
@@ -1403,7 +1404,7 @@
 
 	return sendType;
 }
-
+/*
 #pragma mark -
 //	resetRegisters:
 // ----------------------------------------------------------------------------
@@ -1426,7 +1427,7 @@
 - (BOOL)restoreRegisters: (Line*)ioLine
 {
 	return false;
-}
+}*/
 
 #pragma mark -
 //	insertMD5
