@@ -456,13 +456,8 @@
 						case OCStrObjectType:
 						case OCClassType:
 						case OCModType:
-// TESTING
-//							theDummyPtr	= [self objcDescriptionFromObject:
-//								theSymPtr type: theType];
-
-// some dumbass forgot to optimize this
-							if (![self getObjcDescription: &theDummyPtr
-								fromObject: theSymPtr type: theType])
+							if (!GetObjcDescriptionFromObject(
+								&theDummyPtr, theSymPtr, theType))
 								break;
 
 							if (theDummyPtr)
@@ -778,13 +773,8 @@
 	// of any Obj-C method, and r12 holds the address of the 1st instruction
 	// if the function was called indirectly. In the case of direct calls,
 	// r12 will be overwritten before it is used, if it is used at all.
-
-//	mCurrentClass	= ObjcClassPtrFromMethod(inLine->info.address);
 	GetObjcClassPtrFromMethod(&mCurrentClass, inLine->info.address);
-
-//	mCurrentCat		= ObjcCatPtrFromMethod(inLine->info.address);
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
-
 	bzero(&mRegInfos[0], sizeof(GPRegisterInfo) * 32);
 
 	mRegInfos[3].classPtr	= mCurrentClass;

@@ -990,13 +990,8 @@
 				case OCStrObjectType:
 				case OCClassType:
 				case OCModType:
-// TESTING
-//					theSymPtr	= [self objcDescriptionFromObject:
-//						theDummyPtr type: theType];
-
-// some dumbass forgot to optimize this
-					[self getObjcDescription: &theSymPtr
-						fromObject: theDummyPtr type: theType];
+					GetObjcDescriptionFromObject(
+						&theSymPtr, theDummyPtr, theType);
 
 					break;
 

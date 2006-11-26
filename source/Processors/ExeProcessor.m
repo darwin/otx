@@ -481,8 +481,8 @@
 		progCounter++;
 	}
 
-//	progState	= (ProgressState){true, true, 0, nil, @"Writing file"};
-	progState	= (ProgressState){false, false, Complete, nil, nil};
+	progState	= (ProgressState){true, true, 0, nil, @"Writing file"};
+//	progState	= (ProgressState){false, false, Complete, nil, nil};
 
 	[mController reportProgress: &progState];
 
@@ -495,6 +495,9 @@
 		if (![self printDataSections])
 			return false;
 	}
+
+	progState	= (ProgressState){false, false, Complete, nil, nil};
+	[mController reportProgress: &progState];
 
 	return true;
 }
@@ -727,13 +730,9 @@
 		mCurrentFuncPtr	= (*ioLine)->info.address;
 
 		// Try to build the method name.
-//		MethodInfo*	theInfo			=
-//			ObjcMethodFromAddress(mCurrentFuncPtr);
-
 		MethodInfo*	theInfo	= nil;
 
 		if (GetObjcMethodFromAddress(&theInfo, mCurrentFuncPtr))
-//		if (theInfo != nil)
 		{
 			char*	className	= nil;
 			char*	catName		= nil;
@@ -1073,7 +1072,7 @@
 	}
 
 	// The test above can fail even if mEnteringNewBlock was true, so we
-	// should reset it here.
+	// should reset it here instead.
 	mEnteringNewBlock	= false;
 
 	UpdateRegisters(*ioLine);
@@ -1228,7 +1227,8 @@
 
 		if (fprintf(outFile, "%s", theLineCString) < 0)
 		{
-			perror("otx: unable to write to output file");
+			perror("otx: [ExeProcessor printDataSection:toFile:]: "
+				"unable to write to output file");
 			return;
 		}
 	}
@@ -1335,6 +1335,8 @@
 			sendType	= send_stret;
 		else if (strstr(inString, "_rtp"))
 			sendType	= send_rtp;
+		else if (strstr(inString, "_fpret"))
+			sendType	= send_fpret;
 		else	// Holy va_list!
 		{
 			sendType	= send_variadic;

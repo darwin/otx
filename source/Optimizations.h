@@ -68,7 +68,7 @@
 #define GetObjcCatPtrFromMethodSel		@selector(getObjcCatPtr:fromMethod:)
 #define GetObjcMethodFromAddressSel		@selector(getObjcMethod:fromAddress:)
 #define GetObjcClassFromNameSel			@selector(getObjcClass:fromName:)
-#define GetObjcDescriptionFromObjectSel	@selector(getObjcDescriptionFromObject:type:)
+#define GetObjcDescriptionFromObjectSel	@selector(getObjcDescription:fromObject:type:)
 #define InsertLineBeforeSel				@selector(insertLine:before:inList:)
 #define InsertLineAfterSel				@selector(insertLine:after:inList:)
 #define ReplaceLineSel					@selector(replaceLine:withLine:inList:)
