@@ -1,6 +1,8 @@
 /*
 	ArchSpecifics.h
 
+	A category on ExeProcessor that contains most of the
+	architecture-specific methods.
 */
 
 #import "ExeProcessor.h"
@@ -17,10 +19,6 @@
 - (void)commentForSystemCall;
 - (void)commentForMsgSend: (char*)ioComment
 				 fromLine: (Line*)inLine;
-- (char*)selectorForMsgSend: (char*)ioComment
-				   fromLine: (Line*)inLine;
-
-- (void)chooseLine: (Line**)ioLine;
 
 - (void)resetRegisters: (Line*)inLine;
 - (void)updateRegisters: (Line*)inLine;

@@ -567,13 +567,6 @@
 	mEndOfText	= mTextSect.s.addr + mTextSect.s.size;
 }
 
-/*//	gatherFuncInfos
-// ----------------------------------------------------------------------------
-//	Subclasses may override
-
-- (void)gatherFuncInfos
-{}*/
-
 //	processLine:
 // ----------------------------------------------------------------------------
 
@@ -1087,13 +1080,6 @@
 	PostProcessCodeLine(ioLine);
 }
 
-/*//	postProcessCodeLine:
-// ----------------------------------------------------------------------------
-//	Subclasses may override.
-
-- (void)postProcessCodeLine: (Line**)ioLine
-{}*/
-
 //	printDataSections
 // ----------------------------------------------------------------------------
 //	Append data sections to output file.
@@ -1285,51 +1271,6 @@
 	return theAddress;
 }
 
-/*//	lineIsFunction:
-// ----------------------------------------------------------------------------
-//	Subclasses may override
-
-- (BOOL)lineIsFunction: (Line*)inLine
-{
-	return false;
-}
-
-//	codeFromLine:
-// ----------------------------------------------------------------------------
-//	Subclasses must override.
-
-- (void)codeFromLine: (Line*)inLine
-{}
-
-//	checkThunk:
-// ----------------------------------------------------------------------------
-//	Subclasses may override.
-
-- (void)checkThunk:(Line*)inLine
-{}
-
-//	commentForLine:
-// ----------------------------------------------------------------------------
-//	Subclasses may override.
-
-- (void)commentForLine: (Line*)inLine
-{}
-
-//	commentForSystemCall
-// ----------------------------------------------------------------------------
-//	Subclasses may override.
-
-- (void)commentForSystemCall
-{}
-
-//	commentForMsgSend:fromLine:
-// ----------------------------------------------------------------------------
-//	Subclasses may override.
-
-- (void)commentForMsgSend: (char*)ioComment
-				 fromLine: (Line*)inLine
-{}*/
-
 //	chooseLine:
 // ----------------------------------------------------------------------------
 //	Subclasses may override.
@@ -1404,30 +1345,6 @@
 
 	return sendType;
 }
-/*
-#pragma mark -
-//	resetRegisters:
-// ----------------------------------------------------------------------------
-//	Subclasses may override.
-
-- (void)resetRegisters: (Line*)inLine
-{}
-
-//	updateRegisters:
-// ----------------------------------------------------------------------------
-//	Subclasses may override.
-
-- (void)updateRegisters: (Line*)inLine
-{}
-
-//	restoreRegisters:
-// ----------------------------------------------------------------------------
-//	Subclasses may override.
-
-- (BOOL)restoreRegisters: (Line*)ioLine
-{
-	return false;
-}*/
 
 #pragma mark -
 //	insertMD5
