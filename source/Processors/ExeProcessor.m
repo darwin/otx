@@ -174,7 +174,7 @@
 	}
 
 	mOutputFilePath	= inOutputFilePath;
-	mMachHeader		= nil;
+	mMachHeaderPtr	= nil;
 
 	// Save some prefs for speed.
 	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
@@ -1156,7 +1156,7 @@
 	UInt32	i, j, k, bytesLeft;
 	UInt32	theDataSize			= inSect->size;
 	char	theLineCString[70]	= {0};
-	char*	theMachPtr			= (char*)mMachHeader;
+	char*	theMachPtr			= (char*)mMachHeaderPtr;
 
 	for (i = 0; i < theDataSize; i += 16)
 	{

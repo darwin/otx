@@ -94,6 +94,7 @@
 		return nil;
 	}
 
+// FIXME init these with NSUserDefaults instead
 	BOOL	localOffsets			= true;		// l
 	BOOL	entabOutput				= true;		// e
 	BOOL	dataSections			= true;		// d
@@ -190,9 +191,6 @@
 	else
 		[self newOFile: [NSURL fileURLWithPath: origFilePath] needsPath: true];
 
-//	if (mOFile)
-//		[mOFile retain];
-//	else
 	if (!mOFile)
 	{
 		fprintf(stderr, "otx: invalid file\n");
@@ -411,6 +409,7 @@
 						toPath: [[mOFile path]
 						stringByAppendingString: @"_fixed"]];
 
+					free(theNops->list);
 					free(theNops);
 
 					if (!fixedFile)
@@ -432,69 +431,6 @@
 			break;
 	}
 }
-
-/*
-//	nopAlertDidEnd:returnCode:contextInfo:
-// ----------------------------------------------------------------------------
-//	Respond to user's decision to fix obfuscated nops.
-
-- (void)nopAlertDidEnd: (NSAlert*)alert
-			returnCode: (int)returnCode
-		   contextInfo: (void*)contextInfo
-{
-	if (returnCode == NSAlertSecondButtonReturn)
-		return;
-
-	if (!contextInfo)
-	{
-		fprintf(stderr, "otx: tried to fix nops with nil contextInfo\n");
-		return;
-	}
-
-	NopList*	theNops	= (NopList*)contextInfo;
-
-	if (!theNops->list)
-	{
-		fprintf(stderr, "otx: tried to fix nops with nil NopList.list\n");
-		free(theNops);
-		return;
-	}
-
-	switch (mArchSelector)
-	{
-		case CPU_TYPE_I386:
-		{
-			X86Processor*	theProcessor	=
-				[[X86Processor alloc] initWithURL: mOFile andController: self];
-
-			if (!theProcessor)
-			{
-				fprintf(stderr, "otx: -[CLIController nopAlertDidEnd]: "
-					"unable to create processor.\n");
-				return;
-			}
-
-			NSURL*	fixedFile	= nil;
-//				[theProcessor fixNops: theNops toPath: mOutputFilePath];
-
-			if (fixedFile)
-			{
-				mIgnoreArch	= true;
-				[self newOFile: fixedFile needsPath: true];
-			}
-			else
-				fprintf(stderr, "otx: unable to fix nops\n");
-
-			break;
-		}
-
-		default:
-			break;
-	}
-
-	free(theNops->list);
-	free(theNops);
-}*/
 
 #pragma mark -
 //	checkOtool

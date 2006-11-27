@@ -86,7 +86,7 @@
 	// Fetch the instruction.
 	unsigned char	charData[14]		= {0};
 	char			formatString[50]	= {0};
-	char*			theMachPtr			= (char*)mMachHeader;
+	char*			theMachPtr			= (char*)mMachHeaderPtr;
 	char*			byteFormat			= "%02x";
 	UInt8			byteFormatLength	= strlen(byteFormat);
 	UInt8			formatMarker		= 0;
@@ -1386,14 +1386,10 @@
 		return;
 	}
 
-//	mCurrentClass	= ObjcClassPtrFromMethod(inLine->info.address);
 	GetObjcClassPtrFromMethod(&mCurrentClass, inLine->info.address);
-
-//	mCurrentCat		= ObjcCatPtrFromMethod(inLine->info.address);
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
 
 	mCurrentThunk	= NO_REG;
-
 	bzero(&mRegInfos[0], sizeof(GPRegisterInfo) * 8);
 
 	if (mLocalSelves)
@@ -1511,7 +1507,7 @@
 
 				if (offset >= 0)
 				{
-					if (offset / 4 > STACK_SIZE - 1)
+					if (offset / 4 > MAX_STACK_SIZE - 1)
 					{
 						fprintf(stderr, "otx: out of stack bounds: "
 							"stack size needs to be %d", (offset / 4) + 1);
@@ -1663,7 +1659,7 @@
 			}
 			else
 			{
-				bzero(mStack, sizeof(GPRegisterInfo) * STACK_SIZE);
+				bzero(mStack, sizeof(GPRegisterInfo) * MAX_STACK_SIZE);
 				bzero(&mRegInfos[EAX], sizeof(GPRegisterInfo));
 			}
 

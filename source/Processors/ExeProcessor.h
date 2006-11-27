@@ -30,7 +30,7 @@ GPRegisterInfo;
 	Represents a local variable in the stack frame. Currently, copies of
 	'self' are maintained in the variable-sized array mLocalSelves, and
 	variables pushed onto the stack in x86 code are maintained in the array
-	mStack[STACK_SIZE]. May be used for other things in future.
+	mStack[MAX_STACK_SIZE]. May be used for other things in future.
 
 	Note the semantic differences regarding stack frames:
 
@@ -275,12 +275,11 @@ enum {
 #define MAX_TYPE_STRING_LENGTH	200		// for encoded ObjC data types
 #define MAX_MD5_LINE			40		// for the md5 pipe
 #define MAX_ARCH_STRING_LENGTH	20		// "ppc", "i386" etc.
-
-// Maximum number of stack variables.
-#define STACK_SIZE				20
+#define MAX_STACK_SIZE			20		// Maximum number of stack variables
 
 // Refresh progress bar after processing this many lines.
 #define PROGRESS_FREQ			2500
+//#define CLI_PROGRESS_FREQ		5000	i predict we will want this
 
 // Toggle these to print symbol descriptions and blocks to standard out.
 #define _OTX_DEBUG_SYMBOLS_		0
@@ -296,7 +295,7 @@ enum {
 @interface ExeProcessor : NSObject
 {
 @protected
-	id		mController;
+	id		mController;	// who's our daddy
 
 	// guts
 	NSURL*				mOFile;					// exe on disk
@@ -306,7 +305,8 @@ enum {
 	Line*				mVerboseLineListHead;	// linked list the first
 	Line*				mPlainLineListHead;		// linked list the second
 	UInt32				mNumLines;				// used only for progress
-	mach_header*		mMachHeader;
+	mach_header*		mMachHeaderPtr;			// ptr to the orig header
+	mach_header			mMachHeader;			// (swapped?) copy of the header
 	cpu_type_t			mArchSelector;
 	UInt32				mArchMagic;				// 0xFEEDFACE etc.
 	BOOL				mExeIsFat;
@@ -314,8 +314,7 @@ enum {
 	UInt32				mLocalOffset;			// +420 etc.
 	ThunkInfo*			mThunks;				// x86 only
 	UInt32				mNumThunks;				// x86 only
-	GPRegisterInfo		mStack[STACK_SIZE];
-
+	GPRegisterInfo		mStack[MAX_STACK_SIZE];
 	TextFieldWidths		mFieldWidths;
 
 	// base pointers for indirect addressing
@@ -443,7 +442,6 @@ enum {
 - (BOOL)processVerboseFile: (NSURL*)inVerboseFile
 			  andPlainFile: (NSURL*)inPlainFile;
 - (void)gatherLineInfos;
-//- (void)gatherFuncInfos;
 - (void)decodeMethodReturnType: (const char*)inTypeCode
 						output: (char*)outCString;
 - (void)getDescription: (char*)ioCString
@@ -452,31 +450,18 @@ enum {
 - (void)printDataSection: (section_info*)inSect
 				  toFile: (FILE*)outFile;
 - (BOOL)lineIsCode: (const char*)inLine;
-//- (BOOL)lineIsFunction: (Line*)inLine;
 - (UInt32)addressFromLine: (const char*)inLine;
-//- (void)codeFromLine: (Line*)inLine;
-//- (void)checkThunk: (Line*)inLine;
 - (void)processLine: (Line*)ioLine;
 - (void)processCodeLine: (Line**)ioLine;
-//- (void)postProcessCodeLine: (Line**)ioLine;
 - (void)chooseLine: (Line**)ioLine;
 - (void)entabLine: (Line*)ioLine;
 - (char*)getPointer: (UInt32)inAddr
 			andType: (UInt8*)outType;
 
-//- (void)commentForLine: (Line*)inLine;
-//- (void)commentForSystemCall;
-//- (void)commentForMsgSend: (char*)ioComment
-//				 fromLine: (Line*)inLine;
-
 - (char*)selectorForMsgSend: (char*)ioComment
 				   fromLine: (Line*)inLine;
 - (BOOL)selectorIsFriendly: (const char*)inSel;
 - (UInt8)sendTypeFromMsgSend: (char*)inString;
-
-//- (void)resetRegisters: (Line*)inLine;
-//- (void)updateRegisters: (Line*)inLine;
-//- (BOOL)restoreRegisters: (Line*)inLine;
 
 - (void)insertMD5;
 - (char*)prepareNameForDemangling: (char*)inName;

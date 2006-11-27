@@ -35,19 +35,19 @@
 		UInt32	i;
 
 		// Find the mach header we want.
-		for (i = 0; i < fh->nfat_arch && !mMachHeader; i++)
+		for (i = 0; i < fh->nfat_arch && !mMachHeaderPtr; i++)
 		{
 			if (fa->cputype == mArchSelector)
 			{
-				mMachHeader	= (mach_header*)(mRAMFile + fa->offset);
-				mArchMagic	= *(UInt32*)mMachHeader;
-				mSwapped	= mArchMagic == MH_CIGAM;
+				mMachHeaderPtr	= (mach_header*)(mRAMFile + fa->offset);
+				mArchMagic		= *(UInt32*)mMachHeaderPtr;
+				mSwapped		= mArchMagic == MH_CIGAM;
 			}
 
 			fa++;	// next arch
 		}
 
-		if (!mMachHeader)
+		if (!mMachHeaderPtr)
 			fprintf(stderr, "otx: architecture not found in unibin\n");
 	}
 	else	// not a unibin, so mach header = start of file.
@@ -57,7 +57,7 @@
 			case MH_CIGAM:
 				mSwapped = true;	// fall thru
 			case MH_MAGIC:
-				mMachHeader	=  (mach_header*)mRAMFile;
+				mMachHeaderPtr	=  (mach_header*)mRAMFile;
 				break;
 
 			default:
@@ -66,14 +66,17 @@
 		}
 	}
 
-	if (!mMachHeader)
+	if (!mMachHeaderPtr)
 	{
 		fprintf(stderr, "otx: mach header not found\n");
 		return false;
 	}
 
+	mMachHeader		= *mMachHeaderPtr;
+
+// FIXME swap the new local copy instead
 	if (mSwapped)
-		swap_mach_header(mMachHeader, OSHostByteOrder());
+		swap_mach_header(&mMachHeader, OSHostByteOrder());
 
 	return true;
 }
@@ -86,11 +89,13 @@
 {
 	// We need byte pointers for pointer arithmetic. Set a pointer to the 1st
 	// load command.
-	char*	ptr	= (char*)(mMachHeader + 1);
+	char*	ptr	= (char*)(mMachHeaderPtr + 1);
 	UInt16	i;
 
 	// Loop thru load commands.
-	for (i = 0; i < mMachHeader->ncmds; i++)
+	// FIXME this needs to access the swapped copy instead
+//	for (i = 0; i < mMachHeaderPtr->ncmds; i++)
+	for (i = 0; i < mMachHeader.ncmds; i++)
 	{
 		// Copy the load_command so we can:
 		// -Swap it if needed without double-swapping parts of segments
@@ -149,7 +154,7 @@
 
 		// Point to the next command.
 		ptr	+= theCommandCopy.cmdsize;
-	}	// for(i = 0; i < mMachHeader->ncmds; i++)
+	}	// for(i = 0; i < mMachHeaderPtr->ncmds; i++)
 
 	// Now that we have all the objc sections, we can load the objc modules.
 	[self loadObjcModules];
@@ -235,7 +240,7 @@
 {
 //	nlist(3) doesn't quite cut it...
 
-	nlist*	theSyms	= (nlist*)((char*)mMachHeader + inSymPtr->symoff);
+	nlist*	theSyms	= (nlist*)((char*)mMachHeaderPtr + inSymPtr->symoff);
 	UInt32	i;
 
 	if (mSwapped)
@@ -281,7 +286,8 @@
 
 - (void)loadDySymbols: (dysymtab_command*)inSymPtr
 {
-	nlist*	theSyms	= (nlist*)((char*)mMachHeader + inSymPtr->indirectsymoff);
+	nlist*	theSyms	= (nlist*)
+		((char*)mMachHeaderPtr + inSymPtr->indirectsymoff);
 	UInt32	i;
 
 	if (mSwapped)
@@ -312,7 +318,7 @@
 		mObjcSects	= malloc(sizeof(section_info));
 
 	mObjcSects[mNumObjcSects - 1]	= (section_info)
-		{*inSect, (char*)mMachHeader + inSect->offset, inSect->size};
+		{*inSect, (char*)mMachHeaderPtr + inSect->offset, inSect->size};
 
 	if (!strncmp(inSect->sectname, "__cstring_object", 16))
 		[self loadNSStringSection: inSect];
@@ -333,7 +339,7 @@
 
 - (void)loadObjcModules
 {
-	char*			theMachPtr	= (char*)mMachHeader;
+	char*			theMachPtr	= (char*)mMachHeaderPtr;
 	char*			theModPtr;
 	section_info*	theSectInfo;
 	objc_module		theModule;
@@ -573,7 +579,7 @@
 - (void)loadCStringSection: (section*)inSect
 {
 	mCStringSect.s			= *inSect;
-	mCStringSect.contents	= (char*)mMachHeader + inSect->offset;
+	mCStringSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mCStringSect.size		= inSect->size;
 }
 
@@ -583,7 +589,7 @@
 - (void)loadNSStringSection: (section*)inSect
 {
 	mNSStringSect.s			= *inSect;
-	mNSStringSect.contents	= (char*)mMachHeader + inSect->offset;
+	mNSStringSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mNSStringSect.size		= inSect->size;
 }
 
@@ -593,7 +599,7 @@
 - (void)loadClassSection: (section*)inSect
 {
 	mClassSect.s		= *inSect;
-	mClassSect.contents	= (char*)mMachHeader + inSect->offset;
+	mClassSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mClassSect.size		= inSect->size;
 }
 
@@ -603,7 +609,7 @@
 - (void)loadMetaClassSection: (section*)inSect
 {
 	mMetaClassSect.s		= *inSect;
-	mMetaClassSect.contents	= (char*)mMachHeader + inSect->offset;
+	mMetaClassSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mMetaClassSect.size		= inSect->size;
 }
 
@@ -613,7 +619,7 @@
 - (void)loadIVarSection: (section*)inSect
 {
 	mIVarSect.s			= *inSect;
-	mIVarSect.contents	= (char*)mMachHeader + inSect->offset;
+	mIVarSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mIVarSect.size		= inSect->size;
 }
 
@@ -623,7 +629,7 @@
 - (void)loadObjcModSection: (section*)inSect
 {
 	mObjcModSect.s			= *inSect;
-	mObjcModSect.contents	= (char*)mMachHeader + inSect->offset;
+	mObjcModSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mObjcModSect.size		= inSect->size;
 }
 
@@ -633,7 +639,7 @@
 - (void)loadObjcSymSection: (section*)inSect
 {
 	mObjcSymSect.s			= *inSect;
-	mObjcSymSect.contents	= (char*)mMachHeader + inSect->offset;
+	mObjcSymSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mObjcSymSect.size		= inSect->size;
 }
 
@@ -643,7 +649,7 @@
 - (void)loadLit4Section: (section*)inSect
 {
 	mLit4Sect.s			= *inSect;
-	mLit4Sect.contents	= (char*)mMachHeader + inSect->offset;
+	mLit4Sect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mLit4Sect.size		= inSect->size;
 }
 
@@ -653,7 +659,7 @@
 - (void)loadLit8Section: (section*)inSect
 {
 	mLit8Sect.s			= *inSect;
-	mLit8Sect.contents	= (char*)mMachHeader + inSect->offset;
+	mLit8Sect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mLit8Sect.size		= inSect->size;
 }
 
@@ -663,7 +669,7 @@
 - (void)loadTextSection: (section*)inSect
 {
 	mTextSect.s			= *inSect;
-	mTextSect.contents	= (char*)mMachHeader + inSect->offset;
+	mTextSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mTextSect.size		= inSect->size;
 
 	mEndOfText	= mTextSect.s.addr + mTextSect.s.size;
@@ -675,7 +681,7 @@
 - (void)loadConstTextSection: (section*)inSect
 {
 	mConstTextSect.s		= *inSect;
-	mConstTextSect.contents	= (char*)mMachHeader + inSect->offset;
+	mConstTextSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mConstTextSect.size		= inSect->size;
 }
 
@@ -685,7 +691,7 @@
 - (void)loadCoalTextSection: (section*)inSect
 {
 	mCoalTextSect.s			= *inSect;
-	mCoalTextSect.contents	= (char*)mMachHeader + inSect->offset;
+	mCoalTextSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mCoalTextSect.size		= inSect->size;
 }
 
@@ -695,7 +701,7 @@
 - (void)loadCoalTextNTSection: (section*)inSect
 {
 	mCoalTextNTSect.s			= *inSect;
-	mCoalTextNTSect.contents	= (char*)mMachHeader + inSect->offset;
+	mCoalTextNTSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mCoalTextNTSect.size		= inSect->size;
 }
 
@@ -705,7 +711,7 @@
 - (void)loadDataSection: (section*)inSect
 {
 	mDataSect.s			= *inSect;
-	mDataSect.contents	= (char*)mMachHeader + inSect->offset;
+	mDataSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mDataSect.size		= inSect->size;
 }
 
@@ -715,7 +721,7 @@
 - (void)loadCoalDataSection: (section*)inSect
 {
 	mCoalDataSect.s			= *inSect;
-	mCoalDataSect.contents	= (char*)mMachHeader + inSect->offset;
+	mCoalDataSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mCoalDataSect.size		= inSect->size;
 }
 
@@ -725,7 +731,7 @@
 - (void)loadCoalDataNTSection: (section*)inSect
 {
 	mCoalDataNTSect.s			= *inSect;
-	mCoalDataNTSect.contents	= (char*)mMachHeader + inSect->offset;
+	mCoalDataNTSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mCoalDataNTSect.size		= inSect->size;
 }
 
@@ -735,7 +741,7 @@
 - (void)loadConstDataSection: (section*)inSect
 {
 	mConstDataSect.s		= *inSect;
-	mConstDataSect.contents	= (char*)mMachHeader + inSect->offset;
+	mConstDataSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mConstDataSect.size		= inSect->size;
 }
 
@@ -745,7 +751,7 @@
 - (void)loadDyldDataSection: (section*)inSect
 {
 	mDyldSect.s			= *inSect;
-	mDyldSect.contents	= (char*)mMachHeader + inSect->offset;
+	mDyldSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mDyldSect.size		= inSect->size;
 
 	if (mDyldSect.size < sizeof(dyld_data_section))
@@ -766,7 +772,7 @@
 - (void)loadCFStringSection: (section*)inSect
 {
 	mCFStringSect.s			= *inSect;
-	mCFStringSect.contents	= (char*)mMachHeader + inSect->offset;
+	mCFStringSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mCFStringSect.size		= inSect->size;
 }
 
@@ -776,7 +782,7 @@
 - (void)loadNonLazySymbolSection: (section*)inSect
 {
 	mNLSymSect.s		= *inSect;
-	mNLSymSect.contents	= (char*)mMachHeader + inSect->offset;
+	mNLSymSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mNLSymSect.size		= inSect->size;
 }
 
@@ -786,7 +792,7 @@
 - (void)loadImpPtrSection: (section*)inSect
 {
 	mImpPtrSect.s			= *inSect;
-	mImpPtrSect.contents	= (char*)mMachHeader + inSect->offset;
+	mImpPtrSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
 	mImpPtrSect.size		= inSect->size;
 }
 
