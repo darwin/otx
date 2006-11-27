@@ -6,7 +6,8 @@ typedef struct
 {
 	BOOL		setIndeterminate;
 	BOOL		indeterminate;
-	UInt32		refcon;			// i'm bringing back refcons!
+	BOOL		newLine;		// prepend \n in CLI version
+	UInt32		refcon;
 	double*		value;
 	NSString*	description;
 }

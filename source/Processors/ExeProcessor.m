@@ -196,7 +196,8 @@
 
 	[self loadLCommands];
 
-	ProgressState	progState	= {false, false, 0, nil, @"Calling otool"};
+	ProgressState	progState	=
+		{false, false, true, 0, nil, @"Calling otool"};
 
 	[mController reportProgress: &progState];
 
@@ -270,7 +271,7 @@
 	// printed may not reflect their order in the executable.
 
 	ProgressState	progState	=
-		{false, false, Nudge, nil, nil};	// wink wink, say no more...
+		{false, false, false, Nudge, nil, nil};	// wink wink, say no more...
 
 	[mController reportProgress: &progState];
 
@@ -433,7 +434,8 @@
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: ShowMD5Key])
 		[self insertMD5];
 
-	ProgressState	progState	= {false, false, 0, nil, @"Gathering info"};
+	ProgressState	progState	=
+		{false, false, true, 0, nil, @"Gathering info"};
 
 	[mController reportProgress: &progState];
 
@@ -449,7 +451,7 @@
 	double	progValue	= 0.0;
 
 	progState	= (ProgressState)
-		{true, false, GeneratingFile, &progValue, @"Generating file"};
+		{true, false, true, GeneratingFile, &progValue, @"Generating file"};
 
 	[mController reportProgress: &progState];
 
@@ -462,7 +464,7 @@
 		{
 			progValue	= (double)progCounter / mNumLines * 100;
 			progState	= (ProgressState)
-				{false, false, GeneratingFile, &progValue, nil};
+				{false, false, false, GeneratingFile, &progValue, nil};
 
 			[mController reportProgress: &progState];
 		}
@@ -481,8 +483,7 @@
 		progCounter++;
 	}
 
-	progState	= (ProgressState){true, true, 0, nil, @"Writing file"};
-//	progState	= (ProgressState){false, false, Complete, nil, nil};
+	progState	= (ProgressState){true, true, true, 0, nil, @"Writing file"};
 
 	[mController reportProgress: &progState];
 
@@ -496,7 +497,7 @@
 			return false;
 	}
 
-	progState	= (ProgressState){false, false, Complete, nil, nil};
+	progState	= (ProgressState){false, false, false, Complete, nil, nil};
 	[mController reportProgress: &progState];
 
 	return true;
@@ -517,7 +518,7 @@
 		if (!(progCounter % (PROGRESS_FREQ * 3)))
 		{
 			ProgressState	progState	=
-				{false, false, Nudge, nil, nil};
+				{false, false, false, Nudge, nil, nil};
 
 			[mController reportProgress: &progState];
 		}

@@ -40,9 +40,9 @@
 - (void)newOFile: (NSURL*)inOFile
 	   needsPath: (BOOL)inNeedsPath;
 
-- (void)nopAlertDidEnd: (NSAlert*)alert
+/*- (void)nopAlertDidEnd: (NSAlert*)alert
 			returnCode: (int)returnCode
-		   contextInfo: (void*)contextInfo;
+		   contextInfo: (void*)contextInfo;*/
 
 // alerts
 - (void)doErrorAlert;

@@ -123,6 +123,7 @@
 				{
 					fprintf(stderr, "otx: unknown architecture: %s\n",
 						argv[i]);
+					[self usage];
 					[self release];
 					return nil;
 				}
@@ -170,13 +171,12 @@
 						default:
 							fprintf(stderr, "otx: unknown argument: '%c'\n",
 								argv[i][j]);
-							break;
+							[self usage];
+							[self release];
+							return nil;
 					}	// switch (argv[i][j])
 				}	// for (j = 1; argv[i][j] != '\0'; j++)
 			}
-
-			origFilePath	= [NSString stringWithCString:
-				&argv[++i][0] encoding: NSMacOSRomanStringEncoding];
 		}
 		else	// no flags, grab the file path
 		{
@@ -190,9 +190,10 @@
 	else
 		[self newOFile: [NSURL fileURLWithPath: origFilePath] needsPath: true];
 
-	if (mOFile)
-		[mOFile retain];
-	else
+//	if (mOFile)
+//		[mOFile retain];
+//	else
+	if (!mOFile)
 	{
 		fprintf(stderr, "otx: invalid file\n");
 		[self release];
@@ -219,18 +220,20 @@
 
 - (void)usage
 {
-	printf("Usage: otx [-ledcmbnrvpo] <object file>\n");
-	printf("\t-l don't show local offsets\n");
-	printf("\t-e don't entab output\n");
-	printf("\t-d don't show data sections\n");
-	printf("\t-c don't show md5 checksum\n");
-	printf("\t-m don't show verbose objc_msgSend\n");
-	printf("\t-b separate logical blocks\n");
-	printf("\t-n don't demangle C++ symbol names\n");
-	printf("\t-r don't show Obj-C method return types\n");
-	printf("\t-v don't show Obj-C member variable types\n");
-	printf("\t-p display progress\n");
-	printf("\t-o only check the executable for obfuscation\n");
+	printf("Usage: otx [-ledcmbnrvpo] [-arch <arch type>] <object file>\n");
+	printf("\t-l    don't show local offsets\n");
+	printf("\t-e    don't entab output\n");
+	printf("\t-d    don't show data sections\n");
+	printf("\t-c    don't show md5 checksum\n");
+	printf("\t-m    don't show verbose objc_msgSend\n");
+	printf("\t-b    separate logical blocks\n");
+	printf("\t-n    don't demangle C++ symbol names\n");
+	printf("\t-r    don't show Obj-C method return types\n");
+	printf("\t-v    don't show Obj-C member variable types\n");
+	printf("\t-p    display progress\n");
+	printf("\t-o    only check the executable for obfuscation\n");
+	printf("\t-arch specify which architecture to process in a \n"
+		"\t\tuniversal binary(ppc or i386)\n");
 }
 
 //	dealloc
@@ -300,6 +303,12 @@
 	if (!mOFile)
 		return;
 
+	if (mVerify)
+	{
+		[self verifyNops: nil];
+		return;
+	}
+
 	mExeIsFat	= mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM;
 
 	if ([self checkOtool] != noErr)
@@ -340,6 +349,11 @@
 		return;
 	}
 
+	ProgressState	progState	=
+		{true, true, false, 0, nil, @"Loading executable"};
+
+	[self reportProgress: &progState];
+
 	if (![theProcessor processExe: nil])
 	{
 		fprintf(stderr, "otx: -[CLIController processFile]: "
@@ -378,41 +392,48 @@
 			if ([theProcessor verifyNops: &foundList
 				numFound: &foundCount])
 			{
-/*				NopList*	theInfo	= malloc(sizeof(NopList));
+				printf("otx found %d broken nop's. Would you like to save "
+					"a copy of the executable with fixed nop's? (y/n)\n",
+					foundCount);
 
-				theInfo->list	= foundList;
-				theInfo->count	= foundCount;
+				char	response;
 
-				[theAlert addButtonWithTitle: @"Fix"];
-				[theAlert addButtonWithTitle: @"Cancel"];
-				[theAlert setMessageText: @"Broken nop's found."];
-				[theAlert setInformativeText: [NSString stringWithFormat:
-					@"otx found %d broken nop's. Would you like to save "
-					@"a copy of the executable with fixed nop's?",
-					foundCount]];
-				[theAlert beginSheetModalForWindow: mMainWindow
-					modalDelegate: self didEndSelector:
-					@selector(nopAlertDidEnd:returnCode:contextInfo:)
-					contextInfo: theInfo];*/
+				scanf("%c", &response);
+
+				if (response == 'y' || response == 'Y')
+				{
+					NopList*	theNops	= malloc(sizeof(NopList));
+
+					theNops->list	= foundList;
+					theNops->count	= foundCount;
+
+					NSURL*	fixedFile	= [theProcessor fixNops: theNops
+						toPath: [[mOFile path]
+						stringByAppendingString: @"_fixed"]];
+
+					free(theNops);
+
+					if (!fixedFile)
+						fprintf(stderr, "otx: unable to fix nops\n");
+				}
 			}
 			else
 			{
-/*				[theAlert addButtonWithTitle: @"OK"];
-				[theAlert setMessageText: @"The executable is healthy."];
-				[theAlert beginSheetModalForWindow: mMainWindow
-					modalDelegate: nil didEndSelector: nil contextInfo: nil];*/
+				printf("The executable is healthy.\n");
 			}
 
-			[theProcessor release];
+//			[theProcessor release];
 
 			break;
 		}
 
 		default:
+			printf("Deobfuscation is only available for x86 binaries.\n");
 			break;
 	}
 }
 
+/*
 //	nopAlertDidEnd:returnCode:contextInfo:
 // ----------------------------------------------------------------------------
 //	Respond to user's decision to fix obfuscated nops.
@@ -473,7 +494,7 @@
 
 	free(theNops->list);
 	free(theNops);
-}
+}*/
 
 #pragma mark -
 //	checkOtool
@@ -521,8 +542,11 @@
 		return;
 	}
 
+	if (inState->newLine)
+		fprintf(stderr, "\n");
+
 	if (inState->description)
-		fprintf(stderr, "\n%s", CSTRING(inState->description));
+		fprintf(stderr, "%s", CSTRING(inState->description));
 
 	switch (inState->refcon)
 	{
@@ -533,7 +557,7 @@
 			break;
 
 		case Complete:
-			fprintf(stderr, "\n\n");
+			fprintf(stderr, "\n");
 
 			break;
 

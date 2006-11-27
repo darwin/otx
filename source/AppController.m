@@ -344,7 +344,11 @@
 	[mOutputFilePath retain];
 	[theTempOutputFilePath release];
 
-	[mProgText setStringValue: @"Loading executable"];
+	ProgressState	progState	=
+		{true, true, false, 0, nil, @"Loading executable"};
+
+	[self reportProgress: &progState];
+
 	[mProgDrawer setContentSize: [mProgDrawer maxContentSize]];
 	[mProgDrawer openOnEdge: NSMinYEdge];	// Min Y = 'bottom'
 }
@@ -755,6 +759,8 @@
 	{
 		fprintf(stderr, "otx: -[AppController drawerDidOpen]: "
 			"unable to create processor.\n");
+		[theProcessor release];
+		[mProgDrawer close];
 		return;
 	}
 
