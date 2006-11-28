@@ -1223,6 +1223,13 @@
 			case OCStrObjectType:
 				break;
 
+			case OCClassType:
+				if (namePtr)
+					GetObjcDescriptionFromObject(
+						&className, namePtr, OCClassType);
+
+				break;
+
 			default:
 				fprintf(stderr, "otx: [X86Processor commentForMsgSend]: "
 					"unsupported receiver type: %d at address: 0x%x\n",
@@ -1547,6 +1554,7 @@
 		}
 
 		case 0x8b:	// mov mem to reg
+		case 0x8d:	// lea mem to reg
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
 			bzero(&mRegInfos[REG1(modRM)], sizeof(GPRegisterInfo));
