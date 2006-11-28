@@ -41,6 +41,7 @@
 - (void)checkThunk:(Line*)inLine
 {}
 
+#pragma mark -
 //	commentForLine:
 // ----------------------------------------------------------------------------
 
