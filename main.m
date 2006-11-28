@@ -35,11 +35,7 @@ int main(
 	[controller processFile: nil];
 	[controller release];
 
-//printf("test3\n");
-
-	[pool release];	// double free happens(happened) here
-
-//printf("test4\n");
+	[pool release];
 
 	return noErr;
 

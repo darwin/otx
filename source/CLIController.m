@@ -110,7 +110,13 @@
 
 	for (i = 1; i < argc; i++)
 	{
-		if (argv[i][0] == '-')
+		if (argv[i][1] == '\0')
+		{
+			[self usage];
+			[self release];
+			return nil;
+		}
+		else if (argv[i][0] == '-')
 		{
 			if (!strncmp(&argv[i][1], "arch", 5))
 			{
