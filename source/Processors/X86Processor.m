@@ -1225,7 +1225,8 @@
 
 			default:
 				fprintf(stderr, "otx: [X86Processor commentForMsgSend]: "
-					"unsupported receiver type: %d\n", receiverType);
+					"unsupported receiver type: %d at address: 0x%x\n",
+					receiverType, inLine->info.address);
 
 				break;
 		}

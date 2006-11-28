@@ -12,7 +12,7 @@
 - (void)loadLCommands;
 - (void)loadSegment: (segment_command*)inSegPtr;
 - (void)loadSymbols: (symtab_command*)inSymPtr;
-- (void)loadDySymbols: (dysymtab_command*)inSymPtr;
+//- (void)loadDySymbols: (dysymtab_command*)inSymPtr;
 - (void)loadObjcSection: (section*)inSect;
 - (void)loadObjcModules;
 - (void)loadCStringSection: (section*)inSect;

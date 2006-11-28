@@ -22,7 +22,7 @@
 		mArchMagic	== FAT_CIGAM)
 	{
 		fat_header*	fh	= (fat_header*)mRAMFile;
-		fat_arch*	fa	= (fat_arch*)(fh + 1);
+		fat_arch*	fa	= (fat_arch*)(fh + 1);	// FIXME this is in-place swapping
 
 		// fat_header and fat_arch are always big-endian. Swap if we're
 		// running on intel.
@@ -74,7 +74,6 @@
 
 	mMachHeader		= *mMachHeaderPtr;
 
-// FIXME swap the new local copy instead
 	if (mSwapped)
 		swap_mach_header(&mMachHeader, OSHostByteOrder());
 
@@ -93,8 +92,6 @@
 	UInt16	i;
 
 	// Loop thru load commands.
-	// FIXME this needs to access the swapped copy instead
-//	for (i = 0; i < mMachHeaderPtr->ncmds; i++)
 	for (i = 0; i < mMachHeader.ncmds; i++)
 	{
 		// Copy the load_command so we can:
@@ -112,25 +109,23 @@
 			case LC_SEGMENT:
 			{
 				// Re-cast the original ptr as a segment_command.
-				segment_command*	segPtr	= (segment_command*)ptr;
+				segment_command	segCopy	= *(segment_command*)ptr;
 
 				if (mSwapped)
-					swap_segment_command(segPtr, OSHostByteOrder());
+					swap_segment_command(&segCopy, OSHostByteOrder());
 
 				// Load a segment we're interested in.
-				if (!strcmp(segPtr->segname, SEG_TEXT))
+				if (!strcmp(segCopy.segname, SEG_TEXT))
 				{
-					mTextOffset	= segPtr->vmaddr - segPtr->fileoff;
-					[self loadSegment: segPtr];
+					mTextOffset	= segCopy.vmaddr - segCopy.fileoff;
+					[self loadSegment: (segment_command*)ptr];
 				}
-				else if (!strcmp(segPtr->segname, SEG_DATA))
-				{
-					[self loadSegment: segPtr];
-				}
-				else if (!strcmp(segPtr->segname, SEG_OBJC))
-					[self loadSegment: segPtr];
-				else if (!strcmp(segPtr->segname, "__IMPORT"))
-					[self loadSegment: segPtr];
+				else if (!strcmp(segCopy.segname, SEG_DATA))
+					[self loadSegment: (segment_command*)ptr];
+				else if (!strcmp(segCopy.segname, SEG_OBJC))
+					[self loadSegment: (segment_command*)ptr];
+				else if (!strcmp(segCopy.segname, "__IMPORT"))
+					[self loadSegment: (segment_command*)ptr];
 
 				break;
 			}
@@ -138,12 +133,7 @@
 			case LC_SYMTAB:
 			{
 				// Re-cast the original ptr as a symtab_command.
-				symtab_command*	symTab	= (symtab_command*)ptr;
-
-				if (mSwapped)
-					swap_symtab_command(symTab, OSHostByteOrder());
-
-				[self loadSymbols: symTab];
+				[self loadSymbols: (symtab_command*)ptr];
 
 				break;
 			}
@@ -167,67 +157,64 @@
 
 - (void)loadSegment: (segment_command*)inSegPtr
 {
-	// Set a pointer to the first section.
-	char*	ptr	= (char*)inSegPtr + sizeof(segment_command);
-	UInt16	i;
+	segment_command	segCopy	= *inSegPtr;
 
-	// 'swap_section' acts more like 'swap_sections'. It is possible to
-	// loop thru unreadable sections and swap them one at a time. Fuck it.
 	if (mSwapped)
-		swap_section((section*)ptr, inSegPtr->nsects, OSHostByteOrder());
+		swap_segment_command(&segCopy, OSHostByteOrder());
+
+	// Set a pointer to the first section.
+	section*	sectionPtr	=
+		(section*)((char*)inSegPtr + sizeof(segment_command));
+	UInt16		i;
 
 	// Loop thru sections.
-	section*	theSect	= nil;
-
-	for (i = 0; i < inSegPtr->nsects; i++)
+	for (i = 0; i < segCopy.nsects; i++)
 	{
-		theSect	= (section*)ptr;
-
-		if (!strcmp(theSect->segname, SEG_OBJC))
+		if (!strcmp(sectionPtr->segname, SEG_OBJC))
 		{
-			[self loadObjcSection: theSect];
+			[self loadObjcSection: sectionPtr];
 		}
-		else if (!strcmp(theSect->segname, SEG_TEXT))
+		else if (!strcmp(sectionPtr->segname, SEG_TEXT))
 		{
-			if (!strcmp(theSect->sectname, SECT_TEXT))
-				[self loadTextSection: theSect];
-			else if (!strncmp(theSect->sectname, "__coalesced_text", 16))
-				[self loadCoalTextSection: theSect];
-			else if (!strcmp(theSect->sectname, "__textcoal_nt"))
-				[self loadCoalTextNTSection: theSect];
-			else if (!strcmp(theSect->sectname, "__const"))
-				[self loadConstTextSection: theSect];
-			else if (!strcmp(theSect->sectname, "__cstring"))
-				[self loadCStringSection: theSect];
-			else if (!strcmp(theSect->sectname, "__literal4"))
-				[self loadLit4Section: theSect];
-			else if (!strcmp(theSect->sectname, "__literal8"))
-				[self loadLit8Section: theSect];
+			if (!strcmp(sectionPtr->sectname, SECT_TEXT))
+				[self loadTextSection: sectionPtr];
+			else if (!strncmp(sectionPtr->sectname, "__coalesced_text", 16))
+				[self loadCoalTextSection: sectionPtr];
+			else if (!strcmp(sectionPtr->sectname, "__textcoal_nt"))
+				[self loadCoalTextNTSection: sectionPtr];
+			else if (!strcmp(sectionPtr->sectname, "__const"))
+				[self loadConstTextSection: sectionPtr];
+			else if (!strcmp(sectionPtr->sectname, "__cstring"))
+				[self loadCStringSection: sectionPtr];
+			else if (!strcmp(sectionPtr->sectname, "__literal4"))
+				[self loadLit4Section: sectionPtr];
+			else if (!strcmp(sectionPtr->sectname, "__literal8"))
+				[self loadLit8Section: sectionPtr];
 		}
-		else if (!strcmp(theSect->segname, SEG_DATA))
+		else if (!strcmp(sectionPtr->segname, SEG_DATA))
 		{
-			if (!strcmp(theSect->sectname, SECT_DATA))
-				[self loadDataSection: theSect];
-			else if (!strncmp(theSect->sectname, "__coalesced_data", 16))
-				[self loadCoalDataSection: theSect];
-			else if (!strcmp(theSect->sectname, "__datacoal_nt"))
-				[self loadCoalDataNTSection: theSect];
-			else if (!strcmp(theSect->sectname, "__const"))
-				[self loadConstDataSection: theSect];
-			else if (!strcmp(theSect->sectname, "__dyld"))
-				[self loadDyldDataSection: theSect];
-			else if (!strcmp(theSect->sectname, "__cfstring"))
-				[self loadCFStringSection: theSect];
-			else if (!strcmp(theSect->sectname, "__nl_symbol_ptr"))
-				[self loadNonLazySymbolSection: theSect];
+			if (!strcmp(sectionPtr->sectname, SECT_DATA))
+				[self loadDataSection: sectionPtr];
+			else if (!strncmp(sectionPtr->sectname, "__coalesced_data", 16))
+				[self loadCoalDataSection: sectionPtr];
+			else if (!strcmp(sectionPtr->sectname, "__datacoal_nt"))
+				[self loadCoalDataNTSection: sectionPtr];
+			else if (!strcmp(sectionPtr->sectname, "__const"))
+				[self loadConstDataSection: sectionPtr];
+			else if (!strcmp(sectionPtr->sectname, "__dyld"))
+				[self loadDyldDataSection: sectionPtr];
+			else if (!strcmp(sectionPtr->sectname, "__cfstring"))
+				[self loadCFStringSection: sectionPtr];
+			else if (!strcmp(sectionPtr->sectname, "__nl_symbol_ptr"))
+				[self loadNonLazySymbolSection: sectionPtr];
 		}
-		else if (!strcmp(theSect->segname, "__IMPORT"))
+		else if (!strcmp(sectionPtr->segname, "__IMPORT"))
 		{
-			if (!strcmp(theSect->sectname, "__pointers"))
-				[self loadImpPtrSection: theSect];
+			if (!strcmp(sectionPtr->sectname, "__pointers"))
+				[self loadImpPtrSection: sectionPtr];
 		}
 
-		ptr	+= sizeof(section);
+		sectionPtr++;
 	}
 }
 
@@ -240,16 +227,22 @@
 {
 //	nlist(3) doesn't quite cut it...
 
-	nlist*	theSyms	= (nlist*)((char*)mMachHeaderPtr + inSymPtr->symoff);
-	UInt32	i;
+	symtab_command	symTabCopy	= *inSymPtr;
 
 	if (mSwapped)
-		swap_nlist(theSyms, inSymPtr->nsyms, OSHostByteOrder());
+		swap_symtab_command(&symTabCopy, OSHostByteOrder());
+
+	nlist*	theSymPtr	= (nlist*)((char*)mMachHeaderPtr + symTabCopy.symoff);
+	nlist	theSym		= {0};
+	UInt32	i;
 
 	// loop thru symbols
-	for (i = 0; i < inSymPtr->nsyms; i++)
+	for (i = 0; i < symTabCopy.nsyms; i++)
 	{
-		nlist	theSym	= theSyms[i];
+		theSym	= theSymPtr[i];
+
+		if (mSwapped)
+			swap_nlist(&theSym, 1, OSHostByteOrder());
 
 		if (theSym.n_value == 0)
 			continue;
@@ -263,11 +256,11 @@
 
 			if (mFuncSyms)
 				mFuncSyms	= realloc(mFuncSyms,
-					mNumFuncSyms * sizeof(nlist*));
+					mNumFuncSyms * sizeof(nlist));
 			else
-				mFuncSyms	= malloc(sizeof(nlist*));
+				mFuncSyms	= malloc(sizeof(nlist));
 
-			mFuncSyms[mNumFuncSyms - 1]	= &theSyms[i];
+			mFuncSyms[mNumFuncSyms - 1]	= theSym;
 
 #if _OTX_DEBUG_SYMBOLS_
 			[self printSymbol: theSym];
@@ -277,38 +270,49 @@
 	}	// for (i = 0; i < inSymPtr->nsyms; i++)
 
 	// Sort the symbols so we can use binary searches later.
-	qsort(mFuncSyms, mNumFuncSyms, sizeof(nlist*),
+	qsort(mFuncSyms, mNumFuncSyms, sizeof(nlist),
 		(int (*)(const void*, const void*))Sym_Compare);
 }
 
-//	loadDySymbols:
+/*//	loadDySymbols:
 // ----------------------------------------------------------------------------
 
 - (void)loadDySymbols: (dysymtab_command*)inSymPtr
 {
-	nlist*	theSyms	= (nlist*)
+//	nlist*	theSyms	= (nlist*)
+//		((char*)mMachHeaderPtr + inSymPtr->indirectsymoff);
+	nlist*	theSymPtr	= (nlist*)
 		((char*)mMachHeaderPtr + inSymPtr->indirectsymoff);
+	nlist	theSym		= {0};
 	UInt32	i;
 
-	if (mSwapped)
-		swap_nlist(theSyms, inSymPtr->nindirectsyms, OSHostByteOrder());
+//	if (mSwapped)
+//		swap_nlist(theSyms, inSymPtr->nindirectsyms, OSHostByteOrder());
 
 	// loop thru symbols
 	for (i = 0; i < inSymPtr->nindirectsyms; i++)
 	{
 #if _OTX_DEBUG_DYSYMBOLS_
-		nlist	theSym		= theSyms[i];
+		if (mSwapped)
+			swap_nlist(theSymPtr, 1, OSHostByteOrder());
+
+		nlist	theSym		= theSymPtr[i];
 
 		[self printSymbol: theSym];
 #endif
 	}
-}
+}*/
 
 //	loadObjcSection:
 // ----------------------------------------------------------------------------
 
 - (void)loadObjcSection: (section*)inSect
 {
+	section	sectCopy	= *inSect;
+
+	if (mSwapped)
+		swap_section(&sectCopy, 1, OSHostByteOrder());
+
 	mNumObjcSects++;
 
 	if (mObjcSects)
@@ -318,7 +322,7 @@
 		mObjcSects	= malloc(sizeof(section_info));
 
 	mObjcSects[mNumObjcSects - 1]	= (section_info)
-		{*inSect, (char*)mMachHeaderPtr + inSect->offset, inSect->size};
+		{sectCopy, (char*)mMachHeaderPtr + sectCopy.offset, sectCopy.size};
 
 	if (!strncmp(inSect->sectname, "__cstring_object", 16))
 		[self loadNSStringSection: inSect];
@@ -370,7 +374,8 @@
 		theModSize	= theModule.size;
 
 		// Loop thru modules.
-		while (theModPtr < theMachPtr + theSectInfo->s.offset + theSectInfo->s.size)
+		while (theModPtr <
+			theMachPtr + theSectInfo->s.offset + theSectInfo->s.size)
 		{
 			// Try to locate the objc_symtab for this module.
 			if (![self getObjcSymtab: &theSymTab andDefs: &theDefs
@@ -578,9 +583,13 @@
 
 - (void)loadCStringSection: (section*)inSect
 {
-	mCStringSect.s			= *inSect;
-	mCStringSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mCStringSect.size		= inSect->size;
+	mCStringSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mCStringSect.s, 1, OSHostByteOrder());
+
+	mCStringSect.contents	= (char*)mMachHeaderPtr + mCStringSect.s.offset;
+	mCStringSect.size		= mCStringSect.s.size;
 }
 
 //	loadNSStringSection:
@@ -588,9 +597,13 @@
 
 - (void)loadNSStringSection: (section*)inSect
 {
-	mNSStringSect.s			= *inSect;
-	mNSStringSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mNSStringSect.size		= inSect->size;
+	mNSStringSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mNSStringSect.s, 1, OSHostByteOrder());
+
+	mNSStringSect.contents	= (char*)mMachHeaderPtr + mNSStringSect.s.offset;
+	mNSStringSect.size		= mNSStringSect.s.size;
 }
 
 //	loadClassSection:
@@ -598,9 +611,13 @@
 
 - (void)loadClassSection: (section*)inSect
 {
-	mClassSect.s		= *inSect;
-	mClassSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mClassSect.size		= inSect->size;
+	mClassSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mClassSect.s, 1, OSHostByteOrder());
+
+	mClassSect.contents	= (char*)mMachHeaderPtr + mClassSect.s.offset;
+	mClassSect.size		= mClassSect.s.size;
 }
 
 //	loadMetaClassSection:
@@ -608,9 +625,13 @@
 
 - (void)loadMetaClassSection: (section*)inSect
 {
-	mMetaClassSect.s		= *inSect;
-	mMetaClassSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mMetaClassSect.size		= inSect->size;
+	mMetaClassSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mMetaClassSect.s, 1, OSHostByteOrder());
+
+	mMetaClassSect.contents	= (char*)mMachHeaderPtr + mMetaClassSect.s.offset;
+	mMetaClassSect.size		= mMetaClassSect.s.size;
 }
 
 //	loadIVarSection:
@@ -618,9 +639,13 @@
 
 - (void)loadIVarSection: (section*)inSect
 {
-	mIVarSect.s			= *inSect;
-	mIVarSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mIVarSect.size		= inSect->size;
+	mIVarSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mIVarSect.s, 1, OSHostByteOrder());
+
+	mIVarSect.contents	= (char*)mMachHeaderPtr + mIVarSect.s.offset;
+	mIVarSect.size		= mIVarSect.s.size;
 }
 
 //	loadObjcModSection:
@@ -628,9 +653,13 @@
 
 - (void)loadObjcModSection: (section*)inSect
 {
-	mObjcModSect.s			= *inSect;
-	mObjcModSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mObjcModSect.size		= inSect->size;
+	mObjcModSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mObjcModSect.s, 1, OSHostByteOrder());
+
+	mObjcModSect.contents	= (char*)mMachHeaderPtr + mObjcModSect.s.offset;
+	mObjcModSect.size		= mObjcModSect.s.size;
 }
 
 //	loadObjcSymSection:
@@ -638,9 +667,13 @@
 
 - (void)loadObjcSymSection: (section*)inSect
 {
-	mObjcSymSect.s			= *inSect;
-	mObjcSymSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mObjcSymSect.size		= inSect->size;
+	mObjcSymSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mObjcSymSect.s, 1, OSHostByteOrder());
+
+	mObjcSymSect.contents	= (char*)mMachHeaderPtr + mObjcSymSect.s.offset;
+	mObjcSymSect.size		= mObjcSymSect.s.size;
 }
 
 //	loadLit4Section:
@@ -648,9 +681,13 @@
 
 - (void)loadLit4Section: (section*)inSect
 {
-	mLit4Sect.s			= *inSect;
-	mLit4Sect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mLit4Sect.size		= inSect->size;
+	mLit4Sect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mLit4Sect.s, 1, OSHostByteOrder());
+
+	mLit4Sect.contents	= (char*)mMachHeaderPtr + mLit4Sect.s.offset;
+	mLit4Sect.size		= mLit4Sect.s.size;
 }
 
 //	loadLit8Section:
@@ -658,9 +695,13 @@
 
 - (void)loadLit8Section: (section*)inSect
 {
-	mLit8Sect.s			= *inSect;
-	mLit8Sect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mLit8Sect.size		= inSect->size;
+	mLit8Sect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mLit8Sect.s, 1, OSHostByteOrder());
+
+	mLit8Sect.contents	= (char*)mMachHeaderPtr + mLit8Sect.s.offset;
+	mLit8Sect.size		= mLit8Sect.s.size;
 }
 
 //	loadTextSection:
@@ -668,9 +709,13 @@
 
 - (void)loadTextSection: (section*)inSect
 {
-	mTextSect.s			= *inSect;
-	mTextSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mTextSect.size		= inSect->size;
+	mTextSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mTextSect.s, 1, OSHostByteOrder());
+
+	mTextSect.contents	= (char*)mMachHeaderPtr + mTextSect.s.offset;
+	mTextSect.size		= mTextSect.s.size;
 
 	mEndOfText	= mTextSect.s.addr + mTextSect.s.size;
 }
@@ -680,9 +725,13 @@
 
 - (void)loadConstTextSection: (section*)inSect
 {
-	mConstTextSect.s		= *inSect;
-	mConstTextSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mConstTextSect.size		= inSect->size;
+	mConstTextSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mConstTextSect.s, 1, OSHostByteOrder());
+
+	mConstTextSect.contents	= (char*)mMachHeaderPtr + mConstTextSect.s.offset;
+	mConstTextSect.size		= mConstTextSect.s.size;
 }
 
 //	loadCoalTextSection:
@@ -690,9 +739,13 @@
 
 - (void)loadCoalTextSection: (section*)inSect
 {
-	mCoalTextSect.s			= *inSect;
-	mCoalTextSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mCoalTextSect.size		= inSect->size;
+	mCoalTextSect.s		= *inSect;
+
+	if (mSwapped)
+		swap_section(&mCoalTextSect.s, 1, OSHostByteOrder());
+
+	mCoalTextSect.contents	= (char*)mMachHeaderPtr + mCoalTextSect.s.offset;
+	mCoalTextSect.size		= mCoalTextSect.s.size;
 }
 
 //	loadCoalTextNTSection:
@@ -700,9 +753,13 @@
 
 - (void)loadCoalTextNTSection: (section*)inSect
 {
-	mCoalTextNTSect.s			= *inSect;
-	mCoalTextNTSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mCoalTextNTSect.size		= inSect->size;
+	mCoalTextNTSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mCoalTextNTSect.s, 1, OSHostByteOrder());
+
+	mCoalTextNTSect.contents	= (char*)mMachHeaderPtr + mCoalTextNTSect.s.offset;
+	mCoalTextNTSect.size		= mCoalTextNTSect.s.size;
 }
 
 //	loadDataSection:
@@ -710,9 +767,13 @@
 
 - (void)loadDataSection: (section*)inSect
 {
-	mDataSect.s			= *inSect;
-	mDataSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mDataSect.size		= inSect->size;
+	mDataSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mDataSect.s, 1, OSHostByteOrder());
+
+	mDataSect.contents	= (char*)mMachHeaderPtr + mDataSect.s.offset;
+	mDataSect.size		= mDataSect.s.size;
 }
 
 //	loadCoalDataSection:
@@ -720,9 +781,13 @@
 
 - (void)loadCoalDataSection: (section*)inSect
 {
-	mCoalDataSect.s			= *inSect;
-	mCoalDataSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mCoalDataSect.size		= inSect->size;
+	mCoalDataSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mCoalDataSect.s, 1, OSHostByteOrder());
+
+	mCoalDataSect.contents	= (char*)mMachHeaderPtr + mCoalDataSect.s.offset;
+	mCoalDataSect.size		= mCoalDataSect.s.size;
 }
 
 //	loadCoalDataNTSection:
@@ -730,9 +795,13 @@
 
 - (void)loadCoalDataNTSection: (section*)inSect
 {
-	mCoalDataNTSect.s			= *inSect;
-	mCoalDataNTSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mCoalDataNTSect.size		= inSect->size;
+	mCoalDataNTSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mCoalDataNTSect.s, 1, OSHostByteOrder());
+
+	mCoalDataNTSect.contents	= (char*)mMachHeaderPtr + mCoalDataNTSect.s.offset;
+	mCoalDataNTSect.size		= mCoalDataNTSect.s.size;
 }
 
 //	loadConstDataSection:
@@ -740,9 +809,13 @@
 
 - (void)loadConstDataSection: (section*)inSect
 {
-	mConstDataSect.s		= *inSect;
-	mConstDataSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mConstDataSect.size		= inSect->size;
+	mConstDataSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mConstDataSect.s, 1, OSHostByteOrder());
+
+	mConstDataSect.contents	= (char*)mMachHeaderPtr + mConstDataSect.s.offset;
+	mConstDataSect.size		= mConstDataSect.s.size;
 }
 
 //	loadDyldDataSection:
@@ -750,9 +823,13 @@
 
 - (void)loadDyldDataSection: (section*)inSect
 {
-	mDyldSect.s			= *inSect;
-	mDyldSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mDyldSect.size		= inSect->size;
+	mDyldSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mDyldSect.s, 1, OSHostByteOrder());
+
+	mDyldSect.contents	= (char*)mMachHeaderPtr + mDyldSect.s.offset;
+	mDyldSect.size		= mDyldSect.s.size;
 
 	if (mDyldSect.size < sizeof(dyld_data_section))
 		return;
@@ -762,8 +839,7 @@
 	mAddrDyldStubBindingHelper	= (UInt32)(data->dyld_stub_binding_helper);
 
 	if (mSwapped)
-		mAddrDyldStubBindingHelper	=
-			OSSwapInt32(mAddrDyldStubBindingHelper);
+		mAddrDyldStubBindingHelper	= OSSwapInt32(mAddrDyldStubBindingHelper);
 }
 
 //	loadCFStringSection:
@@ -772,8 +848,12 @@
 - (void)loadCFStringSection: (section*)inSect
 {
 	mCFStringSect.s			= *inSect;
-	mCFStringSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mCFStringSect.size		= inSect->size;
+
+	if (mSwapped)
+		swap_section(&mCFStringSect.s, 1, OSHostByteOrder());
+
+	mCFStringSect.contents	= (char*)mMachHeaderPtr + mCFStringSect.s.offset;
+	mCFStringSect.size		= mCFStringSect.s.size;
 }
 
 //	loadNonLazySymbolSection:
@@ -781,9 +861,13 @@
 
 - (void)loadNonLazySymbolSection: (section*)inSect
 {
-	mNLSymSect.s		= *inSect;
-	mNLSymSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mNLSymSect.size		= inSect->size;
+	mNLSymSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mNLSymSect.s, 1, OSHostByteOrder());
+
+	mNLSymSect.contents	= (char*)mMachHeaderPtr + mNLSymSect.s.offset;
+	mNLSymSect.size		= mNLSymSect.s.size;
 }
 
 //	loadImpPtrSection:
@@ -791,9 +875,13 @@
 
 - (void)loadImpPtrSection: (section*)inSect
 {
-	mImpPtrSect.s			= *inSect;
-	mImpPtrSect.contents	= (char*)mMachHeaderPtr + inSect->offset;
-	mImpPtrSect.size		= inSect->size;
+	mImpPtrSect.s	= *inSect;
+
+	if (mSwapped)
+		swap_section(&mImpPtrSect.s, 1, OSHostByteOrder());
+
+	mImpPtrSect.contents	= (char*)mMachHeaderPtr + mImpPtrSect.s.offset;
+	mImpPtrSect.size		= mImpPtrSect.s.size;
 }
 
 @end

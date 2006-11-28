@@ -322,7 +322,7 @@ enum {
 	UInt32				mCurrentFuncPtr;	// PPC function address
 
 	// symbols that point to functions
-	nlist**				mFuncSyms;
+	nlist*				mFuncSyms;
 	UInt32				mNumFuncSyms;
 
 	// FunctionInfo array
@@ -478,13 +478,13 @@ enum {
 
 static int
 Sym_Compare(
-	nlist**	sym1,
-	nlist**	sym2)
+	nlist*	sym1,
+	nlist*	sym2)
 {
-	if ((*sym1)->n_value < (*sym2)->n_value)
+	if (sym1->n_value < sym2->n_value)
 		return -1;
 
-	return ((*sym1)->n_value > (*sym2)->n_value);
+	return (sym1->n_value > sym2->n_value);
 }
 
 static int
