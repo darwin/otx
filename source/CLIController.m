@@ -94,23 +94,33 @@
 		return nil;
 	}
 
-// FIXME init these with NSUserDefaults instead
-	BOOL	localOffsets			= true;		// l
-	BOOL	entabOutput				= true;		// e
-	BOOL	dataSections			= true;		// d
-	BOOL	checksum				= true;		// c
-	BOOL	verboseMsgSends			= true;		// m
-	BOOL	separateLogicalBlocks	= false;	// b
-	BOOL	demangleCPNames			= true;		// n
-	BOOL	returnTypes				= true;		// r
-	BOOL	variableTypes			= true;		// v
+	NSUserDefaults*	defaults	= [NSUserDefaults standardUserDefaults];
+
+	BOOL	localOffsets			=
+		[defaults boolForKey: ShowLocalOffsetsKey];			// l
+	BOOL	entabOutput				=
+		[defaults boolForKey: EntabOutputKey];				// e
+	BOOL	dataSections			=
+		[defaults boolForKey: ShowDataSectionKey];			// d
+	BOOL	checksum				=
+		[defaults boolForKey: ShowMD5Key];					// c
+	BOOL	verboseMsgSends			=
+		[defaults boolForKey: VerboseMsgSendsKey];			// m
+	BOOL	separateLogicalBlocks	=
+		[defaults boolForKey: SeparateLogicalBlocksKey];	// b
+	BOOL	demangleCPNames			=
+		[defaults boolForKey: DemangleCppNamesKey];			// n
+	BOOL	returnTypes				=
+		[defaults boolForKey: ShowMethodReturnTypesKey];	// r
+	BOOL	variableTypes			=
+		[defaults boolForKey: ShowIvarTypesKey];			// v
 
 	NSString*	origFilePath	= nil;
 	UInt32		i, j;
 
 	for (i = 1; i < argc; i++)
 	{
-		if (argv[i][1] == '\0')
+		if (argv[i][1] == '\0')	// just '-'
 		{
 			[self usage];
 			[self release];
@@ -185,26 +195,106 @@
 				}	// for (j = 1; argv[i][j] != '\0'; j++)
 			}
 		}
-		else	// no flags, grab the file path
+		else	// not a flag, must be the file path
 		{
 			origFilePath	= [NSString stringWithCString: &argv[i][0]
 				encoding: NSMacOSRomanStringEncoding];
 		}
 	}
 
-	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: origFilePath])
-		[self newPackageFile: [NSURL fileURLWithPath: origFilePath]];
-	else
-		[self newOFile: [NSURL fileURLWithPath: origFilePath] needsPath: true];
-
-	if (!mOFile)
+	if (!origFilePath)
 	{
-		fprintf(stderr, "otx: invalid file\n");
+		fprintf(stderr, "You must specify an executable file to process.\n");
 		[self release];
 		return nil;
 	}
 
-	NSUserDefaults*	defaults	= [NSUserDefaults standardUserDefaults];
+	NSFileManager*	fileMan	= [NSFileManager defaultManager];
+
+	// Check that the file exists.
+	if (![fileMan fileExistsAtPath: origFilePath])
+	{
+		fprintf(stderr, "No file found at %s.\n", CSTRING(origFilePath));
+		[self release];
+		return nil;
+	}
+
+	// Check that the file is an executable.
+	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: origFilePath])
+		[self newPackageFile: [NSURL fileURLWithPath: origFilePath]];
+	else
+	{
+		if ([fileMan isExecutableFileAtPath: origFilePath])
+			[self newOFile: [NSURL fileURLWithPath: origFilePath]
+				needsPath: true];
+		else
+		{
+			fprintf(stderr, "%s is not an executable file.\n",
+				CSTRING([origFilePath lastPathComponent]));
+			[self release];
+			return nil;
+		}
+	}
+
+	// Sanity check
+	if (!mOFile)
+	{
+		fprintf(stderr, "Invalid file.\n");
+		[self release];
+		return nil;
+	}
+
+	// Check that the executable is a Mach-O file.
+	NSFileHandle*	theFileH			=
+		[NSFileHandle fileHandleForReadingAtPath: [mOFile path]];
+
+	if (!theFileH)
+	{
+		fprintf(stderr, "Unable to open %s.\n",
+			CSTRING([origFilePath lastPathComponent]));
+		[self release];
+		return nil;
+	}
+
+	NSData*	fileData;
+//	UInt32	fileMagic;
+
+	@try
+	{
+		fileData	= [theFileH readDataOfLength: sizeof(mArchMagic)];
+	}
+	@catch (NSException* e)
+	{
+		fprintf(stderr, "Unable to read from %s. %s\n",
+			CSTRING([origFilePath lastPathComponent]),
+			CSTRING([e reason]));
+		[self release];
+		return nil;
+	}
+
+	if ([fileData length] < sizeof(mArchMagic))
+	{
+		fprintf(stderr, "Truncated executable file.\n");
+		[self release];
+		return nil;
+	}
+
+//	fileMagic	= *(UInt32*)[theData bytes];
+
+	switch ( *(UInt32*)[fileData bytes])
+	{
+		case MH_MAGIC:
+		case MH_CIGAM:
+		case FAT_MAGIC:
+		case FAT_CIGAM:
+			break;
+
+		default:
+			fprintf(stderr, "%s is not a Mach-O file.\n",
+				CSTRING([origFilePath lastPathComponent]));
+			[self release];
+			return nil;
+	}
 
 	[defaults setBool: localOffsets forKey: ShowLocalOffsetsKey];
 	[defaults setBool: entabOutput forKey: EntabOutputKey];
