@@ -37,7 +37,7 @@
 		@"txt",		OutputFileExtensionKey,
 		@"output",	OutputFileNameKey,
 		@"NO",		SeparateLogicalBlocksKey,
-		@"YES",		ShowDataSectionKey,
+		@"NO",		ShowDataSectionKey,
 		@"YES",		ShowIvarTypesKey,
 		@"YES",		ShowLocalOffsetsKey,
 		@"YES",		ShowMD5Key,

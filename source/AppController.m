@@ -756,7 +756,7 @@
 		return;
 	}
 
-	// Save defaults into the ProcOptions struct
+	// Save defaults into the ProcOptions struct.
 	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
 
 	ProcOptions	opts	= {0};
