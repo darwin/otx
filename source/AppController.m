@@ -37,7 +37,7 @@
 		@"txt",		OutputFileExtensionKey,
 		@"output",	OutputFileNameKey,
 		@"NO",		SeparateLogicalBlocksKey,
-		@"YES",		ShowDataSectionKey,
+		@"NO",		ShowDataSectionKey,
 		@"YES",		ShowIvarTypesKey,
 		@"YES",		ShowLocalOffsetsKey,
 		@"YES",		ShowMD5Key,
@@ -403,8 +403,10 @@
 	{
 		case CPU_TYPE_I386:
 		{
+			ProcOptions		opts	= {0};
 			X86Processor*	theProcessor	=
-				[[X86Processor alloc] initWithURL: mOFile andController: self];
+				[[X86Processor alloc] initWithURL: mOFile controller: self
+				andOptions: &opts];
 
 			if (!theProcessor)
 			{
@@ -486,8 +488,10 @@
 	{
 		case CPU_TYPE_I386:
 		{
+			ProcOptions		opts	= {0};
 			X86Processor*	theProcessor	=
-				[[X86Processor alloc] initWithURL: mOFile andController: self];
+				[[X86Processor alloc] initWithURL: mOFile controller: self
+				andOptions: &opts];
 
 			if (!theProcessor)
 			{
@@ -752,8 +756,32 @@
 		return;
 	}
 
-	id	theProcessor	=
-		[[procClass alloc] initWithURL: mOFile andController: self];
+	// Save defaults into the ProcOptions struct
+	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
+
+	ProcOptions	opts	= {0};
+
+	opts.localOffsets			=
+		[theDefaults boolForKey: ShowLocalOffsetsKey];
+	opts.entabOutput			=
+		[theDefaults boolForKey: EntabOutputKey];
+	opts.dataSections			=
+		[theDefaults boolForKey: ShowDataSectionKey];
+	opts.checksum				=
+		[theDefaults boolForKey: ShowMD5Key];
+	opts.verboseMsgSends		=
+		[theDefaults boolForKey: VerboseMsgSendsKey];
+	opts.separateLogicalBlocks	=
+		[theDefaults boolForKey: SeparateLogicalBlocksKey];
+	opts.demangleCppNames		=
+		[theDefaults boolForKey: DemangleCppNamesKey];
+	opts.returnTypes			=
+		[theDefaults boolForKey: ShowMethodReturnTypesKey];
+	opts.variableTypes			=
+		[theDefaults boolForKey: ShowIvarTypesKey];
+
+	id	theProcessor	= [[procClass alloc] initWithURL: mOFile
+		controller: self andOptions: &opts];
 
 	if (!theProcessor)
 	{
@@ -775,8 +803,6 @@
 
 	[theProcessor release];
 	[mProgDrawer close];
-
-	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
 
 	if ([theDefaults boolForKey: OpenOutputFileKey])
 		[[NSWorkspace sharedWorkspace] openFile: mOutputFilePath

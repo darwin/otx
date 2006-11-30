@@ -16,14 +16,15 @@
 
 @implementation PPCProcessor
 
-//	initWithURL:andController:
+//	initWithURL:controller:andOptions:
 // ----------------------------------------------------------------------------
 
 - (id)initWithURL: (NSURL*)inURL
-	andController: (id)inController
+	   controller: (id)inController
+	   andOptions: (ProcOptions*)inOptions;
 {
 	if ((self = [super initWithURL: inURL
-		andController: inController]) == nil)
+		controller: inController andOptions: inOptions]) == nil)
 		return nil;
 
 	strncpy(mArchString, "ppc", 4);
@@ -139,7 +140,8 @@
 					strncpy(tempComment, kRTName_objc_msgSend,
 						strlen(kRTName_objc_msgSend) + 1);
 
-					if (mVerboseMsgSends)
+//					if (mVerboseMsgSends)
+					if (mOpts.verboseMsgSends)
 						CommentForMsgSendFromLine(tempComment, inLine);
 
 					strncpy(mLineCommentCString, tempComment,
@@ -202,7 +204,8 @@
 
 				if (theSymPtr)
 				{
-					if (mShowIvarTypes)
+//					if (mShowIvarTypes)
+					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
 
@@ -278,7 +281,8 @@
 
 				if (theSymPtr)
 				{
-					if (mShowIvarTypes)
+//					if (mShowIvarTypes)
+					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
 
@@ -1243,7 +1247,7 @@
 		}
 
 		// Optionally add a blank line before this block.
-		if (mSeparateLogicalBlocks && inLine->chars[0]	!= '\n')
+		if (mOpts.separateLogicalBlocks && inLine->chars[0]	!= '\n')
 			needNewLine	= true;
 
 		break;

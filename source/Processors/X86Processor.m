@@ -16,14 +16,15 @@
 
 @implementation X86Processor
 
-//	initWithURL:andController:
+//	initWithURL:controller:andOptions:
 // ----------------------------------------------------------------------------
 
 - (id)initWithURL: (NSURL*)inURL
-	andController: (id)inController
+	   controller: (id)inController
+	   andOptions: (ProcOptions*)inOptions;
 {
 	if ((self = [super initWithURL: inURL
-		andController: inController]) == nil)
+		controller: inController andOptions: inOptions]) == nil)
 		return nil;
 
 	strncpy(mArchString, "i386", 5);
@@ -325,7 +326,8 @@
 
 					if (theSymPtr)
 					{
-						if (mShowIvarTypes)
+//						if (mShowIvarTypes)
+						if (mOpts.variableTypes)
 						{
 							char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
 
@@ -408,7 +410,8 @@
 
 				if (theSymPtr)
 				{
-					if (mShowIvarTypes)
+//					if (mShowIvarTypes)
+					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
 
@@ -596,7 +599,8 @@
 
 					UInt32	tempCommentLength	= strlen(tempComment);
 
-					if (mShowIvarTypes)
+//					if (mShowIvarTypes)
+					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
 
@@ -703,7 +707,8 @@
 
 				if (theSymPtr)
 				{
-					if (mShowIvarTypes)
+//					if (mShowIvarTypes)
+					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
 
@@ -813,7 +818,8 @@
 
 				if (theSymPtr)
 				{
-					if (mShowIvarTypes)
+//					if (mShowIvarTypes)
+					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
 
@@ -1753,7 +1759,7 @@
 		}
 
 		// Optionally add a blank line before this block.
-		if (mSeparateLogicalBlocks && inLine->chars[0]	!= '\n')
+		if (mOpts.separateLogicalBlocks && inLine->chars[0]	!= '\n')
 			needNewLine	= true;
 
 		break;

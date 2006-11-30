@@ -28,20 +28,23 @@
 // re-initialized before destruction. Do not reuse a single instance of
 // those subclasses for multiple processings.
 
-//	initWithURL:andController:
+//	initWithURL:controller:andOptions:
 // ----------------------------------------------------------------------------
 
 - (id)initWithURL: (NSURL*)inURL
-	andController: (id)inController
+	   controller: (id)inController
+	   andOptions: (ProcOptions*)inOptions;
 {
-	if (!inURL || !inController)
+	if (!inURL || !inController || !inOptions)
 		return nil;
 
 	if ((self = [super init]) == nil)
 		return nil;
 
-	mController				= inController;
-	mOFile					= inURL;
+	mOFile		= inURL;
+	mController	= inController;
+	mOpts		= *inOptions;
+
 	mCurrentFuncInfoIndex	= -1;
 
 	// Load exe into RAM.
@@ -177,16 +180,16 @@
 	mMachHeaderPtr	= nil;
 
 	// Save some prefs for speed.
-	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
+//	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
 
-	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
+/*	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
 	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
 	mSeparateLogicalBlocks	= [theDefaults boolForKey: SeparateLogicalBlocksKey];
 	mShowDataSection		= [theDefaults boolForKey: ShowDataSectionKey];
 	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
 	mShowLocalOffsets		= [theDefaults boolForKey: ShowLocalOffsetsKey];
 	mShowMethReturnTypes	= [theDefaults boolForKey: ShowMethodReturnTypesKey];
-	mVerboseMsgSends		= [theDefaults boolForKey: VerboseMsgSendsKey];
+	mVerboseMsgSends		= [theDefaults boolForKey: VerboseMsgSendsKey];*/
 
 	if (![self loadMachHeader])
 	{
@@ -473,7 +476,8 @@
 		{
 			ProcessCodeLine(&theLine);
 
-			if (mEntabOutput)
+//			if (mEntabOutput)
+			if (mOpts.entabOutput)
 				EntabLine(theLine);
 		}
 		else
@@ -491,7 +495,8 @@
 	if (![self printLinesFromList: mPlainLineListHead])
 		return false;
 
-	if (mShowDataSection)
+//	if (mShowDataSection)
+	if (mOpts.dataSections)
 	{
 		if (![self printDataSections])
 			return false;
@@ -605,7 +610,8 @@
 			mLocalOffset	= 0;
 		}
 	}
-	else if (mDemangleCppNames)
+//	else if (mDemangleCppNames)
+	else if (mOpts.demangleCppNames)
 	{
 		char*	demString	=
 			PrepareNameForDemangling(ioLine->chars);
@@ -773,7 +779,7 @@
 
 					if (catName)
 					{
-						char*	methNameFormat	= mShowMethReturnTypes ?
+						char*	methNameFormat	= mOpts.returnTypes ?
 							"\n%1$c(%5$s)[%2$s(%3$s) %4$s]\n" :
 							"\n%c[%s(%s) %s]\n";
 
@@ -784,7 +790,7 @@
 					}
 					else
 					{
-						char*	methNameFormat	= mShowMethReturnTypes ?
+						char*	methNameFormat	= mOpts.returnTypes ?
 							"\n%1$c(%4$s)[%2$s %3$s]\n" : "\n%c[%s %s]\n";
 
 						snprintf(theMethCName, 1000,
@@ -917,7 +923,8 @@
 	}	// if (!theCommentCString[0])
 	else	// otool gave us a comment.
 	{	// Optionally modify otool's comment.
-		if (mVerboseMsgSends)
+//		if (mVerboseMsgSends)
+		if (mOpts.verboseMsgSends)
 			CommentForMsgSendFromLine(theCommentCString, *ioLine);
 
 		// Check whether we should trample r3/eax.
@@ -927,7 +934,7 @@
 	}
 
 	// Demangle operands if necessary.
-	if (mLineOperandsCString[0] && mDemangleCppNames)
+	if (mLineOperandsCString[0] && mOpts.demangleCppNames)
 	{
 		char*	demString	=
 			PrepareNameForDemangling(mLineOperandsCString);
@@ -952,7 +959,7 @@
 	}
 
 	// Demangle comment if necessary.
-	if (theCommentCString[0] && mDemangleCppNames)
+	if (theCommentCString[0] && mOpts.demangleCppNames)
 	{
 		char*	demString	=
 			PrepareNameForDemangling(theCommentCString);
@@ -977,7 +984,8 @@
 	}
 
 	// Optionally add local offset.
-	if (mShowLocalOffsets)
+//	if (mShowLocalOffsets)
+	if (mOpts.localOffsets)
 	{
 		// Build a right-aligned string  with a '+' in it.
 		snprintf((char*)&localOffsetString, mFieldWidths.offset,
@@ -1020,7 +1028,8 @@
 	if (needNewLine)
 		finalFormatCString[formatMarker++]	= '\n';
 
-	if (mShowLocalOffsets)
+//	if (mShowLocalOffsets)
+	if (mOpts.localOffsets)
 		formatMarker += snprintf(&finalFormatCString[formatMarker],
 			10, "%s", "%s %s");
 
@@ -1039,7 +1048,8 @@
 
 	char	theFinalCString[MAX_LINE_LENGTH];
 
-	if (mShowLocalOffsets)
+//	if (mShowLocalOffsets)
+	if (mOpts.localOffsets)
 		snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
 			finalFormatCString, localOffsetString,
 			addrSpaces, theAddressCString,
@@ -1057,7 +1067,7 @@
 
 	free((*ioLine)->chars);
 
-	if (mSeparateLogicalBlocks && mEnteringNewBlock &&
+	if (mOpts.separateLogicalBlocks && mEnteringNewBlock &&
 		theFinalCString[0] != '\n')
 	{
 		(*ioLine)->length	= strlen(theFinalCString) + 1;

@@ -21,11 +21,8 @@
 	NSString*			mExeName;
 	BOOL				mVerify;
 	BOOL				mShowProgress;
-//	NSString*			mOutputFileLabel;
-//	NSString*			mOutputFileName;
-//	NSString*			mOutputFilePath;
-//	NSView**			mPrefsViews;
-//	UInt32				mPrefsCurrentViewIndex;
+
+	ProcOptions			mOpts;
 }
 
 - (id)initWithArgs: (char**) argv
@@ -39,10 +36,6 @@
 - (void)newPackageFile: (NSURL*)inPackageFile;
 - (void)newOFile: (NSURL*)inOFile
 	   needsPath: (BOOL)inNeedsPath;
-
-/*- (void)nopAlertDidEnd: (NSAlert*)alert
-			returnCode: (int)returnCode
-		   contextInfo: (void*)contextInfo;*/
 
 // alerts
 - (void)doErrorAlert;

@@ -23,7 +23,7 @@
 //	initialize
 // ----------------------------------------------------------------------------
 
-+ (void)initialize
+/*+ (void)initialize
 {
 	NSUserDefaultsController*	theController	=
 		[NSUserDefaultsController sharedUserDefaultsController];
@@ -48,7 +48,7 @@
 
 	[theController setInitialValues: theValues];
 	[[theController defaults] registerDefaults: theValues];
-}
+}*/
 
 //	init
 // ----------------------------------------------------------------------------
@@ -94,26 +94,29 @@
 		return nil;
 	}
 
-	NSUserDefaults*	defaults	= [NSUserDefaults standardUserDefaults];
+//	NSUserDefaults*	defaults	= [NSUserDefaults standardUserDefaults];
 
-	BOOL	localOffsets			=
-		[defaults boolForKey: ShowLocalOffsetsKey];			// l
-	BOOL	entabOutput				=
-		[defaults boolForKey: EntabOutputKey];				// e
-	BOOL	dataSections			=
-		[defaults boolForKey: ShowDataSectionKey];			// d
-	BOOL	checksum				=
-		[defaults boolForKey: ShowMD5Key];					// c
-	BOOL	verboseMsgSends			=
-		[defaults boolForKey: VerboseMsgSendsKey];			// m
-	BOOL	separateLogicalBlocks	=
-		[defaults boolForKey: SeparateLogicalBlocksKey];	// b
-	BOOL	demangleCPNames			=
-		[defaults boolForKey: DemangleCppNamesKey];			// n
-	BOOL	returnTypes				=
-		[defaults boolForKey: ShowMethodReturnTypesKey];	// r
-	BOOL	variableTypes			=
-		[defaults boolForKey: ShowIvarTypesKey];			// v
+	mOpts	= {
+		SHOW_LOCAL_OFFSETS,
+		ENTAB_OUTPUT,
+		DONT_SHOW_DATA_SECTIONS,
+		SHOW_CHECKSUM,
+		SHOW_VERBOSE_MSGSENDS,
+		DONT_SEPARATE_LOGICAL_BLOCKS,
+		DEMANGLE_CPP_NAMES,
+		SHOW_METHOD_RETURN_TYPES,
+		SHOW_VARIABLE_TYPES
+	};
+
+/* 	BOOL	localOffsets			= true;		// l
+ 	BOOL	entabOutput				= true;		// e
+ 	BOOL	dataSections			= false;	// d
+ 	BOOL	checksum				= true;		// c
+ 	BOOL	verboseMsgSends			= true;		// m
+ 	BOOL	separateLogicalBlocks	= false;	// b
+ 	BOOL	demangleCPNames			= true;		// n
+ 	BOOL	returnTypes				= true;		// r
+ 	BOOL	variableTypes			= true;		// v*/
 
 	NSString*	origFilePath	= nil;
 	UInt32		i, j;
@@ -153,31 +156,32 @@
 					switch (argv[i][j])
 					{
 						case 'l':
-							localOffsets	= !localOffsets;
+							mOpts.localOffsets	= !mOpts.localOffsets;
 							break;
 						case 'e':
-							entabOutput	= !entabOutput;
+							mOpts.entabOutput	= !mOpts.entabOutput;
 							break;
 						case 'd':
-							dataSections	= !dataSections;
+							mOpts.dataSections	= !mOpts.dataSections;
 							break;
 						case 'c':
-							checksum	= !checksum;
+							mOpts.checksum	= !mOpts.checksum;
 							break;
 						case 'm':
-							verboseMsgSends	= !verboseMsgSends;
+							mOpts.verboseMsgSends	= !mOpts.verboseMsgSends;
 							break;
 						case 'b':
-							separateLogicalBlocks	= !separateLogicalBlocks;
+							mOpts.separateLogicalBlocks	=
+								!mOpts.separateLogicalBlocks;
 							break;
 						case 'n':
-							demangleCPNames	= !demangleCPNames;
+							mOpts.demangleCppNames	= !mOpts.demangleCppPNames;
 							break;
 						case 'r':
-							returnTypes	= !returnTypes;
+							mOpts.returnTypes	= !mOpts.returnTypes;
 							break;
 						case 'v':
-							variableTypes	= !variableTypes;
+							mOpts.variableTypes	= !mOpts.variableTypes;
 							break;
 						case 'p':
 							mShowProgress	= !mShowProgress;
@@ -258,7 +262,6 @@
 	}
 
 	NSData*	fileData;
-//	UInt32	fileMagic;
 
 	@try
 	{
@@ -280,9 +283,7 @@
 		return nil;
 	}
 
-//	fileMagic	= *(UInt32*)[theData bytes];
-
-	switch ( *(UInt32*)[fileData bytes])
+	switch (*(UInt32*)[fileData bytes])
 	{
 		case MH_MAGIC:
 		case MH_CIGAM:
@@ -297,7 +298,7 @@
 			return nil;
 	}
 
-	[defaults setBool: localOffsets forKey: ShowLocalOffsetsKey];
+/*	[defaults setBool: localOffsets forKey: ShowLocalOffsetsKey];
 	[defaults setBool: entabOutput forKey: EntabOutputKey];
 	[defaults setBool: dataSections forKey: ShowDataSectionKey];
 	[defaults setBool: checksum forKey: ShowMD5Key];
@@ -305,7 +306,7 @@
 	[defaults setBool: separateLogicalBlocks forKey: SeparateLogicalBlocksKey];
 	[defaults setBool: demangleCPNames forKey: DemangleCppNamesKey];
 	[defaults setBool: returnTypes forKey: ShowMethodReturnTypesKey];
-	[defaults setBool: variableTypes forKey: ShowIvarTypesKey];
+	[defaults setBool: variableTypes forKey: ShowIvarTypesKey];*/
 
 	return self;
 }
@@ -436,7 +437,8 @@
 		return;
 
 	id	theProcessor	=
-		[[procClass alloc] initWithURL: mOFile andController: self];
+		[[procClass alloc] initWithURL: mOFile controller: self
+		andOpts: &mOpts];
 
 	if (!theProcessor)
 	{
