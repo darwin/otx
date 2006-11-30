@@ -120,14 +120,15 @@
 
 	for (i = 1; i < argc; i++)
 	{
-		if (argv[i][1] == '\0')	// just '-'
+		if (argv[i][0] == '-')
 		{
-			[self usage];
-			[self release];
-			return nil;
-		}
-		else if (argv[i][0] == '-')
-		{
+			if (argv[i][1] == '\0')	// just '-'
+			{
+				[self usage];
+				[self release];
+				return nil;
+			}
+
 			if (!strncmp(&argv[i][1], "arch", 5))
 			{
 				char*	archString	= argv[++i];
@@ -138,7 +139,7 @@
 					mArchSelector	= CPU_TYPE_I386;
 				else
 				{
-					fprintf(stderr, "otx: unknown architecture: %s\n",
+					fprintf(stderr, "Unknown architecture: \"%s\"\n",
 						argv[i]);
 					[self usage];
 					[self release];
@@ -314,19 +315,20 @@
 
 - (void)usage
 {
-	printf("Usage: otx [-ledcmbnrvpo] [-arch <arch type>] <object file>\n");
-	printf("\t-l    don't show local offsets\n");
-	printf("\t-e    don't entab output\n");
-	printf("\t-d    don't show data sections\n");
-	printf("\t-c    don't show md5 checksum\n");
-	printf("\t-m    don't show verbose objc_msgSend\n");
-	printf("\t-b    separate logical blocks\n");
-	printf("\t-n    don't demangle C++ symbol names\n");
-	printf("\t-r    don't show Obj-C method return types\n");
-	printf("\t-v    don't show Obj-C member variable types\n");
-	printf("\t-p    display progress\n");
-	printf("\t-o    only check the executable for obfuscation\n");
-	printf("\t-arch specify which architecture to process in a \n"
+	fprintf(stderr, "Usage: "
+		"otx [-ledcmbnrvpo] [-arch <arch type>] <object file>\n");
+	fprintf(stderr, "\t-l    don't show local offsets\n");
+	fprintf(stderr, "\t-e    don't entab output\n");
+	fprintf(stderr, "\t-d    don't show data sections\n");
+	fprintf(stderr, "\t-c    don't show md5 checksum\n");
+	fprintf(stderr, "\t-m    don't show verbose objc_msgSend\n");
+	fprintf(stderr, "\t-b    separate logical blocks\n");
+	fprintf(stderr, "\t-n    don't demangle C++ symbol names\n");
+	fprintf(stderr, "\t-r    don't show Obj-C method return types\n");
+	fprintf(stderr, "\t-v    don't show Obj-C member variable types\n");
+	fprintf(stderr, "\t-p    display progress\n");
+	fprintf(stderr, "\t-o    only check the executable for obfuscation\n");
+	fprintf(stderr, "\t-arch specify which architecture to process in a \n"
 		"\t\tuniversal binary(ppc or i386)\n");
 }
 

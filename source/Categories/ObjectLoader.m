@@ -21,30 +21,41 @@
 	if (mArchMagic	== FAT_MAGIC ||
 		mArchMagic	== FAT_CIGAM)
 	{
-		fat_header*	fh	= (fat_header*)mRAMFile;
-		fat_arch*	fa	= (fat_arch*)(fh + 1);	// FIXME this is in-place swapping
+//		fat_header*	fh	= (fat_header*)mRAMFile;
+//		fat_arch*	fa	= (fat_arch*)(fh + 1);	// FIXME this is in-place swapping
+
+		fat_header	fh		= *(fat_header*)mRAMFile;
+		fat_arch*	faPtr	= (fat_arch*)((char*)mRAMFile + sizeof(fat_header));
+		fat_arch	fa;
 
 		// fat_header and fat_arch are always big-endian. Swap if we're
 		// running on intel.
 		if (OSHostByteOrder() == OSLittleEndian)
 		{
-			swap_fat_header(fh, OSLittleEndian);				// one header
-			swap_fat_arch(fa, fh->nfat_arch, OSLittleEndian);	// multiple archs
+//			swap_fat_header(fh, OSLittleEndian);				// one header
+//			swap_fat_arch(fa, fh->nfat_arch, OSLittleEndian);	// multiple archs
+			swap_fat_header(&fh, OSLittleEndian);
+//			swap_fat_arch(&fa, fh.nfat_arch, OSLittleEndian);
 		}
 
 		UInt32	i;
 
 		// Find the mach header we want.
-		for (i = 0; i < fh->nfat_arch && !mMachHeaderPtr; i++)
+		for (i = 0; i < fh.nfat_arch && !mMachHeaderPtr; i++)
 		{
-			if (fa->cputype == mArchSelector)
+			fa	= *faPtr;
+
+			if (OSHostByteOrder() == OSLittleEndian)
+				swap_fat_arch(&fa, 1, OSLittleEndian);
+
+			if (fa.cputype == mArchSelector)
 			{
-				mMachHeaderPtr	= (mach_header*)(mRAMFile + fa->offset);
+				mMachHeaderPtr	= (mach_header*)(mRAMFile + fa.offset);
 				mArchMagic		= *(UInt32*)mMachHeaderPtr;
 				mSwapped		= mArchMagic == MH_CIGAM;
 			}
 
-			fa++;	// next arch
+			faPtr++;	// next arch
 		}
 
 		if (!mMachHeaderPtr)
@@ -72,7 +83,7 @@
 		return false;
 	}
 
-	mMachHeader		= *mMachHeaderPtr;
+	mMachHeader	= *mMachHeaderPtr;
 
 	if (mSwapped)
 		swap_mach_header(&mMachHeader, OSHostByteOrder());
@@ -109,22 +120,22 @@
 			case LC_SEGMENT:
 			{
 				// Re-cast the original ptr as a segment_command.
-				segment_command	segCopy	= *(segment_command*)ptr;
+				segment_command	swappedSeg	= *(segment_command*)ptr;
 
 				if (mSwapped)
-					swap_segment_command(&segCopy, OSHostByteOrder());
+					swap_segment_command(&swappedSeg, OSHostByteOrder());
 
 				// Load a segment we're interested in.
-				if (!strcmp(segCopy.segname, SEG_TEXT))
+				if (!strcmp(swappedSeg.segname, SEG_TEXT))
 				{
-					mTextOffset	= segCopy.vmaddr - segCopy.fileoff;
+					mTextOffset	= swappedSeg.vmaddr - swappedSeg.fileoff;
 					[self loadSegment: (segment_command*)ptr];
 				}
-				else if (!strcmp(segCopy.segname, SEG_DATA))
+				else if (!strcmp(swappedSeg.segname, SEG_DATA))
 					[self loadSegment: (segment_command*)ptr];
-				else if (!strcmp(segCopy.segname, SEG_OBJC))
+				else if (!strcmp(swappedSeg.segname, SEG_OBJC))
 					[self loadSegment: (segment_command*)ptr];
-				else if (!strcmp(segCopy.segname, "__IMPORT"))
+				else if (!strcmp(swappedSeg.segname, "__IMPORT"))
 					[self loadSegment: (segment_command*)ptr];
 
 				break;
@@ -157,10 +168,10 @@
 
 - (void)loadSegment: (segment_command*)inSegPtr
 {
-	segment_command	segCopy	= *inSegPtr;
+	segment_command	swappedSeg	= *inSegPtr;
 
 	if (mSwapped)
-		swap_segment_command(&segCopy, OSHostByteOrder());
+		swap_segment_command(&swappedSeg, OSHostByteOrder());
 
 	// Set a pointer to the first section.
 	section*	sectionPtr	=
@@ -168,7 +179,7 @@
 	UInt16		i;
 
 	// Loop thru sections.
-	for (i = 0; i < segCopy.nsects; i++)
+	for (i = 0; i < swappedSeg.nsects; i++)
 	{
 		if (!strcmp(sectionPtr->segname, SEG_OBJC))
 		{
@@ -227,17 +238,17 @@
 {
 //	nlist(3) doesn't quite cut it...
 
-	symtab_command	symTabCopy	= *inSymPtr;
+	symtab_command	swappedSymTab	= *inSymPtr;
 
 	if (mSwapped)
-		swap_symtab_command(&symTabCopy, OSHostByteOrder());
+		swap_symtab_command(&swappedSymTab, OSHostByteOrder());
 
-	nlist*	theSymPtr	= (nlist*)((char*)mMachHeaderPtr + symTabCopy.symoff);
+	nlist*	theSymPtr	= (nlist*)((char*)mMachHeaderPtr + swappedSymTab.symoff);
 	nlist	theSym		= {0};
 	UInt32	i;
 
 	// loop thru symbols
-	for (i = 0; i < symTabCopy.nsyms; i++)
+	for (i = 0; i < swappedSymTab.nsyms; i++)
 	{
 		theSym	= theSymPtr[i];
 
@@ -308,10 +319,10 @@
 
 - (void)loadObjcSection: (section*)inSect
 {
-	section	sectCopy	= *inSect;
+	section	swappedSect	= *inSect;
 
 	if (mSwapped)
-		swap_section(&sectCopy, 1, OSHostByteOrder());
+		swap_section(&swappedSect, 1, OSHostByteOrder());
 
 	mNumObjcSects++;
 
@@ -322,7 +333,8 @@
 		mObjcSects	= malloc(sizeof(section_info));
 
 	mObjcSects[mNumObjcSects - 1]	= (section_info)
-		{sectCopy, (char*)mMachHeaderPtr + sectCopy.offset, sectCopy.size};
+		{swappedSect, (char*)mMachHeaderPtr + swappedSect.offset,
+		swappedSect.size};
 
 	if (!strncmp(inSect->sectname, "__cstring_object", 16))
 		[self loadNSStringSection: inSect];
@@ -349,8 +361,8 @@
 	objc_module		theModule;
 	UInt32			theModSize;
 	objc_symtab		theSymTab;
-	objc_class		theClass;
-	objc_category	theCat;
+	objc_class		theClass, theSwappedClass, theMetaClass;
+	objc_category	theCat, theSwappedCat;
 	void**			theDefs;
 	UInt32			theOffset;
 	UInt32			i, j, k;
@@ -358,7 +370,11 @@
 	// Loop thru objc sections.
 	for (i = 0; i < mNumObjcSects; i++)
 	{
-		theSectInfo	= &mObjcSects[i];
+		theSectInfo			= &mObjcSects[i];
+//		theSwappedSection	= theSectInfo->s;
+
+//		if (mSwapped)
+//			swap_section(&theSwappedSection, 1, OSHostByteOrder());
 
 		// Bail if not a module section.
 		if (strcmp(theSectInfo->s.sectname, SECT_OBJC_MODULES))
@@ -393,6 +409,9 @@
 				continue;
 			}
 
+			if (mSwapped)
+				swap_objc_symtab(&theSymTab);
+
 // In the objc_symtab struct defined in <objc/objc-runtime.h>, the format of
 // the void* array 'defs' is 'cls_def_cnt' class pointers followed by
 // 'cat_def_cnt' category pointers.
@@ -410,6 +429,11 @@
 				if (![self getObjcClass: &theClass fromDef: theDef])
 					continue;
 
+				theSwappedClass	= theClass;
+
+				if (mSwapped)
+					swap_objc_class(&theSwappedClass);
+
 				// Save class's instance method info.
 				objc_method_list	theMethodList;
 				objc_method*		theMethods;
@@ -417,8 +441,11 @@
 
 				if ([self getObjcMethodList: &theMethodList
 					andMethods: &theMethods
-					fromAddress: (UInt32)theClass.methodLists])
+					fromAddress: (UInt32)theSwappedClass.methodLists])
 				{
+					if (mSwapped)
+						swap_objc_method_list(&theMethodList);
+
 					for (k = 0; k < theMethodList.method_count; k++)
 					{
 						theMethod	= theMethods[k];
@@ -427,7 +454,7 @@
 							swap_objc_method(&theMethod);
 
 						MethodInfo	theMethInfo	=
-							{theMethod, theClass, {0}, true};
+							{theMethod, theSwappedClass, {0}, true};
 
 						mNumClassMethodInfos++;
 
@@ -442,15 +469,20 @@
 				}
 
 				// Save class's class method info.
-				objc_class	theMetaClass;
-
 				if ([self getObjcMetaClass: &theMetaClass
-					fromClass: &theClass])
+//					fromClass: &theClass])
+					fromClass: &theSwappedClass])
 				{
+					if (mSwapped)
+						swap_objc_class(&theMetaClass);
+
 					if ([self getObjcMethodList: &theMethodList
 						andMethods: &theMethods
 						fromAddress: (UInt32)theMetaClass.methodLists])
 					{
+						if (mSwapped)
+							swap_objc_method_list(&theMethodList);
+
 						for (k = 0; k < theMethodList.method_count; k++)
 						{
 							theMethod	= theMethods[k];
@@ -459,7 +491,7 @@
 								swap_objc_method(&theMethod);
 
 							MethodInfo	theMethInfo	=
-								{theMethod, theClass, {0}, false};
+								{theMethod, theSwappedClass, {0}, false};
 
 							mNumClassMethodInfos++;
 
@@ -495,10 +527,20 @@
 				if (![self getObjcCategory: &theCat fromDef: theDef])
 					continue;
 
+				theSwappedCat	= theCat;
+
+				if (mSwapped)
+					swap_objc_category(&theSwappedCat);
+
 				// Categories are linked to classes by name only. Try to 
 				// find the class for this category. May be nil.
 				GetObjcClassFromName(&theClass,
-					GetPointer((UInt32)theCat.class_name, nil));
+					GetPointer((UInt32)theSwappedCat.class_name, nil));
+
+				theSwappedClass	= theClass;
+
+				if (mSwapped)
+					swap_objc_class(&theSwappedClass);
 
 				// Save category instance method info.
 				objc_method_list	theMethodList;
@@ -507,8 +549,11 @@
 
 				if ([self getObjcMethodList: &theMethodList
 					andMethods: &theMethods
-					fromAddress: (UInt32)theCat.instance_methods])
+					fromAddress: (UInt32)theSwappedCat.instance_methods])
 				{
+					if (mSwapped)
+						swap_objc_method_list(&theMethodList);
+
 					for (k = 0; k < theMethodList.method_count; k++)
 					{
 						theMethod	= theMethods[k];
@@ -517,7 +562,7 @@
 							swap_objc_method(&theMethod);
 
 						MethodInfo	theMethInfo	=
-							{theMethod, theClass, theCat, true};
+							{theMethod, theSwappedClass, theSwappedCat, true};
 
 						mNumCatMethodInfos++;
 
@@ -534,8 +579,11 @@
 				// Save category class method info.
 				if ([self getObjcMethodList: &theMethodList
 					andMethods: &theMethods
-					fromAddress: (UInt32)theCat.class_methods])
+					fromAddress: (UInt32)theSwappedCat.class_methods])
 				{
+					if (mSwapped)
+						swap_objc_method_list(&theMethodList);
+
 					for (k = 0; k < theMethodList.method_count; k++)
 					{
 						theMethod	= theMethods[k];
@@ -544,7 +592,7 @@
 							swap_objc_method(&theMethod);
 
 						MethodInfo	theMethInfo	=
-							{theMethod, theClass, theCat, false};
+							{theMethod, theSwappedClass, theSwappedCat, false};
 
 						mNumCatMethodInfos++;
 
@@ -583,6 +631,11 @@
 
 - (void)loadCStringSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mCStringSect.s	= *inSect;
 
 	if (mSwapped)
@@ -597,6 +650,11 @@
 
 - (void)loadNSStringSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mNSStringSect.s	= *inSect;
 
 	if (mSwapped)
@@ -611,6 +669,11 @@
 
 - (void)loadClassSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mClassSect.s	= *inSect;
 
 	if (mSwapped)
@@ -625,6 +688,11 @@
 
 - (void)loadMetaClassSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mMetaClassSect.s	= *inSect;
 
 	if (mSwapped)
@@ -639,6 +707,11 @@
 
 - (void)loadIVarSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mIVarSect.s	= *inSect;
 
 	if (mSwapped)
@@ -653,6 +726,11 @@
 
 - (void)loadObjcModSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mObjcModSect.s	= *inSect;
 
 	if (mSwapped)
@@ -667,6 +745,11 @@
 
 - (void)loadObjcSymSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mObjcSymSect.s	= *inSect;
 
 	if (mSwapped)
@@ -681,6 +764,11 @@
 
 - (void)loadLit4Section: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mLit4Sect.s	= *inSect;
 
 	if (mSwapped)
@@ -695,6 +783,11 @@
 
 - (void)loadLit8Section: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mLit8Sect.s	= *inSect;
 
 	if (mSwapped)
@@ -709,6 +802,11 @@
 
 - (void)loadTextSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mTextSect.s	= *inSect;
 
 	if (mSwapped)
@@ -725,6 +823,11 @@
 
 - (void)loadConstTextSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mConstTextSect.s	= *inSect;
 
 	if (mSwapped)
@@ -739,7 +842,12 @@
 
 - (void)loadCoalTextSection: (section*)inSect
 {
-	mCoalTextSect.s		= *inSect;
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
+	mCoalTextSect.s	= *inSect;
 
 	if (mSwapped)
 		swap_section(&mCoalTextSect.s, 1, OSHostByteOrder());
@@ -753,6 +861,11 @@
 
 - (void)loadCoalTextNTSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mCoalTextNTSect.s	= *inSect;
 
 	if (mSwapped)
@@ -767,6 +880,11 @@
 
 - (void)loadDataSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mDataSect.s	= *inSect;
 
 	if (mSwapped)
@@ -781,6 +899,11 @@
 
 - (void)loadCoalDataSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mCoalDataSect.s	= *inSect;
 
 	if (mSwapped)
@@ -795,6 +918,11 @@
 
 - (void)loadCoalDataNTSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mCoalDataNTSect.s	= *inSect;
 
 	if (mSwapped)
@@ -809,6 +937,11 @@
 
 - (void)loadConstDataSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mConstDataSect.s	= *inSect;
 
 	if (mSwapped)
@@ -823,6 +956,11 @@
 
 - (void)loadDyldDataSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mDyldSect.s	= *inSect;
 
 	if (mSwapped)
@@ -847,7 +985,12 @@
 
 - (void)loadCFStringSection: (section*)inSect
 {
-	mCFStringSect.s			= *inSect;
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
+	mCFStringSect.s	= *inSect;
 
 	if (mSwapped)
 		swap_section(&mCFStringSect.s, 1, OSHostByteOrder());
@@ -861,6 +1004,11 @@
 
 - (void)loadNonLazySymbolSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mNLSymSect.s	= *inSect;
 
 	if (mSwapped)
@@ -875,6 +1023,11 @@
 
 - (void)loadImpPtrSection: (section*)inSect
 {
+//	section	swappedSect	= *inSect;
+
+//	if (mSwapped)
+//		swap_section(&swappedSect, 1, OSHostByteOrder());
+
 	mImpPtrSect.s	= *inSect;
 
 	if (mSwapped)

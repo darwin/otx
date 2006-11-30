@@ -1070,7 +1070,7 @@
 }
 
 #pragma mark -
-//	selectorForMsgSend:
+//	selectorForMsgSend:fromLine:
 // ----------------------------------------------------------------------------
 
 - (char*)selectorForMsgSend: (char*)ioComment
@@ -1184,8 +1184,9 @@
 		(sendType == sendSuper_stret || sendType == send_stret) ?
 		"(struct)" : (sendType == send_fpret) ? "(double)" : "";
 
+	char*	className		= nil;
 	char	tempComment[MAX_COMMENT_LENGTH];
-	BOOL	goodComment	= false;
+//	BOOL	goodComment	= false;
 
 	tempComment[0]	= 0;
 
@@ -1193,7 +1194,7 @@
 	{
 		// Get at the receiver
 		UInt8	receiverType	= PointerType;
-		char*	className		= nil;
+//		char*	className		= nil;
 		char*	namePtr			= GetPointer(receiverAddy, &receiverType);
 
 		switch (receiverType)
@@ -1238,17 +1239,39 @@
 				break;
 		}
 
-		if (className)
+/*		if (className)
 		{
 			snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
 				(sendType == sendSuper || sendType == sendSuper_stret) ?
 				"%s[[%s super] %s]" : "%s[%s %s]",
 				returnTypeString, className, selString);
 			goodComment	= true;
+		}*/
+	}
+	else	// receiverAddy was nil, maybe we can get at the class name 
+	{
+		GPRegisterInfo*	receiverInfo	=
+			(sendType == sendSuper_stret || sendType == send_stret) ?
+			((mStack[1].isValid) ? &mStack[1] : nil) :
+			((mStack[0].isValid) ? &mStack[0] : nil);
+
+		if (receiverInfo && receiverInfo->classPtr)
+		{
+			GetObjcDescriptionFromObject(
+				&className, (char*)receiverInfo->classPtr, OCClassType);
 		}
 	}
 
-	if (!goodComment)
+	if (className)
+	{
+		snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
+			(sendType == sendSuper || sendType == sendSuper_stret) ?
+			"%s[[%s super] %s]" : "%s[%s %s]",
+			returnTypeString, className, selString);
+//		goodComment	= true;
+	}
+	else
+//	if (!goodComment)
 	{
 		char*	formatString;
 

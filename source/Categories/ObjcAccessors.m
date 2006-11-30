@@ -1,5 +1,5 @@
 /*
-	ListUtils.h
+	ObjcAccessors.m
 
 	What the filename says.
 */
@@ -165,9 +165,6 @@
 				*outDefs	= nil;
 			}
 
-			if (mSwapped)
-				swap_objc_symtab(outSymTab);
-
 			return true;
 		}
 	}
@@ -191,8 +188,8 @@
 			*outClass	= *(objc_class*)(mObjcSects[i].contents +
 				(inDef - mObjcSects[i].s.addr));
 
-			if (mSwapped)
-				swap_objc_class(outClass);
+//			if (mSwapped)
+//				swap_objc_class(outClass);
 
 			return true;
 		}
@@ -208,14 +205,14 @@
 //	equality is sufficient.
 
 - (BOOL)getObjcClass: (objc_class*)outClass
-		 fromName: (const char*)inName;
+			fromName: (const char*)inName;
 {
-	UInt32	i;
+	UInt32		i;
 
 	for (i = 0; i < mNumClassMethodInfos; i++)
 	{
-		if (GetPointer((UInt32)mClassMethodInfos[i].oc_class.name,
-			nil) == inName)
+		if (GetPointer(
+			(UInt32)mClassMethodInfos[i].oc_class.name, nil) == inName)
 		{
 			*outClass	= mClassMethodInfos[i].oc_class;
 			return true;
@@ -233,18 +230,15 @@
 - (BOOL)getObjcCategory: (objc_category*)outCat
 				fromDef: (UInt32)inDef;
 {
-	UInt32	i;
+	UInt32			i;
 
 	for (i = 0; i < mNumObjcSects; i++)
 	{
 		if (inDef >= mObjcSects[i].s.addr &&
-			inDef < mObjcSects[i].s.addr + mObjcSects[i].size)
+			inDef < mObjcSects[i].s.addr + mObjcSects[i].s.size)
 		{
 			*outCat	= *(objc_category*)(mObjcSects[i].contents +
 				(inDef - mObjcSects[i].s.addr));
-
-			if (mSwapped)
-				swap_objc_category(outCat);
 
 			return true;
 		}
@@ -260,13 +254,10 @@
 			   fromClass: (objc_class*)inClass;
 {
 	if ((UInt32)inClass->isa >= mMetaClassSect.s.addr &&
-		(UInt32)inClass->isa < mMetaClassSect.s.addr + mMetaClassSect.size)
+		(UInt32)inClass->isa < mMetaClassSect.s.addr + mMetaClassSect.s.size)
 	{
 		*outClass	= *(objc_class*)(mMetaClassSect.contents +
 			((UInt32)inClass->isa - mMetaClassSect.s.addr));
-
-		if (mSwapped)
-			swap_objc_class(outClass);
 
 		return true;
 	}
@@ -289,13 +280,12 @@
 	for (i = 0; i < mNumObjcSects; i++)
 	{
 		if (inAddress >= mObjcSects[i].s.addr &&
-			inAddress < mObjcSects[i].s.addr + mObjcSects[i].size)
+			inAddress < mObjcSects[i].s.addr + mObjcSects[i].s.size)
 		{
-			left = mObjcSects[i].size -
+			left = mObjcSects[i].s.size -
 				(inAddress - mObjcSects[i].s.addr);
 
-			if (left >= sizeof(objc_method_list) -
-				sizeof(objc_method))
+			if (left >= sizeof(objc_method_list) - sizeof(objc_method))
 			{
 				memcpy(outList, mObjcSects[i].contents +
 					(inAddress - mObjcSects[i].s.addr),
@@ -313,9 +303,6 @@
 				left = 0;
 				*outMethods = nil;
 			}
-
-			if (mSwapped)
-				swap_objc_method_list(outList);
 
 			return true;
 		}

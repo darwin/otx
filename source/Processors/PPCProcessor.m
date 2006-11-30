@@ -578,7 +578,7 @@
 }
 
 #pragma mark -
-//	selectorForMsgSend:
+//	selectorForMsgSend:fromLine:
 // ----------------------------------------------------------------------------
 
 - (char*)selectorForMsgSend: (char*)ioComment
