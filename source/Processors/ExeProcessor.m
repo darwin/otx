@@ -366,7 +366,8 @@
 			theFileError	= ferror(verboseFile);
 
 			if (theFileError)
-				fprintf(stderr, "otx: error reading from verbose temp file: %d\n",
+				fprintf(stderr,
+					"otx: error reading from verbose temp file: %d\n",
 					theFileError);
 
 			break;
@@ -377,7 +378,8 @@
 			theFileError	= ferror(plainFile);
 
 			if (theFileError)
-				fprintf(stderr, "otx: error reading from plain temp file: %d\n",
+				fprintf(stderr,
+					"otx: error reading from plain temp file: %d\n",
 					theFileError);
 
 			break;
@@ -551,10 +553,10 @@
 		else	// not code...
 		{
 			if (strstr(theLine->chars,
-				"Contents of (__TEXT,__coalesced_text)"))
+				"(__TEXT,__coalesced_text)"))
 				mEndOfText	= mCoalTextSect.s.addr + mCoalTextSect.s.size;
 			else if (strstr(theLine->chars,
-				"Contents of (__TEXT,__textcoal_nt)"))
+				"(__TEXT,__textcoal_nt)"))
 				mEndOfText	= mCoalTextNTSect.s.addr + mCoalTextNTSect.s.size;
 		}
 
@@ -573,33 +575,55 @@
 	if (!strlen(ioLine->chars))
 		return;
 
-	char*	theSearchString			= "Contents of ";
-	UInt8	theSearchStringLength	= strlen(theSearchString);
+	// otool is inconsistent in printing it's section headers. Sometimes it
+	// prints "Contents of (x)" and sometimes just "(x)". We'll take this
+	// opportunity to use the shorter version in all cases.
+	char*	theContentsString		= "Contents of ";
+	UInt8	theContentsStringLength	= strlen(theContentsString);
+	char*	theTextSegString		= "(__TEXT,__";
 
-	if (strstr(ioLine->chars, theSearchString))
+	// Kill the "Contents of" if it exists.
+	if (strstr(ioLine->chars, theContentsString))
 	{
 		char	theTempLine[MAX_LINE_LENGTH]	= {0};
 
 		theTempLine[0]	= '\n';
 
-		strncat(theTempLine, &ioLine->chars[theSearchStringLength],
-			strlen(&ioLine->chars[theSearchStringLength]));
+		strncat(theTempLine, &ioLine->chars[theContentsStringLength],
+			strlen(&ioLine->chars[theContentsStringLength]));
 
 		ioLine->length	= strlen(theTempLine);
 		strncpy(ioLine->chars, theTempLine, ioLine->length + 1);
 
-		if (strstr(ioLine->chars, "\n(__TEXT,__coalesced_text)"))
+		return;
+	}
+	else if (strstr(ioLine->chars, theTextSegString))
+	{
+		if (strstr(ioLine->chars, "__coalesced_text)"))
 		{
 			mEndOfText		= mCoalTextSect.s.addr + mCoalTextSect.s.size;
 			mLocalOffset	= 0;
 		}
-		else if (strstr(ioLine->chars, "\n(__TEXT,__textcoal_nt)"))
+		else if (strstr(ioLine->chars, "__textcoal_nt)"))
 		{
 			mEndOfText		= mCoalTextNTSect.s.addr + mCoalTextNTSect.s.size;
 			mLocalOffset	= 0;
 		}
+
+		char	theTempLine[MAX_LINE_LENGTH]	= {0};
+
+		theTempLine[0]	= '\n';
+
+		strncat(theTempLine, ioLine->chars, strlen(ioLine->chars));
+
+		ioLine->length++;
+		strncpy(ioLine->chars, theTempLine, ioLine->length + 1);
+
+		return;
 	}
-	else if (mOpts.demangleCppNames)
+
+	// If we got here, we have a symbol name.
+	if (mOpts.demangleCppNames)
 	{
 		char*	demString	=
 			PrepareNameForDemangling(ioLine->chars);
@@ -842,8 +866,8 @@
 					theNewLine->length + 1);
 				ReplaceLine((*ioLine)->prev, theNewLine, &mPlainLineListHead);
 			}
-			else	// theMethName sux, add '\n' to otool's method name.
-			{
+			else if ((*ioLine)->prev->chars[0] != '\n')
+			{	// theMethName sux, add '\n' to otool's method name.
 				char	theNewLine[MAX_LINE_LENGTH]	= {0};
 
 				theNewLine[0]	= '\n';
@@ -1396,9 +1420,29 @@
 		return;
 	}
 
-	strncpy(finalLine, "\nmd5: ", 7);
-	strncat(finalLine, md5Line, strlen(md5Line));
-	strncat(finalLine, "\n", 1);
+/*	 trying snprintf	*/
+
+	char*	format		= nil;
+	char*	prefix		= "\nmd5: ";
+	UInt32	finalLength	= strlen(md5Line) + strlen(prefix);
+
+	if (strchr(md5Line, '\n'))
+	{
+		format	= "%s%s";
+	}
+	else
+	{
+		format	= "%s%s\n";
+		finalLength++;
+	}
+		
+	snprintf(finalLine, finalLength + 1, format, prefix, md5Line);
+
+//	strncpy(finalLine, "\nmd5: ", 7);
+//	strncat(finalLine, md5Line, strlen(md5Line));
+//	strncat(finalLine, "\n", 1);
+
+/**/
 
 	Line*	newLine	= malloc(sizeof(Line));
 

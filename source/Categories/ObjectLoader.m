@@ -565,8 +565,8 @@
 					}
 
 					if (theMetaClass.ivars)
-					{	// trigger this code and win a free beer.
-						fprintf(stderr, "otx: found meta class ivars!\n");
+					{	// example in libobjc.dylib.
+					//	fprintf(stderr, "otx: found meta class ivars!\n");
 					}
 				}	// theMetaClass != nil
 			}
