@@ -322,6 +322,8 @@ enum {
 #define DEMANGLE_OPTS			\
 	DMGL_PARAMS | DMGL_ANSI | DMGL_VERBOSE | DMGL_TYPES | DMGL_RET_POSTFIX
 
+#define	COMPARISON_FUNC_TYPE	int (*)(const void*, const void*)
+
 // ============================================================================
 
 @interface ExeProcessor : NSObject
@@ -348,6 +350,7 @@ enum {
 	UInt32				mNumThunks;				// x86 only
 	GPRegisterInfo		mStack[MAX_STACK_SIZE];
 	TextFieldWidths		mFieldWidths;
+	ProcOptions			mOpts;
 
 	// base pointers for indirect addressing
 	SInt8				mCurrentThunk;		// x86 register identifier
@@ -356,6 +359,8 @@ enum {
 	// symbols that point to functions
 	nlist*				mFuncSyms;
 	UInt32				mNumFuncSyms;
+	nlist*				mDySyms;
+	UInt32				mNumDySyms;
 
 	// FunctionInfo array
 	FunctionInfo*		mFuncInfos;
@@ -394,27 +399,16 @@ enum {
 	UInt32				mNumClassMethodInfos;
 	MethodInfo*			mCatMethodInfos;
 	UInt32				mNumCatMethodInfos;
-	objc_class*			mCurrentClass;
-	objc_category*		mCurrentCat;
 	VarInfo*			mLocalSelves;			// 'self' copied to local variables
 	UInt32				mNumLocalSelves;
-	BOOL				mReturnValueIsKnown;
+	objc_class*			mCurrentClass;
+	objc_category*		mCurrentCat;
+	BOOL				mReturnValueIsKnown;	// so don't trample r3/eax
 
 	// dyld stuff
 	UInt32		mAddrDyldStubBindingHelper;
 	UInt32		mAddrDyldFuncLookupPointer;
 
-	// saved prefs for speed
-/*	BOOL		mDemangleCppNames;
-	BOOL		mEntabOutput;
-	BOOL		mSeparateLogicalBlocks;
-	BOOL		mShowDataSection;
-	BOOL		mShowIvarTypes;
-	BOOL		mShowLocalOffsets;
-	BOOL		mShowMethReturnTypes;
-	BOOL		mVerboseMsgSends;*/
-
-	ProcOptions		mOpts;
 
 	BOOL		mEnteringNewBlock;
 
@@ -458,6 +452,7 @@ enum {
 	void	(*ReplaceLine)		(id, SEL, Line*, Line*, Line**);
 
 	BOOL	(*FindSymbolByAddress)		(id, SEL, UInt32);
+//	BOOL	(*FindDySymbolByAddress)	(id, SEL, UInt32);
 	BOOL	(*FindClassMethodByAddress)	(id, SEL, MethodInfo**, UInt32);
 	BOOL	(*FindCatMethodByAddress)	(id, SEL, MethodInfo**, UInt32);
 	BOOL	(*FindIvar)					(id, SEL, objc_ivar*, objc_class*, UInt32);

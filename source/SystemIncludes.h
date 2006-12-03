@@ -1,5 +1,10 @@
 /*
 	SystemIncludes.h
+
+	In order to implement the struct shortcut, all system files that define
+	structs need to be #included before the #defines. To make this easier,
+	all such files are included from here, and other files simply include
+	this file. The behavior of the #import directive makes this safe.
 */
 
 #import <libkern/OSByteOrder.h>
@@ -12,7 +17,6 @@
 #import <sys/ptrace.h>
 #import <sys/syscall.h>
 
-// I refuse to type 'struct' 1,000 times.
 #define fat_header			struct fat_header
 #define fat_arch			struct fat_arch
 #define mach_header			struct mach_header
@@ -33,7 +37,7 @@
 #define objc_category		struct objc_category
 #define objc_protocol_list	struct objc_protocol_list
 
-// why not
+// carpal tunnel inhibitors
 #define CSTRING(s)	[(s) cStringUsingEncoding: NSMacOSRomanStringEncoding]
 #define NSSTRING(s)	\
 	[NSString stringWithCString: (s) encoding: NSMacOSRomanStringEncoding]

@@ -23,10 +23,10 @@
 // ExeProcessor is a base class that handles processor-independent issues.
 // PPCProcessor and X86Processor are subclasses that add functionality
 // specific to those CPUs. The AppController class creates a new instance of
-// one of those subclasses class for each processing, and deletes the
-// instance as soon as possible. Member variables may or may not be
-// re-initialized before destruction. Do not reuse a single instance of
-// those subclasses for multiple processings.
+// one of those subclasses for each processing, and deletes the instance as
+// soon as possible. Member variables may or may not be re-initialized before
+// destruction. Do not reuse a single instance of those subclasses for
+// multiple processings.
 
 //	initWithURL:controller:andOptions:
 // ----------------------------------------------------------------------------
@@ -100,6 +100,9 @@
 
 	if (mFuncSyms)
 		free(mFuncSyms);
+
+	if (mDySyms)
+		free(mDySyms);
 
 	if (mObjcSects)
 		free(mObjcSects);
@@ -178,18 +181,6 @@
 
 	mOutputFilePath	= inOutputFilePath;
 	mMachHeaderPtr	= nil;
-
-	// Save some prefs for speed.
-//	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
-
-/*	mDemangleCppNames		= [theDefaults boolForKey: DemangleCppNamesKey];
-	mEntabOutput			= [theDefaults boolForKey: EntabOutputKey];
-	mSeparateLogicalBlocks	= [theDefaults boolForKey: SeparateLogicalBlocksKey];
-	mShowDataSection		= [theDefaults boolForKey: ShowDataSectionKey];
-	mShowIvarTypes			= [theDefaults boolForKey: ShowIvarTypesKey];
-	mShowLocalOffsets		= [theDefaults boolForKey: ShowLocalOffsetsKey];
-	mShowMethReturnTypes	= [theDefaults boolForKey: ShowMethodReturnTypesKey];
-	mVerboseMsgSends		= [theDefaults boolForKey: VerboseMsgSendsKey];*/
 
 	if (![self loadMachHeader])
 	{
@@ -434,7 +425,7 @@
 	}
 
 	// Optionally insert md5.
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: ShowMD5Key])
+	if (mOpts.checksum)
 		[self insertMD5];
 
 	ProgressState	progState	=
@@ -476,7 +467,6 @@
 		{
 			ProcessCodeLine(&theLine);
 
-//			if (mEntabOutput)
 			if (mOpts.entabOutput)
 				EntabLine(theLine);
 		}
@@ -495,7 +485,6 @@
 	if (![self printLinesFromList: mPlainLineListHead])
 		return false;
 
-//	if (mShowDataSection)
 	if (mOpts.dataSections)
 	{
 		if (![self printDataSections])
@@ -610,7 +599,6 @@
 			mLocalOffset	= 0;
 		}
 	}
-//	else if (mDemangleCppNames)
 	else if (mOpts.demangleCppNames)
 	{
 		char*	demString	=
@@ -923,7 +911,6 @@
 	}	// if (!theCommentCString[0])
 	else	// otool gave us a comment.
 	{	// Optionally modify otool's comment.
-//		if (mVerboseMsgSends)
 		if (mOpts.verboseMsgSends)
 			CommentForMsgSendFromLine(theCommentCString, *ioLine);
 
@@ -984,7 +971,6 @@
 	}
 
 	// Optionally add local offset.
-//	if (mShowLocalOffsets)
 	if (mOpts.localOffsets)
 	{
 		// Build a right-aligned string  with a '+' in it.
@@ -1028,7 +1014,6 @@
 	if (needNewLine)
 		finalFormatCString[formatMarker++]	= '\n';
 
-//	if (mShowLocalOffsets)
 	if (mOpts.localOffsets)
 		formatMarker += snprintf(&finalFormatCString[formatMarker],
 			10, "%s", "%s %s");
@@ -1048,7 +1033,6 @@
 
 	char	theFinalCString[MAX_LINE_LENGTH];
 
-//	if (mShowLocalOffsets)
 	if (mOpts.localOffsets)
 		snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
 			finalFormatCString, localOffsetString,
@@ -2093,14 +2077,16 @@
 		[self methodForSelector: InsertLineAfterSel];
 	ReplaceLine						= ReplaceLineFuncType
 		[self methodForSelector: ReplaceLineSel];
-	FindIvar						= FindIvarFuncType
-		[self methodForSelector: FindIvarSel];
 	FindSymbolByAddress				= FindSymbolByAddressFuncType
 		[self methodForSelector: FindSymbolByAddressSel];
+//	FindDySymbolByAddress			= FindDySymbolByAddressFuncType
+//		[self methodForSelector: FindDySymbolByAddressSel];
 	FindClassMethodByAddress		= FindClassMethodByAddressFuncType
 		[self methodForSelector: FindClassMethodByAddressSel];
 	FindCatMethodByAddress			= FindCatMethodByAddressFuncType
 		[self methodForSelector: FindCatMethodByAddressSel];
+	FindIvar						= FindIvarFuncType
+		[self methodForSelector: FindIvarSel];
 }
 
 //	printSymbol:

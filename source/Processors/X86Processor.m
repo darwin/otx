@@ -326,7 +326,6 @@
 
 					if (theSymPtr)
 					{
-//						if (mShowIvarTypes)
 						if (mOpts.variableTypes)
 						{
 							char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
@@ -410,7 +409,6 @@
 
 				if (theSymPtr)
 				{
-//					if (mShowIvarTypes)
 					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
@@ -599,7 +597,6 @@
 
 					UInt32	tempCommentLength	= strlen(tempComment);
 
-//					if (mShowIvarTypes)
 					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
@@ -707,7 +704,6 @@
 
 				if (theSymPtr)
 				{
-//					if (mShowIvarTypes)
 					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
@@ -818,7 +814,6 @@
 
 				if (theSymPtr)
 				{
-//					if (mShowIvarTypes)
 					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
@@ -1192,7 +1187,6 @@
 
 	char*	className		= nil;
 	char	tempComment[MAX_COMMENT_LENGTH];
-//	BOOL	goodComment	= false;
 
 	tempComment[0]	= 0;
 
@@ -1200,7 +1194,6 @@
 	{
 		// Get at the receiver
 		UInt8	receiverType	= PointerType;
-//		char*	className		= nil;
 		char*	namePtr			= GetPointer(receiverAddy, &receiverType);
 
 		switch (receiverType)
@@ -1244,15 +1237,6 @@
 
 				break;
 		}
-
-/*		if (className)
-		{
-			snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
-				(sendType == sendSuper || sendType == sendSuper_stret) ?
-				"%s[[%s super] %s]" : "%s[%s %s]",
-				returnTypeString, className, selString);
-			goodComment	= true;
-		}*/
 	}
 	else	// receiverAddy was nil, maybe we can get at the class name 
 	{
@@ -1274,10 +1258,8 @@
 			(sendType == sendSuper || sendType == sendSuper_stret) ?
 			"%s[[%s super] %s]" : "%s[%s %s]",
 			returnTypeString, className, selString);
-//		goodComment	= true;
 	}
 	else
-//	if (!goodComment)
 	{
 		char*	formatString;
 
@@ -1759,7 +1741,8 @@
 		}
 
 		// Optionally add a blank line before this block.
-		if (mOpts.separateLogicalBlocks && inLine->chars[0]	!= '\n')
+		if (mOpts.separateLogicalBlocks && inLine->chars[0]	!= '\n'	&&
+			!inLine->info.isFunction)
 			needNewLine	= true;
 
 		break;
@@ -1795,6 +1778,10 @@
 
 	// If it's not an Obj-C method, maybe there's an nlist.
 	if (FindSymbolByAddress(theAddy))
+		return true;
+
+	// If otool gave us a function name, but it came from a dynamic symbol...
+	if (inLine->prev && !inLine->prev->info.isCode)
 		return true;
 
 	// Check for saved thunks.

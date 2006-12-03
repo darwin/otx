@@ -23,7 +23,28 @@
 
 	BOOL	symbolExists	= (bsearch(&searchKey,
 		mFuncSyms, mNumFuncSyms, sizeof(nlist*),
-		(int (*)(const void*, const void*))Sym_Compare) != nil);
+		(COMPARISON_FUNC_TYPE)Sym_Compare) != nil);
+
+	free(searchKey);
+
+	return symbolExists;
+}
+
+//	findDySymbolByAddress:
+// ----------------------------------------------------------------------------
+
+- (BOOL)findDySymbolByAddress: (UInt32)inAddress
+{
+	if (!mDySyms)
+		return false;
+
+	nlist*	searchKey	= malloc(sizeof(nlist));
+
+	searchKey->n_value	= inAddress;
+
+	BOOL	symbolExists	= (bsearch(&searchKey,
+		mDySyms, mNumDySyms, sizeof(nlist*),
+		(COMPARISON_FUNC_TYPE)Sym_Compare) != nil);
 
 	free(searchKey);
 
@@ -49,7 +70,7 @@
 
 	*outMI	= bsearch(&searchKey,
 		mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
-		(int (*)(const void*, const void*))MethodInfo_Compare);
+		(COMPARISON_FUNC_TYPE)MethodInfo_Compare);
 
 	return (*outMI != nil);
 }
@@ -73,7 +94,7 @@
 
 	*outMI	= bsearch(&searchKey,
 		mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
-		(int (*)(const void*, const void*))MethodInfo_Compare);
+		(COMPARISON_FUNC_TYPE)MethodInfo_Compare);
 
 	return (*outMI != nil);
 }

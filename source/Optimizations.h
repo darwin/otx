@@ -2,7 +2,7 @@
 	Optimizations.h
 
 	Definitions of function types and selectors for use with
-	getMethodForSelector: in ExeProcessor.h.
+	getMethodForSelector: in ExeProcessor.
 */
 
 // Function types
@@ -37,6 +37,7 @@
 #define InsertLineAfterFuncType					(void	(*)(id, SEL, Line*, Line*, Line**))
 #define ReplaceLineFuncType						(void	(*)(id, SEL, Line*, Line*, Line**))
 #define FindSymbolByAddressFuncType				(BOOL	(*)(id, SEL, UInt32))
+//#define FindDySymbolByAddressFuncType			(BOOL	(*)(id, SEL, UInt32))
 #define FindClassMethodByAddressFuncType		(BOOL	(*)(id, SEL, MethodInfo**, UInt32))
 #define FindCatMethodByAddressFuncType			(BOOL	(*)(id, SEL, MethodInfo**, UInt32))
 #define FindIvarFuncType						(BOOL	(*)(id, SEL, objc_ivar*, objc_class*, UInt32))
@@ -73,6 +74,7 @@
 #define InsertLineAfterSel				@selector(insertLine:after:inList:)
 #define ReplaceLineSel					@selector(replaceLine:withLine:inList:)
 #define FindSymbolByAddressSel			@selector(findSymbolByAddress:)
+//#define FindDySymbolByAddressSel		@selector(findDySymbolByAddress:)
 #define FindClassMethodByAddressSel		@selector(findClassMethod:byAddress:)
 #define FindCatMethodByAddressSel		@selector(findCatMethod:byAddress:)
 #define FindIvarSel						@selector(findIvar:inClass:withOffset:)
@@ -140,6 +142,8 @@
 		ReplaceLine(self, ReplaceLineSel, (a), (b), (c))
 #define FindSymbolByAddress(a)													\
 		FindSymbolByAddress(self, FindSymbolByAddressSel, (a))
+//#define FindDySymbolByAddress(a)												\
+//		FindDySymbolByAddress(self, FindDySymbolByAddressSel, (a))
 #define FindClassMethodByAddress(a, b)											\
 		FindClassMethodByAddress(self, FindClassMethodByAddressSel, (a), (b))
 #define FindCatMethodByAddress(a, b)											\

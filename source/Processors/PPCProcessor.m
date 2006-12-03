@@ -140,7 +140,6 @@
 					strncpy(tempComment, kRTName_objc_msgSend,
 						strlen(kRTName_objc_msgSend) + 1);
 
-//					if (mVerboseMsgSends)
 					if (mOpts.verboseMsgSends)
 						CommentForMsgSendFromLine(tempComment, inLine);
 
@@ -204,7 +203,6 @@
 
 				if (theSymPtr)
 				{
-//					if (mShowIvarTypes)
 					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
@@ -281,7 +279,6 @@
 
 				if (theSymPtr)
 				{
-//					if (mShowIvarTypes)
 					if (mOpts.variableTypes)
 					{
 						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
@@ -1247,7 +1244,8 @@
 		}
 
 		// Optionally add a blank line before this block.
-		if (mOpts.separateLogicalBlocks && inLine->chars[0]	!= '\n')
+		if (mOpts.separateLogicalBlocks && inLine->chars[0]	!= '\n'	&&
+			!inLine->info.isFunction)
 			needNewLine	= true;
 
 		break;
@@ -1283,6 +1281,10 @@
 
 	// If it's not an Obj-C method, maybe there's an nlist.
 	if (FindSymbolByAddress(theAddy))
+		return true;
+
+	// If otool gave us a function name, but it came from a dynamic symbol...
+	if (inLine->prev && !inLine->prev->info.isCode)
 		return true;
 
 	BOOL	isFunction	= false;
