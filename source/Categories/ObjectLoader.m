@@ -289,7 +289,7 @@
 
 	// Sort the symbols so we can use binary searches later.
 	qsort(mFuncSyms, mNumFuncSyms, sizeof(nlist),
-		(int (*)(const void*, const void*))Sym_Compare);
+		(COMPARISON_FUNC_TYPE)Sym_Compare);
 }
 
 //	loadDySymbols:
@@ -367,7 +367,7 @@
 
 	// Sort the symbols so we can use binary searches later.
 	qsort(mDySyms, mNumDySyms, sizeof(nlist),
-		(int (*)(const void*, const void*))Sym_Compare);
+		(COMPARISON_FUNC_TYPE)Sym_Compare);
 }
 
 //	loadObjcSection:
@@ -677,9 +677,9 @@
 
 	// Sort MethodInfos.
 	qsort(mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
-		(int (*)(const void*, const void*))MethodInfo_Compare);
+		(COMPARISON_FUNC_TYPE)MethodInfo_Compare);
 	qsort(mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
-		(int (*)(const void*, const void*))MethodInfo_Compare);
+		(COMPARISON_FUNC_TYPE)MethodInfo_Compare);
 }
 
 //	loadCStringSection:

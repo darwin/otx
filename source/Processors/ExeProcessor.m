@@ -1302,7 +1302,7 @@
 	// Search for inSel in our list of friendly sels.
 	CheckedString*	friendlySel	= bsearch(&searchKey,
 		gFriendlySels, NUM_FRIENDLY_SELS, sizeof(CheckedString),
-		(int (*)(const void*, const void*))CheckedString_Compare);
+		(COMPARISON_FUNC_TYPE)CheckedString_Compare);
 
 	if (friendlySel && friendlySel->length == selLength)
 	{	// found a matching CRC, make sure it's not a collision.
