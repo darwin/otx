@@ -279,8 +279,10 @@
 
 			mFuncSyms[mNumFuncSyms - 1]	= theSym;
 
+#ifdef OTX_DEBUG
 #if _OTX_DEBUG_SYMBOLS_
 			[self printSymbol: theSym];
+#endif
 #endif
 		}
 	}	// for (i = 0; i < swappedSymTab.nsyms; i++)
@@ -355,8 +357,10 @@
 
 			mDySyms[mNumDySyms - 1]	= theSym;
 
+#ifdef OTX_DEBUG
 #if _OTX_DEBUG_DYSYMBOLS_
 			[self printSymbol: theSym];
+#endif
 #endif
 		}
 	}	// for (i = 0; i < swappedSymTab.nextrefsyms; i++)

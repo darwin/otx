@@ -498,8 +498,10 @@ enum {
 
 - (void)speedyDelivery;
 
+#ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;
 - (void)printBlocks: (UInt32)inFuncIndex;
+#endif
 
 @end
 

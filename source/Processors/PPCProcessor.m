@@ -1492,6 +1492,7 @@
 	mCurrentFuncInfoIndex	= -1;
 }
 
+#ifdef OTX_DEBUG
 //	printBlocks:
 // ----------------------------------------------------------------------------
 
@@ -1525,5 +1526,6 @@
 		}
 	}
 }
+#endif	// OTX_DEBUG
 
 @end

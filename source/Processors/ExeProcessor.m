@@ -2089,6 +2089,7 @@
 		[self methodForSelector: FindIvarSel];
 }
 
+#ifdef OTX_DEBUG
 //	printSymbol:
 // ----------------------------------------------------------------------------
 //	Used for symbol debugging.
@@ -2167,5 +2168,6 @@
 
 - (void)printBlocks: (UInt32)inFuncIndex;
 {}
+#endif	// OTX_DEBUG
 
 @end

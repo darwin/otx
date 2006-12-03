@@ -581,7 +581,10 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OTHER_CFLAGS = "-falign-loops=16";
+				OTHER_CFLAGS = (
+					"-falign-loops=16",
+					"-DOTX_DEBUG",
+				);
 				OTHER_LDFLAGS = "-lz";
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
