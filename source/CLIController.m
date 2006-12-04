@@ -96,7 +96,7 @@
 
 //	NSUserDefaults*	defaults	= [NSUserDefaults standardUserDefaults];
 
-	mOpts	= {
+	mOpts	= (ProcOptions){
 		SHOW_LOCAL_OFFSETS,
 		ENTAB_OUTPUT,
 		DONT_SHOW_DATA_SECTIONS,
@@ -175,7 +175,7 @@
 								!mOpts.separateLogicalBlocks;
 							break;
 						case 'n':
-							mOpts.demangleCppNames	= !mOpts.demangleCppPNames;
+							mOpts.demangleCppNames	= !mOpts.demangleCppNames;
 							break;
 						case 'r':
 							mOpts.returnTypes	= !mOpts.returnTypes;
@@ -438,7 +438,7 @@
 
 	id	theProcessor	=
 		[[procClass alloc] initWithURL: mOFile controller: self
-		andOpts: &mOpts];
+		andOptions: &mOpts];
 
 	if (!theProcessor)
 	{
@@ -474,8 +474,10 @@
 	{
 		case CPU_TYPE_I386:
 		{
+			ProcOptions		opts	= {0};
 			X86Processor*	theProcessor	=
-				[[X86Processor alloc] initWithURL: mOFile andController: self];
+				[[X86Processor alloc] initWithURL: mOFile controller: self
+				andOptions: &opts];
 
 			if (!theProcessor)
 			{

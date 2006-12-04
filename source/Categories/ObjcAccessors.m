@@ -67,6 +67,52 @@
 	return (*outMI != nil);
 }
 
+//	getObjcMethodList:andMethods:fromAddress: (was get_method_list)
+// ----------------------------------------------------------------------------
+//	Removed the truncation flag. 'left' is no longer used by the caller.
+
+- (BOOL)getObjcMethodList: (objc_method_list*)outList
+			   andMethods: (objc_method**)outMethods
+			  fromAddress: (UInt32)inAddress;
+{
+	UInt32	left, i;
+
+	bzero(outList, sizeof(objc_method_list));
+
+	for (i = 0; i < mNumObjcSects; i++)
+	{
+		if (inAddress >= mObjcSects[i].s.addr &&
+			inAddress < mObjcSects[i].s.addr + mObjcSects[i].s.size)
+		{
+			left = mObjcSects[i].s.size -
+				(inAddress - mObjcSects[i].s.addr);
+
+			if (left >= sizeof(objc_method_list) - sizeof(objc_method))
+			{
+				memcpy(outList, mObjcSects[i].contents +
+					(inAddress - mObjcSects[i].s.addr),
+					sizeof(objc_method_list) - sizeof(objc_method));
+				left -= sizeof(objc_method_list) -
+					sizeof(objc_method);
+				*outMethods = (objc_method*)(mObjcSects[i].contents +
+					(inAddress - mObjcSects[i].s.addr) +
+					sizeof(objc_method_list) - sizeof(objc_method));
+			}
+			else
+			{
+				memcpy(outList, mObjcSects[i].contents +
+					(inAddress - mObjcSects[i].s.addr), left);
+				left = 0;
+				*outMethods = nil;
+			}
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
 //	getObjcDescription:fromObject:type:
 // ----------------------------------------------------------------------------
 //	Given an Obj-C object, return it's description.
@@ -188,8 +234,28 @@
 			*outClass	= *(objc_class*)(mObjcSects[i].contents +
 				(inDef - mObjcSects[i].s.addr));
 
-//			if (mSwapped)
-//				swap_objc_class(outClass);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//	getObjcCategory:fromDef: (was get_objc_category)
+// ----------------------------------------------------------------------------
+
+- (BOOL)getObjcCategory: (objc_category*)outCat
+				fromDef: (UInt32)inDef;
+{
+	UInt32	i;
+
+	for (i = 0; i < mNumObjcSects; i++)
+	{
+		if (inDef >= mObjcSects[i].s.addr &&
+			inDef < mObjcSects[i].s.addr + mObjcSects[i].s.size)
+		{
+			*outCat	= *(objc_category*)(mObjcSects[i].contents +
+				(inDef - mObjcSects[i].s.addr));
 
 			return true;
 		}
@@ -224,29 +290,6 @@
 	return false;
 }
 
-//	getObjcCategory:fromDef: (was get_objc_category)
-// ----------------------------------------------------------------------------
-
-- (BOOL)getObjcCategory: (objc_category*)outCat
-				fromDef: (UInt32)inDef;
-{
-	UInt32			i;
-
-	for (i = 0; i < mNumObjcSects; i++)
-	{
-		if (inDef >= mObjcSects[i].s.addr &&
-			inDef < mObjcSects[i].s.addr + mObjcSects[i].s.size)
-		{
-			*outCat	= *(objc_category*)(mObjcSects[i].contents +
-				(inDef - mObjcSects[i].s.addr));
-
-			return true;
-		}
-	}
-
-	return false;
-}
-
 //	getObjcMetaClass:fromClass:
 // ----------------------------------------------------------------------------
 
@@ -260,52 +303,6 @@
 			((UInt32)inClass->isa - mMetaClassSect.s.addr));
 
 		return true;
-	}
-
-	return false;
-}
-
-//	getObjcMethodList:andMethods:fromAddress: (was get_method_list)
-// ----------------------------------------------------------------------------
-//	Removed the truncation flag. 'left' is no longer used by the caller.
-
-- (BOOL)getObjcMethodList: (objc_method_list*)outList
-			   andMethods: (objc_method**)outMethods
-			  fromAddress: (UInt32)inAddress;
-{
-	UInt32	left, i;
-
-	bzero(outList, sizeof(objc_method_list));
-
-	for (i = 0; i < mNumObjcSects; i++)
-	{
-		if (inAddress >= mObjcSects[i].s.addr &&
-			inAddress < mObjcSects[i].s.addr + mObjcSects[i].s.size)
-		{
-			left = mObjcSects[i].s.size -
-				(inAddress - mObjcSects[i].s.addr);
-
-			if (left >= sizeof(objc_method_list) - sizeof(objc_method))
-			{
-				memcpy(outList, mObjcSects[i].contents +
-					(inAddress - mObjcSects[i].s.addr),
-					sizeof(objc_method_list) - sizeof(objc_method));
-				left -= sizeof(objc_method_list) -
-					sizeof(objc_method);
-				*outMethods = (objc_method*)(mObjcSects[i].contents +
-					(inAddress - mObjcSects[i].s.addr) +
-					sizeof(objc_method_list) - sizeof(objc_method));
-			}
-			else
-			{
-				memcpy(outList, mObjcSects[i].contents +
-					(inAddress - mObjcSects[i].s.addr), left);
-				left = 0;
-				*outMethods = nil;
-			}
-
-			return true;
-		}
 	}
 
 	return false;

@@ -1409,7 +1409,13 @@
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
 
 	mCurrentThunk	= NO_REG;
-	bzero(&mRegInfos[0], sizeof(GPRegisterInfo) * 8);
+	bzero(mRegInfos, sizeof(GPRegisterInfo) * 8);
+
+	// Try to find out whether this is a class or instance method.
+	MethodInfo*	thisMethod	= nil;
+
+	if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
+		mIsInstanceMethod	= thisMethod->inst;
 
 	if (mLocalSelves)
 	{

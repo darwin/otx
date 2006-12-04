@@ -4,6 +4,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "ExeProcessor.h"	// for ProcOptions, lame FIXME
 #import "ProgressReporter.h"
 
 // ============================================================================

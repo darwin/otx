@@ -192,10 +192,20 @@
 
 			if (mRegInfos[RA(theCode)].classPtr)
 			{	// search instance vars
-				objc_ivar	theIvar	= {0};
+				objc_ivar	theIvar			= {0};
+				objc_class*	theClass		= mRegInfos[RA(theCode)].classPtr;
+//				objc_class*	theDummyClass	= theClass;
 
-				if (!FindIvar(&theIvar, mRegInfos[RA(theCode)].classPtr,
-					UIMM(theCode)))
+				if (!mIsInstanceMethod)
+				{
+					theClass	= theClass->isa;
+
+					if (mSwapped)
+						theClass	= (objc_class*)OSSwapInt32(
+							(UInt32)theClass);
+				}
+
+				if (!FindIvar(&theIvar, theClass, UIMM(theCode)))
 					break;
 
 				theSymPtr	= GetPointer(
@@ -209,7 +219,6 @@
 
 						GetDescription(theTypeCString,
 							GetPointer((UInt32)theIvar.ivar_type, nil));
-
 						snprintf(mLineCommentCString,
 							MAX_COMMENT_LENGTH - 1, "(%s)%s",
 							theTypeCString, theSymPtr);
@@ -285,7 +294,6 @@
 
 						GetDescription(theTypeCString,
 							GetPointer((UInt32)theIvar.ivar_type, nil));
-
 						snprintf(mLineCommentCString,
 							MAX_COMMENT_LENGTH - 1, "(%s)%s",
 							theTypeCString, theSymPtr);
@@ -776,15 +784,21 @@
 	// r12 will be overwritten before it is used, if it is used at all.
 	GetObjcClassPtrFromMethod(&mCurrentClass, inLine->info.address);
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
-	bzero(&mRegInfos[0], sizeof(GPRegisterInfo) * 32);
+	bzero(mRegInfos, sizeof(GPRegisterInfo) * 32);
 
 	mRegInfos[3].classPtr	= mCurrentClass;
 	mRegInfos[3].catPtr		= mCurrentCat;
 	mRegInfos[3].isValid	= true;
-	mRegInfos[12].value	= mCurrentFuncPtr;
+	mRegInfos[12].value		= mCurrentFuncPtr;
 	mRegInfos[12].isValid	= true;
 	bzero(&mLR, sizeof(GPRegisterInfo));
 	bzero(&mCTR, sizeof(GPRegisterInfo));
+
+	// Try to find out whether this is a class or instance method.
+	MethodInfo*	thisMethod	= nil;
+
+	if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
+		mIsInstanceMethod	= thisMethod->inst;
 
 	if (mLocalSelves)
 	{
