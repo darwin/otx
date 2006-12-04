@@ -194,7 +194,6 @@
 			{	// search instance vars
 				objc_ivar	theIvar			= {0};
 				objc_class*	theClass		= mRegInfos[RA(theCode)].classPtr;
-//				objc_class*	theDummyClass	= theClass;
 
 				if (!mIsInstanceMethod)
 				{
@@ -277,10 +276,19 @@
 
 			if (mRegInfos[RA(theCode)].classPtr)	// relative to a class
 			{	// search instance vars
-				objc_ivar	theIvar	= {0};
+				objc_ivar	theIvar		= {0};
+				objc_class*	theClass	= mRegInfos[RA(theCode)].classPtr;
 
-				if (!FindIvar(&theIvar, mRegInfos[RA(theCode)].classPtr,
-					UIMM(theCode)))
+				if (!mIsInstanceMethod)
+				{
+					theClass	= theClass->isa;
+
+					if (mSwapped)
+						theClass	= (objc_class*)OSSwapInt32(
+							(UInt32)theClass);
+				}
+
+				if (!FindIvar(&theIvar, theClass, UIMM(theCode)))
 					break;
 
 				theSymPtr	= GetPointer(

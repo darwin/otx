@@ -145,8 +145,7 @@ ___i686.get_pc_thunk.bx:
 	EIP. This use of the word 'thunk' is inconsistent with other definitions
 	I've heard, but there it is. From what I've seen, the thunk can be stored
 	in EAX, EBX, ECX, or EDX, and there can be multiple get_pc_thunk routines,
-	each referencing one of these registers. EBX is the most popular, followed
-	by ECX, EAX, and finally EDX.
+	each referencing one of these registers.
 
 	The PPC version of this behavior requires no function calls, and is
 	fairly easy to spot. And in x86 code, when symbols have not been stripped,
