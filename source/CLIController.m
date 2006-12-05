@@ -358,7 +358,7 @@
 	NSString*	origPath	= [inPackageFile path];
 
 	NSString*		theExeName	=
-		[[origPath stringByDeletingPathExtension] lastPathComponent];
+		[/*[*/origPath /*stringByDeletingPathExtension]*/ lastPathComponent];
 	NSString*		theExePath	=
 	[[[origPath stringByAppendingPathComponent: @"Contents"]
 		stringByAppendingPathComponent: @"MacOS"]
@@ -386,8 +386,8 @@
 	mOFile	= inOFile;
 	[mOFile retain];
 
-	mExeName	= [[[inOFile path]
-		stringByDeletingPathExtension] lastPathComponent];
+	mExeName	= [/*[*/[inOFile path]
+		/*stringByDeletingPathExtension]*/ lastPathComponent];
 	[mExeName retain];
 }
 

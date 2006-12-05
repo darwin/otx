@@ -195,14 +195,14 @@
 				objc_ivar	theIvar			= {0};
 				objc_class*	theClass		= mRegInfos[RA(theCode)].classPtr;
 
-				if (!mIsInstanceMethod)
+/*				if (!mIsInstanceMethod)
 				{
 					theClass	= theClass->isa;
 
 					if (mSwapped)
 						theClass	= (objc_class*)OSSwapInt32(
 							(UInt32)theClass);
-				}
+				}*/
 
 				if (!FindIvar(&theIvar, theClass, UIMM(theCode)))
 					break;
@@ -279,14 +279,14 @@
 				objc_ivar	theIvar		= {0};
 				objc_class*	theClass	= mRegInfos[RA(theCode)].classPtr;
 
-				if (!mIsInstanceMethod)
+/*				if (!mIsInstanceMethod)
 				{
 					theClass	= theClass->isa;
 
 					if (mSwapped)
 						theClass	= (objc_class*)OSSwapInt32(
 							(UInt32)theClass);
-				}
+				}*/
 
 				if (!FindIvar(&theIvar, theClass, UIMM(theCode)))
 					break;
@@ -803,10 +803,10 @@
 	bzero(&mCTR, sizeof(GPRegisterInfo));
 
 	// Try to find out whether this is a class or instance method.
-	MethodInfo*	thisMethod	= nil;
+//	MethodInfo*	thisMethod	= nil;
 
-	if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
-		mIsInstanceMethod	= thisMethod->inst;
+//	if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
+//		mIsInstanceMethod	= thisMethod->inst;
 
 	if (mLocalSelves)
 	{

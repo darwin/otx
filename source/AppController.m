@@ -208,7 +208,7 @@
 	[mOutputFilePath retain];
 
 	NSString*		theExeName	=
-		[[mOutputFilePath stringByDeletingPathExtension] lastPathComponent];
+		[/*[*/mOutputFilePath /*stringByDeletingPathExtension]*/ lastPathComponent];
 	NSString*		theExePath	=
 	[[[mOutputFilePath stringByAppendingPathComponent: @"Contents"]
 		stringByAppendingPathComponent: @"MacOS"]
@@ -245,8 +245,8 @@
 		[mOutputFilePath retain];
 	}
 
-	mExeName	= [[mOutputFilePath
-		stringByDeletingPathExtension] lastPathComponent];
+	mExeName	= [/*[*/mOutputFilePath
+		/*stringByDeletingPathExtension]*/ lastPathComponent];
 	[mExeName retain];
 
 	[self syncDescriptionText];
