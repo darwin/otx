@@ -193,18 +193,20 @@
 			if (mRegInfos[RA(theCode)].classPtr)
 			{	// search instance vars
 				objc_ivar	theIvar			= {0};
-				objc_class*	theClass		= mRegInfos[RA(theCode)].classPtr;
+				objc_class	swappedClass	=
+					*mRegInfos[RA(theCode)].classPtr;
 
-/*				if (!mIsInstanceMethod)
+				if (!mIsInstanceMethod)
 				{
-					theClass	= theClass->isa;
+					if (!GetObjcMetaClassFromClass(
+						&swappedClass, &swappedClass))
+						break;
 
 					if (mSwapped)
-						theClass	= (objc_class*)OSSwapInt32(
-							(UInt32)theClass);
-				}*/
+						swap_objc_class(&swappedClass);
+				}
 
-				if (!FindIvar(&theIvar, theClass, UIMM(theCode)))
+				if (!FindIvar(&theIvar, &swappedClass, UIMM(theCode)))
 					break;
 
 				theSymPtr	= GetPointer(
@@ -277,18 +279,20 @@
 			if (mRegInfos[RA(theCode)].classPtr)	// relative to a class
 			{	// search instance vars
 				objc_ivar	theIvar		= {0};
-				objc_class*	theClass	= mRegInfos[RA(theCode)].classPtr;
+				objc_class	swappedClass	=
+					*mRegInfos[RA(theCode)].classPtr;
 
-/*				if (!mIsInstanceMethod)
+				if (!mIsInstanceMethod)
 				{
-					theClass	= theClass->isa;
+					if (!GetObjcMetaClassFromClass(
+						&swappedClass, &swappedClass))
+						break;
 
 					if (mSwapped)
-						theClass	= (objc_class*)OSSwapInt32(
-							(UInt32)theClass);
-				}*/
+						swap_objc_class(&swappedClass);
+				}
 
-				if (!FindIvar(&theIvar, theClass, UIMM(theCode)))
+				if (!FindIvar(&theIvar, &swappedClass, UIMM(theCode)))
 					break;
 
 				theSymPtr	= GetPointer(
@@ -310,9 +314,6 @@
 						snprintf(mLineCommentCString,
 							MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
 				}
-
-				// class vars? haven't seen any...
-
 			}
 			else	// absolute address
 			{
@@ -803,10 +804,10 @@
 	bzero(&mCTR, sizeof(GPRegisterInfo));
 
 	// Try to find out whether this is a class or instance method.
-//	MethodInfo*	thisMethod	= nil;
+	MethodInfo*	thisMethod	= nil;
 
-//	if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
-//		mIsInstanceMethod	= thisMethod->inst;
+	if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
+		mIsInstanceMethod	= thisMethod->inst;
 
 	if (mLocalSelves)
 	{

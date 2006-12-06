@@ -297,17 +297,19 @@
 					if (MOD(modRM) == MODx)
 						break;
 
-					objc_ivar	theIvar		= {0};
-					objc_class*	theClass	= mRegInfos[REG2(modRM)].classPtr;
+					objc_ivar	theIvar			= {0};
+					objc_class	swappedClass	=
+						*mRegInfos[REG2(modRM)].classPtr;
 
-/*					if (!mIsInstanceMethod)
+					if (!mIsInstanceMethod)
 					{
-						theClass	= theClass->isa;
+						if (!GetObjcMetaClassFromClass(
+							&swappedClass, &swappedClass))
+							break;
 
 						if (mSwapped)
-							theClass	= (objc_class*)OSSwapInt32(
-								(UInt32)theClass);
-					}*/
+							swap_objc_class(&swappedClass);
+					}
 
 					if (MOD(modRM) == MOD8)
 					{
@@ -315,7 +317,7 @@
 
 						sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
 
-						if (!FindIvar(&theIvar, theClass, theSymOffset))
+						if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
 							break;
 					}
 					else if (MOD(modRM) == MOD32)
@@ -325,7 +327,7 @@
 						sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
 						theSymOffset	= OSSwapInt32(theSymOffset);
 
-						if (!FindIvar(&theIvar, theClass, theSymOffset))
+						if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
 							break;
 					}
 
@@ -388,17 +390,19 @@
 				if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
 					break;
 
-				objc_ivar	theIvar		= {0};
-				objc_class*	theClass	= mRegInfos[REG2(modRM)].classPtr;
+				objc_ivar	theIvar			= {0};
+				objc_class	swappedClass	=
+					*mRegInfos[REG2(modRM)].classPtr;
 
-/*				if (!mIsInstanceMethod)
+				if (!mIsInstanceMethod)
 				{
-					theClass	= theClass->isa;
+					if (!GetObjcMetaClassFromClass(
+						&swappedClass, &swappedClass))
+						break;
 
 					if (mSwapped)
-						theClass	= (objc_class*)OSSwapInt32(
-							(UInt32)theClass);
-				}*/
+						swap_objc_class(&swappedClass);
+				}
 
 				if (MOD(modRM) == MOD8)
 				{
@@ -406,7 +410,7 @@
 
 					sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
 
-					if (!FindIvar(&theIvar, theClass, theSymOffset))
+					if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
 						break;
 				}
 				else if (MOD(modRM) == MOD32)
@@ -416,7 +420,7 @@
 					sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
 					theSymOffset	= OSSwapInt32(theSymOffset);
 
-					if (!FindIvar(&theIvar, theClass, theSymOffset))
+					if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
 						break;
 				}
 
@@ -546,17 +550,19 @@
 				if (HAS_SIB(modRM))
 					immOffset	+= 2;
 
-				objc_ivar	theIvar		= {0};
-				objc_class*	theClass	= mRegInfos[REG2(modRM)].classPtr;
+				objc_ivar	theIvar			= {0};
+				objc_class	swappedClass	=
+					*mRegInfos[REG2(modRM)].classPtr;
 
-/*				if (!mIsInstanceMethod)
+				if (!mIsInstanceMethod)
 				{
-					theClass	= theClass->isa;
+					if (!GetObjcMetaClassFromClass(
+						&swappedClass, &swappedClass))
+						break;
 
 					if (mSwapped)
-						theClass	= (objc_class*)OSSwapInt32(
-							(UInt32)theClass);
-				}*/
+						swap_objc_class(&swappedClass);
+				}
 
 				if (MOD(modRM) == MOD8)
 				{
@@ -566,7 +572,7 @@
 					// sizeof(UInt8) * 2
 					sscanf(&inLine->info.code[immOffset - 2], "%02hhx", &theSymOffset);
 
-					if (!FindIvar(&theIvar, theClass, theSymOffset))
+					if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
 						break;
 				}
 				else if (MOD(modRM) == MOD32)
@@ -604,7 +610,7 @@
 						snprintf(fcc, 4, "'%c'", imm);
 					}
 
-					FindIvar(&theIvar, theClass, theSymOffset);
+					FindIvar(&theIvar, &swappedClass, theSymOffset);
 				}
 
 				theSymPtr	= GetPointer(
@@ -699,17 +705,19 @@
 				if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
 					break;
 
-				objc_ivar	theIvar		= {0};
-				objc_class*	theClass	= mRegInfos[REG2(modRM)].classPtr;
+				objc_ivar	theIvar			= {0};
+				objc_class	swappedClass	=
+					*mRegInfos[REG2(modRM)].classPtr;
 
-/*				if (!mIsInstanceMethod)
+				if (!mIsInstanceMethod)
 				{
-					theClass	= theClass->isa;
+					if (!GetObjcMetaClassFromClass(
+						&swappedClass, &swappedClass))
+						break;
 
 					if (mSwapped)
-						theClass	= (objc_class*)OSSwapInt32(
-							(UInt32)theClass);
-				}*/
+						swap_objc_class(&swappedClass);
+				}
 
 				if (MOD(modRM) == MOD8)
 				{
@@ -717,7 +725,7 @@
 
 					sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
 
-					if (!FindIvar(&theIvar, theClass, theSymOffset))
+					if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
 						break;
 				}
 				else if (MOD(modRM) == MOD32)
@@ -727,7 +735,7 @@
 					sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
 					theSymOffset	= OSSwapInt32(theSymOffset);
 
-					if (!FindIvar(&theIvar, theClass, theSymOffset))
+					if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
 						break;
 				}
 
@@ -817,17 +825,19 @@
 				if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
 					break;
 
-				objc_ivar	theIvar		= {0};
-				objc_class*	theClass	= mRegInfos[REG2(modRM)].classPtr;
+				objc_ivar	theIvar			= {0};
+				objc_class	swappedClass	=
+					*mRegInfos[REG2(modRM)].classPtr;
 
-/*				if (!mIsInstanceMethod)
+				if (!mIsInstanceMethod)
 				{
-					theClass	= theClass->isa;
+					if (!GetObjcMetaClassFromClass(
+						&swappedClass, &swappedClass))
+						break;
 
 					if (mSwapped)
-						theClass	= (objc_class*)OSSwapInt32(
-							(UInt32)theClass);
-				}*/
+						swap_objc_class(&swappedClass);
+				}
 
 				if (MOD(modRM) == MOD8)
 				{
@@ -835,7 +845,7 @@
 
 					sscanf(&inLine->info.code[8], "%02hhx", &theSymOffset);
 
-					if (!FindIvar(&theIvar, theClass, theSymOffset))
+					if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
 						break;
 				}
 				else if (MOD(modRM) == MOD32)
@@ -845,7 +855,7 @@
 					sscanf(&inLine->info.code[8], "%08x", &theSymOffset);
 					theSymOffset	= OSSwapInt32(theSymOffset);
 
-					if (!FindIvar(&theIvar, theClass, theSymOffset))
+					if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
 						break;
 				}
 
@@ -1452,10 +1462,10 @@
 	bzero(mRegInfos, sizeof(GPRegisterInfo) * 8);
 
 	// Try to find out whether this is a class or instance method.
-//	MethodInfo*	thisMethod	= nil;
+	MethodInfo*	thisMethod	= nil;
 
-//	if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
-//		mIsInstanceMethod	= thisMethod->inst;
+	if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
+		mIsInstanceMethod	= thisMethod->inst;
 
 	if (mLocalSelves)
 	{

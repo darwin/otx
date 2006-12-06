@@ -402,7 +402,7 @@ enum {
 	UInt32				mNumLocalSelves;
 	objc_class*			mCurrentClass;
 	objc_category*		mCurrentCat;
-//	BOOL				mIsInstanceMethod;
+	BOOL				mIsInstanceMethod;
 	BOOL				mReturnValueIsKnown;	// so don't trample r3/eax
 
 	// dyld stuff
@@ -446,6 +446,7 @@ enum {
 	BOOL	(*GetObjcMethodFromAddress)		(id, SEL, MethodInfo**, UInt32);
 	BOOL	(*GetObjcClassFromName)			(id, SEL, objc_class*, const char*);
 	BOOL	(*GetObjcDescriptionFromObject)	(id, SEL, char**, const char*, UInt8);
+	BOOL	(*GetObjcMetaClassFromClass)	(id, SEL, objc_class*, objc_class*);
 
 	void	(*InsertLineBefore)	(id, SEL, Line*, Line*, Line**);
 	void	(*InsertLineAfter)	(id, SEL, Line*, Line*, Line**);

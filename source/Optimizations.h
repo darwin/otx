@@ -33,6 +33,7 @@
 #define GetObjcMethodFromAddressFuncType		(BOOL	(*)(id, SEL, MethodInfo**, UInt32))
 #define GetObjcClassFromNameFuncType			(BOOL	(*)(id, SEL, objc_class*, const char*))
 #define GetObjcDescriptionFromObjectFuncType	(BOOL	(*)(id, SEL, char**, const char*, UInt8))
+#define GetObjcMetaClassFromClassFuncType		(BOOL	(*)(id, SEL, objc_class*, objc_class*))
 #define InsertLineBeforeFuncType				(void	(*)(id, SEL, Line*, Line*, Line**))
 #define InsertLineAfterFuncType					(void	(*)(id, SEL, Line*, Line*, Line**))
 #define ReplaceLineFuncType						(void	(*)(id, SEL, Line*, Line*, Line**))
@@ -70,6 +71,7 @@
 #define GetObjcMethodFromAddressSel		@selector(getObjcMethod:fromAddress:)
 #define GetObjcClassFromNameSel			@selector(getObjcClass:fromName:)
 #define GetObjcDescriptionFromObjectSel	@selector(getObjcDescription:fromObject:type:)
+#define GetObjcMetaClassFromClassSel	@selector(getObjcMetaClass:fromClass:)
 #define InsertLineBeforeSel				@selector(insertLine:before:inList:)
 #define InsertLineAfterSel				@selector(insertLine:after:inList:)
 #define ReplaceLineSel					@selector(replaceLine:withLine:inList:)
@@ -134,6 +136,8 @@
 		GetObjcClassFromName(self, GetObjcClassFromNameSel, (a), (b))
 #define GetObjcDescriptionFromObject(a, b, c)									\
 		GetObjcDescriptionFromObject(self, GetObjcDescriptionFromObjectSel, (a), (b), (c))
+#define GetObjcMetaClassFromClass(a, b)											\
+		GetObjcMetaClassFromClass(self, GetObjcMetaClassFromClassSel, (a), (b))
 #define InsertLineBefore(a, b, c)												\
 		InsertLineBefore(self, InsertLineBeforeSel, (a), (b), (c))
 #define InsertLineAfter(a, b, c)												\

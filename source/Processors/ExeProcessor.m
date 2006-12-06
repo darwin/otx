@@ -2115,6 +2115,8 @@
 		[self methodForSelector: GetObjcClassFromNameSel];
 	GetObjcDescriptionFromObject	= GetObjcDescriptionFromObjectFuncType
 		[self methodForSelector: GetObjcDescriptionFromObjectSel];
+	GetObjcMetaClassFromClass		= GetObjcMetaClassFromClassFuncType
+		[self methodForSelector: GetObjcMetaClassFromClassSel];
 	InsertLineBefore				= InsertLineBeforeFuncType
 		[self methodForSelector: InsertLineBeforeSel];
 	InsertLineAfter					= InsertLineAfterFuncType
