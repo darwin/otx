@@ -1725,15 +1725,23 @@
 //	A cheap and fast way to entab a line, assuming it contains no tabs already.
 //	If tabs get added in the future, this WILL break. Single spaces are not
 //	replaced with tabs, even when possible, since it would save no additional
-//	bytes.
+//	bytes. Comments are not entabbed, as that would remove the user's ability
+//	to search for them in the source code or a hex editor.
 
 - (void)entabLine: (Line*)ioLine;
 {
 	if (!ioLine || !ioLine->chars)
 		return;
 
-	UInt32	i;			// oldLine marker
-	UInt32	j	= 0;	// newLine marker
+	UInt32	i;			// old line marker
+	UInt32	j	= 0;	// new line marker
+
+	UInt32	startOfComment	=
+		mFieldWidths.address + mFieldWidths.instruction +
+		mFieldWidths.mnemonic + mFieldWidths.operands;
+
+	if (mOpts.localOffsets)
+		startOfComment	+= mFieldWidths.offset;
 
 	char	entabbedLine[MAX_LINE_LENGTH]	= {0};
 	UInt32	theOrigLength					= ioLine->length;
@@ -1747,9 +1755,18 @@
 	// Inspect 4 bytes at a time.
 	for (i = firstChar; i < theOrigLength; i += 4)
 	{
+		// Don't entab comments.
+		if (i >= startOfComment - (4 - firstChar))
+		{
+			strncpy(&entabbedLine[j], &ioLine->chars[i],
+				(theOrigLength - i) + 1);
+
+			break;
+		}
+
 		// If fewer than 4 bytes remain, adding any tabs is pointless.
 		if (i > theOrigLength - 4)
-		{	// copy the remainder and split.
+		{	// Copy the remainder and split.
 			while (i < theOrigLength)
 				entabbedLine[j++] = ioLine->chars[i++];
 
