@@ -1736,12 +1736,17 @@
 	UInt32	i;			// old line marker
 	UInt32	j	= 0;	// new line marker
 
-	UInt32	startOfComment	=
-		mFieldWidths.address + mFieldWidths.instruction +
-		mFieldWidths.mnemonic + mFieldWidths.operands;
+	// only need to do this math once...
+	static UInt32	startOfComment	= 0;
 
-	if (mOpts.localOffsets)
-		startOfComment	+= mFieldWidths.offset;
+	if (startOfComment == 0)
+	{
+		startOfComment	= mFieldWidths.address + mFieldWidths.instruction +
+			mFieldWidths.mnemonic + mFieldWidths.operands;
+
+		if (mOpts.localOffsets)
+			startOfComment	+= mFieldWidths.offset;
+	}
 
 	char	entabbedLine[MAX_LINE_LENGTH]	= {0};
 	UInt32	theOrigLength					= ioLine->length;
@@ -1756,7 +1761,7 @@
 	for (i = firstChar; i < theOrigLength; i += 4)
 	{
 		// Don't entab comments.
-		if (i >= startOfComment - (4 - firstChar))
+		if (i >= (startOfComment + firstChar) - 4)
 		{
 			strncpy(&entabbedLine[j], &ioLine->chars[i],
 				(theOrigLength - i) + 1);
