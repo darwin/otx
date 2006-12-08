@@ -20,36 +20,6 @@
 
 @implementation CLIController
 
-//	initialize
-// ----------------------------------------------------------------------------
-
-/*+ (void)initialize
-{
-	NSUserDefaultsController*	theController	=
-		[NSUserDefaultsController sharedUserDefaultsController];
-	NSDictionary*				theValues		=
-		[NSDictionary dictionaryWithObjectsAndKeys:
-		@"1",		AskOutputDirKey,
-		@"YES",		DemangleCppNamesKey,
-		@"YES",		EntabOutputKey,
-		@"YES",		OpenOutputFileKey,
-		@"BBEdit",	OutputAppKey,
-		@"txt",		OutputFileExtensionKey,
-		@"output",	OutputFileNameKey,
-		@"NO",		SeparateLogicalBlocksKey,
-		@"NO",		ShowDataSectionKey,
-		@"YES",		ShowIvarTypesKey,
-		@"YES",		ShowLocalOffsetsKey,
-		@"YES",		ShowMD5Key,
-		@"YES",		ShowMethodReturnTypesKey,
-		@"0",		UseCustomNameKey,
-		@"YES",		VerboseMsgSendsKey,
-		nil];
-
-	[theController setInitialValues: theValues];
-	[[theController defaults] registerDefaults: theValues];
-}*/
-
 //	init
 // ----------------------------------------------------------------------------
 
@@ -65,6 +35,9 @@
 - (id)initWithArgs: (char**) argv
 			 count: (SInt32) argc
 {
+	// Check for Smart Crash Reports.
+	[self initSCR];
+
 	if (argc < 2)
 	{
 		[self usage];
@@ -94,8 +67,6 @@
 		return nil;
 	}
 
-//	NSUserDefaults*	defaults	= [NSUserDefaults standardUserDefaults];
-
 	mOpts	= (ProcOptions){
 		SHOW_LOCAL_OFFSETS,
 		ENTAB_OUTPUT,
@@ -107,16 +78,6 @@
 		SHOW_METHOD_RETURN_TYPES,
 		SHOW_VARIABLE_TYPES
 	};
-
-/* 	BOOL	localOffsets			= true;		// l
- 	BOOL	entabOutput				= true;		// e
- 	BOOL	dataSections			= false;	// d
- 	BOOL	checksum				= true;		// c
- 	BOOL	verboseMsgSends			= true;		// m
- 	BOOL	separateLogicalBlocks	= false;	// b
- 	BOOL	demangleCPNames			= true;		// n
- 	BOOL	returnTypes				= true;		// r
- 	BOOL	variableTypes			= true;		// v*/
 
 	NSString*	origFilePath	= nil;
 	UInt32		i, j;
@@ -298,17 +259,92 @@
 			return nil;
 	}
 
-/*	[defaults setBool: localOffsets forKey: ShowLocalOffsetsKey];
-	[defaults setBool: entabOutput forKey: EntabOutputKey];
-	[defaults setBool: dataSections forKey: ShowDataSectionKey];
-	[defaults setBool: checksum forKey: ShowMD5Key];
-	[defaults setBool: verboseMsgSends forKey: VerboseMsgSendsKey];
-	[defaults setBool: separateLogicalBlocks forKey: SeparateLogicalBlocksKey];
-	[defaults setBool: demangleCPNames forKey: DemangleCppNamesKey];
-	[defaults setBool: returnTypes forKey: ShowMethodReturnTypesKey];
-	[defaults setBool: variableTypes forKey: ShowIvarTypesKey];*/
-
 	return self;
+}
+
+//	initSCR
+// ----------------------------------------------------------------------------
+//	Mimic Smart Crash Reports behavior in terminal.
+
+- (void)initSCR
+{
+	Boolean		dontAsk			= false;
+	CFStringRef	scrDomainName	= CFSTR("com.unsanity.smartcrashreports");
+	CFStringRef	dontAskKey		= CFSTR("DontAskAgain");
+
+	// Attempt to retrieve the stored SCR pref.
+	CFBooleanRef	cfDontAsk	=
+		(CFBooleanRef)CFPreferencesCopyAppValue(dontAskKey, scrDomainName);
+
+	// If we got a good pointer, use it to set our Boolean and release it. If
+	// not, SCR prefs do not exist, so we will continue.
+	if (cfDontAsk)
+	{
+		dontAsk	= CFBooleanGetValue(cfDontAsk);
+		CFRelease(cfDontAsk);
+	}
+
+	if (dontAsk)
+		return;
+
+	// Perform the standard installed/version check.
+	Boolean authRequired = false;
+
+	if (!UnsanitySCR_CanInstall(&authRequired))
+		return;
+
+	// Reimplement the SCR dialog in terminal.
+	BOOL	invalidResponse	= true;
+	char	response;
+
+	while (invalidResponse)
+	{
+		invalidResponse	= false;
+		fprintf(stderr,
+			"Would you like to install Smart Crash Reports? (y/n/d)\n"
+			"Participation is voluntary, but your support helps make "
+			"otx better. For more information, visit "
+			"http://smartcrashreports.com.\n\n"
+			"y: Yes, I want to help.\nn: No, but maybe next time.\n"
+			"d: Don't install anything and don't ask me again.\n");
+
+		// Get user's response.
+		scanf("%c", &response);
+
+		switch (response)
+		{
+			case 'n':
+				// Don't install, but ask again next time.
+				break;
+
+			case 'y':
+			{	// Install.
+				UInt32	options	= kUnsanitySCR_DoNotPresentInstallUI;
+
+				if (authRequired)
+					options	|= kUnsanitySCR_GlobalInstall;
+
+				UnsanitySCR_Install(options);
+
+				break;
+			}
+
+			case 'd':
+				// Set Unsanity prefs to not ask again(for this user only).
+				CFPreferencesSetValue(
+					dontAskKey, kCFBooleanTrue, scrDomainName,
+					kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+				CFPreferencesSynchronize(scrDomainName,
+					kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+
+				break;
+
+			default:
+				invalidResponse	= true;
+				fprintf(stderr, "Please respond with 'y', 'n', or 'd'\n");
+				break;
+		}
+	}
 }
 
 //	usage

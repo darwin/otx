@@ -28,6 +28,7 @@
 
 - (id)initWithArgs: (char**) argv
 			 count: (SInt32) argc;
+- (void)initSCR;
 
 - (void)usage;
 - (SInt32)checkOtool;
