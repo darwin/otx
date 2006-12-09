@@ -57,8 +57,11 @@
 
 - (void)codeFromLine: (Line*)inLine
 {
-	UInt32	theInstruction	= *(UInt32*)
-		((char*)mMachHeaderPtr + (inLine->info.address - mTextOffset));
+	UInt32	theInstruction	= (mMachHeader.filetype == MH_OBJECT) ?
+		*(UInt32*)((char*)mMachHeaderPtr +
+		(inLine->info.address + mTextOffset)) :
+		*(UInt32*)((char*)mMachHeaderPtr +
+		(inLine->info.address - mTextOffset));
 
 	if (mSwapped)
 		theInstruction	= OSSwapInt32(theInstruction);

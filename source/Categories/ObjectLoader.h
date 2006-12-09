@@ -11,6 +11,7 @@
 - (BOOL)loadMachHeader;
 - (void)loadLCommands;
 - (void)loadSegment: (segment_command*)inSegPtr;
+//- (void)loadObjectSegment: (segment_command*)inSegPtr;
 - (void)loadSymbols: (symtab_command*)inSymPtr;
 - (void)loadDySymbols: (dysymtab_command*)inSymPtr;
 - (void)loadObjcSection: (section*)inSect;

@@ -95,8 +95,9 @@
 
 	for (i = 0; i < theInstLength; i++)
 	{
-		charData[i]	= *(unsigned char*)
-			(theMachPtr + (thisAddy - mTextOffset) + i);
+		charData[i]	= (mMachHeader.filetype == MH_OBJECT) ?
+			*(unsigned char*)(theMachPtr + (thisAddy + mTextOffset) + i) :
+			*(unsigned char*)(theMachPtr + (thisAddy - mTextOffset) + i);
 		memcpy(&formatString[formatMarker], byteFormat, byteFormatLength);
 		formatMarker	+= byteFormatLength;
 	}

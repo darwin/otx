@@ -112,6 +112,13 @@
 		{
 			case LC_SEGMENT:
 			{
+				if (mMachHeader.filetype == MH_OBJECT)
+				{
+					[self loadSegment: (segment_command*)ptr];
+
+					break;
+				}
+
 				// Re-cast the original ptr as a segment_command.
 				segment_command	swappedSeg	= *(segment_command*)ptr;
 
@@ -121,7 +128,7 @@
 				// Load a segment we're interested in.
 				if (!strcmp(swappedSeg.segname, SEG_TEXT))
 				{
-					mTextOffset	= swappedSeg.vmaddr - swappedSeg.fileoff;
+//					mTextOffset	= swappedSeg.vmaddr - swappedSeg.fileoff;
 					[self loadSegment: (segment_command*)ptr];
 				}
 				else if (!strcmp(swappedSeg.segname, SEG_DATA))
@@ -184,6 +191,11 @@
 		}
 		else if (!strcmp(sectionPtr->segname, SEG_TEXT))
 		{
+			if (mMachHeader.filetype == MH_OBJECT)
+				mTextOffset	= swappedSeg.fileoff;
+			else
+				mTextOffset	= swappedSeg.vmaddr - swappedSeg.fileoff;
+
 			if (!strcmp(sectionPtr->sectname, SECT_TEXT))
 				[self loadTextSection: sectionPtr];
 			else if (!strncmp(sectionPtr->sectname, "__coalesced_text", 16))
@@ -225,6 +237,14 @@
 		sectionPtr++;
 	}
 }
+
+//	loadObjectSegment:
+// ----------------------------------------------------------------------------
+/*
+- (void)loadObjectSegment: (segment_command*)inSegPtr
+{
+
+}*/
 
 //	loadSymbols:
 // ----------------------------------------------------------------------------
