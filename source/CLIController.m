@@ -356,7 +356,7 @@
 		"otx [-ledcmbnrvpo] [-arch <arch type>] <object file>\n");
 	fprintf(stderr, "\t-l    don't show local offsets\n");
 	fprintf(stderr, "\t-e    don't entab output\n");
-	fprintf(stderr, "\t-d    don't show data sections\n");
+	fprintf(stderr, "\t-d    show data sections\n");
 	fprintf(stderr, "\t-c    don't show md5 checksum\n");
 	fprintf(stderr, "\t-m    don't show verbose objc_msgSend\n");
 	fprintf(stderr, "\t-b    separate logical blocks\n");
