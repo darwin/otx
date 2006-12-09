@@ -4,8 +4,6 @@
 	A category on ExeProcessor that contains all the loadXXX methods.
 */
 
-//#import "SystemIncludes.h"
-
 #import "ObjectLoader.h"
 #import "ObjcAccessors.h"
 
@@ -23,9 +21,6 @@
 	if (mArchMagic	== FAT_MAGIC ||
 		mArchMagic	== FAT_CIGAM)
 	{
-//		fat_header*	fh	= (fat_header*)mRAMFile;
-//		fat_arch*	fa	= (fat_arch*)(fh + 1);	// FIXME this is in-place swapping
-
 		fat_header	fh		= *(fat_header*)mRAMFile;
 		fat_arch*	faPtr	= (fat_arch*)((char*)mRAMFile + sizeof(fat_header));
 		fat_arch	fa;
@@ -33,12 +28,7 @@
 		// fat_header and fat_arch are always big-endian. Swap if we're
 		// running on intel.
 		if (OSHostByteOrder() == OSLittleEndian)
-		{
-//			swap_fat_header(fh, OSLittleEndian);				// one header
-//			swap_fat_arch(fa, fh->nfat_arch, OSLittleEndian);	// multiple archs
 			swap_fat_header(&fh, OSLittleEndian);
-//			swap_fat_arch(&fa, fh.nfat_arch, OSLittleEndian);
-		}
 
 		UInt32	i;
 
@@ -55,6 +45,7 @@
 				mMachHeaderPtr	= (mach_header*)(mRAMFile + fa.offset);
 				mArchMagic		= *(UInt32*)mMachHeaderPtr;
 				mSwapped		= mArchMagic == MH_CIGAM;
+				break;
 			}
 
 			faPtr++;	// next arch
@@ -426,11 +417,7 @@
 	// Loop thru objc sections.
 	for (i = 0; i < mNumObjcSects; i++)
 	{
-		theSectInfo			= &mObjcSects[i];
-//		theSwappedSection	= theSectInfo->s;
-
-//		if (mSwapped)
-//			swap_section(&theSwappedSection, 1, OSHostByteOrder());
+		theSectInfo	= &mObjcSects[i];
 
 		// Bail if not a module section.
 		if (strcmp(theSectInfo->s.sectname, SECT_OBJC_MODULES))
@@ -526,7 +513,6 @@
 
 				// Save class's class method info.
 				if ([self getObjcMetaClass: &theMetaClass
-//					fromClass: &theClass])
 					fromClass: &theSwappedClass])
 				{
 					if (mSwapped)
@@ -562,11 +548,6 @@
 							mClassMethodInfos[mNumClassMethodInfos - 1]	=
 								theMethInfo;
 						}
-					}
-
-					if (theMetaClass.ivars)
-					{	// example in libobjc.dylib.
-					//	fprintf(stderr, "otx: found meta class ivars!\n");
 					}
 				}	// theMetaClass != nil
 			}
@@ -687,11 +668,6 @@
 
 - (void)loadCStringSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mCStringSect.s	= *inSect;
 
 	if (mSwapped)
@@ -706,11 +682,6 @@
 
 - (void)loadNSStringSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mNSStringSect.s	= *inSect;
 
 	if (mSwapped)
@@ -725,11 +696,6 @@
 
 - (void)loadClassSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mClassSect.s	= *inSect;
 
 	if (mSwapped)
@@ -744,11 +710,6 @@
 
 - (void)loadMetaClassSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mMetaClassSect.s	= *inSect;
 
 	if (mSwapped)
@@ -763,11 +724,6 @@
 
 - (void)loadIVarSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mIVarSect.s	= *inSect;
 
 	if (mSwapped)
@@ -782,11 +738,6 @@
 
 - (void)loadObjcModSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mObjcModSect.s	= *inSect;
 
 	if (mSwapped)
@@ -801,11 +752,6 @@
 
 - (void)loadObjcSymSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mObjcSymSect.s	= *inSect;
 
 	if (mSwapped)
@@ -820,11 +766,6 @@
 
 - (void)loadLit4Section: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mLit4Sect.s	= *inSect;
 
 	if (mSwapped)
@@ -839,11 +780,6 @@
 
 - (void)loadLit8Section: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mLit8Sect.s	= *inSect;
 
 	if (mSwapped)
@@ -858,11 +794,6 @@
 
 - (void)loadTextSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mTextSect.s	= *inSect;
 
 	if (mSwapped)
@@ -879,11 +810,6 @@
 
 - (void)loadConstTextSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mConstTextSect.s	= *inSect;
 
 	if (mSwapped)
@@ -898,11 +824,6 @@
 
 - (void)loadCoalTextSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mCoalTextSect.s	= *inSect;
 
 	if (mSwapped)
@@ -917,11 +838,6 @@
 
 - (void)loadCoalTextNTSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mCoalTextNTSect.s	= *inSect;
 
 	if (mSwapped)
@@ -936,11 +852,6 @@
 
 - (void)loadDataSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mDataSect.s	= *inSect;
 
 	if (mSwapped)
@@ -955,11 +866,6 @@
 
 - (void)loadCoalDataSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mCoalDataSect.s	= *inSect;
 
 	if (mSwapped)
@@ -974,11 +880,6 @@
 
 - (void)loadCoalDataNTSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mCoalDataNTSect.s	= *inSect;
 
 	if (mSwapped)
@@ -993,11 +894,6 @@
 
 - (void)loadConstDataSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mConstDataSect.s	= *inSect;
 
 	if (mSwapped)
@@ -1012,11 +908,6 @@
 
 - (void)loadDyldDataSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mDyldSect.s	= *inSect;
 
 	if (mSwapped)
@@ -1041,11 +932,6 @@
 
 - (void)loadCFStringSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mCFStringSect.s	= *inSect;
 
 	if (mSwapped)
@@ -1060,11 +946,6 @@
 
 - (void)loadNonLazySymbolSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mNLSymSect.s	= *inSect;
 
 	if (mSwapped)
@@ -1079,11 +960,6 @@
 
 - (void)loadImpPtrSection: (section*)inSect
 {
-//	section	swappedSect	= *inSect;
-
-//	if (mSwapped)
-//		swap_section(&swappedSect, 1, OSHostByteOrder());
-
 	mImpPtrSect.s	= *inSect;
 
 	if (mSwapped)
