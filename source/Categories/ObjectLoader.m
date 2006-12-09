@@ -111,46 +111,15 @@
 		switch (theCommandCopy.cmd)
 		{
 			case LC_SEGMENT:
-			{
-				if (mMachHeader.filetype == MH_OBJECT)
-				{
-					[self loadSegment: (segment_command*)ptr];
-
-					break;
-				}
-
-				// Re-cast the original ptr as a segment_command.
-				segment_command	swappedSeg	= *(segment_command*)ptr;
-
-				if (mSwapped)
-					swap_segment_command(&swappedSeg, OSHostByteOrder());
-
-				// Load a segment we're interested in.
-				if (!strcmp(swappedSeg.segname, SEG_TEXT))
-				{
-//					mTextOffset	= swappedSeg.vmaddr - swappedSeg.fileoff;
-					[self loadSegment: (segment_command*)ptr];
-				}
-				else if (!strcmp(swappedSeg.segname, SEG_DATA))
-					[self loadSegment: (segment_command*)ptr];
-				else if (!strcmp(swappedSeg.segname, SEG_OBJC))
-					[self loadSegment: (segment_command*)ptr];
-				else if (!strcmp(swappedSeg.segname, "__IMPORT"))
-					[self loadSegment: (segment_command*)ptr];
-
+				[self loadSegment: (segment_command*)ptr];
 				break;
-			}
 
 			case LC_SYMTAB:
-				// Re-cast the original ptr as a symtab_command.
 				[self loadSymbols: (symtab_command*)ptr];
-
 				break;
 
 			case LC_DYSYMTAB:
-				// Re-cast the original ptr as a dysymtab_command.
 				[self loadDySymbols: (dysymtab_command*)ptr];
-
 				break;
 
 			default:
@@ -237,14 +206,6 @@
 		sectionPtr++;
 	}
 }
-
-//	loadObjectSegment:
-// ----------------------------------------------------------------------------
-/*
-- (void)loadObjectSegment: (segment_command*)inSegPtr
-{
-
-}*/
 
 //	loadSymbols:
 // ----------------------------------------------------------------------------
