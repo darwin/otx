@@ -118,10 +118,6 @@
 				[self loadSymbols: (symtab_command*)ptr];
 				break;
 
-			case LC_DYSYMTAB:
-				[self loadDySymbols: (dysymtab_command*)ptr];
-				break;
-
 			default:
 				break;
 		}
@@ -261,84 +257,6 @@
 
 	// Sort the symbols so we can use binary searches later.
 	qsort(mFuncSyms, mNumFuncSyms, sizeof(nlist),
-		(COMPARISON_FUNC_TYPE)Sym_Compare);
-}
-
-//	loadDySymbols:
-// ----------------------------------------------------------------------------
-
-- (void)loadDySymbols: (dysymtab_command*)inSymPtr
-{
-/*
-
-	nlist	newList[1000];
-
-#undef nlist
-
-	nlist(CSTRING([mOFile path]), newList);
-
-#define nlist				struct nlist
-
-	UInt32	bs	= 0;
-
-	while (newList[bs].n_un.n_name)
-	{
-		if (newList[bs].n_value)
-		{
-			[self printSymbol: newList[bs]];
-		}
-
-		bs++;
-	}
-
-	fprintf(stderr, "finished printing all syms\n");
-
-*/
-	dysymtab_command	swappedSymTab	= *inSymPtr;
-
-	if (mSwapped)
-		swap_dysymtab_command(&swappedSymTab, OSHostByteOrder());
-
-	nlist*	theSymPtr	= (nlist*)
-//		((char*)mMachHeaderPtr + swappedSymTab.indirectsymoff);
-		((char*)mMachHeaderPtr + swappedSymTab.extrefsymoff);
-	nlist	theSym		= {0};
-	UInt32	i;
-
-	// loop thru symbols
-//	for (i = 0; i < swappedSymTab.nindirectsyms; i++)
-	for (i = 0; i < swappedSymTab.nextrefsyms; i++)
-	{
-		theSym	= theSymPtr[i];
-
-		if (mSwapped)
-			swap_nlist(&theSym, 1, OSHostByteOrder());
-
-		if (theSym.n_value == 0)
-			continue;
-
-		if ((theSym.n_type & N_STAB) == 0)	// not a STAB
-		{
-			mNumDySyms++;
-
-			if (mDySyms)
-				mDySyms	= realloc(mDySyms,
-					mNumDySyms * sizeof(nlist));
-			else
-				mDySyms	= malloc(sizeof(nlist));
-
-			mDySyms[mNumDySyms - 1]	= theSym;
-
-#ifdef OTX_DEBUG
-#if _OTX_DEBUG_DYSYMBOLS_
-			[self printSymbol: theSym];
-#endif
-#endif
-		}
-	}	// for (i = 0; i < swappedSymTab.nextrefsyms; i++)
-
-	// Sort the symbols so we can use binary searches later.
-	qsort(mDySyms, mNumDySyms, sizeof(nlist),
 		(COMPARISON_FUNC_TYPE)Sym_Compare);
 }
 
