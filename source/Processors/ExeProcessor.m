@@ -101,9 +101,6 @@
 	if (mFuncSyms)
 		free(mFuncSyms);
 
-	if (mDySyms)
-		free(mDySyms);
-
 	if (mObjcSects)
 		free(mObjcSects);
 

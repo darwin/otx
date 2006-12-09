@@ -358,8 +358,6 @@ enum {
 	// symbols that point to functions
 	nlist*				mFuncSyms;
 	UInt32				mNumFuncSyms;
-	nlist*				mDySyms;
-	UInt32				mNumDySyms;
 
 	// FunctionInfo array
 	FunctionInfo*		mFuncInfos;
