@@ -10,7 +10,6 @@
 @interface	ExeProcessor (Searchers)
 
 - (BOOL)findSymbolByAddress: (UInt32)inAddress;
-- (BOOL)findDySymbolByAddress: (UInt32)inAddress;
 - (BOOL)findClassMethod: (MethodInfo**)outMI
 			  byAddress: (UInt32)inAddress;
 - (BOOL)findCatMethod: (MethodInfo**)outMI

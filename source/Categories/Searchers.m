@@ -30,27 +30,6 @@
 	return symbolExists;
 }
 
-//	findDySymbolByAddress:
-// ----------------------------------------------------------------------------
-
-- (BOOL)findDySymbolByAddress: (UInt32)inAddress
-{
-	if (!mDySyms)
-		return false;
-
-	nlist*	searchKey	= malloc(sizeof(nlist));
-
-	searchKey->n_value	= inAddress;
-
-	BOOL	symbolExists	= (bsearch(&searchKey,
-		mDySyms, mNumDySyms, sizeof(nlist*),
-		(COMPARISON_FUNC_TYPE)Sym_Compare) != nil);
-
-	free(searchKey);
-
-	return symbolExists;
-}
-
 //	findClassMethod:byAddress:
 // ----------------------------------------------------------------------------
 

@@ -2144,8 +2144,6 @@
 		[self methodForSelector: ReplaceLineSel];
 	FindSymbolByAddress				= FindSymbolByAddressFuncType
 		[self methodForSelector: FindSymbolByAddressSel];
-//	FindDySymbolByAddress			= FindDySymbolByAddressFuncType
-//		[self methodForSelector: FindDySymbolByAddressSel];
 	FindClassMethodByAddress		= FindClassMethodByAddressFuncType
 		[self methodForSelector: FindClassMethodByAddressSel];
 	FindCatMethodByAddress			= FindCatMethodByAddressFuncType
