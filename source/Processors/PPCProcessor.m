@@ -1399,7 +1399,6 @@
 
 //	gatherFuncInfos
 // ----------------------------------------------------------------------------
-//	Subclasses may override
 
 - (void)gatherFuncInfos
 {

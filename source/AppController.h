@@ -3,7 +3,6 @@
 */
 
 #import <Cocoa/Cocoa.h>
-//#import <Kernel/mach-o/loader.h>
 
 #import "ProgressReporter.h"
 
@@ -81,8 +80,5 @@
 - (void)doLipoAlert;
 - (void)doErrorAlert;
 - (void)doDrillErrorAlert: (NSString*)inExePath;
-
-// ProgressReporter protocol
-- (void)reportProgress: (ProgressState*)inState;
 
 @end

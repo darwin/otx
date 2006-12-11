@@ -163,6 +163,61 @@
 		inLine->prev->alt->info.isFunction	= true;
 }
 
+//	getThunkInfo:forLine:
+// ----------------------------------------------------------------------------
+//	Determine whether this line is a call to a get_thunk routine. If so,
+//	outRegNum specifies which register is being thunkified.
+
+- (BOOL)getThunkInfo: (ThunkInfo*)outInfo
+			 forLine: (Line*)inLine
+{
+	if (!inLine)
+	{
+		fprintf(stderr, "otx: [X86Processor isThunkCall:toReg:] "
+			"nil inLine\n");
+		return false;
+	}
+
+	if (!inLine->next)
+		return false;
+
+	if (!outInfo)
+	{
+		fprintf(stderr, "otx: [X86Processor isThunkCall:toReg:] "
+			"nil outInfo\n");
+		return false;
+	}
+
+	if (!mThunks)
+		return false;
+
+	UInt8		opcode;
+
+	sscanf(inLine->info.code, "%02hhx", &opcode);
+
+	if (opcode != 0xe8)	// calll
+		return false;
+
+	BOOL	isThunk	= false;
+	UInt32	imm, target, i;
+
+	sscanf(&inLine->info.code[2], "%08x", &imm);
+	imm	= OSSwapInt32(imm);
+	target	= imm + inLine->next->info.address;
+
+	for (i = 0; i < mNumThunks; i++)
+	{
+		if (mThunks[i].address != target)
+			continue;
+
+		*outInfo	= mThunks[i];
+		isThunk		= true;
+		break;
+	}
+
+	return isThunk;
+}
+
 //	commentForLine:
 // ----------------------------------------------------------------------------
 
@@ -1375,12 +1430,11 @@
 //	postProcessCodeLine:
 // ----------------------------------------------------------------------------
 
-- (void)postProcessCodeLine: (Line**)ioLine;
+- (void)postProcessCodeLine: (Line**)ioLine
 {
 	if ((*ioLine)->info.code[0] != 'e'	||	// calll
 		(*ioLine)->info.code[1] != '8'	||
-		!(*ioLine)->next				||
-		!mLineOperandsCString[0])
+		!(*ioLine)->next)
 		return;
 
 	char*	theSubstring	=
@@ -1882,7 +1936,6 @@
 
 //	gatherFuncInfos
 // ----------------------------------------------------------------------------
-//	Subclasses may override
 
 - (void)gatherFuncInfos
 {
@@ -1907,6 +1960,15 @@
 		{
 			RestoreRegisters(theLine);
 			UpdateRegisters(theLine);
+
+			ThunkInfo	theInfo;
+
+			if ([self getThunkInfo: &theInfo forLine: theLine])
+			{
+				mRegInfos[theInfo.reg].value	= theLine->next->info.address;
+				mRegInfos[theInfo.reg].isValid	= true;
+				mCurrentThunk					= theInfo.reg;
+			}
 		}
 
 		// Check if we need to save the machine state.
@@ -2012,14 +2074,14 @@
 	return *outFound != 0;
 }
 
-//	searchForNopsIn:OfLength:NumFound:OnlyByExistence:
+//	searchForNopsIn:OfLength:NumFound:
 // ----------------------------------------------------------------------------
 //	Return value is a newly allocated list of addresses of 'outFound' length.
 //	Caller owns the list.
 
 - (unsigned char**)searchForNopsIn: (unsigned char*)inHaystack
-				  ofLength: (UInt32)inHaystackLength
-				  numFound: (UInt32*)outFound;
+						  ofLength: (UInt32)inHaystackLength
+						  numFound: (UInt32*)outFound;
 {
 	unsigned char**	foundList			= nil;
 	unsigned char	searchString[4]	= {0x00, 0x55, 0x89, 0xe5};
@@ -2069,7 +2131,7 @@
 	return foundList;
 }
 
-//	fixNops:
+//	fixNops:toPath:
 // ----------------------------------------------------------------------------
 
 - (NSURL*)fixNops: (NopList*)inList

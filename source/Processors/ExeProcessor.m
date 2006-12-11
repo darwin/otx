@@ -1105,8 +1105,8 @@
 
 	if (mOutputFilePath)
 	{
-		const char*	outPath		= CSTRING(mOutputFilePath);
-		outFile					= fopen(outPath, "a");
+		const char*	outPath	= CSTRING(mOutputFilePath);
+		outFile				= fopen(outPath, "a");
 	}
 	else
 		outFile	= stdout;
@@ -1417,8 +1417,6 @@
 		return;
 	}
 
-/*	 trying snprintf	*/
-
 	char*	format		= nil;
 	char*	prefix		= "\nmd5: ";
 	UInt32	finalLength	= strlen(md5Line) + strlen(prefix);
@@ -1435,16 +1433,9 @@
 		
 	snprintf(finalLine, finalLength + 1, format, prefix, md5Line);
 
-//	strncpy(finalLine, "\nmd5: ", 7);
-//	strncat(finalLine, md5Line, strlen(md5Line));
-//	strncat(finalLine, "\n", 1);
-
-/**/
-
 	Line*	newLine	= malloc(sizeof(Line));
 
 	bzero(newLine, sizeof(Line));
-
 	newLine->length	= strlen(finalLine);
 	newLine->chars	= malloc(newLine->length + 1);
 	strncpy(newLine->chars, finalLine, newLine->length + 1);
@@ -1705,7 +1696,8 @@
 
 		default:
 			strncpy(theTypeCString, "?", 2);
-			fprintf(stderr, "otx: unknown encoded type: %c\n", inTypeCode[theNextChar]);
+			fprintf(stderr, "otx: unknown encoded type: %c\n",
+				inTypeCode[theNextChar]);
 
 			break;
 	}

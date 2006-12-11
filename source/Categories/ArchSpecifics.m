@@ -41,6 +41,15 @@
 - (void)checkThunk:(Line*)inLine
 {}
 
+//	getThunkInfo:forLine:
+// ----------------------------------------------------------------------------
+
+- (BOOL)getThunkInfo: (ThunkInfo*)outInfo
+			 forLine: (Line*)inLine
+{
+	return false;
+}
+
 #pragma mark -
 //	commentForLine:
 // ----------------------------------------------------------------------------

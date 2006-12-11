@@ -14,6 +14,8 @@
 - (BOOL)lineIsFunction: (Line*)inLine;
 - (void)codeFromLine: (Line*)inLine;
 - (void)checkThunk: (Line*)inLine;
+- (BOOL)getThunkInfo: (ThunkInfo*)outInfo
+			 forLine: (Line*)inLine;
 
 - (void)commentForLine: (Line*)inLine;
 - (void)commentForSystemCall;

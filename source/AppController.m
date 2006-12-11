@@ -208,7 +208,7 @@
 	[mOutputFilePath retain];
 
 	NSString*		theExeName	=
-		[/*[*/mOutputFilePath /*stringByDeletingPathExtension]*/ lastPathComponent];
+		[[mOutputFilePath stringByDeletingPathExtension] lastPathComponent];
 	NSString*		theExePath	=
 	[[[mOutputFilePath stringByAppendingPathComponent: @"Contents"]
 		stringByAppendingPathComponent: @"MacOS"]
@@ -245,8 +245,7 @@
 		[mOutputFilePath retain];
 	}
 
-	mExeName	= [/*[*/mOutputFilePath
-		/*stringByDeletingPathExtension]*/ lastPathComponent];
+	mExeName	= [mOutputFilePath lastPathComponent];
 	[mExeName retain];
 
 	[self syncDescriptionText];
@@ -1003,7 +1002,7 @@
 			if (!inState->value)
 			{
 				fprintf(stderr, "otx: <reportProgress:> nil inState->value "
-					"when setIndeterminate == false\n");
+					"when setIndeterminate == true\n");
 				return;
 			}
 

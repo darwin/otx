@@ -291,10 +291,7 @@ enum {
 // protocol.
 enum {
 	Nudge,
-//	CallingOtool,
-//	GatheringInfo,
 	GeneratingFile,
-//	WritingFile
 	Complete
 };
 
@@ -451,7 +448,6 @@ enum {
 	void	(*ReplaceLine)		(id, SEL, Line*, Line*, Line**);
 
 	BOOL	(*FindSymbolByAddress)		(id, SEL, UInt32);
-//	BOOL	(*FindDySymbolByAddress)	(id, SEL, UInt32);
 	BOOL	(*FindClassMethodByAddress)	(id, SEL, MethodInfo**, UInt32);
 	BOOL	(*FindCatMethodByAddress)	(id, SEL, MethodInfo**, UInt32);
 	BOOL	(*FindIvar)					(id, SEL, objc_ivar*, objc_class*, UInt32);
