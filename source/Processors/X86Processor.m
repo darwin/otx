@@ -230,7 +230,8 @@
 	UInt8	opcode;
 
 	sscanf(inLine->info.code, "%02hhx", &opcode);
-	bzero(mLineCommentCString, MAX_COMMENT_LENGTH);
+//	bzero(mLineCommentCString, MAX_COMMENT_LENGTH);
+	mLineCommentCString[0]	= 0;
 
 	switch (opcode)
 	{
@@ -1645,7 +1646,7 @@
 					}
 
 					// Convert offset to array index.
-						offset /= 4;
+					offset /= 4;
 
 					if (mRegInfos[REG1(modRM)].isValid)
 						mStack[offset]	= mRegInfos[REG1(modRM)];
@@ -1789,7 +1790,7 @@
 					mRegInfos[EAX]	= mStack[0];
 			}
 			else
-			{
+			{	// Wipe the stack and return register.
 				bzero(mStack, sizeof(GPRegisterInfo) * MAX_STACK_SIZE);
 				bzero(&mRegInfos[EAX], sizeof(GPRegisterInfo));
 			}

@@ -355,8 +355,10 @@
 	// Loop thru lines in the temp files.
 	while (!feof(verboseFile) && !feof(plainFile))
 	{
-		bzero(theVerboseCLine, MAX_LINE_LENGTH);
-		bzero(thePlainCLine, MAX_LINE_LENGTH);
+//		bzero(theVerboseCLine, MAX_LINE_LENGTH);
+//		bzero(thePlainCLine, MAX_LINE_LENGTH);
+		theVerboseCLine[0]	= 0;
+		thePlainCLine[0]	= 0;
 
 		if (!fgets(theVerboseCLine, MAX_LINE_LENGTH, verboseFile))
 		{
@@ -382,11 +384,19 @@
 			break;
 		}
 
-		Line*	theVerboseLine	= malloc(sizeof(Line));
+/*		Line*	theVerboseLine	= malloc(sizeof(Line));
 		Line*	thePlainLine	= malloc(sizeof(Line));
 
 		bzero(theVerboseLine, sizeof(Line));
-		bzero(thePlainLine, sizeof(Line));
+		bzero(thePlainLine, sizeof(Line));*/
+
+		// Many thanx to Peter Hosey for the calloc speed test.
+		// http://boredzo.org/blog/archives/2006-11-26/calloc-vs-malloc
+
+		// alloc and init 2 Lines, old school like.
+		Line*	theVerboseLine	= calloc(1, sizeof(Line));
+		Line*	thePlainLine	= calloc(1, sizeof(Line));
+
 		theVerboseLine->length	= strlen(theVerboseCLine);
 		thePlainLine->length	= strlen(thePlainCLine);
 		theVerboseLine->chars	= malloc(theVerboseLine->length + 1);
@@ -955,10 +965,12 @@
 
 			if (cpName)
 			{
-				if (strlen(cpName) < MAX_OPERANDS_LENGTH - 1)
+				UInt32	cpLength	= strlen(cpName);
+
+				if (cpLength < MAX_OPERANDS_LENGTH - 1)
 				{
-					bzero(mLineOperandsCString, strlen(mLineOperandsCString));
-					strncpy(mLineOperandsCString, cpName, strlen(cpName) + 1);
+//					bzero(mLineOperandsCString, strlen(mLineOperandsCString));
+					strncpy(mLineOperandsCString, cpName, cpLength + 1);
 				}
 
 				free(cpName);
@@ -980,10 +992,12 @@
 
 			if (cpName)
 			{
-				if (strlen(cpName) < MAX_COMMENT_LENGTH - 1)
+				UInt32	cpLength	= strlen(cpName);
+
+				if (cpLength < MAX_COMMENT_LENGTH - 1)
 				{
-					bzero(theCommentCString, strlen(theCommentCString));
-					strncpy(theCommentCString, cpName, strlen(cpName) + 1);
+//					bzero(theCommentCString, strlen(theCommentCString));
+					strncpy(theCommentCString, cpName, cpLength + 1);
 				}
 
 				free(cpName);
@@ -1030,7 +1044,7 @@
 	char	finalFormatCString[MAX_FORMAT_LENGTH]	= {0};
 	UInt32	formatMarker	= 0;
 
-	bzero(finalFormatCString, MAX_FORMAT_LENGTH);
+//	bzero(finalFormatCString, MAX_FORMAT_LENGTH);
 
 	if (needNewLine)
 		finalFormatCString[formatMarker++]	= '\n';
@@ -1179,7 +1193,8 @@
 
 		if (bytesLeft < 16)	// last line
 		{
-			bzero(theLineCString, sizeof(theLineCString));
+//			bzero(theLineCString, sizeof(theLineCString));
+			theLineCString[0]	= 0;
 			snprintf(theLineCString,
 				20 ,"%08x |", inSect->s.addr + i);
 
@@ -1433,9 +1448,11 @@
 		
 	snprintf(finalLine, finalLength + 1, format, prefix, md5Line);
 
-	Line*	newLine	= malloc(sizeof(Line));
+/*	Line*	newLine	= malloc(sizeof(Line));
 
-	bzero(newLine, sizeof(Line));
+	bzero(newLine, sizeof(Line));*/
+	Line*	newLine	= calloc(1, sizeof(Line));
+
 	newLine->length	= strlen(finalLine);
 	newLine->chars	= malloc(newLine->length + 1);
 	strncpy(newLine->chars, finalLine, newLine->length + 1);
@@ -1471,10 +1488,12 @@
 		newSize	= colonPos - symString;
 
 	// Copy adjusted symbol into new string.
-	preparedName	= malloc(newSize + 1);
+/*	preparedName	= malloc(newSize + 1);
 
-	bzero(preparedName, newSize + 1);
-	strncpy(preparedName, symString, newSize);
+	bzero(preparedName, newSize + 1);*/
+	preparedName	= calloc(1, newSize + 1);
+
+	strncpy(preparedName, symString, newSize + 1);
 
 	return preparedName;
 }
@@ -1552,8 +1571,7 @@
 
 	Ok, so BOOL is just a synonym for signed char, and the @encode directive
 	can't be expected to desynonize that. Fair enough, but for our purposes,
-	it would be nicer if BOOL was synonized to unsigned char instead. As they
-	say- if wishes were recursive calls, beggars would have stack overflows.
+	it would be nicer if BOOL was synonized to unsigned char instead.
 
 	So, any occurence of 'c' may be a char or a BOOL. The best option I can
 	see is to treat arrays as char arrays and atomic values as BOOL, and maybe
@@ -1561,8 +1579,8 @@
 	decoded with a recursive call, we can use the following static variable
 	for this purpose.
 
-	As of otx 0.14b, letting the user override this behavior with a pref
-	is left as an exercise for the reader.
+	As of otx 0.14b, letting the user override this behavior with a pref is
+	left as an exercise for the reader.
 */
 	static	BOOL	isArray	= false;
 

@@ -77,6 +77,7 @@
 {
 	UInt32	left, i;
 
+// TODO compare speed of bzero vs. "= {0}"
 	bzero(outList, sizeof(objc_method_list));
 
 	for (i = 0; i < mNumObjcSects; i++)

@@ -909,7 +909,7 @@
 
 					// If we're accessing a local var copy of self,
 					// copy that info back to the reg in question.
-					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
+//					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 					mRegInfos[RT(theCode)]	= mLocalSelves[i].regInfo;
 
 					// and split.
@@ -953,8 +953,7 @@
 			if (RA(theCode) == 0)	// lis
 			{
 				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-				mRegInfos[RT(theCode)].value	=
-					UIMM(theCode) << 16;
+				mRegInfos[RT(theCode)].value	= UIMM(theCode) << 16;
 				mRegInfos[RT(theCode)].isValid	= true;
 				break;
 			}
@@ -1107,7 +1106,7 @@
 							break;
 						}
 
-						mCTR.value	= mRegInfos[RS(theCode)].value;
+						mCTR.value		= mRegInfos[RS(theCode)].value;
 						mCTR.isValid	= true;
 					}
 
@@ -1160,9 +1159,7 @@
 					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 			}
 			else
-			{
 				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-			}
 
 			break;
 
@@ -1471,9 +1468,10 @@
 			else
 			{	// No existing blocks, allocate one.
 				funcInfo->numBlocks++;
-				funcInfo->blocks	= malloc(sizeof(BlockInfo));
+//				funcInfo->blocks	= malloc(sizeof(BlockInfo));
+				funcInfo->blocks	= calloc(1, sizeof(BlockInfo));
 				currentBlock		= funcInfo->blocks;
-				bzero(currentBlock, sizeof(BlockInfo));
+//				bzero(currentBlock, sizeof(BlockInfo));
 			}
 
 			// sanity check
