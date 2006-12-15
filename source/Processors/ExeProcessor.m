@@ -262,7 +262,7 @@
 	// printed may not reflect their order in the executable.
 
 	ProgressState	progState	=
-		{false, false, false, Nudge, nil, nil};	// wink wink, say no more...
+		{false, false, false, Nudge, nil, nil};
 
 	[mController reportProgress: &progState];
 
@@ -355,8 +355,6 @@
 	// Loop thru lines in the temp files.
 	while (!feof(verboseFile) && !feof(plainFile))
 	{
-//		bzero(theVerboseCLine, MAX_LINE_LENGTH);
-//		bzero(thePlainCLine, MAX_LINE_LENGTH);
 		theVerboseCLine[0]	= 0;
 		thePlainCLine[0]	= 0;
 
@@ -384,16 +382,10 @@
 			break;
 		}
 
-/*		Line*	theVerboseLine	= malloc(sizeof(Line));
-		Line*	thePlainLine	= malloc(sizeof(Line));
-
-		bzero(theVerboseLine, sizeof(Line));
-		bzero(thePlainLine, sizeof(Line));*/
-
 		// Many thanx to Peter Hosey for the calloc speed test.
 		// http://boredzo.org/blog/archives/2006-11-26/calloc-vs-malloc
 
-		// alloc and init 2 Lines, old school like.
+		// alloc and init 2 Lines.
 		Line*	theVerboseLine	= calloc(1, sizeof(Line));
 		Line*	thePlainLine	= calloc(1, sizeof(Line));
 
@@ -582,7 +574,7 @@
 	if (!strlen(ioLine->chars))
 		return;
 
-	// otool is inconsistent in printing it's section headers. Sometimes it
+	// otool is inconsistent in printing section headers. Sometimes it
 	// prints "Contents of (x)" and sometimes just "(x)". We'll take this
 	// opportunity to use the shorter version in all cases.
 	char*	theContentsString		= "Contents of ";
@@ -883,35 +875,6 @@
 				strncat(theNewLine, (*ioLine)->prev->chars,
 					(*ioLine)->prev->length);
 
-				// Demangle if necessary.
-				if (mOpts.demangleCppNames)
-				{
-					char*	demString	=
-						PrepareNameForDemangling((*ioLine)->prev->chars);
-
-					if (demString)
-					{
-						char*	cpName	= cplus_demangle(demString, DEMANGLE_OPTS);
-
-						free(demString);
-
-						if (cpName)
-						{
-							UInt32	cpLength	= strlen(cpName);
-
-							if (cpLength < MAX_LINE_LENGTH - 1)
-							{
-								if (theNewLine[0] == '\n')
-									strncpy(&theNewLine[1], cpName, cpLength + 1);
-								else
-									strncpy(theNewLine, cpName, cpLength + 1);
-							}
-
-							free(cpName);
-						}
-					}
-				}
-
 				free((*ioLine)->prev->chars);
 				(*ioLine)->prev->length	= strlen(theNewLine);
 				(*ioLine)->prev->chars	= malloc((*ioLine)->prev->length + 1);
@@ -999,10 +962,7 @@
 				UInt32	cpLength	= strlen(cpName);
 
 				if (cpLength < MAX_OPERANDS_LENGTH - 1)
-				{
-//					bzero(mLineOperandsCString, strlen(mLineOperandsCString));
 					strncpy(mLineOperandsCString, cpName, cpLength + 1);
-				}
 
 				free(cpName);
 			}
@@ -1026,10 +986,7 @@
 				UInt32	cpLength	= strlen(cpName);
 
 				if (cpLength < MAX_COMMENT_LENGTH - 1)
-				{
-//					bzero(theCommentCString, strlen(theCommentCString));
 					strncpy(theCommentCString, cpName, cpLength + 1);
-				}
 
 				free(cpName);
 			}
@@ -1074,8 +1031,6 @@
 	// Finally, assemble the new string.
 	char	finalFormatCString[MAX_FORMAT_LENGTH]	= {0};
 	UInt32	formatMarker	= 0;
-
-//	bzero(finalFormatCString, MAX_FORMAT_LENGTH);
 
 	if (needNewLine)
 		finalFormatCString[formatMarker++]	= '\n';
@@ -1224,7 +1179,6 @@
 
 		if (bytesLeft < 16)	// last line
 		{
-//			bzero(theLineCString, sizeof(theLineCString));
 			theLineCString[0]	= 0;
 			snprintf(theLineCString,
 				20 ,"%08x |", inSect->s.addr + i);
@@ -1479,9 +1433,6 @@
 		
 	snprintf(finalLine, finalLength + 1, format, prefix, md5Line);
 
-/*	Line*	newLine	= malloc(sizeof(Line));
-
-	bzero(newLine, sizeof(Line));*/
 	Line*	newLine	= calloc(1, sizeof(Line));
 
 	newLine->length	= strlen(finalLine);
@@ -1519,9 +1470,6 @@
 		newSize	= colonPos - symString;
 
 	// Copy adjusted symbol into new string.
-/*	preparedName	= malloc(newSize + 1);
-
-	bzero(preparedName, newSize + 1);*/
 	preparedName	= calloc(1, newSize + 1);
 
 	strncpy(preparedName, symString, newSize);

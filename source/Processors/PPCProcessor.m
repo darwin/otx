@@ -888,17 +888,15 @@
 			{
 				UInt32	i;
 
+				// If we're accessing a local var copy of self,
+				// copy that info back to the reg in question.
 				for (i = 0; i < mNumLocalSelves; i++)
 				{
 					if (mLocalSelves[i].offset != UIMM(theCode))
 						continue;
 
-					// If we're accessing a local var copy of self,
-					// copy that info back to the reg in question.
-//					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
 					mRegInfos[RT(theCode)]	= mLocalSelves[i].regInfo;
 
-					// and split.
 					break;
 				}
 
@@ -1300,7 +1298,7 @@
 	UInt32	theCode		= strtoul(
 		(const char*)&inLine->info.code, nil, 16);
 
-	if ((theCode & 0x7c0807ff) == 0x7c0802a6)	// mflr to any reg
+	if ((theCode & 0xfc1fffff) == 0x7c0802a6)	// mflr to any reg
 	{	// Allow for late mflr
 		BOOL	foundUB	= false;
 		Line*	thePrevLine	= inLine->prev;
@@ -1454,10 +1452,8 @@
 			else
 			{	// No existing blocks, allocate one.
 				funcInfo->numBlocks++;
-//				funcInfo->blocks	= malloc(sizeof(BlockInfo));
 				funcInfo->blocks	= calloc(1, sizeof(BlockInfo));
 				currentBlock		= funcInfo->blocks;
-//				bzero(currentBlock, sizeof(BlockInfo));
 			}
 
 			// sanity check

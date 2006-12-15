@@ -231,7 +231,6 @@
 	UInt8	opcode;
 
 	sscanf(inLine->info.code, "%02hhx", &opcode);
-//	bzero(mLineCommentCString, MAX_COMMENT_LENGTH);
 	mLineCommentCString[0]	= 0;
 
 	switch (opcode)
@@ -2055,7 +2054,7 @@
 
 #pragma mark -
 #pragma mark Deobfuscastion
-//	verifyNops:
+//	verifyNops:numFound:
 // ----------------------------------------------------------------------------
 
 - (BOOL)verifyNops: (unsigned char***)outList
@@ -2075,7 +2074,7 @@
 	return *outFound != 0;
 }
 
-//	searchForNopsIn:OfLength:NumFound:
+//	searchForNopsIn:ofLength:numFound:
 // ----------------------------------------------------------------------------
 //	Return value is a newly allocated list of addresses of 'outFound' length.
 //	Caller owns the list.
