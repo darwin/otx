@@ -69,6 +69,7 @@
 	snprintf(inLine->info.code, 10, "%08x", theInstruction);
 }
 
+#pragma mark -
 //	commentForLine:
 // ----------------------------------------------------------------------------
 
@@ -86,21 +87,7 @@
 
 	mLineCommentCString[0]	= 0;
 
-// Examine the primary opcode to see if we need to look for comments.
-
-//	0x07 mulli
-//	0x08 subfic
-//	0x0c addic
-//	0x0d addic.
-//	0x21 lwzu
-//	0x23 lbzu
-//	0x25 stwu
-//	0x27 stbu
-//	0x29 lhzu
-//	0x2a lha
-//	0x2b lhau
-//	0x2d sthu
-
+	// Examine the primary opcode to see if we need to look for comments.
 	switch (opcode)
 	{
 		case 0x0a:	// cmpli | cmplwi	UIMM
@@ -556,9 +543,9 @@
 		return;
 	}
 
-	BOOL		isIndirect		= (mRegInfos[0].value == SYS_syscall);
-	UInt32		syscallNumReg	= isIndirect ? 3 : 0;
-	UInt32		syscallArg1Reg	= isIndirect ? 4 : 3;
+	BOOL	isIndirect		= (mRegInfos[0].value == SYS_syscall);
+	UInt32	syscallNumReg	= isIndirect ? 3 : 0;
+	UInt32	syscallArg1Reg	= isIndirect ? 4 : 3;
 
 	if (!mRegInfos[syscallNumReg].isValid	||
 		mRegInfos[syscallNumReg].value > SYS_MAXSYSCALL)
@@ -598,7 +585,6 @@
 	}
 }
 
-#pragma mark -
 //	selectorForMsgSend:fromLine:
 // ----------------------------------------------------------------------------
 

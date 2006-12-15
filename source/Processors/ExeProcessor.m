@@ -873,14 +873,45 @@
 					theNewLine->length + 1);
 				ReplaceLine((*ioLine)->prev, theNewLine, &mPlainLineListHead);
 			}
-			else if ((*ioLine)->prev->chars[0] != '\n')
+			else
 			{	// theMethName sux, add '\n' to otool's method name.
 				char	theNewLine[MAX_LINE_LENGTH]	= {0};
 
-				theNewLine[0]	= '\n';
+				if ((*ioLine)->prev->chars[0] != '\n')
+					theNewLine[0]	= '\n';
 
 				strncat(theNewLine, (*ioLine)->prev->chars,
 					(*ioLine)->prev->length);
+
+				// Demangle if necessary.
+				if (mOpts.demangleCppNames)
+				{
+					char*	demString	=
+						PrepareNameForDemangling((*ioLine)->prev->chars);
+
+					if (demString)
+					{
+						char*	cpName	= cplus_demangle(demString, DEMANGLE_OPTS);
+
+						free(demString);
+
+						if (cpName)
+						{
+							UInt32	cpLength	= strlen(cpName);
+
+							if (cpLength < MAX_LINE_LENGTH - 1)
+							{
+								if (theNewLine[0] == '\n')
+									strncpy(&theNewLine[1], cpName, cpLength + 1);
+								else
+									strncpy(theNewLine, cpName, cpLength + 1);
+							}
+
+							free(cpName);
+						}
+					}
+				}
+
 				free((*ioLine)->prev->chars);
 				(*ioLine)->prev->length	= strlen(theNewLine);
 				(*ioLine)->prev->chars	= malloc((*ioLine)->prev->length + 1);
@@ -1493,7 +1524,7 @@
 	bzero(preparedName, newSize + 1);*/
 	preparedName	= calloc(1, newSize + 1);
 
-	strncpy(preparedName, symString, newSize + 1);
+	strncpy(preparedName, symString, newSize);
 
 	return preparedName;
 }
