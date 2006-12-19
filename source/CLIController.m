@@ -189,18 +189,7 @@
 	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: origFilePath])
 		[self newPackageFile: [NSURL fileURLWithPath: origFilePath]];
 	else
-	{
-		if ([fileMan isExecutableFileAtPath: origFilePath])
-			[self newOFile: [NSURL fileURLWithPath: origFilePath]
-				needsPath: true];
-		else
-		{
-			fprintf(stderr, "%s is not an executable file.\n",
-				CSTRING([origFilePath lastPathComponent]));
-			[self release];
-			return nil;
-		}
-	}
+		[self newOFile: [NSURL fileURLWithPath: origFilePath] needsPath: true];
 
 	// Sanity check
 	if (!mOFile)
