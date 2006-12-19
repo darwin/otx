@@ -784,15 +784,6 @@
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
 	bzero(mRegInfos, sizeof(GPRegisterInfo) * 32);
 
-/**/
-
-if (inLine->info.address == 0x000018e8)
-{
-	UInt8	theBreak	= 9;
-}
-
-/**/
-
 	mRegInfos[3].classPtr	= mCurrentClass;
 	mRegInfos[3].catPtr		= mCurrentCat;
 	mRegInfos[3].isValid	= true;
@@ -850,15 +841,6 @@ if (inLine->info.address == 0x000018e8)
 		mLR.value	= inLine->info.address + 4;
 		mLR.isValid	= true;
 	}
-
-/**/
-
-if (inLine->info.address == 0x00001a2c)
-{
-	UInt8	theBreak	= 9;
-}
-
-/**/
 
 	switch (PO(theCode))
 	{
@@ -1241,15 +1223,6 @@ if (inLine->info.address == 0x00001a2c)
 		return false;
 
 	UInt32	i;
-
-/**/
-
-if (inLine->info.address == 0x00001a2c)
-{
-	UInt8	theBreak	= 9;
-}
-
-/**/
 
 	for (i = 0; i < funcInfo->numBlocks; i++)
 	{

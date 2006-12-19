@@ -303,7 +303,7 @@ enum {
 #define MAX_TYPE_STRING_LENGTH	200		// for encoded ObjC data types
 #define MAX_MD5_LINE			40		// for the md5 pipe
 #define MAX_ARCH_STRING_LENGTH	20		// "ppc", "i386" etc.
-#define MAX_STACK_SIZE			20		// Maximum number of stack variables
+#define MAX_STACK_SIZE			30		// Maximum number of stack variables
 
 // Refresh progress bar after processing this many lines.
 #define PROGRESS_FREQ			2500

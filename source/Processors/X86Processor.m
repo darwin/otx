@@ -1640,7 +1640,7 @@
 					if (offset / 4 > MAX_STACK_SIZE - 1)
 					{
 						fprintf(stderr, "otx: out of stack bounds: "
-							"stack size needs to be %d", (offset / 4) + 1);
+							"stack size needs to be %d\n", (offset / 4) + 1);
 						break;
 					}
 
