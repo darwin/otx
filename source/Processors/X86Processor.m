@@ -1955,7 +1955,10 @@
 		sscanf(&theLine->info.code[2], "%02hhx", &opcode2);
 
 		if (theLine->info.isFunction)
+		{
+			mCurrentFuncPtr	= theLine->info.address;
 			ResetRegisters(theLine);
+		}
 		else
 		{
 			RestoreRegisters(theLine);

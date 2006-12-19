@@ -784,6 +784,15 @@
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
 	bzero(mRegInfos, sizeof(GPRegisterInfo) * 32);
 
+/**/
+
+if (inLine->info.address == 0x000018e8)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
+
 	mRegInfos[3].classPtr	= mCurrentClass;
 	mRegInfos[3].catPtr		= mCurrentCat;
 	mRegInfos[3].isValid	= true;
@@ -839,8 +848,17 @@
 	if (IS_BRANCH_LINK(theCode))
 	{
 		mLR.value	= inLine->info.address + 4;
-		mLR.isValid		= true;
+		mLR.isValid	= true;
 	}
+
+/**/
+
+if (inLine->info.address == 0x00001a2c)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
 
 	switch (PO(theCode))
 	{
@@ -1224,6 +1242,15 @@
 
 	UInt32	i;
 
+/**/
+
+if (inLine->info.address == 0x00001a2c)
+{
+	UInt8	theBreak	= 9;
+}
+
+/**/
+
 	for (i = 0; i < funcInfo->numBlocks; i++)
 	{
 		if (funcInfo->blocks[i].start != inLine->info.address)
@@ -1398,7 +1425,10 @@
 		theCode	= strtoul(theLine->info.code, nil, 16);
 
 		if (theLine->info.isFunction)
+		{
+			mCurrentFuncPtr	= theLine->info.address;
 			ResetRegisters(theLine);
+		}
 		else
 		{
 			RestoreRegisters(theLine);
