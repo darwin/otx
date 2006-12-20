@@ -29,8 +29,10 @@
 
 		// fat_header and fat_arch are always big-endian. Swap if we're
 		// running on intel.
-		if (OSHostByteOrder() == OSLittleEndian)
+#if TARGET_RT_LITTLE_ENDIAN
+//		if (OSHostByteOrder() == OSLittleEndian)
 			swap_fat_header(&fh, OSLittleEndian);
+#endif
 
 		UInt32	i;
 
@@ -39,8 +41,10 @@
 		{
 			fa	= *faPtr;
 
-			if (OSHostByteOrder() == OSLittleEndian)
+#if TARGET_RT_LITTLE_ENDIAN
+//			if (OSHostByteOrder() == OSLittleEndian)
 				swap_fat_arch(&fa, 1, OSLittleEndian);
+#endif
 
 			if (fa.cputype == mArchSelector)
 			{

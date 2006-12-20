@@ -1316,6 +1316,12 @@
 			theCode	= strtoul(
 				(const char*)&thePrevLine->info.code, nil, 16);
 
+			if ((theCode & 0xfc0007ff) == 0x7c000008)	// trap
+			{
+				foundUB	= true;
+				continue;
+			}
+
 			UInt8	opcode	= PO(theCode);
 
 			if (opcode == 16 || opcode == 18 || opcode == 19)

@@ -673,16 +673,19 @@
 	ChooseLine(ioLine);
 
 	UInt32	theOrigLength								= (*ioLine)->length;
-	char	addrSpaces[MAX_FIELD_SPACING]				= {0};
-	char	instSpaces[MAX_FIELD_SPACING]				= {0};
-	char	mnemSpaces[MAX_FIELD_SPACING]				= {0};
-	char	opSpaces[MAX_FIELD_SPACING]					= {0};
-	char	commentSpaces[MAX_FIELD_SPACING]			= {0};
+	char	addrSpaces[MAX_FIELD_SPACING]				/*= {0}*/;
+	char	instSpaces[MAX_FIELD_SPACING]				/*= {0}*/;
+	char	mnemSpaces[MAX_FIELD_SPACING]				/*= {0}*/;
+	char	opSpaces[MAX_FIELD_SPACING]					/*= {0}*/;
+	char	commentSpaces[MAX_FIELD_SPACING]			/*= {0}*/;
 	char	localOffsetString[9]						= {0};
 	char	theAddressCString[9]						= {0};
 	char	theMnemonicCString[20]						= {0};
-	char	theOrigCommentCString[MAX_COMMENT_LENGTH]	= {0};
-	char	theCommentCString[MAX_COMMENT_LENGTH]		= {0};
+	char	theOrigCommentCString[MAX_COMMENT_LENGTH]	/*= {0}*/;
+	char	theCommentCString[MAX_COMMENT_LENGTH]		/*= {0}*/;
+
+	theOrigCommentCString[0]	= 0;
+	theCommentCString[0]		= 0;
 
 	// Swap in saved registers if necessary
 	BOOL	needNewLine	= [self restoreRegisters: (*ioLine)];
@@ -699,17 +702,26 @@
 	// If we didn't grab everything up to the newline, there's a comment
 	// remaining. Copy it, starting after the preceding tab.
 	if (consumedAfterOp && consumedAfterOp < theOrigLength - 1)
+	{
 		strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
-			theOrigLength - consumedAfterOp - 2);
+			theOrigLength - consumedAfterOp);
+
+		// Lose the \n
+		theOrigCommentCString[strlen(theOrigCommentCString) - 1]	= 0;
+	}
 
 	char*	theCodeCString	= (*ioLine)->info.code;
 	SInt16	i				=
 		mFieldWidths.instruction - strlen(theCodeCString);
 
+	mnemSpaces[i - 1]	= 0;
+
 	for (; i > 1; i--)
 		mnemSpaces[i - 2]	= 0x20;
 
 	i	= mFieldWidths.mnemonic - strlen(theMnemonicCString);
+
+	opSpaces[i - 1]	= 0;
 
 	for (; i > 1; i--)
 		opSpaces[i - 2]	= 0x20;
@@ -718,6 +730,8 @@
 	if (mLineOperandsCString[0] && theOrigCommentCString[0])
 	{
 		i	= mFieldWidths.operands - strlen(mLineOperandsCString);
+
+		commentSpaces[i - 1]	= 0;
 
 		for (; i > 1; i--)
 			commentSpaces[i - 2]	= 0x20;
@@ -932,6 +946,8 @@
 			// Fill up commentSpaces based on operands field width.
 			SInt32	k	= mFieldWidths.operands - strlen(mLineOperandsCString);
 
+			commentSpaces[k - 1]	= 0;
+
 			for (; k > 1; k--)
 				commentSpaces[k - 2]	= 0x20;
 		}
@@ -1020,12 +1036,16 @@
 		// Fill up addrSpaces based on offset field width.
 		i	= mFieldWidths.offset - 6;
 
+		addrSpaces[i - 1] = 0;
+
 		for (; i > 1; i--)
 			addrSpaces[i - 2] = 0x20;
 	}
 
 	// Fill up instSpaces based on address field width.
 	i	= mFieldWidths.address - 8;
+
+	instSpaces[i - 1] = 0;
 
 	for (; i > 1; i--)
 		instSpaces[i - 2] = 0x20;
@@ -1228,13 +1248,15 @@
 				if (theASCIIData[j] < 0x20 || theASCIIData[j] == 0x7f)
 					theASCIIData[j]	= '.';
 
-			if (OSHostByteOrder() == OSLittleEndian)
-			{
+#if TARGET_RT_LITTLE_ENDIAN
+//			if (OSHostByteOrder() == OSLittleEndian)
+//			{
 				theHexPtr[0]	= OSSwapInt32(theHexPtr[0]);
 				theHexPtr[1]	= OSSwapInt32(theHexPtr[1]);
 				theHexPtr[2]	= OSSwapInt32(theHexPtr[2]);
 				theHexPtr[3]	= OSSwapInt32(theHexPtr[3]);
-			}
+//			}
+#endif
 
 			snprintf(theLineCString, sizeof(theLineCString),
 				"%08x | %08x %08x %08x %08x  %s\n",

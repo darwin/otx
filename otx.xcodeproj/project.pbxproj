@@ -235,6 +235,7 @@
 				E1F483530B38DB4200CECE18 /* SharedDefs.h */,
 				E1167F1C09C8086900E7398D /* StolenDefs.h */,
 				E13539810A68178D00CBDDE5 /* SyscallStrings.h */,
+				E1B1316E0B17EF84002EB674 /* SystemIncludes.h */,
 				E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */,
 				E1F81ABB0AE1ED62003D8E2C /* Smart Crash Reports */,
 				E1A152490AA3639100324ED3 /* binutils */,
@@ -268,7 +269,6 @@
 				E13539900A68185500CBDDE5 /* AppController.h */,
 				E1FA34510B105E6F0060060A /* CLIController.h */,
 				E135398F0A68185500CBDDE5 /* CDropBox.h */,
-				E1B1316E0B17EF84002EB674 /* SystemIncludes.h */,
 				E1B1325A0B180ADF002EB674 /* Processors */,
 			);
 			name = Headers;
