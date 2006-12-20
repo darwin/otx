@@ -200,7 +200,7 @@
 	}
 
 	// Check that the executable is a Mach-O file.
-	NSFileHandle*	theFileH			=
+	NSFileHandle*	theFileH	=
 		[NSFileHandle fileHandleForReadingAtPath: [mOFile path]];
 
 	if (!theFileH)
