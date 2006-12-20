@@ -92,8 +92,8 @@
 {
 	[super drawRect: rect];
 
-//	if (mDragHilite)
-//	{
+	if (mDragHilite)
+	{
 		NSRect		innerRect	= rect;
 		NSColor*	baseColor	= [NSColor keyboardFocusIndicatorColor];
 		NSColor*	color;
@@ -107,7 +107,7 @@
 				innerRect, 1.0, NSCompositeSourceOver);
 			innerRect	= NSInsetRect(innerRect, 1.0, 1.0);
 		}
-//	}
+	}
 }
 
 @end
