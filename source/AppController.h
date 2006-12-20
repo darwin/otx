@@ -4,8 +4,6 @@
 	This file is in the pubic domain.
 */
 
-#import <Cocoa/Cocoa.h>
-
 #import "ProgressReporter.h"
 
 #define kOutputTextTag		100

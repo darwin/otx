@@ -5,7 +5,6 @@
 */
 
 #import <AppKit/NSApplication.h>
-//#import <Cocoa/Cocoa.h>
 
 #ifdef OTX_CLI
 #import "CLIController.h"
@@ -36,7 +35,6 @@ int main(
 
 	[controller processFile: nil];
 	[controller release];
-
 	[pool release];
 
 	return noErr;

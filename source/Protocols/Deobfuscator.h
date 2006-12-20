@@ -4,6 +4,20 @@
 	This file is in the pubic domain.
 */
 
+/*	NopList
+
+	'list' is a 'count'-sized array of addresses at which an obfuscated
+	sequence of nops was found.
+*/
+typedef struct NopList
+{
+	unsigned char**	list;
+	UInt32			count;
+}
+NopList;
+
+// ============================================================================
+
 @protocol	Deobfuscator
 
 - (BOOL)verifyNops: (unsigned char***)outList

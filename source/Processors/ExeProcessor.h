@@ -4,8 +4,6 @@
 	This file is in the pubic domain.
 */
 
-#import <Cocoa/Cocoa.h>
-
 #import "SystemIncludes.h"
 #import "StolenDefs.h"
 #import "Optimizations.h"
@@ -105,13 +103,13 @@ MethodInfo;
 
 	Used for deobfuscation. 'list' is a 'count'-sized array of addresses
 	at which an obfuscated sequence of nops was found.
-*/
+
 typedef struct NopList
 {
 	unsigned char**	list;
 	UInt32			count;
 }
-NopList;
+NopList;*/
 
 /*	ThunkInfo
 

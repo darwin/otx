@@ -4,8 +4,6 @@
 	This file is in the pubic domain.
 */
 
-#import <Cocoa/Cocoa.h>
-
 #import "ExeProcessor.h"	// for ProcOptions, lame FIXME
 #import "ProgressReporter.h"
 
