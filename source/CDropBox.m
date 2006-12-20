@@ -1,5 +1,10 @@
 /*
-	CDropBox.m
+	CDropBox.h
+
+	A subclass of NSBox that implements drag n drop. Drag hiliting mimics
+	NSTextField's focus border.
+
+	This file is in the pubic domain.
 */
 
 #import "CDropBox.h"
@@ -15,6 +20,11 @@
 {
 	[self registerForDraggedTypes:
 		[NSArray arrayWithObject: NSFilenamesPboardType]];
+
+	mAlphas[0]	= 0.5;
+	mAlphas[1]	= 0.75;
+	mAlphas[2]	= 0.5;
+	mAlphas[3]	= 0.2;
 }
 
 //	draggingEntered:
@@ -75,15 +85,25 @@
 //	drawRect:
 // ----------------------------------------------------------------------------
 
--(void)drawRect: (NSRect)rect
+- (void)drawRect: (NSRect)rect
 {
 	[super drawRect: rect];
 
 	if (mDragHilite)
 	{
-		[[NSColor keyboardFocusIndicatorColor] set];
-		NSFrameRectWithWidthUsingOperation(
-			rect, kBorderWidth, NSCompositeSourceOver);
+		NSRect		innerRect	= rect;
+		NSColor*	baseColor	= [NSColor keyboardFocusIndicatorColor];
+		NSColor*	color;
+		UInt8		i;
+
+		for (i = 0; i < kBorderWidth; i++)
+		{
+			color	= [baseColor colorWithAlphaComponent: mAlphas[i]];
+			[color set];
+			NSFrameRectWithWidthUsingOperation(
+				innerRect, 1.0, NSCompositeSourceOver);
+			innerRect	= NSInsetRect(innerRect, 1.0, 1.0);
+		}
 	}
 }
 
