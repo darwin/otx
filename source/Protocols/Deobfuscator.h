@@ -1,7 +1,7 @@
 /*
 	Deobfuscator.h
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 /*	NopList

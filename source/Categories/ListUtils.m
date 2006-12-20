@@ -4,7 +4,7 @@
 	A category on ExeProcessor that contains the linked list
 	manipulation methods.
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 #import "ListUtils.h"

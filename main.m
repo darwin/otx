@@ -1,7 +1,7 @@
 /*
 	main.m
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 #import <AppKit/NSApplication.h>

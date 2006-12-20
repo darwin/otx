@@ -4,12 +4,12 @@
 	A subclass of NSBox that implements drag n drop. Drag hiliting mimics
 	NSTextField's focus border.
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 #import "AppController.h"
 
-#define	kBorderWidth	4
+#define	kBorderWidth	5
 
 // ============================================================================
 

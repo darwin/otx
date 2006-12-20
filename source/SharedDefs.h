@@ -3,7 +3,7 @@
 
 	Definitions shared by GUI and CLI versions.
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 /*	ProcOptions

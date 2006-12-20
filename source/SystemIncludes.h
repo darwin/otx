@@ -6,7 +6,7 @@
 	all such files are included from here, and other files simply include
 	this file. The behavior of the #import directive makes this safe.
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 #import <libkern/OSByteOrder.h>

@@ -4,7 +4,7 @@
 	Definitions of function types and selectors for use with
 	getMethodForSelector: in ExeProcessor.
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 // Function types

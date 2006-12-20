@@ -1,7 +1,7 @@
 /*
 	AppController.m
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 #import <mach-o/fat.h>
@@ -247,7 +247,12 @@
 		[mOutputFilePath retain];
 	}
 
-	mExeName	= [mOutputFilePath lastPathComponent];
+	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: mOutputFilePath])
+		mExeName	= [[mOutputFilePath lastPathComponent]
+			stringByDeletingPathExtension];
+	else
+		mExeName	= [mOutputFilePath lastPathComponent];
+
 	[mExeName retain];
 
 	[self syncDescriptionText];

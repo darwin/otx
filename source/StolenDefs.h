@@ -3,7 +3,7 @@
 
 	Definitions stolen from, or inspired by, Darwin & cctools.
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 #define rotr(x, n)   (((x) >> ((int)(n))) | ((x) << (32 - (int)(n))))

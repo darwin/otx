@@ -3,7 +3,7 @@
 
 	A category on ExeProcessor that contains all the loadXXX methods.
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 #import "ExeProcessor.h"

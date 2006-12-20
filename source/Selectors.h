@@ -5,7 +5,7 @@
 	sent the message. 'crc' is the crc32 of each string. The list is sorted to
 	allow binary searching.
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 typedef struct

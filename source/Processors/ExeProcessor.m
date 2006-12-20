@@ -4,7 +4,7 @@
 	This file relies upon, and steals code from, the cctools source code
 	available from: http://www.opensource.apple.com/darwinsource/
 
-	This file is in the pubic domain.
+	This file is in the public domain.
 */
 
 #import "SystemIncludes.h"
