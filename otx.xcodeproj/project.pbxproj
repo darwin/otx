@@ -128,6 +128,7 @@
 		E1B1361E0B192AAC002EB674 /* ArchSpecifics.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ArchSpecifics.m; path = source/Categories/ArchSpecifics.m; sourceTree = "<group>"; };
 		E1B136210B192ABE002EB674 /* ArchSpecifics.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ArchSpecifics.h; path = source/Categories/ArchSpecifics.h; sourceTree = "<group>"; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
+		E1F483530B38DB4200CECE18 /* SharedDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharedDefs.h; path = source/SharedDefs.h; sourceTree = "<group>"; };
 		E1F81AC20AE1EDC0003D8E2C /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = "source/Smart Crash Reports/SmartCrashReportsInstall.h"; sourceTree = "<group>"; };
 		E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = "source/Smart Crash Reports/SmartCrashReportsInstall.o"; sourceTree = "<group>"; };
 		E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -231,6 +232,7 @@
 				E13539820A6817C700CBDDE5 /* ObjcSwap.c */,
 				E16222240A4F80F4007ECB26 /* Optimizations.h */,
 				E10500110AFF022100F7D6CA /* Selectors.h */,
+				E1F483530B38DB4200CECE18 /* SharedDefs.h */,
 				E1167F1C09C8086900E7398D /* StolenDefs.h */,
 				E13539810A68178D00CBDDE5 /* SyscallStrings.h */,
 				E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */,
