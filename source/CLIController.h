@@ -4,7 +4,7 @@
 	This file is in the pubic domain.
 */
 
-#import "ExeProcessor.h"	// for ProcOptions, lame FIXME
+#import "SharedDefs.h"
 #import "ProgressReporter.h"
 
 // ============================================================================
