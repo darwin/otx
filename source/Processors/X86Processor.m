@@ -2,6 +2,8 @@
 	X86Processor.m
 
 	A subclass of ExeProcessor that handles x86-specific issues.
+
+	This file is in the pubic domain.
 */
 
 #import "X86Processor.h"

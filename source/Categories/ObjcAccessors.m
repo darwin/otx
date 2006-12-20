@@ -2,6 +2,8 @@
 	ObjcAccessors.m
 
 	What the filename says.
+
+	This file is in the pubic domain.
 */
 
 #import "ObjcAccessors.h"

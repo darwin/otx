@@ -5,6 +5,8 @@
 	structs need to be #included before the #defines. To make this easier,
 	all such files are included from here, and other files simply include
 	this file. The behavior of the #import directive makes this safe.
+
+	This file is in the pubic domain.
 */
 
 #import <libkern/OSByteOrder.h>

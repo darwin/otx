@@ -1,5 +1,9 @@
 /*
-	X86Processor.h
+	X86Processor.m
+
+	A subclass of ExeProcessor that handles x86-specific issues.
+
+	This file is in the pubic domain.
 */
 
 #import "ExeProcessor.h"

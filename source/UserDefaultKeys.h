@@ -1,5 +1,7 @@
 /*
 	UserDefaultKeys.h
+
+	This file is in the pubic domain.
 */
 
 #define AskOutputDirKey				@"AskOutputDir"

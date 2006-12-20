@@ -1,5 +1,9 @@
 /*
 	PPCProcessor.h
+
+	A subclass of ExeProcessor that handles PPC-specific issues.
+
+	This file is in the pubic domain.
 */
 
 #import "ExeProcessor.h"

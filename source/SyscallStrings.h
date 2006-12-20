@@ -2,6 +2,8 @@
 	SyscallStrings.h
 
 	Adapted from <sys/syscall.h>.
+
+	This file is in the pubic domain.
 */
 
 // Using 0 instead of "" for empty strings results in a nil pointer

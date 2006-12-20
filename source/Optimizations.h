@@ -3,6 +3,8 @@
 
 	Definitions of function types and selectors for use with
 	getMethodForSelector: in ExeProcessor.
+
+	This file is in the pubic domain.
 */
 
 // Function types

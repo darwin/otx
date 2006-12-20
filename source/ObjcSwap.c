@@ -2,6 +2,8 @@
 	ObjcSwap.c
 
 	Functions adapted from cctools-590/otool/print_objc.c
+
+	This file is in the pubic domain.
 */
 
 #import "SystemIncludes.h"

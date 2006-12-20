@@ -1,8 +1,8 @@
 /*
 	otx_Prefix.pch
-*/
 
-#define MAC_OS_X_VERSION_MIN_REQUIRED MAC_OS_X_VERSION_10_4
+	This file is in the pubic domain.
+*/
 
 #ifndef NSAppKitVersionNumber10_4
 	#define	NSAppKitVersionNumber10_4 824

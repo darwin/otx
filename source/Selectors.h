@@ -4,6 +4,8 @@
 	A list of selectors that are known to return an id of the same class that
 	sent the message. 'crc' is the crc32 of each string. The list is sorted to
 	allow binary searching.
+
+	This file is in the pubic domain.
 */
 
 typedef struct

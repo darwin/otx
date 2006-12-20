@@ -3,6 +3,8 @@
 
 	A category on ExeProcessor that contains most of the
 	architecture-specific methods.
+
+	This file is in the pubic domain.
 */
 
 #import "ArchSpecifics.h"

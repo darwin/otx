@@ -2,6 +2,8 @@
 	ObjcAccessors.h
 
 	What the filename says.
+
+	This file is in the pubic domain.
 */
 
 #import "ExeProcessor.h"

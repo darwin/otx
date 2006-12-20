@@ -1,5 +1,7 @@
 /*
 	CLIController.m
+
+	This file is in the pubic domain.
 */
 
 #import <mach-o/fat.h>

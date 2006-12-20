@@ -3,6 +3,8 @@
 
 	A category on ExeProcessor that contains the various binary search
 	methods.
+
+	This file is in the pubic domain.
 */
 
 #import "ExeProcessor.h"

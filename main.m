@@ -1,9 +1,11 @@
 /*
 	main.m
+
+	This file is in the pubic domain.
 */
 
 #import <AppKit/NSApplication.h>
-#import <Cocoa/Cocoa.h>
+//#import <Cocoa/Cocoa.h>
 
 #ifdef OTX_CLI
 #import "CLIController.h"
