@@ -672,17 +672,21 @@
 
 	ChooseLine(ioLine);
 
-	UInt32	theOrigLength								= (*ioLine)->length;
-	char	addrSpaces[MAX_FIELD_SPACING]				/*= {0}*/;
-	char	instSpaces[MAX_FIELD_SPACING]				/*= {0}*/;
-	char	mnemSpaces[MAX_FIELD_SPACING]				/*= {0}*/;
-	char	opSpaces[MAX_FIELD_SPACING]					/*= {0}*/;
-	char	commentSpaces[MAX_FIELD_SPACING]			/*= {0}*/;
-	char	localOffsetString[9]						= {0};
-	char	theAddressCString[9]						= {0};
-	char	theMnemonicCString[20]						= {0};
-	char	theOrigCommentCString[MAX_COMMENT_LENGTH]	/*= {0}*/;
-	char	theCommentCString[MAX_COMMENT_LENGTH]		/*= {0}*/;
+	// Much thanx to Blake C. for the implicit memcpy info.
+	// http://yamacdev.blogspot.com/2006/12/implicit-memcpy3-calls.html
+
+	UInt32	theOrigLength			= (*ioLine)->length;
+	char	localOffsetString[9]	= {0};
+	char	theAddressCString[9]	= {0};
+	char	theMnemonicCString[20]	= {0};
+
+	char	addrSpaces[MAX_FIELD_SPACING];
+	char	instSpaces[MAX_FIELD_SPACING];
+	char	mnemSpaces[MAX_FIELD_SPACING];
+	char	opSpaces[MAX_FIELD_SPACING];
+	char	commentSpaces[MAX_FIELD_SPACING];
+	char	theOrigCommentCString[MAX_COMMENT_LENGTH];
+	char	theCommentCString[MAX_COMMENT_LENGTH];
 
 	theOrigCommentCString[0]	= 0;
 	theCommentCString[0]		= 0;
