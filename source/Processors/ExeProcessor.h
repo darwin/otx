@@ -5,6 +5,8 @@
 */
 
 #import "SystemIncludes.h"
+
+#import "SharedDefs.h"
 #import "StolenDefs.h"
 #import "Optimizations.h"
 #import "ProgressReporter.h"
@@ -231,7 +233,7 @@ TextFieldWidths;
 	NSUserDefaults, CLI version sets them with command line arguments. This
 	is necessary for the CLI version to behave consistently across
 	invocations, and to keep it from altering the GUI version's prefs.
-*/
+
 typedef struct
 {
  	BOOL	localOffsets;			// l
@@ -244,7 +246,7 @@ typedef struct
  	BOOL	returnTypes;			// r
  	BOOL	variableTypes;			// v
 }
-ProcOptions;
+ProcOptions;*/
 
 // Default ProcOptions values
 #define	SHOW_LOCAL_OFFSETS				true
