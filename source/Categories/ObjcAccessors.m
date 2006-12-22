@@ -79,8 +79,15 @@
 {
 	UInt32	left, i;
 
+	if (!outList)
+		return false;
+
 // TODO compare speed of bzero vs. "= {0}"
+#ifdef BZERO_TEST
 	bzero(outList, sizeof(objc_method_list));
+#else
+	*outList	= (objc_method_list){0};
+#endif
 
 	for (i = 0; i < mNumObjcSects; i++)
 	{
@@ -184,10 +191,17 @@
 			  andDefs: (void***)outDefs
 		   fromModule: (objc_module*)inModule;
 {
+	if (!outSymTab)
+		return false;
+
 	unsigned long	addr	= (unsigned long)inModule->symtab;
 	unsigned long	i, left;
 
+#ifdef BZERO_TEST
 	bzero(outSymTab, sizeof(objc_symtab));
+#else
+	*outSymTab	= (objc_symtab){0};
+#endif
 
 	for (i = 0; i < mNumObjcSects; i++)
 	{
