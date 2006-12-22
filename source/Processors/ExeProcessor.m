@@ -240,7 +240,7 @@
 {
 	NSString*		oPath			= [mOFile path];
 	NSString*		otoolString;
-	char			cmdString[100]	= {0};
+	char			cmdString[100]	= {0};	// opt
 	char*			cmdFormatString	= mExeIsFat ? "otool -arch %s" : "otool";
 	NSProcessInfo*	procInfo		= [NSProcessInfo processInfo];
 
@@ -586,7 +586,7 @@
 	// Kill the "Contents of" if it exists.
 	if (strstr(ioLine->chars, theContentsString))
 	{
-		char	theTempLine[MAX_LINE_LENGTH]	= {0};
+		char	theTempLine[MAX_LINE_LENGTH]	= {0};	// opt
 
 		theTempLine[0]	= '\n';
 
@@ -611,7 +611,7 @@
 			mLocalOffset	= 0;
 		}
 
-		char	theTempLine[MAX_LINE_LENGTH]	= {0};
+		char	theTempLine[MAX_LINE_LENGTH]	= {0};	// opt
 
 		theTempLine[0]	= '\n';
 
@@ -707,11 +707,13 @@
 	// remaining. Copy it, starting after the preceding tab.
 	if (consumedAfterOp && consumedAfterOp < theOrigLength - 1)
 	{
-		strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
-			theOrigLength - consumedAfterOp);
+		UInt32	origCommentLength	= theOrigLength - consumedAfterOp - 1;
 
-		// Lose the \n
-		theOrigCommentCString[strlen(theOrigCommentCString) - 1]	= 0;
+		strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
+			origCommentLength);
+
+		// Add the null terminator.
+		theOrigCommentCString[origCommentLength - 1]	= 0;
 	}
 
 	char*	theCodeCString	= (*ioLine)->info.code;
@@ -755,7 +757,7 @@
 				strlen(theOrigCommentCString) + 1);
 	}
 
-	char	theMethCName[1000]	= {0};
+	char	theMethCName[1000]	= {0};	// opt
 
 	// Check if this is the beginning of a function.
 	if ((*ioLine)->info.isFunction)
@@ -798,12 +800,15 @@
 					if (!theInfo->m.method_types)
 						return;
 
-					char	returnCType[MAX_TYPE_STRING_LENGTH]	= {0};
 					char*	methTypes	=
 						GetPointer((UInt32)theInfo->m.method_types, nil);
 
 					if (!methTypes)
 						return;
+
+					char	returnCType[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+
+					returnCType[0]	= 0;
 
 					[self decodeMethodReturnType: methTypes
 						output: returnCType];
@@ -887,10 +892,15 @@
 			}
 			else
 			{	// theMethName sux, add '\n' to otool's method name.
-				char	theNewLine[MAX_LINE_LENGTH]	= {0};
+				char	theNewLine[MAX_LINE_LENGTH]	/*= {0}*/;
 
 				if ((*ioLine)->prev->chars[0] != '\n')
+				{
 					theNewLine[0]	= '\n';
+					theNewLine[1]	= 0;
+				}
+				else
+					theNewLine[0]	= 0;
 
 				strncat(theNewLine, (*ioLine)->prev->chars,
 					(*ioLine)->prev->length);
@@ -916,7 +926,7 @@
 
 		if (origCommentLength)
 		{
-			char	tempComment[MAX_COMMENT_LENGTH]	= {0};
+			char	tempComment[MAX_COMMENT_LENGTH]	= {0};	// opt
 			UInt32	i, j= 0;
 
 			for (i = 0; i < origCommentLength; i++)
@@ -1055,7 +1065,7 @@
 		instSpaces[i - 2] = 0x20;
 
 	// Finally, assemble the new string.
-	char	finalFormatCString[MAX_FORMAT_LENGTH]	= {0};
+	char	finalFormatCString[MAX_FORMAT_LENGTH]	= {0};	// opt
 	UInt32	formatMarker	= 0;
 
 	if (needNewLine)
@@ -1196,8 +1206,10 @@
 {
 	UInt32	i, j, k, bytesLeft;
 	UInt32	theDataSize			= inSect->size;
-	char	theLineCString[70]	= {0};
+	char	theLineCString[70]	/*= {0}*/;
 	char*	theMachPtr			= (char*)mMachHeaderPtr;
+
+	theLineCString[0]	= 0;
 
 	for (i = 0; i < theDataSize; i += 16)
 	{
@@ -1557,7 +1569,7 @@
 	if (!inTypeCode || !ioCString)
 		return;
 
-	char	theSuffixCString[50]	= {0};
+	char	theSuffixCString[50]	= {0};	// opt
 	UInt32	theNextChar				= 0;
 	UInt16	i						= 0;
 
@@ -1600,7 +1612,7 @@
 
 	i	= 0;
 
-	char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
+	char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};	// opt
 
 	// Now we can get at the basic type.
 	switch (inTypeCode[theNextChar])
@@ -1707,7 +1719,9 @@
 				theArrayCCount[i++]	= inTypeCode[theNextChar];
 
 			// Recursive madness. See 'char vs. BOOL' note above.
-			char	theCType[MAX_TYPE_STRING_LENGTH]	= {0};
+			char	theCType[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+
+			theCType[0]	= 0;
 
 			isArray	= true;
 			GetDescription(theCType, &inTypeCode[theNextChar]);
@@ -1762,7 +1776,7 @@
 			startOfComment	+= mFieldWidths.offset;
 	}
 
-	char	entabbedLine[MAX_LINE_LENGTH]	= {0};
+	char	entabbedLine[MAX_LINE_LENGTH]	= {0};	// opt
 	UInt32	theOrigLength					= ioLine->length;
 
 	// If 1st char is '\n', skip it.

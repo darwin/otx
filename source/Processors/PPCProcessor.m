@@ -208,7 +208,9 @@
 				{
 					if (mOpts.variableTypes)
 					{
-						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+
+						theTypeCString[0]	= 0;
 
 						GetDescription(theTypeCString,
 							GetPointer((UInt32)theIvar.ivar_type, nil));
@@ -294,7 +296,9 @@
 				{
 					if (mOpts.variableTypes)
 					{
-						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+
+						theTypeCString[0]	= 0;
 
 						GetDescription(theTypeCString,
 							GetPointer((UInt32)theIvar.ivar_type, nil));
