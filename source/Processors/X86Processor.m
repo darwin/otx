@@ -397,7 +397,7 @@
 					{
 						if (mOpts.variableTypes)
 						{
-							char	theTypeCString[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+							char	theTypeCString[MAX_TYPE_STRING_LENGTH];
 
 							theTypeCString[0]	= 0;
 
@@ -492,7 +492,7 @@
 				{
 					if (mOpts.variableTypes)
 					{
-						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH];
 
 						theTypeCString[0]	= 0;
 
@@ -692,7 +692,7 @@
 
 					if (mOpts.variableTypes)
 					{
-						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH];
 
 						theTypeCString[0]	= 0;
 
@@ -811,7 +811,7 @@
 				{
 					if (mOpts.variableTypes)
 					{
-						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH];
 
 						theTypeCString[0]	= 0;
 
@@ -933,7 +933,7 @@
 				{
 					if (mOpts.variableTypes)
 					{
-						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH];
 
 						theTypeCString[0]	= 0;
 
@@ -1163,7 +1163,7 @@
 	if (!theSysString)
 		return;
 
-	char	theTempComment[50]	/*= {0}*/;
+	char	theTempComment[50];
 
 	theTempComment[0]	= 0;
 

@@ -806,7 +806,7 @@
 					if (!methTypes)
 						return;
 
-					char	returnCType[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+					char	returnCType[MAX_TYPE_STRING_LENGTH];
 
 					returnCType[0]	= 0;
 
@@ -892,7 +892,7 @@
 			}
 			else
 			{	// theMethName sux, add '\n' to otool's method name.
-				char	theNewLine[MAX_LINE_LENGTH]	/*= {0}*/;
+				char	theNewLine[MAX_LINE_LENGTH];
 
 				if ((*ioLine)->prev->chars[0] != '\n')
 				{
@@ -1206,7 +1206,7 @@
 {
 	UInt32	i, j, k, bytesLeft;
 	UInt32	theDataSize			= inSect->size;
-	char	theLineCString[70]	/*= {0}*/;
+	char	theLineCString[70];
 	char*	theMachPtr			= (char*)mMachHeaderPtr;
 
 	theLineCString[0]	= 0;
@@ -1719,7 +1719,7 @@
 				theArrayCCount[i++]	= inTypeCode[theNextChar];
 
 			// Recursive madness. See 'char vs. BOOL' note above.
-			char	theCType[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+			char	theCType[MAX_TYPE_STRING_LENGTH];
 
 			theCType[0]	= 0;
 

@@ -208,7 +208,7 @@
 				{
 					if (mOpts.variableTypes)
 					{
-						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH];
 
 						theTypeCString[0]	= 0;
 
@@ -296,7 +296,7 @@
 				{
 					if (mOpts.variableTypes)
 					{
-						char	theTypeCString[MAX_TYPE_STRING_LENGTH]	/*= {0}*/;
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH];
 
 						theTypeCString[0]	= 0;
 
