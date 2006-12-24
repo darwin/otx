@@ -1534,7 +1534,8 @@
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
 
 	mCurrentThunk	= NO_REG;
-	bzero(mRegInfos, sizeof(GPRegisterInfo) * 8);
+//	bzero(mRegInfos, sizeof(GPRegisterInfo) * 8);
+	memset(mRegInfos, 0, sizeof(GPRegisterInfo) * 8);
 
 	// Try to find out whether this is a class or instance method.
 	MethodInfo*	thisMethod	= nil;
@@ -1637,11 +1638,7 @@
 			if (MOD(modRM) == MODx)	// reg to reg
 			{
 				if (!mRegInfos[REG1(modRM)].isValid)
-#ifdef BZERO_TEST
-					bzero(&mRegInfos[REG2(modRM)], sizeof(GPRegisterInfo));
-#else
 					mRegInfos[REG2(modRM)]	= (GPRegisterInfo){0};
-#endif
 				else
 					memcpy(&mRegInfos[REG2(modRM)], &mRegInfos[REG1(modRM)],
 						sizeof(GPRegisterInfo));
@@ -1674,7 +1671,7 @@
 					if (mRegInfos[REG1(modRM)].isValid)
 						mStack[offset]	= mRegInfos[REG1(modRM)];
 					else
-						bzero(&mStack[offset], sizeof(GPRegisterInfo));
+						mStack[offset]	= (GPRegisterInfo){0};
 				}
 			}
 			else	// Copying self from a register to a local var.
@@ -1703,11 +1700,7 @@
 		case 0x8d:	// lea mem to reg
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-#ifdef BZERO_TEST
-			bzero(&mRegInfos[REG1(modRM)], sizeof(GPRegisterInfo));
-#else
 			mRegInfos[REG1(modRM)]	= (GPRegisterInfo){0};
-#endif
 
 			if (MOD(modRM) == MOD8)
 			{
@@ -1730,11 +1723,7 @@
 						UInt32	i;
 
 						// Zero the destination regardless.
-#ifdef BZERO_TEST
-						bzero(&mRegInfos[REG1(modRM)], sizeof(GPRegisterInfo));
-#else
 						mRegInfos[REG1(modRM)]	= (GPRegisterInfo){0};
-#endif
 
 						for (i = 0; i < mNumLocalSelves; i++)
 						{
@@ -1753,11 +1742,7 @@
 			}
 			else if (HAS_ABS_DISP32(modRM))
 			{
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[REG1(modRM)], sizeof(GPRegisterInfo));
-#else
 				mRegInfos[REG1(modRM)]	= (GPRegisterInfo){0};
-#endif
 
 				sscanf(&inLine->info.code[4], "%08x",
 					&mRegInfos[REG1(modRM)].value);
@@ -1779,11 +1764,7 @@
 		{
 			UInt8	imm;
 
-#ifdef BZERO_TEST
-			bzero(&mRegInfos[REG2(opcode)], sizeof(GPRegisterInfo));
-#else
 			mRegInfos[REG2(opcode)]	= (GPRegisterInfo){0};
-#endif
 
 			sscanf(&inLine->info.code[2], "%02hhx", &imm);
 			mRegInfos[REG2(opcode)].value	= imm;
@@ -1793,12 +1774,7 @@
 		}
 
 		case 0xa1:	// movl	moffs32,%eax
-#ifdef BZERO_TEST
-			bzero(&mRegInfos[EAX], sizeof(GPRegisterInfo));
-#else
 			mRegInfos[EAX]	= (GPRegisterInfo){0};
-#endif
-			bzero(&mRegInfos[EAX], sizeof(GPRegisterInfo));
 
 			sscanf(&inLine->info.code[2], "%08x", &mRegInfos[EAX].value);
 			mRegInfos[EAX].value	= OSSwapInt32(mRegInfos[EAX].value);
@@ -1814,11 +1790,7 @@
 		case 0xbd:	// movl	imm32,%ebp
 		case 0xbe:	// movl	imm32,%esi
 		case 0xbf:	// movl	imm32,%edi
-#ifdef BZERO_TEST
-			bzero(&mRegInfos[REG2(opcode)], sizeof(GPRegisterInfo));
-#else
 			mRegInfos[REG2(opcode)]	= (GPRegisterInfo){0};
-#endif
 
 			sscanf(&inLine->info.code[2], "%08x",
 				&mRegInfos[REG2(opcode)].value);
@@ -1839,12 +1811,9 @@
 			}
 			else
 			{	// Wipe the stack and return register.
-				bzero(mStack, sizeof(GPRegisterInfo) * MAX_STACK_SIZE);
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[EAX], sizeof(GPRegisterInfo));
-#else
+//				bzero(mStack, sizeof(GPRegisterInfo) * MAX_STACK_SIZE);
+				memset(mStack, 0, sizeof(GPRegisterInfo) * MAX_STACK_SIZE);
 				mRegInfos[EAX]	= (GPRegisterInfo){0};
-#endif
 			}
 
 			break;

@@ -1763,8 +1763,6 @@
 
 		default:
 			strncpy(theTypeCString, "?", 2);
-//			fprintf(stderr, "otx: unknown encoded type: %c\n",
-//				inTypeCode[theNextChar]);
 
 			break;
 	}
@@ -1802,7 +1800,7 @@
 	}
 
 	char	entabbedLine[MAX_LINE_LENGTH];
-	UInt32	theOrigLength					= ioLine->length;
+	UInt32	theOrigLength	= ioLine->length;
 
 	// If 1st char is '\n', skip it.
 	UInt32	firstChar	= (ioLine->chars[0] == '\n');

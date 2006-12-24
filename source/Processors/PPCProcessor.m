@@ -789,21 +789,16 @@
 	// r12 will be overwritten before it is used, if it is used at all.
 	GetObjcClassPtrFromMethod(&mCurrentClass, inLine->info.address);
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
-	bzero(mRegInfos, sizeof(GPRegisterInfo) * 32);
+//	bzero(mRegInfos, sizeof(GPRegisterInfo) * 32);
+	memset(mRegInfos, 0, sizeof(GPRegisterInfo) * 32);
 
 	mRegInfos[3].classPtr	= mCurrentClass;
 	mRegInfos[3].catPtr		= mCurrentCat;
 	mRegInfos[3].isValid	= true;
 	mRegInfos[12].value		= mCurrentFuncPtr;
 	mRegInfos[12].isValid	= true;
-
-#ifdef BZERO_TEST
-	bzero(&mLR, sizeof(GPRegisterInfo));
-	bzero(&mCTR, sizeof(GPRegisterInfo));
-#else
-	mLR		= (GPRegisterInfo){0};
-	mCTR	= (GPRegisterInfo){0};
-#endif
+	mLR						= (GPRegisterInfo){0};
+	mCTR					= (GPRegisterInfo){0};
 
 	// Try to find out whether this is a class or instance method.
 	MethodInfo*	thisMethod	= nil;
@@ -861,22 +856,14 @@
 		{
 			if (!mRegInfos[RA(theCode)].isValid)
 			{
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
 				mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
 				break;
 			}
 
 			UInt64	theProduct	=
 				(SInt32)mRegInfos[RA(theCode)].value * SIMM(theCode);
 
-#ifdef BZERO_TEST
-			bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
-			mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
+			mRegInfos[RT(theCode)]			= (GPRegisterInfo){0};
 			mRegInfos[RT(theCode)].value	= theProduct & 0xffffffff;
 			mRegInfos[RT(theCode)].isValid	= true;
 
@@ -886,23 +873,13 @@
 		case 0x08:	// subfic		SIMM
 			if (!mRegInfos[RA(theCode)].isValid)
 			{
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
 				mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
-
 				break;
 			}
 
 			theNewValue	= mRegInfos[RA(theCode)].value - SIMM(theCode);
 
-#ifdef BZERO_TEST
-			bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
-			mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
-
+			mRegInfos[RT(theCode)]			= (GPRegisterInfo){0};
 			mRegInfos[RT(theCode)].value	= theNewValue;
 			mRegInfos[RT(theCode)].isValid	= true;
 
@@ -936,12 +913,7 @@
 
 			if (RA(theCode) == 0)	// li
 			{
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
-				mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
-
+				mRegInfos[RT(theCode)]			= (GPRegisterInfo){0};
 				mRegInfos[RT(theCode)].value	= UIMM(theCode);
 				mRegInfos[RT(theCode)].isValid	= true;
 			}
@@ -950,12 +922,7 @@
 				// Update rD if we know what rA is.
 				if (!mRegInfos[RA(theCode)].isValid)
 				{
-#ifdef BZERO_TEST
-					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
 					mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
-
 					break;
 				}
 
@@ -964,11 +931,7 @@
 
 				theNewValue	= mRegInfos[RA(theCode)].value + SIMM(theCode);
 
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
-				mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
+				mRegInfos[RT(theCode)]			= (GPRegisterInfo){0};
 				mRegInfos[RT(theCode)].value	= theNewValue;
 				mRegInfos[RT(theCode)].isValid	= true;
 			}
@@ -981,11 +944,7 @@
 
 			if (RA(theCode) == 0)	// lis
 			{
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
-				mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
+				mRegInfos[RT(theCode)]			= (GPRegisterInfo){0};
 				mRegInfos[RT(theCode)].value	= UIMM(theCode) << 16;
 				mRegInfos[RT(theCode)].isValid	= true;
 				break;
@@ -993,22 +952,14 @@
 
 			if (!mRegInfos[RA(theCode)].isValid)	// addis
 			{
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
 				mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
 				break;
 			}
 
 			theNewValue	= mRegInfos[RA(theCode)].value +
 				(SIMM(theCode) << 16);
 
-#ifdef BZERO_TEST
-			bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
-			mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
+			mRegInfos[RT(theCode)]			= (GPRegisterInfo){0};
 			mRegInfos[RT(theCode)].value	= theNewValue;
 			mRegInfos[RT(theCode)].isValid	= true;
 
@@ -1027,11 +978,7 @@
 			if (mReturnValueIsKnown)
 				mReturnValueIsKnown	= false;
 			else
-#ifdef BZERO_TEST
-			bzero(&mRegInfos[3], sizeof(GPRegisterInfo));
-#else
-			mRegInfos[3]	= (GPRegisterInfo){0};
-#endif
+				mRegInfos[3]	= (GPRegisterInfo){0};
 
 			break;
 		}
@@ -1039,11 +986,7 @@
 		{
 			if (!mRegInfos[RT(theCode)].isValid)
 			{
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
-#else
 				mRegInfos[RA(theCode)]	= (GPRegisterInfo){0};
-#endif
 				break;
 			}
 
@@ -1057,12 +1000,7 @@
 
 			theNewValue	= rotatedRT & theMask;
 
-#ifdef BZERO_TEST
-			bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
-#else
-			mRegInfos[RA(theCode)]	= (GPRegisterInfo){0};
-#endif
-
+			mRegInfos[RA(theCode)]			= (GPRegisterInfo){0};
 			mRegInfos[RA(theCode)].value	= theNewValue;
 			mRegInfos[RA(theCode)].isValid	= true;
 
@@ -1072,24 +1010,14 @@
 		case 0x18:	// ori
 			if (!mRegInfos[RT(theCode)].isValid)
 			{
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
-#else
 				mRegInfos[RA(theCode)]	= (GPRegisterInfo){0};
-#endif
-
 				break;
 			}
 
 			theNewValue	=
 				mRegInfos[RT(theCode)].value	| (UInt32)UIMM(theCode);
 
-#ifdef BZERO_TEST
-			bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
-#else
-			mRegInfos[RA(theCode)]	= (GPRegisterInfo){0};
-#endif
-
+			mRegInfos[RA(theCode)]			= (GPRegisterInfo){0};
 			mRegInfos[RA(theCode)].value	= theNewValue;
 			mRegInfos[RA(theCode)].isValid	= true;
 
@@ -1099,12 +1027,7 @@
 			switch (SO(theCode))
 			{
 				case 23:	// lwzx
-#ifdef BZERO_TEST
-					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
 					mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
-
 					break;
 
 				case 8:		// subfc
@@ -1112,11 +1035,7 @@
 					if (!mRegInfos[RA(theCode)].isValid ||
 						!mRegInfos[RB(theCode)].isValid)
 					{
-#ifdef BZERO_TEST
-						bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
 						mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
 						break;
 					}
 
@@ -1125,22 +1044,14 @@
 						(mRegInfos[RA(theCode)].value ^= 0xffffffff) +
 						mRegInfos[RB(theCode)].value + 1;
 
-#ifdef BZERO_TEST
-					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
-					mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
+					mRegInfos[RT(theCode)]			= (GPRegisterInfo){0};
 					mRegInfos[RT(theCode)].value	= theNewValue;
 					mRegInfos[RT(theCode)].isValid	= true;
 
 					break;
 
 				case 339:	// mfspr
-#ifdef BZERO_TEST
-					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
 					mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
 
 					if (SPR(theCode) == LR)	// from LR
 					{	// Copy LR into rD.
@@ -1154,12 +1065,7 @@
 					if (!mRegInfos[RT(theCode)].isValid ||
 						!mRegInfos[RB(theCode)].isValid)
 					{
-#ifdef BZERO_TEST
-					bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
-#else
-					mRegInfos[RA(theCode)]	= (GPRegisterInfo){0};
-#endif
-
+						mRegInfos[RA(theCode)]	= (GPRegisterInfo){0};
 						break;
 					}
 
@@ -1167,12 +1073,7 @@
 						(mRegInfos[RT(theCode)].value |
 						 mRegInfos[RB(theCode)].value);
 
-#ifdef BZERO_TEST
-					bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
-#else
-					mRegInfos[RA(theCode)]	= (GPRegisterInfo){0};
-#endif
-
+					mRegInfos[RA(theCode)]			= (GPRegisterInfo){0};
 					mRegInfos[RA(theCode)].value	= theNewValue;
 					mRegInfos[RA(theCode)].isValid	= true;
 
@@ -1181,9 +1082,9 @@
 					if (RT(theCode) == RB(theCode))
 					{
 						mRegInfos[RA(theCode)].classPtr	=
-						mRegInfos[RB(theCode)].classPtr;
+							mRegInfos[RB(theCode)].classPtr;
 						mRegInfos[RA(theCode)].catPtr	=
-						mRegInfos[RB(theCode)].catPtr;
+							mRegInfos[RB(theCode)].catPtr;
 					}
 
 					break;
@@ -1193,12 +1094,7 @@
 					{
 						if (!mRegInfos[RS(theCode)].isValid)
 						{
-#ifdef BZERO_TEST
-							bzero(&mCTR, sizeof(GPRegisterInfo));
-#else
 							mCTR	= (GPRegisterInfo){0};
-#endif
-							bzero(&mCTR, sizeof(GPRegisterInfo));
 							break;
 						}
 
@@ -1212,12 +1108,7 @@
 					if (!mRegInfos[RS(theCode)].isValid	||
 						!mRegInfos[RB(theCode)].isValid)
 					{
-#ifdef BZERO_TEST
-						bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
-#else
 						mRegInfos[RA(theCode)]	= (GPRegisterInfo){0};
-#endif
-
 						break;
 					}
 
@@ -1225,12 +1116,7 @@
 						mRegInfos[RS(theCode)].value >>
 						(mRegInfos[RB(theCode)].value & 0x1f);
 
-#ifdef BZERO_TEST
-					bzero(&mRegInfos[RA(theCode)], sizeof(GPRegisterInfo));
-#else
-					mRegInfos[RA(theCode)]	= (GPRegisterInfo){0};
-#endif
-
+					mRegInfos[RA(theCode)]			= (GPRegisterInfo){0};
 					mRegInfos[RA(theCode)].value	= theNewValue;
 					mRegInfos[RA(theCode)].isValid	= true;
 
@@ -1246,12 +1132,7 @@
 		case 0x22:	// lbz
 			if (RA(theCode) == 0)
 			{
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
-				mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
-
+				mRegInfos[RT(theCode)]			= (GPRegisterInfo){0};
 				mRegInfos[RT(theCode)].value	= SIMM(theCode);
 				mRegInfos[RT(theCode)].isValid	= true;
 			}
@@ -1267,24 +1148,15 @@
 					mRegInfos[RT(theCode)].isValid	= true;
 				}
 				else
-#ifdef BZERO_TEST
-					bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
 					mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
-
 			}
 			else
-#ifdef BZERO_TEST
-				bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
-#else
 				mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
-#endif
 
 			break;
 
 /*		case 0x22:	// lbz
-			bzero(&mRegInfos[RT(theCode)], sizeof(GPRegisterInfo));
+			mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
 
 			if (RA(theCode) == 0)
 			{
@@ -1591,12 +1463,7 @@
 						sizeof(BlockInfo) * funcInfo->numBlocks);
 					currentBlock		=
 						&funcInfo->blocks[funcInfo->numBlocks - 1];
-#ifdef BZERO_TEST
-					bzero(currentBlock, sizeof(BlockInfo));
-#else
-					*currentBlock	= (BlockInfo){0};
-#endif
-//					bzero(currentBlock, sizeof(BlockInfo));
+					*currentBlock		= (BlockInfo){0};
 				}
 			}
 			else
