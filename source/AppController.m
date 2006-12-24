@@ -601,6 +601,9 @@
 
 	[mPathText setStringValue: [mOFile path]];
 
+	// Ensure that the path text isn't accidentally selected.
+	[mMainWindow makeFirstResponder: mOutputText];
+
 	// If we just loaded a deobfuscated copy, skip the rest.
 	if (mIgnoreArch)
 	{

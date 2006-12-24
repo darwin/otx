@@ -240,9 +240,11 @@
 {
 	NSString*		oPath			= [mOFile path];
 	NSString*		otoolString;
-	char			cmdString[100]	= {0};	// opt
+	char			cmdString[100];
 	char*			cmdFormatString	= mExeIsFat ? "otool -arch %s" : "otool";
 	NSProcessInfo*	procInfo		= [NSProcessInfo processInfo];
+
+	cmdString[0]	= 0;
 
 	snprintf(cmdString, MAX_ARCH_STRING_LENGTH + 1,
 		cmdFormatString, mArchString);
@@ -586,9 +588,10 @@
 	// Kill the "Contents of" if it exists.
 	if (strstr(ioLine->chars, theContentsString))
 	{
-		char	theTempLine[MAX_LINE_LENGTH]	= {0};	// opt
+		char	theTempLine[MAX_LINE_LENGTH];
 
 		theTempLine[0]	= '\n';
+		theTempLine[1]	= 0;
 
 		strncat(theTempLine, &ioLine->chars[theContentsStringLength],
 			strlen(&ioLine->chars[theContentsStringLength]));
@@ -611,9 +614,10 @@
 			mLocalOffset	= 0;
 		}
 
-		char	theTempLine[MAX_LINE_LENGTH]	= {0};	// opt
+		char	theTempLine[MAX_LINE_LENGTH];
 
 		theTempLine[0]	= '\n';
+		theTempLine[1]	= 0;
 
 		strncat(theTempLine, ioLine->chars, strlen(ioLine->chars));
 
@@ -757,7 +761,9 @@
 				strlen(theOrigCommentCString) + 1);
 	}
 
-	char	theMethCName[1000]	= {0};	// opt
+	char	theMethCName[1000];
+
+	theMethCName[0]	= 0;
 
 	// Check if this is the beginning of a function.
 	if ((*ioLine)->info.isFunction)
@@ -926,8 +932,8 @@
 
 		if (origCommentLength)
 		{
-			char	tempComment[MAX_COMMENT_LENGTH]	= {0};	// opt
-			UInt32	i, j= 0;
+			char	tempComment[MAX_COMMENT_LENGTH];
+			UInt32	i, j = 0;
 
 			for (i = 0; i < origCommentLength; i++)
 			{
@@ -949,6 +955,9 @@
 				else
 					tempComment[j++]	= mLineCommentCString[i];
 			}
+
+			// Add the null terminator.
+			tempComment[j]	= 0;
 
 			if (mLineOperandsCString[0])
 				strncpy(theCommentCString, tempComment,
@@ -1065,11 +1074,17 @@
 		instSpaces[i - 2] = 0x20;
 
 	// Finally, assemble the new string.
-	char	finalFormatCString[MAX_FORMAT_LENGTH]	= {0};	// opt
+	char	finalFormatCString[MAX_FORMAT_LENGTH];
 	UInt32	formatMarker	= 0;
 
 	if (needNewLine)
-		finalFormatCString[formatMarker++]	= '\n';
+	{
+		formatMarker++;
+		finalFormatCString[0]	= '\n';
+		finalFormatCString[1]	= 0;
+	}
+	else
+		finalFormatCString[0]	= 0;
 
 	if (mOpts.localOffsets)
 		formatMarker += snprintf(&finalFormatCString[formatMarker],
@@ -1569,9 +1584,9 @@
 	if (!inTypeCode || !ioCString)
 		return;
 
-	char	theSuffixCString[50]	= {0};	// opt
-	UInt32	theNextChar				= 0;
-	UInt16	i						= 0;
+	char	theSuffixCString[50];
+	UInt32	theNextChar	= 0;
+	UInt16	i			= 0;
 
 /*
 	char vs. BOOL
@@ -1610,9 +1625,13 @@
 		theNextChar++;
 	}
 
+	// Add the null terminator.
+	theSuffixCString[i]	= 0;
 	i	= 0;
 
-	char	theTypeCString[MAX_TYPE_STRING_LENGTH]	= {0};	// opt
+	char	theTypeCString[MAX_TYPE_STRING_LENGTH];
+
+	theTypeCString[0]	= 0;
 
 	// Now we can get at the basic type.
 	switch (inTypeCode[theNextChar])
@@ -1626,6 +1645,9 @@
 
 				memcpy(theTypeCString, &inTypeCode[theNextChar + 2],
 					classNameLength - 1);
+
+				// Add the null terminator.
+				theTypeCString[classNameLength - 1]	= 0;
 			}
 			else
 				strncpy(theTypeCString, "id", 3);
@@ -1699,6 +1721,9 @@
 				   theNextChar < MAX_TYPE_STRING_LENGTH)
 				theTypeCString[i++]	= inTypeCode[theNextChar];
 
+				// Add the null terminator.
+				theTypeCString[i]	= 0;
+
 			break;
 
 		case '{':	// struct- just copy the name
@@ -1707,6 +1732,9 @@
 				   inTypeCode[theNextChar]   != '<'	&&
 				   theNextChar < MAX_TYPE_STRING_LENGTH)
 				theTypeCString[i++]	= inTypeCode[theNextChar];
+
+				// Add the null terminator.
+				theTypeCString[i]	= 0;
 
 			break;
 
@@ -1735,8 +1763,8 @@
 
 		default:
 			strncpy(theTypeCString, "?", 2);
-			fprintf(stderr, "otx: unknown encoded type: %c\n",
-				inTypeCode[theNextChar]);
+//			fprintf(stderr, "otx: unknown encoded type: %c\n",
+//				inTypeCode[theNextChar]);
 
 			break;
 	}
@@ -1761,9 +1789,6 @@
 	if (!ioLine || !ioLine->chars)
 		return;
 
-	UInt32	i;			// old line marker
-	UInt32	j	= 0;	// new line marker
-
 	// only need to do this math once...
 	static UInt32	startOfComment	= 0;
 
@@ -1776,14 +1801,22 @@
 			startOfComment	+= mFieldWidths.offset;
 	}
 
-	char	entabbedLine[MAX_LINE_LENGTH]	= {0};	// opt
+	char	entabbedLine[MAX_LINE_LENGTH];
 	UInt32	theOrigLength					= ioLine->length;
 
 	// If 1st char is '\n', skip it.
 	UInt32	firstChar	= (ioLine->chars[0] == '\n');
+	UInt32	i;			// old line marker
+	UInt32	j	= 0;	// new line marker
 
 	if (firstChar)
-		entabbedLine[j++]	= '\n';
+	{
+		j++;
+		entabbedLine[0]	= '\n';
+		entabbedLine[1]	= 0;
+	}
+	else
+		entabbedLine[0]	= 0;
 
 	// Inspect 4 bytes at a time.
 	for (i = firstChar; i < theOrigLength; i += 4)
@@ -1802,6 +1835,9 @@
 		{	// Copy the remainder and split.
 			while (i < theOrigLength)
 				entabbedLine[j++] = ioLine->chars[i++];
+
+			// Add the null terminator.
+			entabbedLine[j]	= 0;
 
 			break;
 		}
@@ -1839,6 +1875,9 @@
 			memcpy(&entabbedLine[j], &ioLine->chars[i], 4);
 			j += 4;
 		}
+
+		// Add the null terminator.
+		entabbedLine[j]	= 0;
 	}
 
 	// Replace the old C string with the new one.

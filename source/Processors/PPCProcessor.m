@@ -565,8 +565,9 @@
 	if (!theSysString)
 		return;
 
-	char	theTempComment[50]	= {0};
+	char	theTempComment[50];
 
+	theTempComment[0]	= 0;
 	strncpy(theTempComment, theSysString, strlen(theSysString) + 1);
 
 	// Handle various system calls.

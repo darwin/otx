@@ -88,7 +88,7 @@
 
 	// Fetch the instruction.
 	unsigned char	charData[14]		= {0};
-	char			formatString[50]	= {0};	// opt
+	char			formatString[50];
 	char*			theMachPtr			= (char*)mMachHeaderPtr;
 	char*			byteFormat			= "%02x";
 	UInt8			byteFormatLength	= strlen(byteFormat);
@@ -103,6 +103,9 @@
 		memcpy(&formatString[formatMarker], byteFormat, byteFormatLength);
 		formatMarker	+= byteFormatLength;
 	}
+
+	// Add the null terminator.
+	formatString[formatMarker]	= 0;
 
 	snprintf(inLine->info.code, 25, formatString,
 		charData[0], charData[1], charData[2], charData[3], charData[4],
@@ -603,7 +606,6 @@
 
 				UInt8	immOffset						= 4;
 				char	fcc[7]							= {0};
-				char	tempComment[MAX_COMMENT_LENGTH]	= {0};
 
 				if (HAS_DISP8(modRM))
 					immOffset	+= 2;
@@ -678,6 +680,10 @@
 
 				theSymPtr	= GetPointer(
 					(UInt32)theIvar.ivar_name, nil);
+
+				char	tempComment[MAX_COMMENT_LENGTH];
+
+				tempComment[0]	= 0;
 
 				// copy four char code and/or var name to comment.
 				if (fcc[0])
