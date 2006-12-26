@@ -1044,6 +1044,12 @@
 
 			break;
 
+//		case Complete:
+//			[mProgBar setDoubleValue: [mProgBar maxValue]];
+//			[mProgBar display];
+
+//			break;
+
 		default:
 			break;
 	}
