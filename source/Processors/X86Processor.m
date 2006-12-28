@@ -1959,7 +1959,7 @@
 //	UInt8	opcode	= inCode[0];
 //	UInt8	opcode2	= inCode[1];
 
-	return IS_JUMP(inCode[0], inCode[1]);
+	return IS_JUMP((UInt8)inCode[0], (UInt8)inCode[1]);
 }
 
 //	gatherFuncInfos
