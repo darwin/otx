@@ -386,6 +386,7 @@ enum {
 	void	(*GetDescription)				(id, SEL, char*, const char*);
 	BOOL	(*LineIsCode)					(id, SEL, const char*);
 	BOOL	(*LineIsFunction)				(id, SEL, Line*);
+	BOOL	(*CodeIsBlockJump)				(id, SEL, char*);
 	UInt32	(*AddressFromLine)				(id, SEL, const char*);
 	void	(*CodeFromLine)					(id, SEL, Line*);
 	void	(*CheckThunk)					(id, SEL, Line*);

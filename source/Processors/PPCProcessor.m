@@ -840,10 +840,6 @@
 	UInt32	theCode		= strtoul(
 		(const char*)inLine->info.code, nil, 16);
 
-	// Remind us to prepend a \n to the following line.
-	if (IS_BLOCK_BRANCH(theCode))
-		mEnteringNewBlock	= true;
-
 	if (IS_BRANCH_LINK(theCode))
 	{
 		mLR.value	= inLine->info.address + 4;
@@ -1392,6 +1388,16 @@
 	return isFunction;
 }
 
+//	codeIsBlockJump:
+// ----------------------------------------------------------------------------
+
+- (BOOL)codeIsBlockJump: (char*)inCode
+{
+	UInt32	theCode	= strtoul(inCode, nil, 16);
+
+	return IS_BLOCK_BRANCH(theCode);
+}
+
 //	gatherFuncInfos
 // ----------------------------------------------------------------------------
 
@@ -1423,14 +1429,15 @@
 		}
 
 		// Check if we need to save the machine state.
-		if (IS_BLOCK_BRANCH(theCode) && mCurrentFuncInfoIndex >= 0)
+		if (IS_BLOCK_BRANCH(theCode) && mCurrentFuncInfoIndex >= 0 &&
+			PO(theCode) != 0x13)	// no new blocks for blr, bctr
 		{
 			UInt32	branchTarget;
 
 			// Retrieve the branch target.
 			if (PO(theCode) == 0x12)	// b
 				branchTarget	= theLine->info.address + LI(theCode);
-			else	// bc
+			else if (PO(theCode) == 0x10)	// bc
 				branchTarget	= theLine->info.address + BD(theCode);
 
 			// Retrieve current FunctionInfo.

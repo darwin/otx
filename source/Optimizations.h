@@ -11,6 +11,7 @@
 #define GetDescriptionFuncType					(void	(*)(id, SEL, char*, const char*))
 #define LineIsCodeFuncType						(BOOL	(*)(id, SEL, const char*))
 #define LineIsFunctionFuncType					(BOOL	(*)(id, SEL, Line*))
+#define CodeIsBlockJumpFuncType					(BOOL	(*)(id, SEL, char*))
 #define AddressFromLineFuncType					(UInt32	(*)(id, SEL, const char*))
 #define CodeFromLineFuncType					(void	(*)(id, SEL, Line*))
 #define CheckThunkFuncType						(void	(*)(id, SEL, Line*))
@@ -48,6 +49,7 @@
 #define GetDescriptionSel				@selector(getDescription:forType:)
 #define LineIsCodeSel					@selector(lineIsCode:)
 #define LineIsFunctionSel				@selector(lineIsFunction:)
+#define CodeIsBlockJumpSel				@selector(codeIsBlockJump:)
 #define AddressFromLineSel				@selector(addressFromLine:)
 #define CodeFromLineSel					@selector(codeFromLine:)
 #define CheckThunkSel					@selector(checkThunk:)
@@ -88,6 +90,8 @@
 		LineIsCode(self, LineIsCodeSel, (a))
 #define LineIsFunction(a)														\
 		LineIsFunction(self, LineIsFunctionSel, (a))
+#define CodeIsBlockJump(a)														\
+		CodeIsBlockJump(self, CodeIsBlockJumpSel, (a))
 #define AddressFromLine(a)														\
 		AddressFromLine(self, AddressFromLineSel, (a))
 #define CodeFromLine(a)															\

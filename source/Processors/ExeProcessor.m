@@ -1144,6 +1144,10 @@
 
 	UpdateRegisters(*ioLine);
 	PostProcessCodeLine(ioLine);
+
+	// Possibly prepend a \n to the following line.
+	if (CodeIsBlockJump((*ioLine)->info.code))
+		mEnteringNewBlock	= true;
 }
 
 //	printDataSections
@@ -1152,13 +1156,10 @@
 
 - (BOOL)printDataSections
 {
-	FILE*	outFile;
+	FILE*	outFile	= nil;
 
 	if (mOutputFilePath)
-	{
-		const char*	outPath	= CSTRING(mOutputFilePath);
-		outFile				= fopen(outPath, "a");
-	}
+		outFile	= fopen(CSTRING(mOutputFilePath), "a");
 	else
 		outFile	= stdout;
 
@@ -2154,6 +2155,8 @@
 		[self methodForSelector: LineIsCodeSel];
 	LineIsFunction					= LineIsFunctionFuncType
 		[self methodForSelector: LineIsFunctionSel];
+	CodeIsBlockJump					= CodeIsBlockJumpFuncType
+		[self methodForSelector: CodeIsBlockJumpSel];
 	AddressFromLine					= AddressFromLineFuncType
 		[self methodForSelector: AddressFromLineSel];
 	CodeFromLine					= CodeFromLineFuncType

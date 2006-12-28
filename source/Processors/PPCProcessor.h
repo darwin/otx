@@ -52,7 +52,8 @@
 #define CTRIndex	33
 
 #define IS_BLOCK_BRANCH(i)											\
-	((PO(i) == 0x10 || PO(i) == 0x12) && (!AA(i) && !LK(i)))
+	((PO(i) == 0x10 || PO(i) == 0x12 || PO(i) == 0x13) &&			\
+	(!AA(i) && !LK(i)))
 
 #define IS_BRANCH_LINK(i)											\
 	((PO(i) == 0x10 && (i & 0x1))	||								\

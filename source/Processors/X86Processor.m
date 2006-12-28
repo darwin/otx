@@ -1568,10 +1568,6 @@
 	sscanf(inLine->info.code, "%02hhx", &opcode);
 	sscanf(&inLine->info.code[2], "%02hhx", &opcode2);
 
-	// Remind us to prepend a \n to the following line.
-	if (IS_JUMP(opcode, opcode2))
-		mEnteringNewBlock	= true;
-
 	switch (opcode)
 	{
 		// immediate group 1
@@ -1811,7 +1807,6 @@
 			}
 			else
 			{	// Wipe the stack and return register.
-//				bzero(mStack, sizeof(GPRegisterInfo) * MAX_STACK_SIZE);
 				memset(mStack, 0, sizeof(GPRegisterInfo) * MAX_STACK_SIZE);
 				mRegInfos[EAX]	= (GPRegisterInfo){0};
 			}
@@ -1954,6 +1949,17 @@
 	}
 
 	return isFunction;
+}
+
+//	codeIsBlockJump:
+// ----------------------------------------------------------------------------
+
+- (BOOL)codeIsBlockJump: (char*)inCode
+{
+//	UInt8	opcode	= inCode[0];
+//	UInt8	opcode2	= inCode[1];
+
+	return IS_JUMP(inCode[0], inCode[1]);
 }
 
 //	gatherFuncInfos
