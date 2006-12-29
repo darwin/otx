@@ -11,6 +11,7 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E125C39D0A86B2D000098114 /* App Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = E125C39C0A86B2D000098114 /* App Icon.icns */; };
 		E13539830A6817C700CBDDE5 /* ObjcSwap.c in Sources */ = {isa = PBXBuildFile; fileRef = E13539820A6817C700CBDDE5 /* ObjcSwap.c */; };
+		E145F6D30B437F5900615A16 /* SmoothViewAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E145F6D20B437F5900615A16 /* SmoothViewAnimation.m */; };
 		E172D5190A74874100C85E7A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* Info.plist */; };
 		E182007209AE4CD800584B07 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = E182007009AE4CD800584B07 /* AppController.m */; };
 		E18201E709AFAAAC00584B07 /* CDropBox.m in Sources */ = {isa = PBXBuildFile; fileRef = E18201E609AFAAAC00584B07 /* CDropBox.m */; };
@@ -92,6 +93,8 @@
 		E13539820A6817C700CBDDE5 /* ObjcSwap.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = ObjcSwap.c; path = source/ObjcSwap.c; sourceTree = "<group>"; };
 		E135398F0A68185500CBDDE5 /* CDropBox.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CDropBox.h; path = source/CDropBox.h; sourceTree = "<group>"; };
 		E13539900A68185500CBDDE5 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AppController.h; path = source/AppController.h; sourceTree = "<group>"; };
+		E145F6D10B437F5900615A16 /* SmoothViewAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SmoothViewAnimation.h; path = source/SmoothViewAnimation.h; sourceTree = "<group>"; };
+		E145F6D20B437F5900615A16 /* SmoothViewAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SmoothViewAnimation.m; path = source/SmoothViewAnimation.m; sourceTree = "<group>"; };
 		E16222240A4F80F4007ECB26 /* Optimizations.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Optimizations.h; path = source/Optimizations.h; sourceTree = "<group>"; };
 		E182007009AE4CD800584B07 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppController.m; path = source/AppController.m; sourceTree = "<group>"; wrapsLines = 0; };
 		E18201E609AFAAAC00584B07 /* CDropBox.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDropBox.m; path = source/CDropBox.m; sourceTree = "<group>"; };
@@ -175,6 +178,7 @@
 				E182007009AE4CD800584B07 /* AppController.m */,
 				E1FA344F0B105E4E0060060A /* CLIController.m */,
 				E18201E609AFAAAC00584B07 /* CDropBox.m */,
+				E145F6D20B437F5900615A16 /* SmoothViewAnimation.m */,
 				E1B1325D0B180AF6002EB674 /* Processors */,
 			);
 			name = Classes;
@@ -269,6 +273,7 @@
 				E13539900A68185500CBDDE5 /* AppController.h */,
 				E1FA34510B105E6F0060060A /* CLIController.h */,
 				E135398F0A68185500CBDDE5 /* CDropBox.h */,
+				E145F6D10B437F5900615A16 /* SmoothViewAnimation.h */,
 				E1B1325A0B180ADF002EB674 /* Processors */,
 			);
 			name = Headers;
@@ -479,6 +484,7 @@
 				E1B133970B182788002EB674 /* Searchers.m in Sources */,
 				E1B135E50B185123002EB674 /* ObjcAccessors.m in Sources */,
 				E1B136200B192AAC002EB674 /* ArchSpecifics.m in Sources */,
+				E145F6D30B437F5900615A16 /* SmoothViewAnimation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

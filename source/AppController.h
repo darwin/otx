@@ -10,6 +10,8 @@
 #define kOutputFileBaseTag	200
 #define kOutputFileExtTag	201
 
+#define	kPrefsAnimationTime	.16
+
 // ============================================================================
 
 @interface AppController : NSObject <ProgressReporter>

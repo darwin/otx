@@ -13,6 +13,7 @@
 #import "AppController.h"
 #import "ExeProcessor.h"
 #import "PPCProcessor.h"
+#import "SmoothViewAnimation.h"
 #import "X86Processor.h"
 #import "UserDefaultKeys.h"
 
@@ -973,11 +974,12 @@
 		forKey: NSViewAnimationEffectKey];
 
 	// Create animation.
-	NSViewAnimation*	theAnim = [[NSViewAnimation alloc]
+	SmoothViewAnimation*	theAnim	= [[SmoothViewAnimation alloc]
 		initWithViewAnimations: [NSArray arrayWithObjects:
-		theOldViewItem, theNewViewItem, theNewWindowItem, nil]];
+		theOldViewItem, theNewViewItem, theNewWindowItem, nil]
+		andWindow: mPrefsWindow];
 
-	[theAnim setDuration: 0.14];
+	[theAnim setDuration: kPrefsAnimationTime];
 	[theAnim setAnimationCurve: NSAnimationLinear];
 
 	// Do the deed.

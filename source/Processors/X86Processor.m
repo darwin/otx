@@ -1887,14 +1887,13 @@
 	if (!inLine)
 		return false;
 
+	UInt32	theAddy	= inLine->info.address;
+
+	if (theAddy == mAddrDyldStubBindingHelper	||
+		theAddy == mAddrDyldFuncLookupPointer)
+		return true;
+
 	MethodInfo*	theDummyInfo	= nil;
-	UInt32		theAddy			= inLine->info.address;
-
-	if (theAddy == mAddrDyldStubBindingHelper)
-		return true;
-
-	if (theAddy == mAddrDyldFuncLookupPointer)
-		return true;
 
 	// In Obj-C apps, the majority of funcs will have Obj-C symbols, so check
 	// those first.
@@ -1956,9 +1955,6 @@
 
 - (BOOL)codeIsBlockJump: (char*)inCode
 {
-//	UInt8	opcode	= inCode[0];
-//	UInt8	opcode2	= inCode[1];
-
 	return IS_JUMP((UInt8)inCode[0], (UInt8)inCode[1]);
 }
 
