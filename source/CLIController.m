@@ -235,10 +235,25 @@
 		return nil;
 	}
 
+	// Override the -arch flag if necessary.
 	switch (*(UInt32*)[fileData bytes])
 	{
 		case MH_MAGIC:
+#if TARGET_RT_LITTLE_ENDIAN
+			mArchSelector	= CPU_TYPE_I386;
+#else
+			mArchSelector	= CPU_TYPE_POWERPC;
+#endif
+			break;
+
 		case MH_CIGAM:
+#if TARGET_RT_LITTLE_ENDIAN
+			mArchSelector	= CPU_TYPE_POWERPC;
+#else
+			mArchSelector	= CPU_TYPE_I386;
+#endif
+			break;
+
 		case FAT_MAGIC:
 		case FAT_CIGAM:
 			break;
