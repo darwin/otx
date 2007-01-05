@@ -1281,13 +1281,10 @@
 					theASCIIData[j]	= '.';
 
 #if TARGET_RT_LITTLE_ENDIAN
-//			if (OSHostByteOrder() == OSLittleEndian)
-//			{
-				theHexPtr[0]	= OSSwapInt32(theHexPtr[0]);
-				theHexPtr[1]	= OSSwapInt32(theHexPtr[1]);
-				theHexPtr[2]	= OSSwapInt32(theHexPtr[2]);
-				theHexPtr[3]	= OSSwapInt32(theHexPtr[3]);
-//			}
+			theHexPtr[0]	= OSSwapInt32(theHexPtr[0]);
+			theHexPtr[1]	= OSSwapInt32(theHexPtr[1]);
+			theHexPtr[2]	= OSSwapInt32(theHexPtr[2]);
+			theHexPtr[3]	= OSSwapInt32(theHexPtr[3]);
 #endif
 
 			snprintf(theLineCString, sizeof(theLineCString),
@@ -1521,7 +1518,7 @@
 	UInt32	newSize		= strlen(symString);
 	char*	colonPos	= strrchr(symString, ':');
 
-	// Perform colonoscopy.
+	// Remove the colon.
 	if (colonPos)
 		newSize	= colonPos - symString;
 

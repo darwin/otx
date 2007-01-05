@@ -30,8 +30,7 @@
 		// fat_header and fat_arch are always big-endian. Swap if we're
 		// running on intel.
 #if TARGET_RT_LITTLE_ENDIAN
-//		if (OSHostByteOrder() == OSLittleEndian)
-			swap_fat_header(&fh, OSLittleEndian);
+		swap_fat_header(&fh, OSLittleEndian);
 #endif
 
 		UInt32	i;
@@ -42,8 +41,7 @@
 			fa	= *faPtr;
 
 #if TARGET_RT_LITTLE_ENDIAN
-//			if (OSHostByteOrder() == OSLittleEndian)
-				swap_fat_arch(&fa, 1, OSLittleEndian);
+			swap_fat_arch(&fa, 1, OSLittleEndian);
 #endif
 
 			if (fa.cputype == mArchSelector)
@@ -160,7 +158,8 @@
 		{
 			[self loadObjcSection: sectionPtr];
 		}
-		else if (!strcmp(sectionPtr->segname, SEG_TEXT))
+		else if (!strcmp(sectionPtr->segname, SEG_TEXT)	||
+				 !sectionPtr->segname[0])
 		{
 			if (mMachHeader.filetype == MH_OBJECT)
 				mTextOffset	= swappedSeg.fileoff;

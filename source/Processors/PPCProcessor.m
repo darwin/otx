@@ -121,7 +121,7 @@
 			if (!AA(theCode))
 				break;
 
-			UInt32	target	= LI(theCode) /*| 0xfc000000*/;
+			UInt32	target	= LI(theCode);
 
 			switch (target)
 			{
@@ -789,7 +789,6 @@
 	// r12 will be overwritten before it is used, if it is used at all.
 	GetObjcClassPtrFromMethod(&mCurrentClass, inLine->info.address);
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
-//	bzero(mRegInfos, sizeof(GPRegisterInfo) * 32);
 	memset(mRegInfos, 0, sizeof(GPRegisterInfo) * 32);
 
 	mRegInfos[3].classPtr	= mCurrentClass;

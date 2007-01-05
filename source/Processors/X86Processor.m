@@ -1281,7 +1281,7 @@
 			break;
 
 		default:
-			fprintf(stderr, "otx: [X86Processor commentForMsgSend]: "
+			fprintf(stderr, "otx: [X86Processor selectorForMsgSend:fromLine:]: "
 				"unsupported selector type: %d\n", selType);
 
 			break;
@@ -1534,7 +1534,6 @@
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
 
 	mCurrentThunk	= NO_REG;
-//	bzero(mRegInfos, sizeof(GPRegisterInfo) * 8);
 	memset(mRegInfos, 0, sizeof(GPRegisterInfo) * 8);
 
 	// Try to find out whether this is a class or instance method.
@@ -1735,15 +1734,25 @@
 						}
 					}
 				}
-			}
+			}								// FIXME
 			else if (HAS_ABS_DISP32(modRM))
 			{
-				mRegInfos[REG1(modRM)]	= (GPRegisterInfo){0};
+				sscanf(&inLine->info.code[4], "%08x",
+					&mRegInfos[REG1(modRM)].value);
+				mRegInfos[REG1(modRM)].value	=
+					OSSwapInt32(mRegInfos[REG1(modRM)].value);
+				mRegInfos[REG1(modRM)].isValid	= true;
+			}
+			else if (HAS_REL_DISP32(modRM))
+			{
+				if (!mRegInfos[REG2(modRM)].isValid)
+					break;
 
 				sscanf(&inLine->info.code[4], "%08x",
 					&mRegInfos[REG1(modRM)].value);
 				mRegInfos[REG1(modRM)].value	=
 					OSSwapInt32(mRegInfos[REG1(modRM)].value);
+				mRegInfos[REG1(modRM)].value	+= mRegInfos[REG2(modRM)].value;
 				mRegInfos[REG1(modRM)].isValid	= true;
 			}
 
