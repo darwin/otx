@@ -3,10 +3,9 @@
 
 	Adapted from the smooth animation example in
 	http://developer.apple.com/documentation/Cocoa/Conceptual/AnimationGuide/AnimationGuide.pdf
-	This version caches the window in the new init method, and asks the window
-	for it's screen, rather than using the main screen. It also no longer
-	tweaks the window's origin. Used only in otx Preferences window, it has
-	not been tested with horizontal resizement.
+	This version caches the window in the new init method. It also no longer
+	tweaks the window's origin. Used only vertically, it has not been tested
+	with horizontal resizement.
 
 	This file is in the public domain.
 */
