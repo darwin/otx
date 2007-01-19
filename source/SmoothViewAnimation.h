@@ -10,10 +10,8 @@
 
 @interface SmoothViewAnimation : NSViewAnimation
 {
+@private
 	NSWindow*	mWindow;
 }
-
-- (id)initWithViewAnimations: (NSArray*)viewAnimations
-				   andWindow: (NSWindow*)inWindow;
 
 @end

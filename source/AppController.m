@@ -19,6 +19,8 @@
 
 #import "SmartCrashReportsInstall.h"
 
+#define DRAWERS_SUCK	1
+
 // ============================================================================
 
 @implementation AppController
@@ -127,6 +129,7 @@
 	}
 
 	// Show main window
+	[self hideProgView: false];
 	[mMainWindow setFrameAutosaveName: [mMainWindow title]];
 	[mMainWindow center];
 	[mMainWindow makeKeyAndOrderFront: nil];
@@ -134,6 +137,8 @@
 
 //	windowDidResize:
 // ----------------------------------------------------------------------------
+//	Implemented to avoid artifacts from the NSBox. This method is not called
+//	during animated resizes.
 
 - (void)windowDidResize: (NSNotification*)inNotification
 {
@@ -356,8 +361,270 @@
 
 	[self reportProgress: &progState];
 
+#if DRAWERS_SUCK
+
+	if ([self checkOtool] != noErr)
+	{
+		fprintf(stderr, "otx: otool not found\n");
+		[self doOtoolAlert];
+		return;
+	}
+
+	[self showProgView];
+
+#else
 	[mProgDrawer setContentSize: [mProgDrawer maxContentSize]];
 	[mProgDrawer openOnEdge: NSMinYEdge];	// Min Y = 'bottom'
+#endif
+}
+
+//	continueProcessingFile
+// ----------------------------------------------------------------------------
+
+- (void)continueProcessingFile
+{
+	Class	procClass	= nil;
+
+	switch (mArchSelector)
+	{
+		case CPU_TYPE_POWERPC:
+			procClass	= [PPCProcessor class];
+			break;
+
+		case CPU_TYPE_I386:
+			procClass	= [X86Processor class];
+			break;
+
+		default:
+			fprintf(stderr, "otx: [AppController processFile]: "
+				"unknown arch type: %d", mArchSelector);
+			break;
+	}
+
+	if (!procClass)
+		return;
+
+	// Save defaults into the ProcOptions struct.
+	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
+
+	ProcOptions	opts	= {0};
+
+	opts.localOffsets			=
+		[theDefaults boolForKey: ShowLocalOffsetsKey];
+	opts.entabOutput			=
+		[theDefaults boolForKey: EntabOutputKey];
+	opts.dataSections			=
+		[theDefaults boolForKey: ShowDataSectionKey];
+	opts.checksum				=
+		[theDefaults boolForKey: ShowMD5Key];
+	opts.verboseMsgSends		=
+		[theDefaults boolForKey: VerboseMsgSendsKey];
+	opts.separateLogicalBlocks	=
+		[theDefaults boolForKey: SeparateLogicalBlocksKey];
+	opts.demangleCppNames		=
+		[theDefaults boolForKey: DemangleCppNamesKey];
+	opts.returnTypes			=
+		[theDefaults boolForKey: ShowMethodReturnTypesKey];
+	opts.variableTypes			=
+		[theDefaults boolForKey: ShowIvarTypesKey];
+
+	id	theProcessor	= [[procClass alloc] initWithURL: mOFile
+		controller: self andOptions: &opts];
+
+	if (!theProcessor)
+	{
+		fprintf(stderr, "otx: -[AppController processFile]: "
+			"unable to create processor.\n");
+		[theProcessor release];
+		[self hideProgView: true];
+		return;
+	}
+
+	if (![theProcessor processExe: mOutputFilePath])
+	{
+		fprintf(stderr, "otx: possible permission error\n");
+		[self doErrorAlert];
+		[theProcessor release];
+		[self hideProgView: true];
+		return;
+	}
+
+	[theProcessor release];
+
+	if ([theDefaults boolForKey: OpenOutputFileKey])
+		[[NSWorkspace sharedWorkspace] openFile: mOutputFilePath
+			withApplication: [theDefaults objectForKey: OutputAppKey]];
+
+	[self hideProgView: true];
+}
+
+//	showProgView
+// ----------------------------------------------------------------------------
+
+- (void)showProgView
+{
+	// Set up the target window frame.
+	NSRect	targetWindowFrame	= [mMainWindow frame];
+	NSRect	progViewFrame		= [mProgView frame];
+
+	targetWindowFrame.origin.y		-= progViewFrame.size.height;
+	targetWindowFrame.size.height	+= progViewFrame.size.height;
+
+	// Save the resize masks and apply new ones.
+	mOrigMainViewMask	= [mMainView autoresizingMask];
+	mOrigProgViewMask	= [mProgView autoresizingMask];
+
+	[mMainView setAutoresizingMask: NSViewMinYMargin];
+	[mProgView setAutoresizingMask: NSViewMinYMargin];
+
+	// Set up an animation.
+	NSMutableDictionary*	newWindowItem =
+		[NSMutableDictionary dictionaryWithCapacity: 7];
+
+	// Standard keys
+	[newWindowItem setObject: mMainWindow
+		forKey: NSViewAnimationTargetKey];
+	[newWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
+		forKey: NSViewAnimationEndFrameKey];
+
+	NSNumber*	effect			= [NSNumber numberWithUnsignedInt:
+		(NSXViewAnimationUpdateResizeMasksAtEndEffect		|
+		NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect	|
+		NSXViewAnimationPerformSelectorAtEndEffect)];
+	NSNumber*	origMainMask	= [NSNumber numberWithUnsignedInt:
+		mOrigMainViewMask];
+	NSNumber*	origProgMask	= [NSNumber numberWithUnsignedInt:
+		mOrigProgViewMask];
+
+	// Custom keys
+	[newWindowItem setObject: effect
+		forKey: NSXViewAnimationCustomEffectsKey];
+	[newWindowItem setObject: [NSArray arrayWithObjects:
+		origMainMask, origProgMask, nil]
+		forKey: NSXViewAnimationResizeMasksArrayKey];
+	[newWindowItem setObject: [NSArray arrayWithObjects:
+		mMainView, mProgView, nil]
+		forKey: NSXViewAnimationResizeViewsArrayKey];
+
+	// Since we're about to grow the window, first adjust the max height.
+	NSSize	maxSize	= [mMainWindow contentMaxSize];
+	NSSize	minSize	= [mMainWindow contentMinSize];
+
+	maxSize.height	+= progViewFrame.size.height;
+	minSize.height	+= progViewFrame.size.height;
+
+	[mMainWindow setContentMaxSize: maxSize];
+
+	// Set the min size after the animation completes.
+	NSValue*	minSizeValue	= [NSValue valueWithSize: minSize];
+
+	[newWindowItem setObject: minSizeValue
+		forKey: NSXViewAnimationWindowMinSizeKey];
+
+	// Continue processing after the animation completes.
+	SEL			continueSel	= @selector(continueProcessingFile);
+	NSValue*	selValue	= [NSValue
+		value: &continueSel
+		withObjCType: @encode(SEL)];
+
+	[newWindowItem setObject: selValue
+		forKey: NSXViewAnimationSelectorKey];
+
+	SmoothViewAnimation*	theAnim	= [[SmoothViewAnimation alloc]
+		initWithViewAnimations: [NSArray arrayWithObjects:
+		newWindowItem, nil]];
+
+	[theAnim setDelegate: self];
+	[theAnim setDuration: kMainAnimationTime];
+	[theAnim setAnimationCurve: NSAnimationLinear];
+
+	// Set a flag for our animationDidEnd delegate.
+//	mShowingProgress	= true;
+
+	// Do the deed.
+	[theAnim startAnimation];
+	[theAnim autorelease];
+}
+
+//	hideProgView:
+// ----------------------------------------------------------------------------
+
+- (void)hideProgView: (BOOL)inAnimate
+{
+	NSRect	targetWindowFrame	= [mMainWindow frame];
+	NSRect	progViewFrame		= [mProgView frame];
+
+	targetWindowFrame.origin.y		+= progViewFrame.size.height;
+	targetWindowFrame.size.height	-= progViewFrame.size.height;
+
+	mOrigMainViewMask	= [mMainView autoresizingMask];
+	mOrigProgViewMask	= [mProgView autoresizingMask];
+
+	NSNumber*	origMainMask	= [NSNumber numberWithUnsignedInt:
+		mOrigMainViewMask];
+	NSNumber*	origProgMask	= [NSNumber numberWithUnsignedInt:
+		mOrigProgViewMask];
+
+	[mMainView setAutoresizingMask: NSViewMinYMargin];
+	[mProgView setAutoresizingMask: NSViewMinYMargin];
+
+	NSSize	maxSize	= [mMainWindow contentMaxSize];
+	NSSize	minSize	= [mMainWindow contentMinSize];
+
+	maxSize.height	-= progViewFrame.size.height;
+	minSize.height	-= progViewFrame.size.height;
+
+	[mMainWindow setContentMinSize: minSize];
+
+	if (inAnimate)
+	{
+		NSMutableDictionary*	newWindowItem =
+			[NSMutableDictionary dictionaryWithCapacity: 4];
+
+		[newWindowItem setObject: mMainWindow
+			forKey: NSViewAnimationTargetKey];
+		[newWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
+			forKey: NSViewAnimationEndFrameKey];
+
+		// Custom keys
+		[newWindowItem setObject:[NSNumber numberWithUnsignedInt:
+			(NSXViewAnimationUpdateResizeMasksAtEndEffect |
+			NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect)]
+			forKey: NSXViewAnimationCustomEffectsKey];
+		[newWindowItem setObject: [NSArray arrayWithObjects:
+			origMainMask, origProgMask, nil]
+			forKey: NSXViewAnimationResizeMasksArrayKey];
+		[newWindowItem setObject: [NSArray arrayWithObjects:
+			mMainView, mProgView, nil]
+			forKey: NSXViewAnimationResizeViewsArrayKey];
+
+		NSValue*	maxSizeValue	=
+			[NSValue valueWithSize: maxSize];
+
+		[newWindowItem setObject: maxSizeValue
+			forKey: NSXViewAnimationWindowMaxSizeKey];
+
+		SmoothViewAnimation*	theAnim	= [[SmoothViewAnimation alloc]
+			initWithViewAnimations: [NSArray arrayWithObjects:
+			newWindowItem, nil]];
+
+		[theAnim setDelegate: self];
+		[theAnim setDuration: kMainAnimationTime];
+		[theAnim setAnimationCurve: NSAnimationLinear];
+
+//		mShowingProgress	= false;
+
+		// Do the deed.
+		[theAnim startAnimation];
+		[theAnim autorelease];
+	}
+	else
+	{
+		[mMainWindow setFrame: targetWindowFrame display: false];
+		[mMainWindow setContentMaxSize: maxSize];
+		[mMainView setAutoresizingMask: mOrigMainViewMask];
+		[mProgView setAutoresizingMask: mOrigProgViewMask];
+	}	
 }
 
 //	thinFile:
@@ -732,8 +999,6 @@
 	if ([notification object] != mProgDrawer || !mOFile)
 		return;
 
-	mExeIsFat	= mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM;
-
 	if ([self checkOtool] != noErr)
 	{
 		fprintf(stderr, "otx: otool not found\n");
@@ -837,7 +1102,9 @@
 
 - (SInt32)checkOtool
 {
-	char*		headerArg	= mExeIsFat ? "-f" : "-h";
+//	char*		headerArg	= mExeIsFat ? "-f" : "-h";
+	char*		headerArg	=
+		(mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM) ? "-f" : "-h";
 	NSString*	otoolString	= [NSString stringWithFormat:
 		@"otool %s '%@' > /dev/null", headerArg, [mOFile path]];
 
@@ -930,6 +1197,10 @@
 - (IBAction)switchPrefsViews: (id)sender
 {
 	UInt32	theNewIndex		= [sender selectedSegment];
+
+	if (theNewIndex == mPrefsCurrentViewIndex)
+		return;
+
 	NSRect	targetViewFrame	= [mPrefsViews[theNewIndex] frame];
 
 	targetViewFrame.origin	= (NSPoint){0};
@@ -948,46 +1219,37 @@
 	targetWindowFrame.origin.y	-= windowHeightDelta;
 
 	NSMutableDictionary*	theNewWindowItem =
-		[NSMutableDictionary dictionaryWithCapacity: 2];
+		[NSMutableDictionary dictionaryWithCapacity: 5];
 
 	[theNewWindowItem setObject: mPrefsWindow
 		forKey: NSViewAnimationTargetKey];
 	[theNewWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
 		forKey: NSViewAnimationEndFrameKey];
 
-	// Create dictionary for old view.
-	NSMutableDictionary*	theOldViewItem =
-		[NSMutableDictionary dictionaryWithCapacity: 2];
+//	NSXViewAnimationCustomEffects	effects	= NSXViewAnimationSwapAtEndEffect
 
-	[theOldViewItem setObject: mPrefsViews[mPrefsCurrentViewIndex]
-		forKey: NSViewAnimationTargetKey];
-	[theOldViewItem setObject: NSViewAnimationFadeOutEffect
-		forKey: NSViewAnimationEffectKey];
-
-	// Create dictionary for new view.
-	NSMutableDictionary*	theNewViewItem =
-		[NSMutableDictionary dictionaryWithCapacity: 2];
-
-	[theNewViewItem setObject: mPrefsViews[theNewIndex]
-		forKey: NSViewAnimationTargetKey];
-	[theNewViewItem setObject: NSViewAnimationFadeInEffect
-		forKey: NSViewAnimationEffectKey];
+	[theNewWindowItem setObject: [NSNumber numberWithUnsignedInt:
+		NSXViewAnimationSwapAtEndEffect]
+		forKey: NSXViewAnimationCustomEffectsKey];
+	[theNewWindowItem setObject: mPrefsViews[mPrefsCurrentViewIndex]
+		forKey: NSXViewAnimationSwapOldKey];
+	[theNewWindowItem setObject: mPrefsViews[theNewIndex]
+		forKey: NSXViewAnimationSwapNewKey];
 
 	// Create animation.
-	SmoothViewAnimation*	theAnim	= [[SmoothViewAnimation alloc]
+	SmoothViewAnimation*	theWindowAnim	= [[SmoothViewAnimation alloc]
 		initWithViewAnimations: [NSArray arrayWithObjects:
-		theOldViewItem, theNewViewItem, theNewWindowItem, nil]
-		andWindow: mPrefsWindow];
+		theNewWindowItem, nil]];
+	[theWindowAnim setDelegate: self];
 
-	[theAnim setDuration: kPrefsAnimationTime];
-	[theAnim setAnimationCurve: NSAnimationLinear];
-
-	// Do the deed.
-	[mPrefsViews[mPrefsCurrentViewIndex] setHidden: true];
-	[theAnim startAnimation];
-	[theAnim autorelease];
+	[theWindowAnim setDuration: kPrefsAnimationTime];
+	[theWindowAnim setAnimationCurve: NSAnimationLinear];
 
 	mPrefsCurrentViewIndex	= theNewIndex;
+
+	// Do the deed.
+	[theWindowAnim startAnimation];
+	[theWindowAnim autorelease];
 }
 
 //	reportProgress:
@@ -1046,15 +1308,184 @@
 
 			break;
 
-//		case Complete:
-//			[mProgBar setDoubleValue: [mProgBar maxValue]];
-//			[mProgBar display];
-
-//			break;
-
 		default:
 			break;
 	}
+}
+
+#pragma mark -
+#pragma mark NSAnimation delegates
+//	animationDidEnd:
+// ----------------------------------------------------------------------------
+
+- (void)animationDidEnd: (NSAnimation*)animation
+{
+	if (![animation isKindOfClass: [NSViewAnimation class]])
+		return;
+
+	NSArray*	animatedViews	= [(NSViewAnimation*)animation viewAnimations];
+
+	if (!animatedViews)
+		return;
+
+	NSWindow*	animatingWindow	= [[animatedViews objectAtIndex: 0]
+		objectForKey: NSViewAnimationTargetKey];
+
+	if (animatingWindow != mMainWindow	&&
+		animatingWindow != mPrefsWindow)
+		return;
+
+	UInt32	i;
+	UInt32	numAnimations	= [animatedViews count];
+	id		animObject		= nil;
+
+	for (i = 0; i < numAnimations; i++)
+	{
+		animObject	= [animatedViews objectAtIndex: i];
+
+		if (!animObject)
+			continue;
+
+		NSNumber*	effects	=
+			[animObject objectForKey: NSXViewAnimationCustomEffectsKey];
+
+		if (!effects)
+			continue;
+
+		if ([effects unsignedIntValue] &
+			NSXViewAnimationSwapAtEndEffect)
+		{
+			NSView*	oldView	= [animObject
+				objectForKey: NSXViewAnimationSwapOldKey];
+			NSView*	newView	= [animObject
+				objectForKey: NSXViewAnimationSwapNewKey];
+
+			if (oldView)
+				[oldView setHidden: true];
+
+			if (newView)
+				[newView setHidden: false];
+		}
+
+		if ([effects unsignedIntValue] &
+			NSXViewAnimationUpdateResizeMasksAtEndEffect)
+		{
+			NSArray*	masks	= [animObject
+				objectForKey: NSXViewAnimationResizeMasksArrayKey];
+			NSArray*	views	= [animObject
+				objectForKey: NSXViewAnimationResizeViewsArrayKey];
+
+			if (!masks || !views)
+				continue;
+
+			NSView*		view;
+			NSNumber*	mask;
+			UInt32		i;
+			UInt32		numMasks	= [masks count];
+			UInt32		numViews	= [views count];
+
+			if (numMasks != numViews)
+				continue;
+
+			for (i = 0; i < numMasks; i++)
+			{
+				mask	= [masks objectAtIndex: i];
+				view	= [views objectAtIndex: i];
+
+				if (!mask || !view)
+					continue;
+
+				[view setAutoresizingMask: [mask unsignedIntValue]];
+			}
+		}
+
+		if ([effects unsignedIntValue] &
+			NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect)
+		{
+			NSValue*	minSizeValue	= [animObject objectForKey:
+				NSXViewAnimationWindowMinSizeKey];
+			NSValue*	maxSizeValue	= [animObject objectForKey:
+				NSXViewAnimationWindowMaxSizeKey];
+
+			if (minSizeValue)
+				[animatingWindow setContentMinSize:
+					[minSizeValue sizeValue]];
+
+			if (maxSizeValue)
+				[animatingWindow setContentMaxSize:
+					[maxSizeValue sizeValue]];
+		}
+
+		if ([effects unsignedIntValue] &
+			NSXViewAnimationPerformSelectorAtEndEffect)
+		{
+			NSValue*	selValue	= [animObject objectForKey:
+				NSXViewAnimationSelectorKey];
+
+			if (selValue)
+			{
+				SEL	theSel;
+
+				[selValue getValue: &theSel];
+				[self performSelector: (SEL)theSel];
+			}
+		}
+	}
+}
+
+#pragma mark -
+#pragma mark DropBox delegates
+//	dropBox:dragDidEnter:
+// ----------------------------------------------------------------------------
+
+- (NSDragOperation)dropBox: (DropBox*)inDropBox
+			  dragDidEnter: (id <NSDraggingInfo>)inItem
+{
+	if (inDropBox != mDropBox)
+		return false;
+
+	NSPasteboard*	thePasteBoard	= [inItem draggingPasteboard];
+
+	// bail if not a file.
+	if (![[thePasteBoard types] containsObject: NSFilenamesPboardType])
+		return NSDragOperationNone;
+
+	NSArray*	theFiles	= [thePasteBoard
+		propertyListForType: NSFilenamesPboardType];
+
+	// bail if not a single file.
+	if ([theFiles count] != 1)
+		return NSDragOperationNone;
+
+	NSDragOperation	theSourceDragMask	= [inItem draggingSourceOperationMask];
+
+	// bail if modifier keys pressed.
+	if (!(theSourceDragMask & NSDragOperationLink))
+		return NSDragOperationNone;
+
+	return NSDragOperationLink;
+}
+
+//	dropBox:didReceiveItem:
+// ----------------------------------------------------------------------------
+
+- (BOOL)dropBox: (DropBox*)inDropBox
+ didReceiveItem: (id<NSDraggingInfo>)inItem
+{
+	if (inDropBox != mDropBox)
+		return false;
+
+	NSURL*	theURL	= [NSURL URLFromPasteboard: [inItem draggingPasteboard]];
+
+	if (!theURL)
+		return false;
+
+	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: [theURL path]])
+		[self newPackageFile: theURL];
+	else
+		[self newOFile: theURL needsPath: true];
+
+	return true;
 }
 
 @end

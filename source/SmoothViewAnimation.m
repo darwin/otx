@@ -16,16 +16,29 @@
 
 @implementation SmoothViewAnimation
 
-//	initWithViewAnimations:andWindow:
+//	initWithViewAnimations:
 // ----------------------------------------------------------------------------
 
 - (id)initWithViewAnimations: (NSArray*)viewAnimations
-				   andWindow: (NSWindow*)inWindow
 {
 	self = [super initWithViewAnimations: viewAnimations];
 
-	if (self)
-		mWindow	= inWindow;
+	if (!self)
+		return nil;
+
+	// Find the first window object in the array.
+	UInt32	numAnimations	= [viewAnimations count];
+	UInt32	i;
+	id		object;
+
+	for (i = 0; i < numAnimations; i++)
+	{
+		object	= [[viewAnimations objectAtIndex: i]
+			objectForKey: NSViewAnimationTargetKey];
+
+		if ([object isKindOfClass: [NSWindow class]])
+			mWindow	= object;
+	}
 
 	return self;
 }

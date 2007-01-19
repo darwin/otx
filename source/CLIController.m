@@ -447,8 +447,6 @@
 		return;
 	}
 
-	mExeIsFat	= mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM;
-
 	if ([self checkOtool] != noErr)
 	{
 		fprintf(stderr,
@@ -581,7 +579,9 @@
 
 - (SInt32)checkOtool
 {
-	char*		headerArg	= mExeIsFat ? "-f" : "-h";
+//	char*		headerArg	= mExeIsFat ? "-f" : "-h";
+	char*		headerArg	=
+		(mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM) ? "-f" : "-h";
 	NSString*	otoolString	= [NSString stringWithFormat:
 		@"otool %s '%@' > /dev/null", headerArg, [mOFile path]];
 

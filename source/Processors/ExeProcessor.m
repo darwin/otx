@@ -85,7 +85,6 @@
 	[theData getBytes: mRAMFile];
 
 	mArchMagic	= *(UInt32*)mRAMFile;
-	mExeIsFat	= mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM;
 
 	[self speedyDelivery];
 
@@ -241,7 +240,10 @@
 	NSString*		oPath			= [mOFile path];
 	NSString*		otoolString;
 	char			cmdString[100];
-	char*			cmdFormatString	= mExeIsFat ? "otool -arch %s" : "otool";
+//	char*			cmdFormatString	= mExeIsFat ? "otool -arch %s" : "otool";
+	char*			cmdFormatString	=
+		(mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM) ?
+		"otool -arch %s" : "otool";
 	NSProcessInfo*	procInfo		= [NSProcessInfo processInfo];
 
 	cmdString[0]	= 0;

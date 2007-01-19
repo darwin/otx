@@ -16,6 +16,8 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 mArchPopup = NSPopUpButton; 
+                mDropBox = DropBox; 
+                mMainView = NSView; 
                 mMainWindow = NSWindow; 
                 mOutputText = NSTextField; 
                 mPathText = NSTextField; 
@@ -26,6 +28,7 @@
                 mProgBar = NSProgressIndicator; 
                 mProgDrawer = NSDrawer; 
                 mProgText = NSTextField; 
+                mProgView = NSView; 
                 mSaveButton = NSButton; 
                 mThinButton = NSButton; 
                 mTypeText = NSTextField; 
@@ -36,7 +39,13 @@
         {
             CLASS = CDropBox; 
             LANGUAGE = ObjC; 
-            OUTLETS = {mController = AppController; }; 
+            OUTLETS = {delegate = id; }; 
+            SUPERCLASS = NSBox; 
+        }, 
+        {
+            CLASS = DropBox; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {delegate = id; }; 
             SUPERCLASS = NSBox; 
         }, 
         {
@@ -45,6 +54,8 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
         }, 
+        {CLASS = NSBox; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
             ACTIONS = {switchViews = id; }; 

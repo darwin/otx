@@ -4,13 +4,39 @@
 	This file is in the public domain.
 */
 
+#import "DropBox.h"
 #import "ProgressReporter.h"
 
 #define kOutputTextTag		100
 #define kOutputFileBaseTag	200
 #define kOutputFileExtTag	201
 
-#define	kPrefsAnimationTime	.16
+#define	kPrefsAnimationTime	.15
+#define	kMainAnimationTime	.15
+
+#define NSXViewAnimationCustomEffectsKey	@"NSXViewAnimationCustomEffectsKey"
+
+#define NSXViewAnimationSwapAtEndEffect						(1 << 0)
+#define NSXViewAnimationSwapOldKey						\
+	@"NSXViewAnimationSwapOldKey"							// NSView*
+#define NSXViewAnimationSwapNewKey						\
+	@"NSXViewAnimationSwapNewKey"							// NSView*
+
+#define NSXViewAnimationUpdateResizeMasksAtEndEffect		(1 << 1)
+#define NSXViewAnimationResizeMasksArrayKey				\
+	@"NSXViewAnimationResizeMasksArrayKey"					// NSArray*
+#define NSXViewAnimationResizeViewsArrayKey				\
+	@"NSXViewAnimationResizeViewsArrayKey"					// NSArray*
+
+#define NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect	(1 << 2)
+#define NSXViewAnimationWindowMinSizeKey				\
+	@"NSXViewAnimationWindowMinSizeKey"						// NSValue*
+#define NSXViewAnimationWindowMaxSizeKey				\
+	@"NSXViewAnimationWindowMaxSizeKey"						// NSValue*
+
+#define NSXViewAnimationPerformSelectorAtEndEffect			(1 << 3)
+#define NSXViewAnimationSelectorKey						\
+	@"NSXViewAnimationSelectorKey"							// NSValue*
 
 // ============================================================================
 
@@ -28,7 +54,9 @@
 	IBOutlet NSProgressIndicator*	mProgBar;
 	IBOutlet NSButton*				mSaveButton;
 	IBOutlet NSTextField*			mTypeText;
-	IBOutlet struct CDropBox*		mDropBox;
+	IBOutlet DropBox*				mDropBox;
+	IBOutlet NSView*				mProgView;
+	IBOutlet NSView*				mMainView;
 
 // prefs window
 	IBOutlet NSWindow*				mPrefsWindow;
@@ -41,7 +69,6 @@
 	char*					mRAMFile;
 	cpu_type_t				mArchSelector;
 	UInt32					mArchMagic;
-	BOOL					mExeIsFat;
 	BOOL					mFileIsValid;
 	BOOL					mIgnoreArch;
 	NSString*				mExeName;
@@ -51,6 +78,10 @@
 	NSView**				mPrefsViews;
 	UInt32					mPrefsCurrentViewIndex;
 	host_basic_info_data_t	mHostInfo;
+
+	UInt32					mOrigMainViewMask;	// lose
+	UInt32					mOrigProgViewMask;	// lose
+//	BOOL					mShowingProgress;
 }
 
 - (SInt32)checkOtool;
@@ -61,6 +92,7 @@
 - (IBAction)openExe: (id)sender;
 - (IBAction)syncOutputText: (id)sender;
 - (IBAction)processFile: (id)sender;
+- (void)continueProcessingFile;
 - (IBAction)thinFile: (id)sender;
 - (IBAction)verifyNops: (id)sender;
 - (void)syncSaveButton;
@@ -68,10 +100,11 @@
 - (void)newPackageFile: (NSURL*)inPackageFile;
 - (void)newOFile: (NSURL*)inOFile
 	   needsPath: (BOOL)inNeedsPath;
-
 - (void)nopAlertDidEnd: (NSAlert*)alert
 			returnCode: (int)returnCode
 		   contextInfo: (void*)contextInfo;
+- (void)showProgView;
+- (void)hideProgView: (BOOL)inAnimate;
 
 // prefs window
 - (IBAction)showPrefs: (id)sender;

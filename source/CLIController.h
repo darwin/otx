@@ -16,7 +16,6 @@
 	char*				mRAMFile;
 	cpu_type_t			mArchSelector;
 	UInt32				mArchMagic;
-	BOOL				mExeIsFat;
 	BOOL				mFileIsValid;
 	BOOL				mIgnoreArch;
 	NSString*			mExeName;
