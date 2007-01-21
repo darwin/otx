@@ -240,15 +240,12 @@
 	NSString*		oPath			= [mOFile path];
 	NSString*		otoolString;
 	char			cmdString[100];
-//	char*			cmdFormatString	= mExeIsFat ? "otool -arch %s" : "otool";
-	char*			cmdFormatString	=
-		(mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM) ?
-		"otool -arch %s" : "otool";
+	char*			cmdFormatString	= "otool -arch %s";
 	NSProcessInfo*	procInfo		= [NSProcessInfo processInfo];
 
 	cmdString[0]	= 0;
 
-	snprintf(cmdString, MAX_ARCH_STRING_LENGTH + 1,
+	snprintf(cmdString, MAX_ARCH_STRING_LENGTH + strlen(cmdFormatString) + 1,
 		cmdFormatString, mArchString);
 
 	NSString*	verbosePath	= [NSTemporaryDirectory()
@@ -557,12 +554,24 @@
 		}
 		else	// not code...
 		{
-			if (strstr(theLine->chars,
-				"(__TEXT,__coalesced_text)"))
+			if (strstr(theLine->chars, "(__TEXT,__coalesced_text)"))
+			{
 				mEndOfText	= mCoalTextSect.s.addr + mCoalTextSect.s.size;
-			else if (strstr(theLine->chars,
-				"(__TEXT,__textcoal_nt)"))
+
+#ifdef OTX_DEBUG
+	fprintf(stderr, "[ExeProcessor gatherLineInfos] mEndOfText(mCoalTextSect) == 0x%x\n",
+		mEndOfText);
+#endif
+			}
+			else if (strstr(theLine->chars, "(__TEXT,__textcoal_nt)"))
+			{
 				mEndOfText	= mCoalTextNTSect.s.addr + mCoalTextNTSect.s.size;
+
+#ifdef OTX_DEBUG
+	fprintf(stderr, "[ExeProcessor gatherLineInfos] mEndOfText(mCoalTextNTSect) == 0x%x\n",
+		mEndOfText);
+#endif
+			}
 		}
 
 		theLine	= theLine->next;
@@ -570,6 +579,11 @@
 	}
 
 	mEndOfText	= mTextSect.s.addr + mTextSect.s.size;
+
+#ifdef OTX_DEBUG
+	fprintf(stderr, "[ExeProcessor gatherLineInfos] mEndOfText(mTextSect) == 0x%x\n",
+		mEndOfText);
+#endif
 }
 
 //	processLine:

@@ -579,11 +579,8 @@
 
 - (SInt32)checkOtool
 {
-//	char*		headerArg	= mExeIsFat ? "-f" : "-h";
-	char*		headerArg	=
-		(mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM) ? "-f" : "-h";
 	NSString*	otoolString	= [NSString stringWithFormat:
-		@"otool %s '%@' > /dev/null", headerArg, [mOFile path]];
+		@"otool -h '%@' > /dev/null", /*headerArg,*/ [mOFile path]];
 
 	return system(CSTRING(otoolString));
 }

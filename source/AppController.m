@@ -538,9 +538,6 @@
 	[theAnim setDuration: kMainAnimationTime];
 	[theAnim setAnimationCurve: NSAnimationLinear];
 
-	// Set a flag for our animationDidEnd delegate.
-//	mShowingProgress	= true;
-
 	// Do the deed.
 	[theAnim startAnimation];
 	[theAnim autorelease];
@@ -611,8 +608,6 @@
 		[theAnim setDelegate: self];
 		[theAnim setDuration: kMainAnimationTime];
 		[theAnim setAnimationCurve: NSAnimationLinear];
-
-//		mShowingProgress	= false;
 
 		// Do the deed.
 		[theAnim startAnimation];
@@ -1102,11 +1097,8 @@
 
 - (SInt32)checkOtool
 {
-//	char*		headerArg	= mExeIsFat ? "-f" : "-h";
-	char*		headerArg	=
-		(mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM) ? "-f" : "-h";
 	NSString*	otoolString	= [NSString stringWithFormat:
-		@"otool %s '%@' > /dev/null", headerArg, [mOFile path]];
+		@"otool -h '%@' > /dev/null", /*headerArg,*/ [mOFile path]];
 
 	return system(CSTRING(otoolString));
 }
@@ -1225,8 +1217,6 @@
 		forKey: NSViewAnimationTargetKey];
 	[theNewWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
 		forKey: NSViewAnimationEndFrameKey];
-
-//	NSXViewAnimationCustomEffects	effects	= NSXViewAnimationSwapAtEndEffect
 
 	[theNewWindowItem setObject: [NSNumber numberWithUnsignedInt:
 		NSXViewAnimationSwapAtEndEffect]

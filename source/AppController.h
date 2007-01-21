@@ -81,7 +81,6 @@
 
 	UInt32					mOrigMainViewMask;	// lose
 	UInt32					mOrigProgViewMask;	// lose
-//	BOOL					mShowingProgress;
 }
 
 - (SInt32)checkOtool;

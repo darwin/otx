@@ -84,6 +84,24 @@
 			nextAddy	= newNextAddy;
 	}
 
+	// sanity checks
+#ifdef OTX_DEBUG
+	if (nextAddy <= thisAddy)
+	{
+		fprintf(stderr, "otx: [X86Processor codeFromLine:]: "
+			"nextAddy(0x%x) <= thisAddy(0x%x)\n", nextAddy, thisAddy);
+		return;
+	}
+
+	if ((nextAddy - thisAddy) > 255)
+	{
+		fprintf(stderr, "otx: [X86Processor codeFromLine:]: "
+			"(nextAddy(0x%x) - thisAddy(0x%x)) > "
+			"255\n", nextAddy, thisAddy);
+		return;
+	}
+#endif
+
 	theInstLength	= nextAddy - thisAddy;
 
 	// Fetch the instruction.
