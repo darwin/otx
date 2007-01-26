@@ -3,8 +3,8 @@
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
 		activeBuildConfigurationName = Debug;
 		activeBuildStyle = 4A9504CCFFE6A4B311CA0CBA /* Debug */;
-		activeExecutable = E1C3BA4609A957BF00B38A4D /* otx gui */;
-		activeTarget = 8D1107260486CEB800E47090 /* otx gui */;
+		activeExecutable = E1FA33D20B1005450060060A /* otx cli */;
+		activeTarget = E1FA33D00B1005450060060A /* otx cli */;
 		addToTargets = (
 			8D1107260486CEB800E47090 /* otx gui */,
 		);

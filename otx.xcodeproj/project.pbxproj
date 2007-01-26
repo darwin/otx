@@ -136,7 +136,7 @@
 		E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		E1F81B0A0AE1EF2C003D8E2C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
-		E1FA33D10B1005450060060A /* otx */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = otx; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1FA33D10B1005450060060A /* otx */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = otx; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1FA34020B100D060060060A /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E1FA344F0B105E4E0060060A /* CLIController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CLIController.m; path = source/CLIController.m; sourceTree = "<group>"; };
 		E1FA34510B105E6F0060060A /* CLIController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CLIController.h; path = source/CLIController.h; sourceTree = "<group>"; };
