@@ -16,27 +16,28 @@
 
 #define NSXViewAnimationCustomEffectsKey	@"NSXViewAnimationCustomEffectsKey"
 
-#define NSXViewAnimationSwapAtEndEffect						(1 << 0)
-#define NSXViewAnimationSwapOldKey						\
+#define NSXViewAnimationSwapAtBeginningEffect				(1 << 0)
+#define NSXViewAnimationSwapAtEndEffect						(1 << 1)
+#define NSXViewAnimationSwapOldKey							\
 	@"NSXViewAnimationSwapOldKey"							// NSView*
-#define NSXViewAnimationSwapNewKey						\
+#define NSXViewAnimationSwapNewKey							\
 	@"NSXViewAnimationSwapNewKey"							// NSView*
 
-#define NSXViewAnimationUpdateResizeMasksAtEndEffect		(1 << 1)
-#define NSXViewAnimationResizeMasksArrayKey				\
-	@"NSXViewAnimationResizeMasksArrayKey"					// NSArray*
-#define NSXViewAnimationResizeViewsArrayKey				\
-	@"NSXViewAnimationResizeViewsArrayKey"					// NSArray*
+#define NSXViewAnimationUpdateResizeMasksAtEndEffect		(1 << 2)
+#define NSXViewAnimationResizeMasksArrayKey					\
+	@"NSXViewAnimationResizeMasksArrayKey"					// NSArray*(UInt32)
+#define NSXViewAnimationResizeViewsArrayKey					\
+	@"NSXViewAnimationResizeViewsArrayKey"					// NSArray*(UInt32)
 
-#define NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect	(1 << 2)
-#define NSXViewAnimationWindowMinSizeKey				\
-	@"NSXViewAnimationWindowMinSizeKey"						// NSValue*
-#define NSXViewAnimationWindowMaxSizeKey				\
-	@"NSXViewAnimationWindowMaxSizeKey"						// NSValue*
+#define NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect	(1 << 3)
+#define NSXViewAnimationWindowMinSizeKey					\
+	@"NSXViewAnimationWindowMinSizeKey"						// NSValue*(NSSize*)
+#define NSXViewAnimationWindowMaxSizeKey					\
+	@"NSXViewAnimationWindowMaxSizeKey"						// NSValue*(NSSize*)
 
-#define NSXViewAnimationPerformSelectorAtEndEffect			(1 << 3)
-#define NSXViewAnimationSelectorKey						\
-	@"NSXViewAnimationSelectorKey"							// NSValue*
+#define NSXViewAnimationPerformSelectorAtEndEffect			(1 << 4)
+#define NSXViewAnimationSelectorKey							\
+	@"NSXViewAnimationSelectorKey"							// NSValue*(SEL)
 
 // ============================================================================
 

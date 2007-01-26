@@ -1195,9 +1195,14 @@
 
 	NSRect	targetViewFrame	= [mPrefsViews[theNewIndex] frame];
 
-	targetViewFrame.origin	= (NSPoint){0};
+	// Decide whether to swap the views at the beginning or end of the
+	// animation, based on their relative heights.
+	UInt32	swapWhen	= (targetViewFrame.size.height <
+		[mPrefsViews[mPrefsCurrentViewIndex] frame].size.height) ?
+		NSXViewAnimationSwapAtBeginningEffect				:
+		NSXViewAnimationSwapAtEndEffect;
 
-	// Create dictionary for new window size.
+	// Calculate the new window size.
 	NSRect	origWindowFrame		= [mPrefsWindow frame];
 	NSRect	targetWindowFrame	= origWindowFrame;
 
@@ -1210,6 +1215,7 @@
 
 	targetWindowFrame.origin.y	-= windowHeightDelta;
 
+	// Create dictionary for new window size.
 	NSMutableDictionary*	theNewWindowItem =
 		[NSMutableDictionary dictionaryWithCapacity: 5];
 
@@ -1218,8 +1224,7 @@
 	[theNewWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
 		forKey: NSViewAnimationEndFrameKey];
 
-	[theNewWindowItem setObject: [NSNumber numberWithUnsignedInt:
-		NSXViewAnimationSwapAtEndEffect]
+	[theNewWindowItem setObject: [NSNumber numberWithUnsignedInt: swapWhen]
 		forKey: NSXViewAnimationCustomEffectsKey];
 	[theNewWindowItem setObject: mPrefsViews[mPrefsCurrentViewIndex]
 		forKey: NSXViewAnimationSwapOldKey];
@@ -1305,6 +1310,66 @@
 
 #pragma mark -
 #pragma mark NSAnimation delegates
+//	animationShouldStart:
+// ----------------------------------------------------------------------------
+//	We're only hooking this to accomodate custom effects in NSViewAnimations,
+//	not to determine whether to start the animation. For this reason, we
+//	always return true, even if a sanity check fails.
+
+- (BOOL)animationShouldStart: (NSAnimation*)animation
+{
+	if (![animation isKindOfClass: [NSViewAnimation class]])
+		return true;
+
+	NSArray*	animatedViews	= [(NSViewAnimation*)animation viewAnimations];
+
+	if (!animatedViews)
+		return true;
+
+	NSWindow*	animatingWindow	= [[animatedViews objectAtIndex: 0]
+		objectForKey: NSViewAnimationTargetKey];
+
+	if (animatingWindow != mMainWindow	&&
+		animatingWindow != mPrefsWindow)
+		return true;
+
+	UInt32	i;
+	UInt32	numAnimations	= [animatedViews count];
+	id		animObject		= nil;
+
+	for (i = 0; i < numAnimations; i++)
+	{
+		animObject	= [animatedViews objectAtIndex: i];
+
+		if (!animObject)
+			continue;
+
+		NSNumber*	effects	=
+			[animObject objectForKey: NSXViewAnimationCustomEffectsKey];
+
+		if (!effects)
+			continue;
+
+		// Hide/show 2 views.
+		if ([effects unsignedIntValue] &
+			NSXViewAnimationSwapAtBeginningEffect)
+		{
+			NSView*	oldView	= [animObject
+				objectForKey: NSXViewAnimationSwapOldKey];
+			NSView*	newView	= [animObject
+				objectForKey: NSXViewAnimationSwapNewKey];
+
+			if (oldView)
+				[oldView setHidden: true];
+
+			if (newView)
+				[newView setHidden: false];
+		}
+	}
+
+	return true;
+}
+
 //	animationDidEnd:
 // ----------------------------------------------------------------------------
 
@@ -1336,14 +1401,16 @@
 		if (!animObject)
 			continue;
 
-		NSNumber*	effects	=
+		NSNumber*	effectsNumber	=
 			[animObject objectForKey: NSXViewAnimationCustomEffectsKey];
 
-		if (!effects)
+		if (!effectsNumber)
 			continue;
 
-		if ([effects unsignedIntValue] &
-			NSXViewAnimationSwapAtEndEffect)
+		UInt32	effects	= [effectsNumber unsignedIntValue];
+
+		// Hide/show 2 views.
+		if (effects & NSXViewAnimationSwapAtEndEffect)
 		{
 			NSView*	oldView	= [animObject
 				objectForKey: NSXViewAnimationSwapOldKey];
@@ -1357,8 +1424,8 @@
 				[newView setHidden: false];
 		}
 
-		if ([effects unsignedIntValue] &
-			NSXViewAnimationUpdateResizeMasksAtEndEffect)
+		// Adjust multiple views' resize masks.
+		if (effects & NSXViewAnimationUpdateResizeMasksAtEndEffect)
 		{
 			NSArray*	masks	= [animObject
 				objectForKey: NSXViewAnimationResizeMasksArrayKey];
@@ -1389,8 +1456,8 @@
 			}
 		}
 
-		if ([effects unsignedIntValue] &
-			NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect)
+		// Update the window's min and/or max sizes.
+		if (effects & NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect)
 		{
 			NSValue*	minSizeValue	= [animObject objectForKey:
 				NSXViewAnimationWindowMinSizeKey];
@@ -1406,8 +1473,10 @@
 					[maxSizeValue sizeValue]];
 		}
 
-		if ([effects unsignedIntValue] &
-			NSXViewAnimationPerformSelectorAtEndEffect)
+		// Perform a selector. The method's return value is ignored, and the
+		// method must take no arguments. For any other kind of method, use
+		// NSInvocation instead.
+		if (effects & NSXViewAnimationPerformSelectorAtEndEffect)
 		{
 			NSValue*	selValue	= [animObject objectForKey:
 				NSXViewAnimationSelectorKey];
