@@ -9,7 +9,7 @@
 
 #import "ExeProcessor.h"
 
-@interface	ExeProcessor (Searchers)
+@interface	ExeProcessor(Searchers)
 
 - (BOOL)findSymbolByAddress: (UInt32)inAddress;
 - (BOOL)findClassMethod: (MethodInfo**)outMI

@@ -9,7 +9,7 @@
 #import "ObjectLoader.h"
 #import "ObjcAccessors.h"
 
-@implementation ExeProcessor (ObjectLoader)
+@implementation ExeProcessor(ObjectLoader)
 
 //	loadMachHeader
 // ----------------------------------------------------------------------------
@@ -707,11 +707,6 @@
 	mTextSect.size		= mTextSect.s.size;
 
 	mEndOfText	= mTextSect.s.addr + mTextSect.s.size;
-
-#ifdef OTX_DEBUG
-	fprintf(stderr, "[ObjectLoader loadTextSection:] mEndOfText == 0x%x\n",
-		mEndOfText);
-#endif
 }
 
 //	loadConstTextSection:

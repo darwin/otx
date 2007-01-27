@@ -8,7 +8,7 @@
 
 #import "ObjcAccessors.h"
 
-@implementation ExeProcessor (ObjcAccessors)
+@implementation ExeProcessor(ObjcAccessors)
 
 //	getObjcClassPtr:fromMethod:
 // ----------------------------------------------------------------------------

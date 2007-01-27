@@ -9,7 +9,7 @@
 
 #import "ArchSpecifics.h"
 
-@implementation ExeProcessor (ArchSpecifics)
+@implementation ExeProcessor(ArchSpecifics)
 
 //	gatherFuncInfos
 // ----------------------------------------------------------------------------

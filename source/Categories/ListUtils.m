@@ -9,7 +9,7 @@
 
 #import "ListUtils.h"
 
-@implementation ExeProcessor (ListUtils)
+@implementation ExeProcessor(ListUtils)
 
 // Each text line is stored in one element of a doubly-linked list. These are
 // vanilla textbook funcs for maintaining the list.

@@ -9,7 +9,7 @@
 
 #import "Searchers.h"
 
-@implementation ExeProcessor (Searchers)
+@implementation ExeProcessor(Searchers)
 
 //	findSymbolByAddress:
 // ----------------------------------------------------------------------------
