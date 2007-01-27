@@ -309,6 +309,7 @@ enum {
 	mach_header			mMachHeader;			// (swapped?) copy of the header
 	cpu_type_t			mArchSelector;
 	UInt32				mArchMagic;				// 0xFEEDFACE etc.
+	BOOL				mExeIsFat;
 	BOOL				mSwapped;				// PPC host reading x86 exe or vice versa
 	UInt32				mLocalOffset;			// +420 etc.
 	ThunkInfo*			mThunks;				// x86 only

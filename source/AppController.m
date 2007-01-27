@@ -215,18 +215,26 @@
 	mOutputFilePath	= [inPackageFile path];
 	[mOutputFilePath retain];
 
-	NSString*		theExeName	=
-		[[mOutputFilePath stringByDeletingPathExtension] lastPathComponent];
-	NSString*		theExePath	=
-	[[[mOutputFilePath stringByAppendingPathComponent: @"Contents"]
-		stringByAppendingPathComponent: @"MacOS"]
-		stringByAppendingPathComponent: theExeName];
-	NSFileManager*	theFileMan	= [NSFileManager defaultManager];
+	NSBundle*	exeBundle	= [NSBundle bundleWithPath: mOutputFilePath];
 
-	if ([theFileMan isExecutableFileAtPath: theExePath])
-		[self newOFile: [NSURL fileURLWithPath: theExePath] needsPath: false];
-	else
-		[self doDrillErrorAlert: theExePath];
+	if (!exeBundle)
+	{
+		fprintf(stderr, "otx: [AppController newPackageFile:] "
+			"unable to get bundle from path: %s\n", CSTRING(mOutputFilePath));
+		return;
+	}
+
+	NSString*	theExePath	= [exeBundle executablePath];
+
+	if (!theExePath)
+	{
+		fprintf(stderr, "otx: [AppController newPackageFile:] "
+			"unable to get executable path from bundle: %s\n",
+			CSTRING(mOutputFilePath));
+		return;
+	}
+
+	[self newOFile: [NSURL fileURLWithPath: theExePath] needsPath: false];
 }
 
 //	newOFile:
