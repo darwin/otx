@@ -41,7 +41,7 @@
 
 // ============================================================================
 
-@interface AppController : NSObject <ProgressReporter>
+@interface AppController : NSObject<ProgressReporter>
 {
 // main window
 	IBOutlet NSWindow*				mMainWindow;
@@ -79,9 +79,6 @@
 	NSView**				mPrefsViews;
 	UInt32					mPrefsCurrentViewIndex;
 	host_basic_info_data_t	mHostInfo;
-
-	UInt32					mOrigMainViewMask;	// lose
-	UInt32					mOrigProgViewMask;	// lose
 }
 
 - (SInt32)checkOtool;
@@ -114,6 +111,5 @@
 - (void)doOtoolAlert;
 - (void)doLipoAlert;
 - (void)doErrorAlert;
-- (void)doDrillErrorAlert: (NSString*)inExePath;
 
 @end

@@ -54,7 +54,7 @@ enum {
 
 // ============================================================================
 
-@interface X86Processor : ExeProcessor <Deobfuscator>
+@interface X86Processor : ExeProcessor<Deobfuscator>
 {
 	GPRegisterInfo	mRegInfos[8];
 }

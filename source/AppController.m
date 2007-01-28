@@ -90,62 +90,6 @@
 	[super dealloc];
 }
 
-//	applicationDidFinishLaunching:
-// ----------------------------------------------------------------------------
-
-- (void)applicationDidFinishLaunching: (NSNotification*)inNotification
-{
-	// Check for Smart Crash Reports.
-	Boolean authRequired = false;
-
-	if (UnsanitySCR_CanInstall(&authRequired))
-		UnsanitySCR_Install(authRequired ? kUnsanitySCR_GlobalInstall : 0);
-
-	// Set mArchSelector to the host architecture by default. This code was
-	// lifted from http://developer.apple.com/technotes/tn/tn2086.html
-	mach_msg_type_number_t	infoCount	= HOST_BASIC_INFO_COUNT;
-
-	host_info(mach_host_self(), HOST_BASIC_INFO,
-		(host_info_t)&mHostInfo, &infoCount);
-
-	mArchSelector	= mHostInfo.cpu_type;
-
-	// Setup prefs window
-	UInt32	numViews	= [mPrefsViewPicker segmentCount];
-	UInt32	i;
-
-	mPrefsCurrentViewIndex	= 0;
-	mPrefsViews				= calloc(numViews, sizeof(NSView*));
-	mPrefsViews[0]			= mPrefsGeneralView;
-	mPrefsViews[1]			= mPrefsOutputView;
-
-	[mPrefsWindow setFrame: [mPrefsWindow frameRectForContentRect:
-		[mPrefsViews[mPrefsCurrentViewIndex] frame]] display: false];
-
-	for (i = 0; i < numViews; i++)
-	{
-		[[mPrefsWindow contentView] addSubview: mPrefsViews[i]
-			positioned: NSWindowBelow relativeTo: mPrefsViewPicker];
-	}
-
-	// Show main window
-	[self hideProgView: false];
-	[mMainWindow setFrameAutosaveName: [mMainWindow title]];
-	[mMainWindow center];
-	[mMainWindow makeKeyAndOrderFront: nil];
-}
-
-//	windowDidResize:
-// ----------------------------------------------------------------------------
-//	Implemented to avoid artifacts from the NSBox. This method is not called
-//	during animated resizes.
-
-- (void)windowDidResize: (NSNotification*)inNotification
-{
-	if ([inNotification object] == mMainWindow)
-		[mMainWindow display];
-}
-
 //	openExe:
 // ----------------------------------------------------------------------------
 //	Open from File menu. Packages are treated as directories, so we can get
@@ -165,47 +109,10 @@
 	[self newOFile: [NSURL fileURLWithPath: theName] needsPath: true];
 }
 
-//	application:openFile:
-// ----------------------------------------------------------------------------
-//	Open by drag n drop from Finder.
-
-- (BOOL)application: (NSApplication*)sender
-		   openFile: (NSString*)filename
-{
-	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: filename])
-		[self newPackageFile: [NSURL fileURLWithPath: filename]];
-	else
-		[self newOFile: [NSURL fileURLWithPath: filename] needsPath: true];
-
-	return true;
-}
-
-#pragma mark -
-//	controlTextDidChange:
-// ----------------------------------------------------------------------------
-
-- (void)controlTextDidChange: (NSNotification*)inNotification
-{
-	switch ([[inNotification object] tag])
-	{
-		case kOutputTextTag:
-			[self syncSaveButton];
-			break;
-
-		case kOutputFileBaseTag:
-		case kOutputFileExtTag:
-			[self syncOutputText: nil];
-			break;
-
-		default:
-			break;
-	}
-}
-
 //	newPackageFile:
 // ----------------------------------------------------------------------------
-//	Attempt to drill into the package to the executable. Fails when exe name
-//	is different from app name, and when the exe is unreadable.
+//	Attempt to drill into the package to the executable. Fails when the exe is
+//	unreadable.
 
 - (void)newPackageFile: (NSURL*)inPackageFile
 {
@@ -479,8 +386,8 @@
 	targetWindowFrame.size.height	+= progViewFrame.size.height;
 
 	// Save the resize masks and apply new ones.
-	mOrigMainViewMask	= [mMainView autoresizingMask];
-	mOrigProgViewMask	= [mProgView autoresizingMask];
+	UInt32	origMainViewMask	= [mMainView autoresizingMask];
+	UInt32	origProgViewMask	= [mProgView autoresizingMask];
 
 	[mMainView setAutoresizingMask: NSViewMinYMargin];
 	[mProgView setAutoresizingMask: NSViewMinYMargin];
@@ -500,9 +407,9 @@
 		NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect	|
 		NSXViewAnimationPerformSelectorAtEndEffect)];
 	NSNumber*	origMainMask	= [NSNumber numberWithUnsignedInt:
-		mOrigMainViewMask];
+		origMainViewMask];
 	NSNumber*	origProgMask	= [NSNumber numberWithUnsignedInt:
-		mOrigProgViewMask];
+		origProgViewMask];
 
 	// Custom keys
 	[newWindowItem setObject: effect
@@ -562,13 +469,13 @@
 	targetWindowFrame.origin.y		+= progViewFrame.size.height;
 	targetWindowFrame.size.height	-= progViewFrame.size.height;
 
-	mOrigMainViewMask	= [mMainView autoresizingMask];
-	mOrigProgViewMask	= [mProgView autoresizingMask];
+	UInt32	origMainViewMask	= [mMainView autoresizingMask];
+	UInt32	origProgViewMask	= [mProgView autoresizingMask];
 
 	NSNumber*	origMainMask	= [NSNumber numberWithUnsignedInt:
-		mOrigMainViewMask];
+		origMainViewMask];
 	NSNumber*	origProgMask	= [NSNumber numberWithUnsignedInt:
-		mOrigProgViewMask];
+		origProgViewMask];
 
 	[mMainView setAutoresizingMask: NSViewMinYMargin];
 	[mProgView setAutoresizingMask: NSViewMinYMargin];
@@ -625,8 +532,8 @@
 	{
 		[mMainWindow setFrame: targetWindowFrame display: false];
 		[mMainWindow setContentMaxSize: maxSize];
-		[mMainView setAutoresizingMask: mOrigMainViewMask];
-		[mProgView setAutoresizingMask: mOrigProgViewMask];
+		[mMainView setAutoresizingMask: origMainViewMask];
+		[mProgView setAutoresizingMask: origProgViewMask];
 	}	
 }
 
@@ -669,6 +576,7 @@
 		[self doLipoAlert];
 }
 
+#pragma mark -
 //	verifyNops:
 // ----------------------------------------------------------------------------
 //	Create an instance of xxxProcessor to search for obfuscated nops. If any
@@ -994,119 +902,13 @@
 }
 
 #pragma mark -
-//	drawerDidOpen:
-// ----------------------------------------------------------------------------
-
-- (void)drawerDidOpen: (NSNotification*)notification
-{
-	if ([notification object] != mProgDrawer || !mOFile)
-		return;
-
-	if ([self checkOtool] != noErr)
-	{
-		fprintf(stderr, "otx: otool not found\n");
-		[self doOtoolAlert];
-		[mProgDrawer close];
-		return;
-	}
-
-	Class	procClass	= nil;
-
-	switch (mArchSelector)
-	{
-		case CPU_TYPE_POWERPC:
-			procClass	= [PPCProcessor class];
-			break;
-
-		case CPU_TYPE_I386:
-			procClass	= [X86Processor class];
-			break;
-
-		default:
-			fprintf(stderr, "otx: [AppController drawerDidOpen]: "
-				"unknown arch type: %d", mArchSelector);
-			break;
-	}
-
-	if (!procClass)
-	{
-		[mProgDrawer close];
-		return;
-	}
-
-	// Save defaults into the ProcOptions struct.
-	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
-
-	ProcOptions	opts	= {0};
-
-	opts.localOffsets			=
-		[theDefaults boolForKey: ShowLocalOffsetsKey];
-	opts.entabOutput			=
-		[theDefaults boolForKey: EntabOutputKey];
-	opts.dataSections			=
-		[theDefaults boolForKey: ShowDataSectionKey];
-	opts.checksum				=
-		[theDefaults boolForKey: ShowMD5Key];
-	opts.verboseMsgSends		=
-		[theDefaults boolForKey: VerboseMsgSendsKey];
-	opts.separateLogicalBlocks	=
-		[theDefaults boolForKey: SeparateLogicalBlocksKey];
-	opts.demangleCppNames		=
-		[theDefaults boolForKey: DemangleCppNamesKey];
-	opts.returnTypes			=
-		[theDefaults boolForKey: ShowMethodReturnTypesKey];
-	opts.variableTypes			=
-		[theDefaults boolForKey: ShowIvarTypesKey];
-
-	id	theProcessor	= [[procClass alloc] initWithURL: mOFile
-		controller: self andOptions: &opts];
-
-	if (!theProcessor)
-	{
-		fprintf(stderr, "otx: -[AppController drawerDidOpen]: "
-			"unable to create processor.\n");
-		[theProcessor release];
-		[mProgDrawer close];
-		return;
-	}
-
-	if (![theProcessor processExe: mOutputFilePath])
-	{
-		fprintf(stderr, "otx: possible permission error\n");
-		[self doErrorAlert];
-		[theProcessor release];
-		[mProgDrawer close];
-		return;
-	}
-
-	[theProcessor release];
-	[mProgDrawer close];
-
-	if ([theDefaults boolForKey: OpenOutputFileKey])
-		[[NSWorkspace sharedWorkspace] openFile: mOutputFilePath
-			withApplication: [theDefaults objectForKey: OutputAppKey]];
-}
-
-//	drawerDidClose:
-// ----------------------------------------------------------------------------
-
-- (void)drawerDidClose: (NSNotification*)notification
-{
-	if ([notification object] != mProgDrawer)
-		return;
-
-	[mProgBar setIndeterminate: true];
-	[mProgBar setDoubleValue: 0];
-}
-
-#pragma mark -
 //	checkOtool
 // ----------------------------------------------------------------------------
 
 - (SInt32)checkOtool
 {
 	NSString*	otoolString	= [NSString stringWithFormat:
-		@"otool -h '%@' > /dev/null", /*headerArg,*/ [mOFile path]];
+		@"otool -h '%@' > /dev/null", [mOFile path]];
 
 	return system(CSTRING(otoolString));
 }
@@ -1159,7 +961,7 @@
 
 //	doDrillErrorAlert:
 // ----------------------------------------------------------------------------
-
+/*
 - (void)doDrillErrorAlert: (NSString*)inExePath
 {
 	NSAlert*	theAlert		= [[NSAlert alloc] init];
@@ -1173,7 +975,7 @@
 	[theAlert beginSheetModalForWindow: mMainWindow
 		modalDelegate: nil didEndSelector: nil contextInfo: nil];
 	[theAlert release];
-}
+}*/
 
 #pragma mark -
 //	showPrefs
@@ -1255,6 +1057,8 @@
 	[theWindowAnim autorelease];
 }
 
+#pragma mark -
+#pragma mark ProgressReporter protocol
 //	reportProgress:
 // ----------------------------------------------------------------------------
 
@@ -1309,6 +1113,146 @@
 			[mProgBar setDoubleValue: *(inState->value)];
 			[mProgBar display];
 
+			break;
+
+		default:
+			break;
+	}
+}
+
+#pragma mark -
+#pragma mark DropBox delegates
+//	dropBox:dragDidEnter:
+// ----------------------------------------------------------------------------
+
+- (NSDragOperation)dropBox: (DropBox*)inDropBox
+			  dragDidEnter: (id <NSDraggingInfo>)inItem
+{
+	if (inDropBox != mDropBox)
+		return false;
+
+	NSPasteboard*	thePasteBoard	= [inItem draggingPasteboard];
+
+	// bail if not a file.
+	if (![[thePasteBoard types] containsObject: NSFilenamesPboardType])
+		return NSDragOperationNone;
+
+	NSArray*	theFiles	= [thePasteBoard
+		propertyListForType: NSFilenamesPboardType];
+
+	// bail if not a single file.
+	if ([theFiles count] != 1)
+		return NSDragOperationNone;
+
+	NSDragOperation	theSourceDragMask	= [inItem draggingSourceOperationMask];
+
+	// bail if modifier keys pressed.
+	if (!(theSourceDragMask & NSDragOperationLink))
+		return NSDragOperationNone;
+
+	return NSDragOperationLink;
+}
+
+//	dropBox:didReceiveItem:
+// ----------------------------------------------------------------------------
+
+- (BOOL)dropBox: (DropBox*)inDropBox
+ didReceiveItem: (id<NSDraggingInfo>)inItem
+{
+	if (inDropBox != mDropBox)
+		return false;
+
+	NSURL*	theURL	= [NSURL URLFromPasteboard: [inItem draggingPasteboard]];
+
+	if (!theURL)
+		return false;
+
+	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: [theURL path]])
+		[self newPackageFile: theURL];
+	else
+		[self newOFile: theURL needsPath: true];
+
+	return true;
+}
+
+#pragma mark -
+#pragma mark NSApplication delegates
+//	applicationDidFinishLaunching:
+// ----------------------------------------------------------------------------
+
+- (void)applicationDidFinishLaunching: (NSNotification*)inNotification
+{
+	// Check for Smart Crash Reports.
+	Boolean authRequired = false;
+
+	if (UnsanitySCR_CanInstall(&authRequired))
+		UnsanitySCR_Install(authRequired ? kUnsanitySCR_GlobalInstall : 0);
+
+	// Set mArchSelector to the host architecture by default. This code was
+	// lifted from http://developer.apple.com/technotes/tn/tn2086.html
+	mach_msg_type_number_t	infoCount	= HOST_BASIC_INFO_COUNT;
+
+	host_info(mach_host_self(), HOST_BASIC_INFO,
+		(host_info_t)&mHostInfo, &infoCount);
+
+	mArchSelector	= mHostInfo.cpu_type;
+
+	// Setup prefs window
+	UInt32	numViews	= [mPrefsViewPicker segmentCount];
+	UInt32	i;
+
+	mPrefsCurrentViewIndex	= 0;
+	mPrefsViews				= calloc(numViews, sizeof(NSView*));
+	mPrefsViews[0]			= mPrefsGeneralView;
+	mPrefsViews[1]			= mPrefsOutputView;
+
+	[mPrefsWindow setFrame: [mPrefsWindow frameRectForContentRect:
+		[mPrefsViews[mPrefsCurrentViewIndex] frame]] display: false];
+
+	for (i = 0; i < numViews; i++)
+	{
+		[[mPrefsWindow contentView] addSubview: mPrefsViews[i]
+			positioned: NSWindowBelow relativeTo: mPrefsViewPicker];
+	}
+
+	// Show main window
+	[self hideProgView: false];
+	[mMainWindow setFrameAutosaveName: [mMainWindow title]];
+	[mMainWindow center];
+	[mMainWindow makeKeyAndOrderFront: nil];
+}
+
+//	application:openFile:
+// ----------------------------------------------------------------------------
+//	Open by drag n drop from Finder.
+
+- (BOOL)application: (NSApplication*)sender
+		   openFile: (NSString*)filename
+{
+	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: filename])
+		[self newPackageFile: [NSURL fileURLWithPath: filename]];
+	else
+		[self newOFile: [NSURL fileURLWithPath: filename] needsPath: true];
+
+	return true;
+}
+
+#pragma mark -
+#pragma mark NSControl delegates
+//	controlTextDidChange:
+// ----------------------------------------------------------------------------
+
+- (void)controlTextDidChange: (NSNotification*)inNotification
+{
+	switch ([[inNotification object] tag])
+	{
+		case kOutputTextTag:
+			[self syncSaveButton];
+			break;
+
+		case kOutputFileBaseTag:
+		case kOutputFileExtTag:
+			[self syncOutputText: nil];
 			break;
 
 		default:
@@ -1501,58 +1445,16 @@
 }
 
 #pragma mark -
-#pragma mark DropBox delegates
-//	dropBox:dragDidEnter:
+#pragma mark NSWindow delegates
+//	windowDidResize:
 // ----------------------------------------------------------------------------
+//	Implemented to avoid artifacts from the NSBox. This method is not called
+//	during animated resizes.
 
-- (NSDragOperation)dropBox: (DropBox*)inDropBox
-			  dragDidEnter: (id <NSDraggingInfo>)inItem
+- (void)windowDidResize: (NSNotification*)inNotification
 {
-	if (inDropBox != mDropBox)
-		return false;
-
-	NSPasteboard*	thePasteBoard	= [inItem draggingPasteboard];
-
-	// bail if not a file.
-	if (![[thePasteBoard types] containsObject: NSFilenamesPboardType])
-		return NSDragOperationNone;
-
-	NSArray*	theFiles	= [thePasteBoard
-		propertyListForType: NSFilenamesPboardType];
-
-	// bail if not a single file.
-	if ([theFiles count] != 1)
-		return NSDragOperationNone;
-
-	NSDragOperation	theSourceDragMask	= [inItem draggingSourceOperationMask];
-
-	// bail if modifier keys pressed.
-	if (!(theSourceDragMask & NSDragOperationLink))
-		return NSDragOperationNone;
-
-	return NSDragOperationLink;
-}
-
-//	dropBox:didReceiveItem:
-// ----------------------------------------------------------------------------
-
-- (BOOL)dropBox: (DropBox*)inDropBox
- didReceiveItem: (id<NSDraggingInfo>)inItem
-{
-	if (inDropBox != mDropBox)
-		return false;
-
-	NSURL*	theURL	= [NSURL URLFromPasteboard: [inItem draggingPasteboard]];
-
-	if (!theURL)
-		return false;
-
-	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: [theURL path]])
-		[self newPackageFile: theURL];
-	else
-		[self newOFile: theURL needsPath: true];
-
-	return true;
+	if ([inNotification object] == mMainWindow)
+		[mMainWindow display];
 }
 
 @end

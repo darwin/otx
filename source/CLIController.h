@@ -9,7 +9,7 @@
 
 // ============================================================================
 
-@interface CLIController : NSObject <ProgressReporter>
+@interface CLIController : NSObject<ProgressReporter>
 {
 @private
 	NSURL*				mOFile;
@@ -21,7 +21,6 @@
 	NSString*			mExeName;
 	BOOL				mVerify;
 	BOOL				mShowProgress;
-
 	ProcOptions			mOpts;
 }
 
@@ -40,7 +39,6 @@
 
 // alerts
 - (void)doErrorAlert;
-- (void)doDrillErrorAlert: (NSString*)inExePath;
 
 // ProgressReporter protocol
 - (void)reportProgress: (ProgressState*)inState;

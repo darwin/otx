@@ -392,8 +392,8 @@
 #pragma mark -
 //	newPackageFile:
 // ----------------------------------------------------------------------------
-//	Attempt to drill into the package to the executable. Fails when exe name
-//	is different from app name, and when the exe is unreadable.
+//	Attempt to drill into the package to the executable. Fails when the exe is
+//	unreadable.
 
 - (void)newPackageFile: (NSURL*)inPackageFile
 {
@@ -587,7 +587,7 @@
 - (SInt32)checkOtool
 {
 	NSString*	otoolString	= [NSString stringWithFormat:
-		@"otool -h '%@' > /dev/null", /*headerArg,*/ [mOFile path]];
+		@"otool -h '%@' > /dev/null", [mOFile path]];
 
 	return system(CSTRING(otoolString));
 }
@@ -601,16 +601,8 @@
 		"permission for the destination folder.\n");
 }
 
-//	doDrillErrorAlert:
-// ----------------------------------------------------------------------------
-
-- (void)doDrillErrorAlert: (NSString*)inExePath
-{
-	fprintf(stderr, "otx: No executable file found at %@. Please locate the "
-		"executable file and try again.\n", CSTRING(inExePath));
-}
-
 #pragma mark -
+#pragma mark ProgressReporter protocol
 //	reportProgress:
 // ----------------------------------------------------------------------------
 
