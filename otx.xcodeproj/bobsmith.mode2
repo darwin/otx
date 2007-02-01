@@ -316,6 +316,8 @@
 									<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 									<array>
 										<array>
+											<integer>15</integer>
+											<integer>7</integer>
 											<integer>0</integer>
 										</array>
 									</array>
@@ -349,7 +351,7 @@
 									<real>43</real>
 								</array>
 								<key>RubberWindowFrame</key>
-								<string>565 98 455 648 0 0 1024 746 </string>
+								<string>566 98 455 648 0 0 1024 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXSmartGroupTreeModule</string>
@@ -526,7 +528,7 @@
 		<string>/Volumes/Venus/Dev/otx/project/trunk/otx.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>565 98 455 648 0 0 1024 746 </string>
+	<string>566 98 455 648 0 0 1024 746 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>

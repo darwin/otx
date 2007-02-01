@@ -4,11 +4,6 @@
 	This file is in the public domain.
 */
 
-/*#import <mach-o/fat.h>
-#import <mach-o/loader.h>
-#import <sys/types.h>
-#import <sys/ptrace.h>
-#import <sys/syscall.h>*/
 #import "SystemIncludes.h"
 
 #import "AppController.h"
@@ -21,15 +16,9 @@
 
 #import "SmartCrashReportsInstall.h"
 
-//<<<<<<< .mine
-//=======
 #ifdef USESMARTERPOPEN
   #import "SmarterPopen.h"
 #endif
-
-
-//>>>>>>> .r204
-// ============================================================================
 
 @implementation AppController
 
