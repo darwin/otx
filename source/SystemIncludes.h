@@ -18,6 +18,7 @@
 #import <objc/objc-runtime.h>
 #import <sys/ptrace.h>
 #import <sys/syscall.h>
+#import <sys/types.h>
 
 #define fat_header			struct fat_header
 #define fat_arch			struct fat_arch

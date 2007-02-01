@@ -11,8 +11,23 @@
 #define kOutputFileBaseTag	200
 #define kOutputFileExtTag	201
 
-#define	kPrefsAnimationTime	.15
-#define	kMainAnimationTime	.15
+#define	kPrefsAnimationTime	0.15
+#define	kMainAnimationTime	0.15
+
+/*	iTunes scraped
+#define kPolishedLightRed	0.776
+#define kPolishedLightGreen	0.776
+#define kPolishedLightBlue	0.772
+#define kPolishedDarkRed	0.586
+#define kPolishedDarkGreen	0.582
+#define kPolishedDarkBlue	0.586*/
+
+#define kPolishedLightRed	0.780
+#define kPolishedLightGreen	0.780
+#define kPolishedLightBlue	0.790
+#define kPolishedDarkRed	0.630
+#define kPolishedDarkGreen	0.630
+#define kPolishedDarkBlue	0.640
 
 #define NSXViewAnimationCustomEffectsKey	@"NSXViewAnimationCustomEffectsKey"
 
@@ -45,19 +60,21 @@
 {
 // main window
 	IBOutlet NSWindow*				mMainWindow;
-	IBOutlet NSDrawer*				mProgDrawer;
 	IBOutlet NSPopUpButton*			mArchPopup;
 	IBOutlet NSButton*				mThinButton;
 	IBOutlet NSButton*				mVerifyButton;
 	IBOutlet NSTextField*			mOutputText;
+	IBOutlet NSTextField*			mOutputLabelText;
 	IBOutlet NSTextField*			mPathText;
+	IBOutlet NSTextField*			mPathLabelText;
 	IBOutlet NSTextField*			mProgText;
+	IBOutlet NSTextField*			mTypeText;
+	IBOutlet NSTextField*			mTypeLabelText;
 	IBOutlet NSProgressIndicator*	mProgBar;
 	IBOutlet NSButton*				mSaveButton;
-	IBOutlet NSTextField*			mTypeText;
 	IBOutlet DropBox*				mDropBox;
-	IBOutlet NSView*				mProgView;
 	IBOutlet NSView*				mMainView;
+	IBOutlet NSView*				mProgView;
 
 // prefs window
 	IBOutlet NSWindow*				mPrefsWindow;
@@ -66,24 +83,28 @@
 	IBOutlet NSView*				mPrefsOutputView;
 
 @private
-	NSURL*					mOFile;
-	char*					mRAMFile;
-	cpu_type_t				mArchSelector;
-	UInt32					mArchMagic;
-	BOOL					mFileIsValid;
-	BOOL					mIgnoreArch;
-	NSString*				mExeName;
-	NSString*				mOutputFileLabel;
-	NSString*				mOutputFileName;
-	NSString*				mOutputFilePath;
-	NSView**				mPrefsViews;
-	UInt32					mPrefsCurrentViewIndex;
-	host_basic_info_data_t	mHostInfo;
+	NSURL*						mOFile;
+	char*						mRAMFile;
+	cpu_type_t					mArchSelector;
+	UInt32						mArchMagic;
+	BOOL						mFileIsValid;
+	BOOL						mIgnoreArch;
+	NSString*					mExeName;
+	NSString*					mOutputFileLabel;
+	NSString*					mOutputFileName;
+	NSString*					mOutputFilePath;
+	NSView**					mPrefsViews;
+	UInt32						mPrefsCurrentViewIndex;
+	host_basic_info_data_t		mHostInfo;
+	NSColor*					mPolishedLightColor;
+	NSColor*					mPolishedDarkColor;
+	NSShadow*					mTextShadow;
 }
 
 - (SInt32)checkOtool;
 
 // main window
+- (void)setupMainWindow;
 - (IBAction)showMainWindow: (id)sender;
 - (IBAction)selectArch: (id)sender;
 - (IBAction)openExe: (id)sender;
@@ -102,6 +123,7 @@
 		   contextInfo: (void*)contextInfo;
 - (void)showProgView;
 - (void)hideProgView: (BOOL)inAnimate;
+- (void)drawMainWindowBackground;
 
 // prefs window
 - (IBAction)showPrefs: (id)sender;

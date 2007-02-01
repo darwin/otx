@@ -41,6 +41,7 @@
 		E1B135E50B185123002EB674 /* ObjcAccessors.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B135E30B185122002EB674 /* ObjcAccessors.m */; };
 		E1B1361F0B192AAC002EB674 /* ArchSpecifics.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B1361E0B192AAC002EB674 /* ArchSpecifics.m */; };
 		E1B136200B192AAC002EB674 /* ArchSpecifics.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B1361E0B192AAC002EB674 /* ArchSpecifics.m */; };
+		E1DBB2850B72638C00501583 /* GradientImage.m in Sources */ = {isa = PBXBuildFile; fileRef = E1DBB2830B72638C00501583 /* GradientImage.m */; };
 		E1F81AC50AE1EE02003D8E2C /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */; };
 		E1F81ADD0AE1EEEC003D8E2C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */; };
 		E1F81B090AE1EF07003D8E2C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */; };
@@ -134,6 +135,8 @@
 		E1B1361E0B192AAC002EB674 /* ArchSpecifics.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ArchSpecifics.m; path = source/Categories/ArchSpecifics.m; sourceTree = "<group>"; };
 		E1B136210B192ABE002EB674 /* ArchSpecifics.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ArchSpecifics.h; path = source/Categories/ArchSpecifics.h; sourceTree = "<group>"; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
+		E1DBB2830B72638C00501583 /* GradientImage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = GradientImage.m; path = source/GradientImage.m; sourceTree = "<group>"; };
+		E1DBB2840B72638C00501583 /* GradientImage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = GradientImage.h; path = source/GradientImage.h; sourceTree = "<group>"; };
 		E1F483530B38DB4200CECE18 /* SharedDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharedDefs.h; path = source/SharedDefs.h; sourceTree = "<group>"; };
 		E1F81AC20AE1EDC0003D8E2C /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = "source/Smart Crash Reports/SmartCrashReportsInstall.h"; sourceTree = "<group>"; };
 		E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = "source/Smart Crash Reports/SmartCrashReportsInstall.o"; sourceTree = "<group>"; };
@@ -183,6 +186,8 @@
 				E1FA344F0B105E4E0060060A /* CLIController.m */,
 				E1AD98A40B57311B00E56D96 /* DropBox.h */,
 				E1AD98A50B57311B00E56D96 /* DropBox.m */,
+				E1DBB2830B72638C00501583 /* GradientImage.m */,
+				E1DBB2840B72638C00501583 /* GradientImage.h */,
 				3189F53A0B717E6100A9B9F4 /* SmarterPopen.h */,
 				3189F53B0B717E6100A9B9F4 /* SmarterPopen.m */,
 				E145F6D10B437F5900615A16 /* SmoothViewAnimation.h */,
@@ -475,6 +480,7 @@
 				E145F6D30B437F5900615A16 /* SmoothViewAnimation.m in Sources */,
 				E1AD98A60B57311C00E56D96 /* DropBox.m in Sources */,
 				3189F53C0B717E6100A9B9F4 /* SmarterPopen.m in Sources */,
+				E1DBB2850B72638C00501583 /* GradientImage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

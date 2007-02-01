@@ -20,6 +20,15 @@
 {
 	[self registerForDraggedTypes:
 		[NSArray arrayWithObject: NSFilenamesPboardType]];
+	mFillRect	= true;
+}
+
+//	setFillsRect:
+// ----------------------------------------------------------------------------
+
+- (void)setFillsRect: (BOOL)inFill
+{
+	mFillRect	= inFill;
 }
 
 //	draggingEntered:
@@ -29,7 +38,8 @@
 {
 	NSDragOperation	dragOp	= NSDragOperationNone;
 
-	if (delegate)
+	if (delegate && [delegate respondsToSelector:
+		@selector(dropBox:dragDidEnter:)])
 		dragOp	= [delegate dropBox: self dragDidEnter: sender];
 
 	if (dragOp == NSDragOperationNone)
@@ -37,6 +47,7 @@
 
 	mShowHilite	= true;
 	[self setNeedsDisplay: true];
+
 	return dragOp;
 }
 
@@ -48,8 +59,9 @@
 	mShowHilite	= false;
 	[self setNeedsDisplay: true];
 
-	if (delegate)
-		return [delegate dropBox: self dragDidExit: sender];
+	if (delegate && [delegate respondsToSelector:
+		@selector(dropBox:dragDidExit:)])
+		[delegate dropBox: self dragDidExit: sender];
 }
 
 //	performDragOperation:
@@ -60,10 +72,13 @@
 	mShowHilite	= false;
 	[self setNeedsDisplay: true];
 
-	if (delegate)
-		return [delegate dropBox: self didReceiveItem: sender];
-	else
+	if (!delegate)
 		return false;
+
+	if ([delegate respondsToSelector: @selector(dropBox:didReceiveItem:)])
+		return [delegate dropBox: self didReceiveItem: sender];
+
+	return false;
 }
 
 //	drawRect:
@@ -73,29 +88,55 @@
 {
 	[super drawRect: rect];
 
-	if (mShowHilite)
+	if (!mShowHilite)
+		return;
+
+	NSBorderType	borderType	= [self borderType];
+
+	if (borderType < 0 || borderType > 3)
 	{
-		NSRect			innerRect	= rect;
-		NSColor*		baseColor	= [NSColor keyboardFocusIndicatorColor];
-		NSColor*		color;
-		UInt8			i;
-		NSBorderType	borderType	= [self borderType];
+		fprintf(stderr, "DropBox: invalid NSBorderType: %d\n", borderType);
+		return;
+	}
 
-		if (borderType < 0 || borderType > 3)
-		{
-			fprintf(stderr, "invalid NSBorderType: %d\n", borderType);
-			return;
-		}
+	NSWindow*	window	= [self window];
+	UInt8		borderWidth;
+	BOOL		isTextured;
 
-		for (i = 0; i < kBorderWidth; i++)
-		{
-			color	= [baseColor colorWithAlphaComponent:
-				gAlphas[borderType][i]];
-			[color set];
-			NSFrameRectWithWidthUsingOperation(
-				innerRect, 1.0, NSCompositeSourceOver);
-			innerRect	= NSInsetRect(innerRect, 1.0, 1.0);
-		}
+	if (window && ([window styleMask] & NSTexturedBackgroundWindowMask))
+	{
+		isTextured	= true;
+		borderWidth	= kTexturedBorderWidth;
+	}
+	else
+	{
+		isTextured	= false;
+		borderWidth	= kBorderWidth;
+	}
+
+	NSRect		innerRect	= rect;
+	NSColor*	baseColor	= [NSColor keyboardFocusIndicatorColor];
+	NSColor*	color;
+	UInt8		i;
+
+	for (i = 0; i < borderWidth; i++)
+	{
+		color	= [baseColor colorWithAlphaComponent: (isTextured) ?
+			gTexturedAlphas[borderType][i] : gAlphas[borderType][i]];
+		[color set];
+		NSFrameRectWithWidthUsingOperation(
+			innerRect, 1.0, NSCompositeSourceOver);
+		innerRect	= NSInsetRect(innerRect, 1.0, 1.0);
+	}
+
+	if (mFillRect)
+	{
+		if (borderType == NSNoBorder || borderType == NSLineBorder)
+			innerRect	= NSInsetRect(innerRect, -1.0, -1.0);
+
+		color	= [baseColor colorWithAlphaComponent: kFillAlpha];
+		[color set];
+		NSRectFillUsingOperation(innerRect, NSCompositeSourceOver);
 	}
 }
 

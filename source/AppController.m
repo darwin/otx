@@ -4,14 +4,16 @@
 	This file is in the public domain.
 */
 
-#import <mach-o/fat.h>
+/*#import <mach-o/fat.h>
 #import <mach-o/loader.h>
 #import <sys/types.h>
 #import <sys/ptrace.h>
-#import <sys/syscall.h>
+#import <sys/syscall.h>*/
+#import "SystemIncludes.h"
 
 #import "AppController.h"
 #import "ExeProcessor.h"
+#import "GradientImage.h"
 #import "PPCProcessor.h"
 #import "SmoothViewAnimation.h"
 #import "X86Processor.h"
@@ -19,13 +21,14 @@
 
 #import "SmartCrashReportsInstall.h"
 
+//<<<<<<< .mine
+//=======
 #ifdef USESMARTERPOPEN
   #import "SmarterPopen.h"
 #endif
 
 
-#define DRAWERS_SUCK	1
-
+//>>>>>>> .r204
 // ============================================================================
 
 @implementation AppController
@@ -67,8 +70,7 @@
 
 - (id)init
 {
-	self = [super init];	// with apologies to Wil Shipley
-	return self;
+	return (self = [super init]);
 }
 
 //	dealloc
@@ -90,6 +92,15 @@
 
 	if (mOutputFilePath)
 		[mOutputFilePath release];
+
+	if (mPolishedLightColor)
+		[mPolishedLightColor release];
+
+	if (mPolishedDarkColor)
+		[mPolishedDarkColor release];
+
+	if (mTextShadow)
+		[mTextShadow release];
 
 	if (mPrefsViews)
 		free(mPrefsViews);
@@ -189,6 +200,50 @@
 }
 
 #pragma mark -
+//	setupMainWindow
+// ----------------------------------------------------------------------------
+
+- (void)setupMainWindow
+{
+	mPolishedLightColor	= [[NSColor
+		colorWithCalibratedRed: kPolishedLightRed green: kPolishedLightGreen
+		blue: kPolishedLightBlue alpha: 1.0] retain];
+	mPolishedDarkColor	= [[NSColor
+		colorWithCalibratedRed: kPolishedDarkRed green: kPolishedDarkGreen
+		blue: kPolishedDarkBlue alpha: 1.0] retain];
+
+	// Add text shadows
+	NSMutableAttributedString*	newString	=
+		[[NSMutableAttributedString alloc] initWithAttributedString:
+		[mPathLabelText attributedStringValue]];
+
+	[newString addAttribute: NSShadowAttributeName value: mTextShadow
+		range: NSMakeRange(0, [newString length])];
+	[mPathLabelText setAttributedStringValue: newString];
+	[newString release];
+
+	newString	= [[NSMutableAttributedString alloc] initWithAttributedString:
+		[mTypeLabelText attributedStringValue]];
+
+	[newString addAttribute: NSShadowAttributeName value: mTextShadow
+		range: NSMakeRange(0, [newString length])];
+	[mTypeLabelText setAttributedStringValue: newString];
+	[newString release];
+
+	newString	= [[NSMutableAttributedString alloc] initWithAttributedString:
+		[mOutputLabelText attributedStringValue]];
+
+	[newString addAttribute: NSShadowAttributeName value: mTextShadow
+		range: NSMakeRange(0, [newString length])];
+	[mOutputLabelText setAttributedStringValue: newString];
+	[newString release];
+
+	// At this point, the window is still brushed metal. We can get away with
+	// not setting the background image here because hiding the prog view
+	// resizes the window, which results in our delegate saving the day.
+	[self hideProgView: false];
+}
+
 //	showMainWindow
 // ----------------------------------------------------------------------------
 
@@ -203,6 +258,30 @@
 	[mMainWindow makeKeyAndOrderFront: nil];
 }
 
+//	drawMainWindowBackground
+// ----------------------------------------------------------------------------
+//	Draw the polished metal gradient background. Adapted from Dave Batton's
+//	example at http://www.mere-mortal-software.com/blog/details.php?d=2007-01-08
+
+- (void)drawMainWindowBackground
+{
+	// Create an image 1 pixel wide and as tall as the window.
+	NSRect			gradientRect	=
+		NSMakeRect(0, 0, 1, [mMainWindow frame].size.height);
+	GradientImage*	gradientImage	=
+		[[GradientImage alloc] initWithSize: gradientRect.size];
+
+	[gradientImage setStartColor: mPolishedLightColor
+		andEndColor: mPolishedDarkColor];
+
+	// Set the gradient image as the window's background color.
+	[mMainWindow setBackgroundColor:
+		[NSColor colorWithPatternImage: gradientImage]];
+
+	[gradientImage release];
+}
+
+#pragma mark -
 //	selectArch:
 // ----------------------------------------------------------------------------
 
@@ -283,8 +362,6 @@
 
 	[self reportProgress: &progState];
 
-#if DRAWERS_SUCK
-
 	if ([self checkOtool] != noErr)
 	{
 		fprintf(stderr, "otx: otool not found\n");
@@ -293,11 +370,6 @@
 	}
 
 	[self showProgView];
-
-#else
-	[mProgDrawer setContentSize: [mProgDrawer maxContentSize]];
-	[mProgDrawer openOnEdge: NSMinYEdge];	// Min Y = 'bottom'
-#endif
 }
 
 //	continueProcessingFile
@@ -785,10 +857,13 @@
 	mArchMagic		= *(UInt32*)[theData bytes];
 	mFileIsValid	= true;
 
-	[mPathText setStringValue: [mOFile path]];
+	NSMutableAttributedString*	attString	=
+		[[NSMutableAttributedString alloc] initWithString: [mOFile path]];
 
-	// Ensure that the path text isn't accidentally selected.
-	[mMainWindow makeFirstResponder: mOutputText];
+	[attString addAttribute: NSShadowAttributeName value: mTextShadow
+		range: NSMakeRange(0, [attString length])];
+	[mPathText setAttributedStringValue: attString];
+	[attString release];
 
 	// If we just loaded a deobfuscated copy, skip the rest.
 	if (mIgnoreArch)
@@ -805,17 +880,19 @@
 
 	mArchSelector	= mHostInfo.cpu_type;
 
+	NSString*	tempString;
+
 	switch (mArchMagic)
 	{
 		case MH_MAGIC:
 			if (mHostInfo.cpu_type == CPU_TYPE_POWERPC)
 			{
-				[mTypeText setStringValue: @"PPC"];
+				tempString	= @"PPC";
 				[mVerifyButton setEnabled: false];
 			}
 			else if (mHostInfo.cpu_type == CPU_TYPE_I386)
 			{
-				[mTypeText setStringValue: @"x86"];
+				tempString	= @"x86";
 				[mVerifyButton setEnabled: true];
 			}
 
@@ -825,13 +902,13 @@
 			if (mHostInfo.cpu_type == CPU_TYPE_POWERPC)
 			{
 				mArchSelector	= CPU_TYPE_I386;
-				[mTypeText setStringValue: @"x86"];
+				tempString		= @"x86";
 				[mVerifyButton setEnabled: true];
 			}
 			else if (mHostInfo.cpu_type == CPU_TYPE_I386)
 			{
 				mArchSelector	= CPU_TYPE_POWERPC;
-				[mTypeText setStringValue: @"PPC"];
+				tempString		= @"PPC";
 				[mVerifyButton setEnabled: false];
 			}
 
@@ -851,16 +928,24 @@
 			}
 
 			shouldEnableArch	= true;
-			[mTypeText setStringValue: @"Fat"];
+			tempString			= @"Fat";
 			break;
 
 		default:
 			mFileIsValid	= false;
 			mArchSelector	= 0;
-			[mTypeText setStringValue: @"Not a Mach-O file"];
+			tempString		= @"Not a Mach-O file";
 			[mVerifyButton setEnabled: false];
 			break;
 	}
+
+	attString	= [[NSMutableAttributedString alloc]
+		initWithString: tempString];
+
+	[attString addAttribute: NSShadowAttributeName value: mTextShadow
+		range: NSMakeRange(0, [attString length])];
+	[mTypeText setAttributedStringValue: attString];
+	[attString release];
 
 	if (mOutputFileLabel)
 		[mOutputFileLabel retain];
@@ -973,24 +1058,6 @@
 	[theAlert release];
 }
 
-//	doDrillErrorAlert:
-// ----------------------------------------------------------------------------
-/*
-- (void)doDrillErrorAlert: (NSString*)inExePath
-{
-	NSAlert*	theAlert		= [[NSAlert alloc] init];
-	NSString*	theErrorString	= [NSString stringWithFormat:
-		@"No executable file found at %@. Please locate the executable "
-		"file and try again.", inExePath];
-
-	[theAlert addButtonWithTitle: @"OK"];
-	[theAlert setMessageText: @"Could not find executable file."];
-	[theAlert setInformativeText: theErrorString];
-	[theAlert beginSheetModalForWindow: mMainWindow
-		modalDelegate: nil didEndSelector: nil contextInfo: nil];
-	[theAlert release];
-}*/
-
 #pragma mark -
 //	showPrefs
 // ----------------------------------------------------------------------------
@@ -1086,7 +1153,13 @@
 
 	if (inState->description)
 	{
-		[mProgText setStringValue: inState->description];
+		NSMutableAttributedString*	attString	=
+			[[NSMutableAttributedString alloc]
+			initWithString: inState->description];
+
+		[attString addAttribute: NSShadowAttributeName value: mTextShadow
+			range: NSMakeRange(0, [attString length])];
+		[mProgText setAttributedStringValue: attString];
 		[mProgText display];
 	}
 
@@ -1187,91 +1260,6 @@
 		[self newOFile: theURL needsPath: true];
 
 	return true;
-}
-
-#pragma mark -
-#pragma mark NSApplication delegates
-//	applicationDidFinishLaunching:
-// ----------------------------------------------------------------------------
-
-- (void)applicationDidFinishLaunching: (NSNotification*)inNotification
-{
-	// Check for Smart Crash Reports.
-	Boolean authRequired = false;
-
-	if (UnsanitySCR_CanInstall(&authRequired))
-		UnsanitySCR_Install(authRequired ? kUnsanitySCR_GlobalInstall : 0);
-
-	// Set mArchSelector to the host architecture by default. This code was
-	// lifted from http://developer.apple.com/technotes/tn/tn2086.html
-	mach_msg_type_number_t	infoCount	= HOST_BASIC_INFO_COUNT;
-
-	host_info(mach_host_self(), HOST_BASIC_INFO,
-		(host_info_t)&mHostInfo, &infoCount);
-
-	mArchSelector	= mHostInfo.cpu_type;
-
-	// Setup prefs window
-	UInt32	numViews	= [mPrefsViewPicker segmentCount];
-	UInt32	i;
-
-	mPrefsCurrentViewIndex	= 0;
-	mPrefsViews				= calloc(numViews, sizeof(NSView*));
-	mPrefsViews[0]			= mPrefsGeneralView;
-	mPrefsViews[1]			= mPrefsOutputView;
-
-	[mPrefsWindow setFrame: [mPrefsWindow frameRectForContentRect:
-		[mPrefsViews[mPrefsCurrentViewIndex] frame]] display: false];
-
-	for (i = 0; i < numViews; i++)
-	{
-		[[mPrefsWindow contentView] addSubview: mPrefsViews[i]
-			positioned: NSWindowBelow relativeTo: mPrefsViewPicker];
-	}
-
-	// Show main window
-	[self hideProgView: false];
-	[mMainWindow setFrameAutosaveName: [mMainWindow title]];
-	[mMainWindow center];
-	[mMainWindow makeKeyAndOrderFront: nil];
-}
-
-//	application:openFile:
-// ----------------------------------------------------------------------------
-//	Open by drag n drop from Finder.
-
-- (BOOL)application: (NSApplication*)sender
-		   openFile: (NSString*)filename
-{
-	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: filename])
-		[self newPackageFile: [NSURL fileURLWithPath: filename]];
-	else
-		[self newOFile: [NSURL fileURLWithPath: filename] needsPath: true];
-
-	return true;
-}
-
-#pragma mark -
-#pragma mark NSControl delegates
-//	controlTextDidChange:
-// ----------------------------------------------------------------------------
-
-- (void)controlTextDidChange: (NSNotification*)inNotification
-{
-	switch ([[inNotification object] tag])
-	{
-		case kOutputTextTag:
-			[self syncSaveButton];
-			break;
-
-		case kOutputFileBaseTag:
-		case kOutputFileExtTag:
-			[self syncOutputText: nil];
-			break;
-
-		default:
-			break;
-	}
 }
 
 #pragma mark -
@@ -1459,16 +1447,143 @@
 }
 
 #pragma mark -
+#pragma mark NSApplication delegates
+//	applicationWillFinishLaunching:
+// ----------------------------------------------------------------------------
+
+- (void)applicationWillFinishLaunching: (NSNotification*)inNotification
+{
+	// Check for Smart Crash Reports.
+	Boolean authRequired = false;
+
+	if (UnsanitySCR_CanInstall(&authRequired))
+		UnsanitySCR_Install(authRequired ? kUnsanitySCR_GlobalInstall : 0);
+
+	// Set mArchSelector to the host architecture by default. This code was
+	// lifted from http://developer.apple.com/technotes/tn/tn2086.html
+	mach_msg_type_number_t	infoCount	= HOST_BASIC_INFO_COUNT;
+
+	host_info(mach_host_self(), HOST_BASIC_INFO,
+		(host_info_t)&mHostInfo, &infoCount);
+
+	mArchSelector	= mHostInfo.cpu_type;
+
+	// Setup the text shadow
+	mTextShadow	= [[NSShadow alloc] init];
+
+	[mTextShadow setShadowColor: [NSColor
+		colorWithCalibratedRed: 1.0 green: 1.0 blue: 1.0 alpha: 0.5]];
+	[mTextShadow setShadowOffset: NSMakeSize(0.0, -1.0)];
+	[mTextShadow setShadowBlurRadius: 0.0];
+
+	// Setup prefs window
+	UInt32	numViews	= [mPrefsViewPicker segmentCount];
+	UInt32	i;
+
+	mPrefsCurrentViewIndex	= 0;
+	mPrefsViews				= calloc(numViews, sizeof(NSView*));
+	mPrefsViews[0]			= mPrefsGeneralView;
+	mPrefsViews[1]			= mPrefsOutputView;
+
+	[mPrefsWindow setFrame: [mPrefsWindow frameRectForContentRect:
+		[mPrefsViews[mPrefsCurrentViewIndex] frame]] display: false];
+
+	for (i = 0; i < numViews; i++)
+	{
+		[[mPrefsWindow contentView] addSubview: mPrefsViews[i]
+			positioned: NSWindowBelow relativeTo: mPrefsViewPicker];
+	}
+
+	// Setup and show main window
+	[self setupMainWindow];
+	[mMainWindow setFrameAutosaveName: [mMainWindow title]];
+	[mMainWindow center];
+	[mMainWindow makeKeyAndOrderFront: nil];
+}
+
+//	application:openFile:
+// ----------------------------------------------------------------------------
+//	Open by drag n drop from Finder.
+
+- (BOOL)application: (NSApplication*)sender
+		   openFile: (NSString*)filename
+{
+	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: filename])
+		[self newPackageFile: [NSURL fileURLWithPath: filename]];
+	else
+		[self newOFile: [NSURL fileURLWithPath: filename] needsPath: true];
+
+	return true;
+}
+
+//	applicationShouldTerminateAfterLastWindowClosed:
+// ----------------------------------------------------------------------------
+
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed: (NSApplication*)inApp
+{
+	return true;
+}
+
+#pragma mark -
+#pragma mark NSControl delegates
+//	controlTextDidChange:
+// ----------------------------------------------------------------------------
+
+- (void)controlTextDidChange: (NSNotification*)inNotification
+{
+	switch ([[inNotification object] tag])
+	{
+		case kOutputTextTag:
+			[self syncSaveButton];
+			break;
+
+		case kOutputFileBaseTag:
+		case kOutputFileExtTag:
+			[self syncOutputText: nil];
+			break;
+
+		default:
+			break;
+	}
+}
+
+#pragma mark -
 #pragma mark NSWindow delegates
 //	windowDidResize:
 // ----------------------------------------------------------------------------
-//	Implemented to avoid artifacts from the NSBox. This method is not called
-//	during animated resizes.
+//	Implemented to avoid artifacts from the NSBox.
 
 - (void)windowDidResize: (NSNotification*)inNotification
 {
 	if ([inNotification object] == mMainWindow)
+	{
+		[self drawMainWindowBackground];
 		[mMainWindow display];
+	}
 }
+
+//	windowDidBecomeKey:
+// ----------------------------------------------------------------------------
+/*
+- (void)windowDidBecomeKey: (NSNotification*)inNotification
+{
+	if ([inNotification object] == mMainWindow)
+	{
+		[self drawMainWindowBackground];
+		[mMainWindow display];
+	}
+}
+
+//	windowDidResignKey:
+// ----------------------------------------------------------------------------
+
+- (void)windowDidResignKey: (NSNotification*)inNotification
+{
+	if ([inNotification object] == mMainWindow)
+	{
+		[self drawMainWindowBackground];
+		[mMainWindow display];
+	}
+}*/
 
 @end

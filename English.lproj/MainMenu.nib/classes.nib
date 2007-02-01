@@ -19,18 +19,20 @@
                 mDropBox = DropBox; 
                 mMainView = NSView; 
                 mMainWindow = NSWindow; 
+                mOutputLabelText = NSTextField; 
                 mOutputText = NSTextField; 
+                mPathLabelText = NSTextField; 
                 mPathText = NSTextField; 
                 mPrefsGeneralView = NSView; 
                 mPrefsOutputView = NSView; 
                 mPrefsViewPicker = NSSegmentedControl; 
                 mPrefsWindow = NSWindow; 
                 mProgBar = NSProgressIndicator; 
-                mProgDrawer = NSDrawer; 
                 mProgText = NSTextField; 
                 mProgView = NSView; 
                 mSaveButton = NSButton; 
                 mThinButton = NSButton; 
+                mTypeLabelText = NSTextField; 
                 mTypeText = NSTextField; 
                 mVerifyButton = NSButton; 
             }; 
@@ -54,6 +56,7 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
         }, 
+        {CLASS = GradientView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {CLASS = NSBox; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
