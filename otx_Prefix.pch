@@ -15,3 +15,6 @@
 // for binutils
 #define HAVE_STDLIB_H	1
 #define HAVE_STRING_H	1
+
+// for smarterpopen
+//#define USESMARTERPOPEN

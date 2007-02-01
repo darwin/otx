@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3189F53C0B717E6100A9B9F4 /* SmarterPopen.m in Sources */ = {isa = PBXBuildFile; fileRef = 3189F53B0B717E6100A9B9F4 /* SmarterPopen.m */; };
+		3189F53D0B717E6100A9B9F4 /* SmarterPopen.m in Sources */ = {isa = PBXBuildFile; fileRef = 3189F53B0B717E6100A9B9F4 /* SmarterPopen.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E125C39D0A86B2D000098114 /* App Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = E125C39C0A86B2D000098114 /* App Icon.icns */; };
@@ -82,6 +84,8 @@
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		3189F53A0B717E6100A9B9F4 /* SmarterPopen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SmarterPopen.h; path = source/SmarterPopen.h; sourceTree = "<group>"; };
+		3189F53B0B717E6100A9B9F4 /* SmarterPopen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SmarterPopen.m; path = source/SmarterPopen.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* otx_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = otx_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* otx.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = otx.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -179,6 +183,8 @@
 				E1FA344F0B105E4E0060060A /* CLIController.m */,
 				E1AD98A40B57311B00E56D96 /* DropBox.h */,
 				E1AD98A50B57311B00E56D96 /* DropBox.m */,
+				3189F53A0B717E6100A9B9F4 /* SmarterPopen.h */,
+				3189F53B0B717E6100A9B9F4 /* SmarterPopen.m */,
 				E145F6D10B437F5900615A16 /* SmoothViewAnimation.h */,
 				E145F6D20B437F5900615A16 /* SmoothViewAnimation.m */,
 				E1B1325D0B180AF6002EB674 /* Processors */,
@@ -468,6 +474,7 @@
 				E1B136200B192AAC002EB674 /* ArchSpecifics.m in Sources */,
 				E145F6D30B437F5900615A16 /* SmoothViewAnimation.m in Sources */,
 				E1AD98A60B57311C00E56D96 /* DropBox.m in Sources */,
+				3189F53C0B717E6100A9B9F4 /* SmarterPopen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,6 +500,7 @@
 				E1B133960B182788002EB674 /* Searchers.m in Sources */,
 				E1B135E40B185123002EB674 /* ObjcAccessors.m in Sources */,
 				E1B1361F0B192AAC002EB674 /* ArchSpecifics.m in Sources */,
+				3189F53D0B717E6100A9B9F4 /* SmarterPopen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

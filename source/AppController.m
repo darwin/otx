@@ -19,6 +19,11 @@
 
 #import "SmartCrashReportsInstall.h"
 
+#ifdef USESMARTERPOPEN
+  #import "SmarterPopen.h"
+#endif
+
+
 #define DRAWERS_SUCK	1
 
 // ============================================================================
@@ -53,6 +58,8 @@
 
 	[theController setInitialValues: theValues];
 	[[theController defaults] registerDefaults: theValues];
+        
+    
 }
 
 //	init
@@ -571,7 +578,7 @@
 	NSString*	lipoString	= [NSString stringWithFormat:
 		@"lipo '%@' -output '%@' -thin %s", [mOFile path], theThinOutputPath,
 		(mArchSelector == CPU_TYPE_POWERPC) ? "ppc" : "i386"];
-
+    
 	if (system(CSTRING(lipoString)) != 0)
 		[self doLipoAlert];
 }
@@ -907,10 +914,17 @@
 
 - (SInt32)checkOtool
 {
-	NSString*	otoolString	= [NSString stringWithFormat:
-		@"otool -h '%@' > /dev/null", [mOFile path]];
 
+#ifdef USESMARTERPOPEN
+	NSString*	otoolString	= [NSString stringWithFormat:
+		@"otool -h '%@'", [mOFile path]];    
+    SmarterPopen*  opener = [[SmarterPopen alloc] init];
+    [opener openPipe:otoolString];
+#else
+	NSString*	otoolString	= [NSString stringWithFormat:
+		@"otool -h '%@' > /dev/null", [mOFile path]];    
 	return system(CSTRING(otoolString));
+#endif
 }
 
 //	doOtoolAlert
