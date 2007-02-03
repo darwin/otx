@@ -8,7 +8,6 @@
 
 #import "AppController.h"
 #import "ExeProcessor.h"
-#import "GradientImage.h"
 #import "PPCProcessor.h"
 #import "SmoothViewAnimation.h"
 #import "X86Processor.h"
@@ -50,8 +49,6 @@
 
 	[theController setInitialValues: theValues];
 	[[theController defaults] registerDefaults: theValues];
-        
-    
 }
 
 //	init
@@ -90,6 +87,9 @@
 
 	if (mTextShadow)
 		[mTextShadow release];
+
+	if (mGradientImage)
+		[mGradientImage release];
 
 	if (mPrefsViews)
 		free(mPrefsViews);
@@ -200,6 +200,9 @@
 	mPolishedDarkColor	= [[NSColor
 		colorWithCalibratedRed: kPolishedDarkRed green: kPolishedDarkGreen
 		blue: kPolishedDarkBlue alpha: 1.0] retain];
+	mGradientImage		= [[GradientImage alloc] initWithSize:
+		[mMainWindow frame].size color1: mPolishedLightColor
+		color2: mPolishedDarkColor];
 
 	// Add text shadows
 	NSMutableAttributedString*	newString	=
@@ -254,20 +257,24 @@
 
 - (void)drawMainWindowBackground
 {
+#if	_INSANE_OPTIMIZATION_
+	// Set the gradient image as the window's background color.
+	[mMainWindow setBackgroundColor:
+		[NSColor colorWithPatternImage: mGradientImage]];
+#else
 	// Create an image 1 pixel wide and as tall as the window.
 	NSRect			gradientRect	=
 		NSMakeRect(0, 0, 1, [mMainWindow frame].size.height);
 	GradientImage*	gradientImage	=
-		[[GradientImage alloc] initWithSize: gradientRect.size];
-
-	[gradientImage setStartColor: mPolishedLightColor
-		andEndColor: mPolishedDarkColor];
+		[[GradientImage alloc] initWithSize: gradientRect.size
+		color1: mPolishedLightColor color2: mPolishedDarkColor];
 
 	// Set the gradient image as the window's background color.
 	[mMainWindow setBackgroundColor:
 		[NSColor colorWithPatternImage: gradientImage]];
 
 	[gradientImage release];
+#endif
 }
 
 #pragma mark -
@@ -1546,6 +1553,7 @@
 {
 	if ([inNotification object] == mMainWindow)
 	{
+		[mGradientImage setSize: [mMainWindow frame].size];
 		[self drawMainWindowBackground];
 		[mMainWindow display];
 	}

@@ -5,6 +5,7 @@
 */
 
 #import "DropBox.h"
+#import "GradientImage.h"
 #import "ProgressReporter.h"
 
 #define kOutputTextTag		100
@@ -99,6 +100,7 @@
 	NSColor*					mPolishedLightColor;
 	NSColor*					mPolishedDarkColor;
 	NSShadow*					mTextShadow;
+	GradientImage*				mGradientImage;
 }
 
 - (SInt32)checkOtool;
