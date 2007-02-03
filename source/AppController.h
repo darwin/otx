@@ -100,7 +100,7 @@
 	NSColor*					mPolishedLightColor;
 	NSColor*					mPolishedDarkColor;
 	NSShadow*					mTextShadow;
-	GradientImage*				mGradientImage;
+//	GradientImage*				mGradientImage;
 }
 
 - (SInt32)checkOtool;

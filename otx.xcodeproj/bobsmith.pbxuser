@@ -269,6 +269,62 @@
 			E1DBB3640B7424AB00501583 /* PBXTextBookmark */ = E1DBB3640B7424AB00501583 /* PBXTextBookmark */;
 			E1DBB3650B7424AC00501583 /* PBXTextBookmark */ = E1DBB3650B7424AC00501583 /* PBXTextBookmark */;
 			E1DBB3660B7424AC00501583 /* PBXTextBookmark */ = E1DBB3660B7424AC00501583 /* PBXTextBookmark */;
+			E1DBB37B0B74623100501583 /* PBXTextBookmark */ = E1DBB37B0B74623100501583 /* PBXTextBookmark */;
+			E1DBB37C0B74623100501583 /* PBXTextBookmark */ = E1DBB37C0B74623100501583 /* PBXTextBookmark */;
+			E1DBB37D0B74623100501583 /* PBXTextBookmark */ = E1DBB37D0B74623100501583 /* PBXTextBookmark */;
+			E1DBB37E0B74623100501583 /* PBXTextBookmark */ = E1DBB37E0B74623100501583 /* PBXTextBookmark */;
+			E1DBB37F0B74623100501583 /* PBXTextBookmark */ = E1DBB37F0B74623100501583 /* PBXTextBookmark */;
+			E1DBB3800B74623100501583 /* PBXTextBookmark */ = E1DBB3800B74623100501583 /* PBXTextBookmark */;
+			E1DBB3810B74623100501583 /* PBXTextBookmark */ = E1DBB3810B74623100501583 /* PBXTextBookmark */;
+			E1DBB3820B74623100501583 /* PBXTextBookmark */ = E1DBB3820B74623100501583 /* PBXTextBookmark */;
+			E1DBB3830B74623100501583 /* PBXTextBookmark */ = E1DBB3830B74623100501583 /* PBXTextBookmark */;
+			E1DBB3850B74623900501583 /* PBXTextBookmark */ = E1DBB3850B74623900501583 /* PBXTextBookmark */;
+			E1DBB3860B74623900501583 /* PBXTextBookmark */ = E1DBB3860B74623900501583 /* PBXTextBookmark */;
+			E1DBB3870B74623900501583 /* PBXTextBookmark */ = E1DBB3870B74623900501583 /* PBXTextBookmark */;
+			E1DBB3880B74623900501583 /* PBXTextBookmark */ = E1DBB3880B74623900501583 /* PBXTextBookmark */;
+			E1DBB3890B74623900501583 /* PBXTextBookmark */ = E1DBB3890B74623900501583 /* PBXTextBookmark */;
+			E1DBB38A0B74623900501583 /* PBXTextBookmark */ = E1DBB38A0B74623900501583 /* PBXTextBookmark */;
+			E1DBB38B0B74624000501583 /* PBXTextBookmark */ = E1DBB38B0B74624000501583 /* PBXTextBookmark */;
+			E1DBB38C0B74624000501583 /* PBXTextBookmark */ = E1DBB38C0B74624000501583 /* PBXTextBookmark */;
+			E1DBB38D0B74624000501583 /* PBXTextBookmark */ = E1DBB38D0B74624000501583 /* PBXTextBookmark */;
+			E1DBB38E0B74624000501583 /* PBXTextBookmark */ = E1DBB38E0B74624000501583 /* PBXTextBookmark */;
+			E1DBB38F0B74624000501583 /* PBXTextBookmark */ = E1DBB38F0B74624000501583 /* PBXTextBookmark */;
+			E1DBB3900B74624000501583 /* PBXTextBookmark */ = E1DBB3900B74624000501583 /* PBXTextBookmark */;
+			E1DBB3910B74624000501583 /* PBXTextBookmark */ = E1DBB3910B74624000501583 /* PBXTextBookmark */;
+			E1DBB3920B74624000501583 /* PBXTextBookmark */ = E1DBB3920B74624000501583 /* PBXTextBookmark */;
+			E1DBB3930B74658400501583 /* PBXTextBookmark */ = E1DBB3930B74658400501583 /* PBXTextBookmark */;
+			E1DBB3940B74658400501583 /* PBXTextBookmark */ = E1DBB3940B74658400501583 /* PBXTextBookmark */;
+			E1DBB3960B74665F00501583 /* PBXTextBookmark */ = E1DBB3960B74665F00501583 /* PBXTextBookmark */;
+			E1DBB3970B74665F00501583 /* PBXTextBookmark */ = E1DBB3970B74665F00501583 /* PBXTextBookmark */;
+			E1DBB3980B74666000501583 /* PBXTextBookmark */ = E1DBB3980B74666000501583 /* PBXTextBookmark */;
+			E1DBB3990B74666000501583 /* PBXTextBookmark */ = E1DBB3990B74666000501583 /* PBXTextBookmark */;
+			E1DBB39A0B74666000501583 /* PBXTextBookmark */ = E1DBB39A0B74666000501583 /* PBXTextBookmark */;
+			E1DBB39B0B74666000501583 /* PBXTextBookmark */ = E1DBB39B0B74666000501583 /* PBXTextBookmark */;
+			E1DBB39D0B74667200501583 /* PBXTextBookmark */ = E1DBB39D0B74667200501583 /* PBXTextBookmark */;
+			E1DBB39E0B74667200501583 /* PBXTextBookmark */ = E1DBB39E0B74667200501583 /* PBXTextBookmark */;
+			E1DBB39F0B74667300501583 /* PBXTextBookmark */ = E1DBB39F0B74667300501583 /* PBXTextBookmark */;
+			E1DBB3A00B74667300501583 /* PBXTextBookmark */ = E1DBB3A00B74667300501583 /* PBXTextBookmark */;
+			E1DBB3A10B74669500501583 /* PBXTextBookmark */ = E1DBB3A10B74669500501583 /* PBXTextBookmark */;
+			E1DBB3A20B74669500501583 /* PBXTextBookmark */ = E1DBB3A20B74669500501583 /* PBXTextBookmark */;
+			E1DBB3A30B74669500501583 /* PBXTextBookmark */ = E1DBB3A30B74669500501583 /* PBXTextBookmark */;
+			E1DBB3A40B74669500501583 /* PBXTextBookmark */ = E1DBB3A40B74669500501583 /* PBXTextBookmark */;
+			E1DBB3A50B74669500501583 /* PBXTextBookmark */ = E1DBB3A50B74669500501583 /* PBXTextBookmark */;
+			E1DBB3A60B74669500501583 /* PBXTextBookmark */ = E1DBB3A60B74669500501583 /* PBXTextBookmark */;
+			E1DBB3A70B74669500501583 /* PBXTextBookmark */ = E1DBB3A70B74669500501583 /* PBXTextBookmark */;
+			E1DBB3A80B74669500501583 /* PBXTextBookmark */ = E1DBB3A80B74669500501583 /* PBXTextBookmark */;
+			E1DBB3A90B74676B00501583 /* PBXTextBookmark */ = E1DBB3A90B74676B00501583 /* PBXTextBookmark */;
+			E1DBB3AA0B74676B00501583 /* PBXTextBookmark */ = E1DBB3AA0B74676B00501583 /* PBXTextBookmark */;
+			E1DBB3B00B746AC700501583 /* PBXTextBookmark */ = E1DBB3B00B746AC700501583 /* PBXTextBookmark */;
+			E1DBB3B10B746AC700501583 /* PBXTextBookmark */ = E1DBB3B10B746AC700501583 /* PBXTextBookmark */;
+			E1DBB3B20B746AC800501583 /* PBXTextBookmark */ = E1DBB3B20B746AC800501583 /* PBXTextBookmark */;
+			E1DBB3B30B746AC800501583 /* PBXTextBookmark */ = E1DBB3B30B746AC800501583 /* PBXTextBookmark */;
+			E1DBB3B40B746AC800501583 /* PBXTextBookmark */ = E1DBB3B40B746AC800501583 /* PBXTextBookmark */;
+			E1DBB3B50B746AC800501583 /* PBXTextBookmark */ = E1DBB3B50B746AC800501583 /* PBXTextBookmark */;
+			E1DBB3B60B746AEE00501583 /* PBXTextBookmark */ = E1DBB3B60B746AEE00501583 /* PBXTextBookmark */;
+			E1DBB3B70B746AEE00501583 /* PBXTextBookmark */ = E1DBB3B70B746AEE00501583 /* PBXTextBookmark */;
+			E1DBB3B80B746AEE00501583 /* PBXTextBookmark */ = E1DBB3B80B746AEE00501583 /* PBXTextBookmark */;
+			E1DBB3B90B746AEE00501583 /* PBXTextBookmark */ = E1DBB3B90B746AEE00501583 /* PBXTextBookmark */;
+			E1DBB3BA0B746AEE00501583 /* PBXTextBookmark */ = E1DBB3BA0B746AEE00501583 /* PBXTextBookmark */;
 		};
 		sourceControlManager = E1C3BA5209A957E100B38A4D /* Source Control */;
 		userBuildSettings = {
@@ -353,8 +409,8 @@
 	E13539900A68185500CBDDE5 /* AppController.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {509, 1680}}";
-			sepNavSelRange = "{3243, 14}";
-			sepNavVisRect = "{{0, 770}, {509, 630}}";
+			sepNavSelRange = "{3226, 0}";
+			sepNavVisRect = "{{0, 927}, {509, 630}}";
 			sepNavWindowFrame = "{{189, 43}, {548, 703}}";
 		};
 	};
@@ -387,7 +443,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 553";
 		rLen = 0;
-		rLoc = 14490;
+		rLoc = 14935;
 		rType = 0;
 		vrLen = 1840;
 		vrLoc = 10936;
@@ -401,7 +457,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = "AppController.h: 102";
 		rLen = 0;
-		rLoc = 3259;
+		rLoc = 3261;
 		rType = 0;
 		vrLen = 1550;
 		vrLoc = 1932;
@@ -431,7 +487,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 1507";
 		rLen = 0;
-		rLoc = 38940;
+		rLoc = 39385;
 		rType = 0;
 		vrLen = 1562;
 		vrLoc = 37597;
@@ -458,9 +514,9 @@
 	};
 	E182007009AE4CD800584B07 /* AppController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {571, 19044}}";
-			sepNavSelRange = "{6889, 0}";
-			sepNavVisRect = "{{0, 2989}, {571, 630}}";
+			sepNavIntBoundsRect = "{{0, 0}, {571, 18960}}";
+			sepNavSelRange = "{6986, 0}";
+			sepNavVisRect = "{{0, 2968}, {571, 630}}";
 			sepNavWindowFrame = "{{130, 43}, {610, 703}}";
 		};
 	};
@@ -780,7 +836,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 1507";
 		rLen = 0;
-		rLoc = 38940;
+		rLoc = 39385;
 		rType = 0;
 		vrLen = 1562;
 		vrLoc = 37597;
@@ -820,7 +876,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 1507";
 		rLen = 0;
-		rLoc = 38940;
+		rLoc = 39385;
 		rType = 0;
 		vrLen = 1562;
 		vrLoc = 37597;
@@ -971,16 +1027,16 @@
 	};
 	E1DBB2830B72638C00501583 /* GradientImage.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {511, 2028}}";
-			sepNavSelRange = "{357, 0}";
-			sepNavVisRect = "{{0, 856}, {511, 630}}";
+			sepNavIntBoundsRect = "{{0, 0}, {511, 1980}}";
+			sepNavSelRange = "{289, 0}";
+			sepNavVisRect = "{{0, 1350}, {511, 630}}";
 		};
 	};
 	E1DBB2840B72638C00501583 /* GradientImage.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {514, 601}}";
-			sepNavSelRange = "{333, 0}";
-			sepNavVisRect = "{{0, 0}, {514, 601}}";
+			sepNavIntBoundsRect = "{{0, 0}, {514, 630}}";
+			sepNavSelRange = "{807, 0}";
+			sepNavVisRect = "{{0, 0}, {514, 630}}";
 			sepNavWindowFrame = "{{328, 206}, {491, 540}}";
 		};
 	};
@@ -1044,7 +1100,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 264";
 		rLen = 0;
-		rLoc = 7038;
+		rLoc = 7483;
 		rType = 0;
 		vrLen = 1643;
 		vrLoc = 5467;
@@ -1053,15 +1109,15 @@
 		isa = PBXTextBookmark;
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		rLen = 0;
-		rLoc = 951;
+		rLoc = 813;
 		rType = 0;
 	};
 	E1DBB2A40B731EC900501583 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "";
-		rLen = 2;
-		rLoc = 913;
+		rLen = 0;
+		rLoc = 807;
 		rType = 0;
 		vrLen = 550;
 		vrLoc = 0;
@@ -1178,7 +1234,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 264";
 		rLen = 0;
-		rLoc = 7038;
+		rLoc = 7483;
 		rType = 0;
 		vrLen = 1643;
 		vrLoc = 5467;
@@ -1187,8 +1243,8 @@
 		isa = PBXTextBookmark;
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "";
-		rLen = 2;
-		rLoc = 913;
+		rLen = 0;
+		rLoc = 807;
 		rType = 0;
 		vrLen = 550;
 		vrLoc = 0;
@@ -1217,7 +1273,7 @@
 		isa = PBXTextBookmark;
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		rLen = 0;
-		rLoc = "-2147483248";
+		rLoc = "-2147483386";
 		rType = 0;
 	};
 	E1DBB2CD0B73222400501583 /* PBXTextBookmark */ = {
@@ -1225,7 +1281,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "GradientImage.h: 12";
 		rLen = 0;
-		rLoc = 330;
+		rLoc = 331;
 		rType = 0;
 		vrLen = 820;
 		vrLoc = 0;
@@ -1245,7 +1301,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 269";
 		rLen = 0;
-		rLoc = 7185;
+		rLoc = 7630;
 		rType = 0;
 		vrLen = 1643;
 		vrLoc = 5467;
@@ -1305,7 +1361,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 265";
 		rLen = 0;
-		rLoc = 7038;
+		rLoc = 7483;
 		rType = 0;
 		vrLen = 1694;
 		vrLoc = 5279;
@@ -1314,7 +1370,7 @@
 		isa = PBXTextBookmark;
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "- (id)initWithSize: (NSSize)aSize";
-		rLen = 90;
+		rLen = 68;
 		rLoc = 1079;
 		rType = 0;
 		vrLen = 1203;
@@ -1325,7 +1381,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = CGContextDrawShading;
 		rLen = 20;
-		rLoc = 2414;
+		rLoc = 2201;
 		rType = 0;
 		vrLen = 1243;
 		vrLoc = 1356;
@@ -1335,7 +1391,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "GradientImage.h: 12";
 		rLen = 0;
-		rLoc = 330;
+		rLoc = 331;
 		rType = 0;
 		vrLen = 820;
 		vrLoc = 0;
@@ -1344,8 +1400,8 @@
 		isa = PBXTextBookmark;
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "GradientImage.h: initWithSize:color1:color2:";
-		rLen = 90;
-		rLoc = 773;
+		rLen = 69;
+		rLoc = 738;
 		rType = 0;
 		vrLen = 916;
 		vrLoc = 0;
@@ -1365,7 +1421,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 167";
 		rLen = 0;
-		rLoc = 4009;
+		rLoc = 3796;
 		rType = 0;
 		vrLen = 1175;
 		vrLoc = 2811;
@@ -1374,7 +1430,7 @@
 		isa = PBXTextBookmark;
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		rLen = 0;
-		rLoc = "-2147483588";
+		rLoc = "-2147483586";
 		rType = 0;
 	};
 	E1DBB2F00B732CCD00501583 /* PBXTextBookmark */ = {
@@ -1382,7 +1438,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = mGradientImage;
 		rLen = 14;
-		rLoc = 3243;
+		rLoc = 3245;
 		rType = 0;
 		vrLen = 1553;
 		vrLoc = 2058;
@@ -1392,7 +1448,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 266";
 		rLen = 141;
-		rLoc = 6749;
+		rLoc = 6760;
 		rType = 0;
 		vrLen = 1427;
 		vrLoc = 6159;
@@ -1401,8 +1457,8 @@
 		isa = PBXTextBookmark;
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "GradientImage.h: initWithSize:color1:color2:";
-		rLen = 90;
-		rLoc = 773;
+		rLen = 69;
+		rLoc = 738;
 		rType = 0;
 		vrLen = 916;
 		vrLoc = 0;
@@ -1412,7 +1468,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = NSImage;
 		rLen = 7;
-		rLoc = 700;
+		rLoc = 665;
 		rType = 0;
 		vrLen = 916;
 		vrLoc = 0;
@@ -1422,7 +1478,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 266";
 		rLen = 141;
-		rLoc = 6749;
+		rLoc = 6760;
 		rType = 0;
 		vrLen = 1427;
 		vrLoc = 6159;
@@ -1442,7 +1498,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 167";
 		rLen = 0;
-		rLoc = 4009;
+		rLoc = 3796;
 		rType = 0;
 		vrLen = 1175;
 		vrLoc = 2811;
@@ -1452,7 +1508,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = mGradientImage;
 		rLen = 14;
-		rLoc = 3243;
+		rLoc = 3245;
 		rType = 0;
 		vrLen = 1565;
 		vrLoc = 2048;
@@ -1462,7 +1518,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = NSImage;
 		rLen = 7;
-		rLoc = 700;
+		rLoc = 665;
 		rType = 0;
 		vrLen = 916;
 		vrLoc = 0;
@@ -1482,7 +1538,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 168";
 		rLen = 0;
-		rLoc = 4009;
+		rLoc = 3796;
 		rType = 0;
 		vrLen = 1281;
 		vrLoc = 2755;
@@ -1492,7 +1548,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = mGradientImage;
 		rLen = 14;
-		rLoc = 3243;
+		rLoc = 3245;
 		rType = 0;
 		vrLen = 1565;
 		vrLoc = 2048;
@@ -1502,7 +1558,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = NSImage;
 		rLen = 7;
-		rLoc = 700;
+		rLoc = 665;
 		rType = 0;
 		vrLen = 916;
 		vrLoc = 0;
@@ -1522,7 +1578,7 @@
 		comments = "warning: 'return' with a value, in function returning void";
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		rLen = 0;
-		rLoc = 150;
+		rLoc = 146;
 		rType = 1;
 	};
 	E1DBB3030B732DF500501583 /* PBXTextBookmark */ = {
@@ -1540,7 +1596,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 159";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 831;
 		vrLoc = 3205;
@@ -1560,7 +1616,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 159";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 831;
 		vrLoc = 3205;
@@ -1580,7 +1636,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 159";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 831;
 		vrLoc = 3205;
@@ -1600,7 +1656,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 159";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 831;
 		vrLoc = 3205;
@@ -1620,7 +1676,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 159";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 831;
 		vrLoc = 3205;
@@ -1640,7 +1696,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 159";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 831;
 		vrLoc = 3205;
@@ -1670,7 +1726,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 168";
 		rLen = 0;
-		rLoc = 4009;
+		rLoc = 3796;
 		rType = 0;
 		vrLen = 1281;
 		vrLoc = 2755;
@@ -1680,7 +1736,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = mGradientImage;
 		rLen = 14;
-		rLoc = 3243;
+		rLoc = 3245;
 		rType = 0;
 		vrLen = 1565;
 		vrLoc = 2048;
@@ -1690,7 +1746,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = NSImage;
 		rLen = 7;
-		rLoc = 700;
+		rLoc = 665;
 		rType = 0;
 		vrLen = 916;
 		vrLoc = 0;
@@ -1700,7 +1756,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 159";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 831;
 		vrLoc = 3205;
@@ -1720,7 +1776,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 159";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 831;
 		vrLoc = 3205;
@@ -1740,7 +1796,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 159";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 831;
 		vrLoc = 3205;
@@ -1760,7 +1816,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 168";
 		rLen = 0;
-		rLoc = 4009;
+		rLoc = 3796;
 		rType = 0;
 		vrLen = 1219;
 		vrLoc = 2830;
@@ -1780,7 +1836,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = mGradientImage;
 		rLen = 14;
-		rLoc = 3243;
+		rLoc = 3245;
 		rType = 0;
 		vrLen = 1565;
 		vrLoc = 2048;
@@ -1790,7 +1846,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = NSImage;
 		rLen = 7;
-		rLoc = 700;
+		rLoc = 665;
 		rType = 0;
 		vrLen = 916;
 		vrLoc = 0;
@@ -1800,7 +1856,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = NSImage;
 		rLen = 7;
-		rLoc = 700;
+		rLoc = 665;
 		rType = 0;
 		vrLen = 916;
 		vrLoc = 0;
@@ -1810,7 +1866,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "GradientImage.h: 15";
 		rLen = 0;
-		rLoc = 366;
+		rLoc = 331;
 		rType = 0;
 		vrLen = 949;
 		vrLoc = 0;
@@ -1847,7 +1903,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = mGradientImage;
 		rLen = 14;
-		rLoc = 3243;
+		rLoc = 3245;
 		rType = 0;
 		vrLen = 1565;
 		vrLoc = 2048;
@@ -1857,7 +1913,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -1877,7 +1933,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -1897,7 +1953,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -1917,7 +1973,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "GradientImage.h: GradientData";
 		rLen = 0;
-		rLoc = 366;
+		rLoc = 331;
 		rType = 0;
 		vrLen = 949;
 		vrLoc = 0;
@@ -1947,7 +2003,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = mGradientImage;
 		rLen = 14;
-		rLoc = 3243;
+		rLoc = 3245;
 		rType = 0;
 		vrLen = 1565;
 		vrLoc = 2048;
@@ -1957,7 +2013,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -1977,7 +2033,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -1997,7 +2053,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -2017,7 +2073,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -2037,7 +2093,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -2057,7 +2113,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "GradientImage.h: GradientData";
 		rLen = 0;
-		rLoc = 366;
+		rLoc = 331;
 		rType = 0;
 		vrLen = 949;
 		vrLoc = 0;
@@ -2067,7 +2123,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "GradientImage.h: 13";
 		rLen = 0;
-		rLoc = 333;
+		rLoc = 331;
 		rType = 0;
 		vrLen = 951;
 		vrLoc = 0;
@@ -2097,7 +2153,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = mGradientImage;
 		rLen = 14;
-		rLoc = 3243;
+		rLoc = 3245;
 		rType = 0;
 		vrLen = 1565;
 		vrLoc = 2048;
@@ -2107,7 +2163,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -2127,7 +2183,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -2147,7 +2203,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -2167,7 +2223,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "GradientImage.h: 13";
 		rLen = 0;
-		rLoc = 333;
+		rLoc = 331;
 		rType = 0;
 		vrLen = 951;
 		vrLoc = 0;
@@ -2197,7 +2253,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = mGradientImage;
 		rLen = 14;
-		rLoc = 3243;
+		rLoc = 3245;
 		rType = 0;
 		vrLen = 1565;
 		vrLoc = 2048;
@@ -2211,7 +2267,7 @@
 		fRef = E182007009AE4CD800584B07 /* AppController.m */;
 		name = "AppController.m: 267";
 		rLen = 0;
-		rLoc = 6889;
+		rLoc = 6900;
 		rType = 0;
 		vrLen = 1502;
 		vrLoc = 6226;
@@ -2231,7 +2287,7 @@
 		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
 		name = "GradientImage.h: 13";
 		rLen = 0;
-		rLoc = 333;
+		rLoc = 331;
 		rType = 0;
 		vrLen = 951;
 		vrLoc = 0;
@@ -2251,7 +2307,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = mGradientImage;
 		rLen = 14;
-		rLoc = 3243;
+		rLoc = 3245;
 		rType = 0;
 		vrLen = 1565;
 		vrLoc = 2048;
@@ -2261,7 +2317,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -2281,7 +2337,7 @@
 		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
 		name = "GradientImage.m: 157";
 		rLen = 0;
-		rLoc = 3827;
+		rLoc = 3614;
 		rType = 0;
 		vrLen = 819;
 		vrLoc = 3192;
@@ -2295,6 +2351,564 @@
 		rType = 0;
 		vrLen = 511;
 		vrLoc = 40400;
+	};
+	E1DBB37B0B74623100501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
+		name = "GradientImage.m: 169";
+		rLen = 0;
+		rLoc = 3614;
+		rType = 0;
+		vrLen = 843;
+		vrLoc = 3134;
+	};
+	E1DBB37C0B74623100501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: 'mGradientImage' undeclared (first use in this function)";
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		rLen = 1;
+		rLoc = 1573;
+		rType = 1;
+	};
+	E1DBB37D0B74623100501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
+		name = "GradientImage.m: 169";
+		rLen = 0;
+		rLoc = 3614;
+		rType = 0;
+		vrLen = 843;
+		vrLoc = 3134;
+	};
+	E1DBB37E0B74623100501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1571";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 737;
+		vrLoc = 39939;
+	};
+	E1DBB37F0B74623100501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3800B74623100501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1571";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 737;
+		vrLoc = 39939;
+	};
+	E1DBB3810B74623100501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3820B74623100501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1571";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 737;
+		vrLoc = 39939;
+	};
+	E1DBB3830B74623100501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3850B74623900501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1571";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 737;
+		vrLoc = 39939;
+	};
+	E1DBB3860B74623900501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3870B74623900501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1571";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 737;
+		vrLoc = 39939;
+	};
+	E1DBB3880B74623900501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3890B74623900501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1571";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 737;
+		vrLoc = 39939;
+	};
+	E1DBB38A0B74623900501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB38B0B74624000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
+		name = kPolishedDarkBlue;
+		rLen = 17;
+		rLoc = 680;
+		rType = 0;
+		vrLen = 1659;
+		vrLoc = 0;
+	};
+	E1DBB38C0B74624000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
+		name = "AppController.h: 103";
+		rLen = 0;
+		rLoc = 3226;
+		rType = 0;
+		vrLen = 1562;
+		vrLoc = 1765;
+	};
+	E1DBB38D0B74624000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
+		name = "GradientImage.h: 49";
+		rLen = 0;
+		rLoc = 806;
+		rType = 0;
+		vrLen = 1372;
+		vrLoc = 0;
+	};
+	E1DBB38E0B74624000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
+		name = "GradientImage.h: GradientData";
+		rLen = 0;
+		rLoc = 331;
+		rType = 0;
+		vrLen = 874;
+		vrLoc = 0;
+	};
+	E1DBB38F0B74624000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
+		name = GradientData;
+		rLen = 12;
+		rLoc = 1126;
+		rType = 0;
+		vrLen = 1312;
+		vrLoc = 936;
+	};
+	E1DBB3900B74624000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
+		name = "GradientImage.m: 72";
+		rLen = 0;
+		rLoc = 1334;
+		rType = 0;
+		vrLen = 1300;
+		vrLoc = 1078;
+	};
+	E1DBB3910B74624000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 285";
+		rLen = 0;
+		rLoc = 7482;
+		rType = 0;
+		vrLen = 1403;
+		vrLoc = 6236;
+	};
+	E1DBB3920B74624000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132610B180B2F002EB674 /* ExeProcessor.h */;
+		name = mExeIsFat;
+		rLen = 9;
+		rLoc = 9812;
+		rType = 0;
+		vrLen = 1332;
+		vrLoc = 211;
+	};
+	E1DBB3930B74658400501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1571";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 737;
+		vrLoc = 39939;
+	};
+	E1DBB3940B74658400501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3960B74665F00501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1570";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 603;
+		vrLoc = 39679;
+	};
+	E1DBB3970B74665F00501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3980B74666000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1570";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 603;
+		vrLoc = 39679;
+	};
+	E1DBB3990B74666000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB39A0B74666000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1570";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 603;
+		vrLoc = 39679;
+	};
+	E1DBB39B0B74666000501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB39D0B74667200501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1570";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 603;
+		vrLoc = 39679;
+	};
+	E1DBB39E0B74667200501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB39F0B74667300501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1570";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 603;
+		vrLoc = 39679;
+	};
+	E1DBB3A00B74667300501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3A10B74669500501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
+		name = "GradientImage.h: 43";
+		rLen = 0;
+		rLoc = 812;
+		rType = 0;
+		vrLen = 874;
+		vrLoc = 0;
+	};
+	E1DBB3A20B74669500501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
+		name = "GradientImage.h: 40";
+		rLen = 0;
+		rLoc = 807;
+		rType = 0;
+		vrLen = 813;
+		vrLoc = 0;
+	};
+	E1DBB3A30B74669500501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
+		name = "GradientImage.m: 45";
+		rLen = 0;
+		rLoc = 1148;
+		rType = 0;
+		vrLen = 1237;
+		vrLoc = 2566;
+	};
+	E1DBB3A40B74669500501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
+		name = "GradientImage.m: 8";
+		rLen = 0;
+		rLoc = 289;
+		rType = 0;
+		vrLen = 1219;
+		vrLoc = 2584;
+	};
+	E1DBB3A50B74669500501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 285";
+		rLen = 0;
+		rLoc = 7482;
+		rType = 0;
+		vrLen = 1403;
+		vrLoc = 6236;
+	};
+	E1DBB3A60B74669500501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1570";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 1138;
+		vrLoc = 39144;
+	};
+	E1DBB3A70B74669500501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
+		name = "AppController.h: 103";
+		rLen = 0;
+		rLoc = 3226;
+		rType = 0;
+		vrLen = 1470;
+		vrLoc = 2534;
+	};
+	E1DBB3A80B74669500501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132610B180B2F002EB674 /* ExeProcessor.h */;
+		name = mExeIsFat;
+		rLen = 9;
+		rLoc = 9812;
+		rType = 0;
+		vrLen = 1332;
+		vrLoc = 211;
+	};
+	E1DBB3A90B74676B00501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1570";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 603;
+		vrLoc = 39679;
+	};
+	E1DBB3AA0B74676B00501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3B00B746AC700501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1574";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 763;
+		vrLoc = 39799;
+	};
+	E1DBB3B10B746AC700501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3B20B746AC800501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1574";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 763;
+		vrLoc = 39799;
+	};
+	E1DBB3B30B746AC800501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3B40B746AC800501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 1574";
+		rLen = 0;
+		rLoc = 40499;
+		rType = 0;
+		vrLen = 763;
+		vrLoc = 39799;
+	};
+	E1DBB3B50B746AC800501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = memset;
+		rLen = 6;
+		rLoc = 40645;
+		rType = 0;
+		vrLen = 511;
+		vrLoc = 40400;
+	};
+	E1DBB3B60B746AEE00501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E182007009AE4CD800584B07 /* AppController.m */;
+		name = "AppController.m: 271";
+		rLen = 0;
+		rLoc = 6986;
+		rType = 0;
+		vrLen = 1554;
+		vrLoc = 6223;
+	};
+	E1DBB3B70B746AEE00501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2840B72638C00501583 /* GradientImage.h */;
+		name = "GradientImage.h: 40";
+		rLen = 0;
+		rLoc = 807;
+		rType = 0;
+		vrLen = 813;
+		vrLoc = 0;
+	};
+	E1DBB3B80B746AEE00501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1DBB2830B72638C00501583 /* GradientImage.m */;
+		name = "GradientImage.m: 8";
+		rLen = 0;
+		rLoc = 289;
+		rType = 0;
+		vrLen = 1219;
+		vrLoc = 2584;
+	};
+	E1DBB3B90B746AEE00501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
+		name = "AppController.h: 103";
+		rLen = 0;
+		rLoc = 3226;
+		rType = 0;
+		vrLen = 1470;
+		vrLoc = 2534;
+	};
+	E1DBB3BA0B746AEE00501583 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132610B180B2F002EB674 /* ExeProcessor.h */;
+		name = mExeIsFat;
+		rLen = 9;
+		rLoc = 9812;
+		rType = 0;
+		vrLen = 1332;
+		vrLoc = 211;
 	};
 	E1F483530B38DB4200CECE18 /* SharedDefs.h */ = {
 		uiCtxt = {

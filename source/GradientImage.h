@@ -10,8 +10,6 @@
 	This file is in the public domain.
 */
 
-//#define	_INSANE_OPTIMIZATION_	1
-
 typedef struct GradientData 
 {
 	float	r1;
@@ -38,9 +36,6 @@ static const float gOutputRanges[8]	= {0, 1, 0, 1, 0, 1, 0, 1};
 }
 
 - (id)initWithSize: (NSSize)inSize
-			color1: (NSColor*)color1
-			color2: (NSColor*)color2;
-//-(void)setStartColor: (NSColor*)startColor
-//			endColor: (NSColor*)endColor;
+			  data: (GradientData*)inData;
 
 @end

@@ -41,24 +41,19 @@ Evaluate(
 // ----------------------------------------------------------------------------
 
 - (id)initWithSize: (NSSize)inSize
-			color1: (NSColor*)color1
-			color2: (NSColor*)color2
+			  data: (GradientData*)inData
 {
-	if (!color1 || !color2)
+	if (!inData)
 	{
-		fprintf(stderr, "otx: [GradientView initWithSize:color1:color2] "
-			"nil color(s)\n");
+		fprintf(stderr, "otx: [GradientView initWithSize:inData:] "
+			"nil data\n");
 		return nil;
 	}
 
-	// I'm assuming initWithSize: calls setSize:. Is this the case?
-	[color1 getRed: &mData.r1 green: &mData.g1
-		blue: &mData.b1 alpha: &mData.a1];
-	[color2 getRed: &mData.r2 green: &mData.g2
-		blue: &mData.b2 alpha: &mData.a2];
-
 	if (!(self = [super initWithSize: inSize]))
 		return nil;
+
+	mData	= *inData;
 
 #if	_INSANE_OPTIMIZATION_
 #else
@@ -68,10 +63,10 @@ Evaluate(
 	mGradientFunc	= CGFunctionCreate(
 		&mData, 1, gInputRange, 4, gOutputRanges, &cgCallback);
 
-	[self lockFocus];
-
 	CGPoint	startPoint	= CGPointMake(0.0, inSize.height);
 	CGPoint	endPoint	= CGPointMake(0.0, 0.0);
+
+	[self lockFocus];
 
 	CGContextRef	savedContext	=
 		(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
@@ -84,6 +79,7 @@ Evaluate(
 
 	if (!colorSpace)
 	{
+		CGContextRestoreGState(savedContext);
 		[self release];
 		return nil;
 	}

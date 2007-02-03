@@ -88,8 +88,8 @@
 	if (mTextShadow)
 		[mTextShadow release];
 
-	if (mGradientImage)
-		[mGradientImage release];
+//	if (mGradientImage)
+//		[mGradientImage release];
 
 	if (mPrefsViews)
 		free(mPrefsViews);
@@ -200,9 +200,10 @@
 	mPolishedDarkColor	= [[NSColor
 		colorWithCalibratedRed: kPolishedDarkRed green: kPolishedDarkGreen
 		blue: kPolishedDarkBlue alpha: 1.0] retain];
-	mGradientImage		= [[GradientImage alloc] initWithSize:
-		[mMainWindow frame].size color1: mPolishedLightColor
-		color2: mPolishedDarkColor];
+
+//	mGradientImage		= [[GradientImage alloc] initWithSize:
+//		[mMainWindow frame].size color1: mPolishedLightColor
+//		color2: mPolishedDarkColor];
 
 	// Add text shadows
 	NSMutableAttributedString*	newString	=
@@ -265,9 +266,26 @@
 	// Create an image 1 pixel wide and as tall as the window.
 	NSRect			gradientRect	=
 		NSMakeRect(0, 0, 1, [mMainWindow frame].size.height);
+
+	// OK, this is not as OO as it should be, but true OO is way too slow here,
+	// so- deal with it. By sending a struct 'by reference', we avoid 2 Obj-C
+	// message sends, and "_objc_msgSend" is the 'true slowness' that we are
+	// fighting. Compare against previous revisions for context.
+	GradientData	gradientData =
+	{
+		kPolishedLightRed,
+		kPolishedLightGreen,
+		kPolishedLightBlue,
+		1.0,
+		kPolishedDarkRed,
+		kPolishedDarkGreen,
+		kPolishedDarkBlue,
+		1.0,
+	};
+
 	GradientImage*	gradientImage	=
 		[[GradientImage alloc] initWithSize: gradientRect.size
-		color1: mPolishedLightColor color2: mPolishedDarkColor];
+		data: &gradientData];
 
 	// Set the gradient image as the window's background color.
 	[mMainWindow setBackgroundColor:
@@ -1553,34 +1571,9 @@
 {
 	if ([inNotification object] == mMainWindow)
 	{
-		[mGradientImage setSize: [mMainWindow frame].size];
 		[self drawMainWindowBackground];
 		[mMainWindow display];
 	}
 }
-
-//	windowDidBecomeKey:
-// ----------------------------------------------------------------------------
-/*
-- (void)windowDidBecomeKey: (NSNotification*)inNotification
-{
-	if ([inNotification object] == mMainWindow)
-	{
-		[self drawMainWindowBackground];
-		[mMainWindow display];
-	}
-}
-
-//	windowDidResignKey:
-// ----------------------------------------------------------------------------
-
-- (void)windowDidResignKey: (NSNotification*)inNotification
-{
-	if ([inNotification object] == mMainWindow)
-	{
-		[self drawMainWindowBackground];
-		[mMainWindow display];
-	}
-}*/
 
 @end
