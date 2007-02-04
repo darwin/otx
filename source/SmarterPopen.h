@@ -9,11 +9,14 @@
 #import <Cocoa/Cocoa.h>
 #ifdef USESMARTERPOPEN
 
-@interface SmarterPopen : NSObject {
-
+@interface SmarterPopen : NSObject 
+{
+    int  m_StatusOk;
+    NSData * m_ReturnData;
 }
 
-- (BOOL)openPipe: (NSString*)inCode;
+- (OSStatus)runTask: (NSString*) inCmd withArgs:(NSArray*) theArgs;
+- (NSString *) getResultAsString;
 
 @end
 
