@@ -59,6 +59,7 @@
                 "Error with '%s' unable to launch task. %s\n",
                 CSTRING(inCmd),
                 CSTRING([e reason]));
+        [task release];
         return -1;
     }
     
@@ -73,15 +74,18 @@
                 "Error '@s' returned %d\n",
                 inCmd,
                 [task terminationStatus]);
+        [task release];
         return -1;
     }
     
+    [task release];
     return noErr;
 }    
     
 - (NSString *) getResultAsString
 {
-    return [[NSString alloc] initWithData:m_ReturnData encoding: NSUTF8StringEncoding];
+    NSString* string = [[NSString alloc] initWithData:m_ReturnData encoding: NSUTF8StringEncoding];
+    return [string autorelease];
 }
 
 
