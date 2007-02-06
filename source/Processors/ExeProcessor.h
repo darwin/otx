@@ -422,7 +422,7 @@ enum {
 - (void)deleteFuncInfos;
 
 // processors
-- (void)processExe: (NSString*)inOutputFilePath;
+- (BOOL)processExe: (NSString*)inOutputFilePath;
 - (BOOL)populateLineLists;
 - (BOOL)populateLineList: (Line**)inList
 			   verbosely: (BOOL)inVerbose

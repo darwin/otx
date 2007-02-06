@@ -172,7 +172,7 @@
 // ----------------------------------------------------------------------------
 //	The master processing method, designed to be executed in a separate thread.
 
-- (void)processExe: (NSString*)inOutputFilePath
+- (BOOL)processExe: (NSString*)inOutputFilePath
 {
 	if (!mArchMagic)
 	{
@@ -181,7 +181,7 @@
 			@selector(processingThreadDidFinish:)
 			withObject: [NSNumber numberWithBool: false]
 			waitUntilDone: false];
-		return;
+		return false;
 	}
 
 	mOutputFilePath	= inOutputFilePath;
@@ -197,7 +197,7 @@
 			@selector(processingThreadDidFinish:)
 			withObject: [NSNumber numberWithBool: false]
 			waitUntilDone: false];
-		return;
+		return false;
 	}
 
 	[self loadLCommands];
@@ -298,7 +298,7 @@
 			@selector(processingThreadDidFinish:)
 			withObject: [NSNumber numberWithBool: false]
 			waitUntilDone: false];
-		return;
+		return false;
 	}
 
 	if (mOpts.dataSections)
@@ -310,7 +310,7 @@
 				@selector(processingThreadDidFinish:)
 				withObject: [NSNumber numberWithBool: false]
 				waitUntilDone: false];
-			return;
+			return false;
 		}
 	}
 
@@ -327,6 +327,8 @@
 		waitUntilDone: false];
 
 	[pool release];
+
+	return true;
 }
 
 //	populateLineLists

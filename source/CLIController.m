@@ -488,10 +488,17 @@
 		return;
 	}
 
-	ProgressState	progState	=
-		{true, true, false, 0, nil, @"Loading executable"};
+//	ProgressState	progState	=
+//		{true, true, false, 0, nil, @"Loading executable"};
+	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithBool: true], PRIndeterminateKey,
+		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		@"Loading executable", PRDescriptionKey,
+		nil];
 
-	[self reportProgress: &progState];
+//	[self reportProgress: &progState];
+	[self reportProgress: progDict];
+	[progDict release];
 
 	if (![theProcessor processExe: nil])
 	{

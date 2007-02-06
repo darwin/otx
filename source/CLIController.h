@@ -41,6 +41,6 @@
 - (void)doErrorAlert;
 
 // ProgressReporter protocol
-- (void)reportProgress: (ProgressState*)inState;
+//- (void)reportProgress: (ProgressState*)inState;
 
 @end
