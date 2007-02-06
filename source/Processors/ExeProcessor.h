@@ -276,7 +276,7 @@ enum {
 #define MAX_STACK_SIZE			40		// Maximum number of stack variables
 
 // Refresh progress bar after processing this many lines.
-#define PROGRESS_FREQ			2500
+#define PROGRESS_FREQ			2000
 //#define CLI_PROGRESS_FREQ		5000	i predict we will want this
 
 // Toggle these to print symbol descriptions and blocks to standard out.
@@ -289,6 +289,8 @@ enum {
 	DMGL_PARAMS | DMGL_ANSI | DMGL_VERBOSE | DMGL_TYPES | DMGL_RET_POSTFIX
 
 #define	COMPARISON_FUNC_TYPE	int (*)(const void*, const void*)
+
+#define _USE_PIPES_	1
 
 // ============================================================================
 
@@ -467,6 +469,15 @@ enum {
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;
 - (void)printBlocks: (UInt32)inFuncIndex;
+#endif
+
+#ifdef _USE_PIPES_
+- (BOOL)populateLineLists;
+- (BOOL)populateLineList: (Line**)inList
+			   verbosely: (BOOL)inVerbose
+			 fromSection: (char*)inSectionName
+			   afterLine: (Line**)inLine
+		   includingPath: (BOOL)inIncludePath;
 #endif
 
 @end

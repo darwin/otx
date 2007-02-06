@@ -57,6 +57,7 @@ Evaluate(
 
 #if	_INSANE_OPTIMIZATION_
 #else
+
 	CGFunctionCallbacks	cgCallback = {0 , &Evaluate, nil};
 
 	// CGFunctionCreate() cannot fail. Nice.

@@ -194,6 +194,78 @@
 
 	[mController reportProgress: &progState];
 
+#ifdef _USE_PIPES_
+
+	[self populateLineLists];
+
+	progState	= (ProgressState)
+		{false, false, true, 0, nil, @"Gathering info"};
+
+	[mController reportProgress: &progState];
+
+	// Gather info about lines while they're virgin.
+	[self gatherLineInfos];
+
+	// Gather info about logical blocks. The second pass applies info
+	// for backward branches.
+	[self gatherFuncInfos];
+	[self gatherFuncInfos];
+
+	UInt32	progCounter	= 0;
+	double	progValue	= 0.0;
+
+	progState	= (ProgressState)
+		{true, false, true, GeneratingFile, &progValue, @"Generating file"};
+
+	[mController reportProgress: &progState];
+
+	Line*	theLine	= mPlainLineListHead;
+
+	// Loop thru lines.
+	while (theLine)
+	{
+		if (!(progCounter % PROGRESS_FREQ))
+		{
+			progValue	= (double)progCounter / mNumLines * 100;
+			progState	= (ProgressState)
+				{false, false, false, GeneratingFile, &progValue, nil};
+
+			[mController reportProgress: &progState];
+		}
+
+		if (theLine->info.isCode)
+		{
+			ProcessCodeLine(&theLine);
+
+			if (mOpts.entabOutput)
+				EntabLine(theLine);
+		}
+		else
+			ProcessLine(theLine);
+
+		theLine	= theLine->next;
+		progCounter++;
+	}
+
+	progState	= (ProgressState){true, true, true, 0, nil, @"Writing file"};
+
+	[mController reportProgress: &progState];
+
+	// Create output file.
+	if (![self printLinesFromList: mPlainLineListHead])
+		return false;
+
+	if (mOpts.dataSections)
+	{
+		if (![self printDataSections])
+			return false;
+	}
+
+	progState	= (ProgressState){false, false, false, Complete, nil, nil};
+	[mController reportProgress: &progState];
+
+#else
+
 	// Create temp files.
 	NSURL*	theVerboseFile	= nil;
 	NSURL*	thePlainFile	= nil;
@@ -228,8 +300,152 @@
 		return false;
 	}
 
+#endif
+
 	return true;
 }
+
+#ifdef _USE_PIPES_
+//	populateLineLists
+// ----------------------------------------------------------------------------
+
+- (BOOL)populateLineLists
+{
+	// Create a progState for nudging the barber pole between otool calls.
+	ProgressState	progState	= {false, false, false, Nudge, nil, nil};
+
+	[mController reportProgress: &progState];
+
+	Line*	thePrevVerboseLine	= nil;
+	Line*	thePrevPlainLine	= nil;
+
+	// Read __text lines.
+	[self populateLineList: &mVerboseLineListHead verbosely: true
+		fromSection: "__text" afterLine: &thePrevVerboseLine
+		includingPath: true];
+
+	[mController reportProgress: &progState];
+
+	[self populateLineList: &mPlainLineListHead verbosely: false
+		fromSection: "__text" afterLine: &thePrevPlainLine
+		includingPath: true];
+
+	[mController reportProgress: &progState];
+
+	// Read __coalesced_text lines.
+	if (mCoalTextSect.size)
+	{
+		[self populateLineList: &mVerboseLineListHead verbosely: true
+			fromSection: "__coalesced_text" afterLine: &thePrevVerboseLine
+			includingPath: false];
+
+		[mController reportProgress: &progState];
+
+		[self populateLineList: &mPlainLineListHead verbosely: false
+			fromSection: "__coalesced_text" afterLine: &thePrevPlainLine
+			includingPath: false];
+	}
+
+	// Read __textcoal_nt lines.
+	if (mCoalTextNTSect.size)
+	{
+		[self populateLineList: &mVerboseLineListHead verbosely: true
+			fromSection: "__textcoal_nt" afterLine: &thePrevVerboseLine
+			includingPath: false];
+
+		[mController reportProgress: &progState];
+
+		[self populateLineList: &mPlainLineListHead verbosely: false
+			fromSection: "__textcoal_nt" afterLine: &thePrevPlainLine
+			includingPath: false];
+	}
+
+	[mController reportProgress: &progState];
+
+	// Connect the 2 lists.
+	Line*	verboseLine	= mVerboseLineListHead;
+	Line*	plainLine	= mPlainLineListHead;
+
+	while (verboseLine && plainLine)
+	{
+		verboseLine->alt	= plainLine;
+		plainLine->alt		= verboseLine;
+
+		verboseLine	= verboseLine->next;
+		plainLine	= plainLine->next;
+	}
+
+	// Optionally insert md5.
+	if (mOpts.checksum)
+		[self insertMD5];
+
+	return true;
+}
+
+//	populateLineList:fromSection:afterLine:
+// ----------------------------------------------------------------------------
+
+- (BOOL)populateLineList: (Line**)inList
+			   verbosely: (BOOL)inVerbose
+			 fromSection: (char*)inSectionName
+			   afterLine: (Line**)inLine
+		   includingPath: (BOOL)inIncludePath
+{
+	char	cmdString[100];
+
+	cmdString[0]	= 0;
+
+	// otool freaks out when somebody says -arch and it's not a unibin.
+	if (mExeIsFat)
+		snprintf(cmdString, MAX_ARCH_STRING_LENGTH + 10,
+			"otool -arch %s", mArchString);
+	else
+		strncpy(cmdString, "otool", 6);
+
+	NSString*	oPath		= [mOFile path];
+	NSString*	otoolString = [NSString stringWithFormat:
+		@"%s %s -s __TEXT %s '%@'%s", cmdString,
+		(inVerbose) ? "-V" : "-v", inSectionName, oPath,
+		(inIncludePath) ? "" : " | sed '1 d'"];
+	FILE*		otoolPipe	= popen(CSTRING(otoolString), "r");
+
+	if (!otoolPipe)
+	{
+		fprintf(stderr, "otx: unable to open %s otool pipe\n",
+			(inVerbose) ? "verbose" : "plain");
+		return false;
+	}
+
+	char	theCLine[MAX_LINE_LENGTH];
+
+	while (fgets(theCLine, MAX_LINE_LENGTH, otoolPipe))
+	{
+		// Many thanx to Peter Hosey for the calloc speed test.
+		// http://boredzo.org/blog/archives/2006-11-26/calloc-vs-malloc
+
+		Line*	theNewLine	= calloc(1, sizeof(Line));
+
+		theNewLine->length	= strlen(theCLine);
+		theNewLine->chars	= malloc(theNewLine->length + 1);
+		strncpy(theNewLine->chars, theCLine,
+			theNewLine->length + 1);
+
+		// Add the line to the list.
+		InsertLineAfter(theNewLine, *inLine, inList);
+
+		*inLine	= theNewLine;
+	}
+
+	if (pclose(otoolPipe) == -1)
+	{
+		perror((inVerbose) ? "otx: unable to close verbose otool pipe" :
+			"otx: unable to close plain otool pipe");
+		return false;
+	}
+
+	return true;
+}
+#endif
 
 //	createVerboseFile:andPlainFile:
 // ----------------------------------------------------------------------------
@@ -244,17 +460,10 @@
 
 	// otool freaks out when somebody says -arch and it's not a unibin.
 	if (mExeIsFat)
-//	{
-//		char*	cmdFormatString	= "otool -arch %s";
 		snprintf(cmdString, MAX_ARCH_STRING_LENGTH + 10,
 			"otool -arch %s", mArchString);
-//	}
 	else
-//	{
-//		char*	cmdFormatString	= "otool";
-//		snprintf(cmdString, strlen(cmdFormatString) + 1, "otool");
 		strncpy(cmdString, "otool", 6);
-//	}
 
 	NSProcessInfo*	procInfo	= [NSProcessInfo processInfo];
 	NSString*		verbosePath	= [NSTemporaryDirectory()
@@ -273,8 +482,7 @@
 	// subsequent calls append to the file. The order in which sections are
 	// printed may not reflect their order in the executable.
 
-	ProgressState	progState	=
-		{false, false, false, Nudge, nil, nil};
+	ProgressState	progState	= {false, false, false, Nudge, nil, nil};
 
 	[mController reportProgress: &progState];
 
@@ -573,6 +781,7 @@
 
 		theLine	= theLine->next;
 		progCounter++;
+		mNumLines++;
 	}
 
 	mEndOfText	= mTextSect.s.addr + mTextSect.s.size;
@@ -1356,7 +1565,7 @@
 {}
 
 #pragma mark -
-//	selectorForMsgSend:
+//	selectorForMsgSend:fromLine:
 // ----------------------------------------------------------------------------
 //	Subclasses may override.
 
