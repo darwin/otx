@@ -32,28 +32,36 @@
 
 #define NSXViewAnimationCustomEffectsKey	@"NSXViewAnimationCustomEffectsKey"
 
-#define NSXViewAnimationSwapAtBeginningEffect				(1 << 0)
-#define NSXViewAnimationSwapAtEndEffect						(1 << 1)
-#define NSXViewAnimationSwapOldKey							\
-	@"NSXViewAnimationSwapOldKey"							// NSView*
-#define NSXViewAnimationSwapNewKey							\
-	@"NSXViewAnimationSwapNewKey"							// NSView*
+#define NSXViewAnimationSwapAtBeginningEffect					(1 << 0)
+#define NSXViewAnimationSwapAtEndEffect							(1 << 1)
+#define NSXViewAnimationSwapOldKey								\
+	@"NSXViewAnimationSwapOldKey"								// NSView*
+#define NSXViewAnimationSwapNewKey								\
+	@"NSXViewAnimationSwapNewKey"								// NSView*
 
-#define NSXViewAnimationUpdateResizeMasksAtEndEffect		(1 << 2)
-#define NSXViewAnimationResizeMasksArrayKey					\
-	@"NSXViewAnimationResizeMasksArrayKey"					// NSArray*(UInt32)
-#define NSXViewAnimationResizeViewsArrayKey					\
-	@"NSXViewAnimationResizeViewsArrayKey"					// NSArray*(UInt32)
+#define NSXViewAnimationUpdateResizeMasksAtEndEffect			(1 << 2)
+#define NSXViewAnimationResizeMasksArrayKey						\
+	@"NSXViewAnimationResizeMasksArrayKey"						// NSArray*(UInt32)
+#define NSXViewAnimationResizeViewsArrayKey						\
+	@"NSXViewAnimationResizeViewsArrayKey"						// NSArray*(UInt32)
 
-#define NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect	(1 << 3)
-#define NSXViewAnimationWindowMinSizeKey					\
-	@"NSXViewAnimationWindowMinSizeKey"						// NSValue*(NSSize*)
-#define NSXViewAnimationWindowMaxSizeKey					\
-	@"NSXViewAnimationWindowMaxSizeKey"						// NSValue*(NSSize*)
+#define NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect		(1 << 3)
+#define NSXViewAnimationWindowMinSizeKey						\
+	@"NSXViewAnimationWindowMinSizeKey"							// NSValue*(NSSize*)
+#define NSXViewAnimationWindowMaxSizeKey						\
+	@"NSXViewAnimationWindowMaxSizeKey"							// NSValue*(NSSize*)
 
-#define NSXViewAnimationPerformSelectorAtEndEffect			(1 << 4)
-#define NSXViewAnimationSelectorKey							\
-	@"NSXViewAnimationSelectorKey"							// NSValue*(SEL)
+#define NSXViewAnimationPerformSelectorAtEndEffect				(1 << 4)
+#define NSXViewAnimationSelectorKey								\
+	@"NSXViewAnimationSelectorKey"								// NSValue*(SEL)
+//#define NSXViewAnimationSelArrayKey							\
+//	@"NSXViewAnimationSelArrayKey"								// NSArray*(SEL)
+
+#define NSXViewAnimationOpenFileWithAppAtEndEffect				(1 << 5)
+#define NSXViewAnimationFilePathKey								\
+	@"NSXViewAnimationFilePathKey"								// NSString*
+#define NSXViewAnimationAppNameKey								\
+	@"NSXViewAnimationAppNameKey"								// NSString*
 
 // ============================================================================
 
@@ -90,6 +98,8 @@
 	UInt32						mArchMagic;
 	BOOL						mFileIsValid;
 	BOOL						mIgnoreArch;
+	BOOL						mExeIsFat;
+	BOOL						mProcessing;
 	NSString*					mExeName;
 	NSString*					mOutputFileLabel;
 	NSString*					mOutputFileName;
@@ -112,6 +122,9 @@
 - (IBAction)syncOutputText: (id)sender;
 - (IBAction)processFile: (id)sender;
 - (void)continueProcessingFile;
+- (void)adjustInterfaceForMultiThread;
+- (void)adjustInterfaceForSingleThread;
+- (void)processingThreadDidFinish: (BOOL)successfully;
 - (IBAction)thinFile: (id)sender;
 - (IBAction)verifyNops: (id)sender;
 - (void)syncSaveButton;
@@ -123,7 +136,8 @@
 			returnCode: (int)returnCode
 		   contextInfo: (void*)contextInfo;
 - (void)showProgView;
-- (void)hideProgView: (BOOL)inAnimate;
+- (void)hideProgView: (BOOL)inAnimate
+			openFile: (BOOL)inOpenFile;
 - (void)drawMainWindowBackground;
 
 // prefs window

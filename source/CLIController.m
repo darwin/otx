@@ -23,8 +23,7 @@
 
 - (id)init
 {
-	self = [super init];
-	return self;
+	return (self = [super init]);
 }
 
 //	initWithArgs:count:
@@ -602,38 +601,50 @@
 //	reportProgress:
 // ----------------------------------------------------------------------------
 
-- (void)reportProgress: (ProgressState*)inState
+- (void)reportProgress: (NSDictionary*)inDict
 {
 	if (!mShowProgress)
 		return;
 
-	if (!inState)
+	if (!inDict)
 	{
-		fprintf(stderr, "otx: [CLIController reportProgress:] nil inState\n");
+		fprintf(stderr, "otx: [CLIController reportProgress:] nil inDict\n");
 		return;
 	}
 
-	if (inState->newLine)
-		fprintf(stderr, "\n");
+	NSNumber*	newLine	= [inDict objectForKey: PRNewLineKey];
 
-	if (inState->description)
-		fprintf(stderr, "%s", CSTRING(inState->description));
-
-	switch (inState->refcon)
+	if (newLine)
 	{
-		case Nudge:
-		case GeneratingFile:
-			fprintf(stderr, "%c", '.');
-
-			break;
-
-		case Complete:
+		if ([newLine boolValue])
 			fprintf(stderr, "\n");
+	}
 
-			break;
+	NSString*	description	= [inDict objectForKey: PRDescriptionKey];
 
-		default:
-			break;
+	if (description)
+		fprintf(stderr, "%s", CSTRING(description));
+
+	NSNumber*	refcon	= [inDict objectForKey: PRRefconKey];
+
+	if (refcon)
+	{
+		switch ([refcon unsignedIntValue])
+		{
+			case Nudge:
+			case GeneratingFile:
+				fprintf(stderr, "%c", '.');
+
+				break;
+
+			case Complete:
+				fprintf(stderr, "\n");
+
+				break;
+
+			default:
+				break;
+		}
 	}
 }
 

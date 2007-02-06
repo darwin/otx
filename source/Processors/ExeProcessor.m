@@ -7,7 +7,7 @@
 	This file is in the public domain.
 */
 
-#import "SystemIncludes.h"
+//#import "SystemIncludes.h"
 
 #import "demangle.h"
 
@@ -167,41 +167,62 @@
 	mFuncInfos	= nil;
 }
 
+#pragma mark -
 //	processExe:arch:
 // ----------------------------------------------------------------------------
+//	The master processing method, designed to be executed in a separate thread.
 
-- (BOOL)processExe: (NSString*)inOutputFilePath
+- (void)processExe: (NSString*)inOutputFilePath
 {
 	if (!mArchMagic)
 	{
 		fprintf(stderr, "otx: tried to process non-machO file\n");
-		return false;
+		[mController performSelectorOnMainThread:
+			@selector(processingThreadDidFinish:)
+			withObject: [NSNumber numberWithBool: false]
+			waitUntilDone: false];
+		return;
 	}
 
 	mOutputFilePath	= inOutputFilePath;
 	mMachHeaderPtr	= nil;
 
+	NSAutoreleasePool*	pool	= [[NSAutoreleasePool alloc] init];
+
 	if (![self loadMachHeader])
 	{
 		fprintf(stderr, "otx: failed to load mach header\n");
-		return false;
+		[pool release];
+		[mController performSelectorOnMainThread:
+			@selector(processingThreadDidFinish:)
+			withObject: [NSNumber numberWithBool: false]
+			waitUntilDone: false];
+		return;
 	}
 
 	[self loadLCommands];
 
-	ProgressState	progState	=
-		{false, false, true, 0, nil, @"Calling otool"};
+	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithBool: true], PRNewLineKey,
+		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		@"Calling otool", PRDescriptionKey,
+		nil];
 
-	[mController reportProgress: &progState];
-
-#ifdef _USE_PIPES_
+	[mController performSelectorOnMainThread: @selector(reportProgress:)
+		withObject: progDict waitUntilDone: true];
+	[progDict release];
 
 	[self populateLineLists];
 
-	progState	= (ProgressState)
-		{false, false, true, 0, nil, @"Gathering info"};
+	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithBool: true], PRNewLineKey,
+		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		@"Gathering info", PRDescriptionKey,
+		nil];
 
-	[mController reportProgress: &progState];
+	[mController performSelectorOnMainThread: @selector(reportProgress:)
+		withObject: progDict waitUntilDone: true];
+	[progDict release];
 
 	// Gather info about lines while they're virgin.
 	[self gatherLineInfos];
@@ -214,10 +235,17 @@
 	UInt32	progCounter	= 0;
 	double	progValue	= 0.0;
 
-	progState	= (ProgressState)
-		{true, false, true, GeneratingFile, &progValue, @"Generating file"};
+	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithBool: false], PRIndeterminateKey,
+		[NSNumber numberWithDouble: progValue], PRValueKey,
+		[NSNumber numberWithBool: true], PRNewLineKey,
+		[NSNumber numberWithUnsignedInt: GeneratingFile], PRRefconKey,
+		@"Generating file", PRDescriptionKey,
+		nil];
 
-	[mController reportProgress: &progState];
+	[mController performSelectorOnMainThread: @selector(reportProgress:)
+		withObject: progDict waitUntilDone: true];
+	[progDict release];
 
 	Line*	theLine	= mPlainLineListHead;
 
@@ -227,10 +255,14 @@
 		if (!(progCounter % PROGRESS_FREQ))
 		{
 			progValue	= (double)progCounter / mNumLines * 100;
-			progState	= (ProgressState)
-				{false, false, false, GeneratingFile, &progValue, nil};
+			progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+				[NSNumber numberWithDouble: progValue], PRValueKey,
+				[NSNumber numberWithUnsignedInt: GeneratingFile], PRRefconKey,
+				nil];
 
-			[mController reportProgress: &progState];
+			[mController performSelectorOnMainThread: @selector(reportProgress:)
+				withObject: progDict waitUntilDone: true];
+			[progDict release];
 		}
 
 		if (theLine->info.isCode)
@@ -247,74 +279,68 @@
 		progCounter++;
 	}
 
-	progState	= (ProgressState){true, true, true, 0, nil, @"Writing file"};
+	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithBool: true], PRIndeterminateKey,
+		[NSNumber numberWithBool: true], PRNewLineKey,
+		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		@"Writing file", PRDescriptionKey,
+		nil];
 
-	[mController reportProgress: &progState];
+	[mController performSelectorOnMainThread: @selector(reportProgress:)
+		withObject: progDict waitUntilDone: true];
+	[progDict release];
 
 	// Create output file.
 	if (![self printLinesFromList: mPlainLineListHead])
-		return false;
+	{
+		[pool release];
+		[mController performSelectorOnMainThread:
+			@selector(processingThreadDidFinish:)
+			withObject: [NSNumber numberWithBool: false]
+			waitUntilDone: false];
+		return;
+	}
 
 	if (mOpts.dataSections)
 	{
 		if (![self printDataSections])
-			return false;
+		{
+			[pool release];
+			[mController performSelectorOnMainThread:
+				@selector(processingThreadDidFinish:)
+				withObject: [NSNumber numberWithBool: false]
+				waitUntilDone: false];
+			return;
+		}
 	}
 
-	progState	= (ProgressState){false, false, false, Complete, nil, nil};
-	[mController reportProgress: &progState];
+	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithUnsignedInt: Complete], PRRefconKey,
+		nil];
+	[mController performSelectorOnMainThread: @selector(reportProgress:)
+		withObject: progDict waitUntilDone: true];
+	[progDict release];
 
-#else
+	[mController performSelectorOnMainThread:
+		@selector(processingThreadDidFinish:)
+		withObject: [NSNumber numberWithBool: true]
+		waitUntilDone: false];
 
-	// Create temp files.
-	NSURL*	theVerboseFile	= nil;
-	NSURL*	thePlainFile	= nil;
-
-	[self createVerboseFile: &theVerboseFile andPlainFile: &thePlainFile];
-
-	if (!theVerboseFile || !thePlainFile)
-	{
-		fprintf(stderr, "otx: could not create temp files\n");
-		return false;
-	}
-
-	// Get the party started.
-	if (![self processVerboseFile: theVerboseFile andPlainFile: thePlainFile])
-	{
-		fprintf(stderr, "otx: unable to process temp files\n");
-		return false;
-	}
-
-	// Delete temp files.
-	NSFileManager*	theFileMan	= [NSFileManager defaultManager];
-
-	if (![theFileMan removeFileAtPath: [theVerboseFile path] handler: nil])
-	{
-		fprintf(stderr, "otx: unable to delete verbose temp file.\n");
-		return false;
-	}
-
-	if (![theFileMan removeFileAtPath: [thePlainFile path] handler: nil])
-	{
-		fprintf(stderr, "otx: unable to delete plain temp file.\n");
-		return false;
-	}
-
-#endif
-
-	return true;
+	[pool release];
 }
 
-#ifdef _USE_PIPES_
 //	populateLineLists
 // ----------------------------------------------------------------------------
 
 - (BOOL)populateLineLists
 {
 	// Create a progState for nudging the barber pole between otool calls.
-	ProgressState	progState	= {false, false, false, Nudge, nil, nil};
+	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		nil];
 
-	[mController reportProgress: &progState];
+	[mController performSelectorOnMainThread: @selector(reportProgress:)
+		withObject: progDict waitUntilDone: true];
 
 	Line*	thePrevVerboseLine	= nil;
 	Line*	thePrevPlainLine	= nil;
@@ -324,13 +350,15 @@
 		fromSection: "__text" afterLine: &thePrevVerboseLine
 		includingPath: true];
 
-	[mController reportProgress: &progState];
+	[mController performSelectorOnMainThread: @selector(reportProgress:)
+		withObject: progDict waitUntilDone: true];
 
 	[self populateLineList: &mPlainLineListHead verbosely: false
 		fromSection: "__text" afterLine: &thePrevPlainLine
 		includingPath: true];
 
-	[mController reportProgress: &progState];
+	[mController performSelectorOnMainThread: @selector(reportProgress:)
+		withObject: progDict waitUntilDone: true];
 
 	// Read __coalesced_text lines.
 	if (mCoalTextSect.size)
@@ -339,7 +367,8 @@
 			fromSection: "__coalesced_text" afterLine: &thePrevVerboseLine
 			includingPath: false];
 
-		[mController reportProgress: &progState];
+		[mController performSelectorOnMainThread: @selector(reportProgress:)
+			withObject: progDict waitUntilDone: true];
 
 		[self populateLineList: &mPlainLineListHead verbosely: false
 			fromSection: "__coalesced_text" afterLine: &thePrevPlainLine
@@ -353,14 +382,16 @@
 			fromSection: "__textcoal_nt" afterLine: &thePrevVerboseLine
 			includingPath: false];
 
-		[mController reportProgress: &progState];
+		[mController performSelectorOnMainThread: @selector(reportProgress:)
+			withObject: progDict waitUntilDone: true];
 
 		[self populateLineList: &mPlainLineListHead verbosely: false
 			fromSection: "__textcoal_nt" afterLine: &thePrevPlainLine
 			includingPath: false];
 	}
 
-	[mController reportProgress: &progState];
+	[mController performSelectorOnMainThread: @selector(reportProgress:)
+		withObject: progDict waitUntilDone: true];
 
 	// Connect the 2 lists.
 	Line*	verboseLine	= mVerboseLineListHead;
@@ -378,6 +409,8 @@
 	// Optionally insert md5.
 	if (mOpts.checksum)
 		[self insertMD5];
+
+	[progDict release];
 
 	return true;
 }
@@ -445,281 +478,8 @@
 
 	return true;
 }
-#endif
-
-//	createVerboseFile:andPlainFile:
-// ----------------------------------------------------------------------------
-//	Call otool on the exe too many times.
-
-- (void)createVerboseFile: (NSURL**)outVerbosePath
-			 andPlainFile: (NSURL**)outPlainPath
-{
-	char	cmdString[100];
-
-	cmdString[0]	= 0;
-
-	// otool freaks out when somebody says -arch and it's not a unibin.
-	if (mExeIsFat)
-		snprintf(cmdString, MAX_ARCH_STRING_LENGTH + 10,
-			"otool -arch %s", mArchString);
-	else
-		strncpy(cmdString, "otool", 6);
-
-	NSProcessInfo*	procInfo	= [NSProcessInfo processInfo];
-	NSString*		verbosePath	= [NSTemporaryDirectory()
-		stringByAppendingPathComponent:
-		[NSString stringWithFormat: @"temp_%@.otx",
-		[procInfo globallyUniqueString]]];
-	NSString*		plainPath	= [NSTemporaryDirectory()
-		stringByAppendingPathComponent:
-		[NSString stringWithFormat: @"temp_%@.otx",
-		[procInfo globallyUniqueString]]];
-
-	// The following lines call otool twice for each section we want, once
-	// with verbosity, once without. sed removes the 1st line from sections
-	// other than the first text section, which is a redundant filepath.
-	// The first system call creates or overwrites the file at verbosePath,
-	// subsequent calls append to the file. The order in which sections are
-	// printed may not reflect their order in the executable.
-
-	ProgressState	progState	= {false, false, false, Nudge, nil, nil};
-
-	[mController reportProgress: &progState];
-
-	NSString*	oPath	= [mOFile path];
-
-	// Create verbose temp file.
-	NSString*	otoolString = [NSString stringWithFormat:
-		@"%s -V -s __TEXT __text '%@' > '%@'",
-		cmdString, oPath, verbosePath];
-
-	if (system(CSTRING(otoolString)) != noErr)
-		return;
-
-	[mController reportProgress: &progState];
-
-	// Create non-verbose temp file.
-	otoolString	= [NSString stringWithFormat:
-		@"%s -v -s __TEXT __text '%@' > '%@'",
-		cmdString, oPath, plainPath];
-	system(CSTRING(otoolString));
-
-	[mController reportProgress: &progState];
-
-	// Append to verbose temp file.
-	otoolString	= [NSString stringWithFormat:
-		@"%s -V -s __TEXT __coalesced_text '%@' | sed '1 d' >> '%@'",
-		cmdString, oPath, verbosePath];
-	system(CSTRING(otoolString));
-
-	[mController reportProgress: &progState];
-
-	// Append to non-verbose temp file.
-	otoolString	= [NSString stringWithFormat:
-		@"%s -v -s __TEXT __coalesced_text '%@' | sed '1 d' >> '%@'",
-		cmdString, oPath, plainPath];
-	system(CSTRING(otoolString));
-
-	[mController reportProgress: &progState];
-
-	// Append to verbose temp file.
-	otoolString	= [NSString stringWithFormat:
-		@"%s -V -s __TEXT __textcoal_nt '%@' | sed '1 d' >> '%@'",
-		cmdString, oPath, verbosePath];
-	system(CSTRING(otoolString));
-
-	[mController reportProgress: &progState];
-
-	// Append to non-verbose temp file.
-	otoolString	= [NSString stringWithFormat:
-		@"%s -v -s __TEXT __textcoal_nt '%@' | sed '1 d' >> '%@'",
-		cmdString, oPath, plainPath];
-	system(CSTRING(otoolString));
-
-	*outVerbosePath	= [NSURL fileURLWithPath: verbosePath];
-	*outPlainPath	= [NSURL fileURLWithPath: plainPath];
-}
 
 #pragma mark -
-//	processVerboseFile:andPlainFile:
-// ----------------------------------------------------------------------------
-
-- (BOOL)processVerboseFile: (NSURL*)inVerboseFile
-			  andPlainFile: (NSURL*)inPlainFile
-{
-	// Load otool's outputs into parallel doubly-linked lists of C strings.
-	// List heads have nil 'prev'. List tails have nil 'next'.
-	const char*	verbosePath	= CSTRING([inVerboseFile path]);
-	const char*	plainPath	= CSTRING([inPlainFile path]);
-
-	FILE*	verboseFile	= fopen(verbosePath, "r");
-
-	if (!verboseFile)
-	{
-		perror("otx: unable to open verbose temp file");
-		return false;
-	}
-
-	FILE*	plainFile	= fopen(plainPath, "r");
-
-	if (!plainFile)
-	{
-		perror("otx: unable to open plain temp file");
-		return false;
-	}
-
-	char	theVerboseCLine[MAX_LINE_LENGTH];
-	char	thePlainCLine[MAX_LINE_LENGTH];
-	Line*	thePrevVerboseLine	= nil;
-	Line*	thePrevPlainLine	= nil;
-	SInt32	theFileError;
-
-	// Loop thru lines in the temp files.
-	while (!feof(verboseFile) && !feof(plainFile))
-	{
-		theVerboseCLine[0]	= 0;
-		thePlainCLine[0]	= 0;
-
-		if (!fgets(theVerboseCLine, MAX_LINE_LENGTH, verboseFile))
-		{
-			theFileError	= ferror(verboseFile);
-
-			if (theFileError)
-				fprintf(stderr,
-					"otx: error reading from verbose temp file: %d\n",
-					theFileError);
-
-			break;
-		}
-
-		if (!fgets(thePlainCLine, MAX_LINE_LENGTH, plainFile))
-		{
-			theFileError	= ferror(plainFile);
-
-			if (theFileError)
-				fprintf(stderr,
-					"otx: error reading from plain temp file: %d\n",
-					theFileError);
-
-			break;
-		}
-
-		// Many thanx to Peter Hosey for the calloc speed test.
-		// http://boredzo.org/blog/archives/2006-11-26/calloc-vs-malloc
-
-		// alloc and init 2 Lines.
-		Line*	theVerboseLine	= calloc(1, sizeof(Line));
-		Line*	thePlainLine	= calloc(1, sizeof(Line));
-
-		theVerboseLine->length	= strlen(theVerboseCLine);
-		thePlainLine->length	= strlen(thePlainCLine);
-		theVerboseLine->chars	= malloc(theVerboseLine->length + 1);
-		thePlainLine->chars		= malloc(thePlainLine->length + 1);
-		strncpy(theVerboseLine->chars, theVerboseCLine,
-			theVerboseLine->length + 1);
-		strncpy(thePlainLine->chars, thePlainCLine,
-			thePlainLine->length + 1);
-
-		// Connect the plain and verbose lines.
-		theVerboseLine->alt	= thePlainLine;
-		thePlainLine->alt	= theVerboseLine;
-
-		// Add the lines to the lists.
-		InsertLineAfter(theVerboseLine, thePrevVerboseLine,
-			&mVerboseLineListHead);
-		InsertLineAfter(thePlainLine, thePrevPlainLine,
-			&mPlainLineListHead);
-
-		thePrevVerboseLine	= theVerboseLine;
-		thePrevPlainLine	= thePlainLine;
-		mNumLines++;
-	}
-
-	if (fclose(verboseFile) != 0)
-	{
-		perror("otx: unable to close verbose temp file");
-		return false;
-	}
-
-	if (fclose(plainFile) != 0)
-	{
-		perror("otx: unable to close plain temp file");
-		return false;
-	}
-
-	// Optionally insert md5.
-	if (mOpts.checksum)
-		[self insertMD5];
-
-	ProgressState	progState	=
-		{false, false, true, 0, nil, @"Gathering info"};
-
-	[mController reportProgress: &progState];
-
-	// Gather info about lines while they're virgin.
-	[self gatherLineInfos];
-
-	// Gather info about logical blocks. The second pass applies info
-	// for backward branches.
-	[self gatherFuncInfos];
-	[self gatherFuncInfos];
-
-	UInt32	progCounter	= 0;
-	double	progValue	= 0.0;
-
-	progState	= (ProgressState)
-		{true, false, true, GeneratingFile, &progValue, @"Generating file"};
-
-	[mController reportProgress: &progState];
-
-	Line*	theLine	= mPlainLineListHead;
-
-	// Loop thru lines.
-	while (theLine)
-	{
-		if (!(progCounter % PROGRESS_FREQ))
-		{
-			progValue	= (double)progCounter / mNumLines * 100;
-			progState	= (ProgressState)
-				{false, false, false, GeneratingFile, &progValue, nil};
-
-			[mController reportProgress: &progState];
-		}
-
-		if (theLine->info.isCode)
-		{
-			ProcessCodeLine(&theLine);
-
-			if (mOpts.entabOutput)
-				EntabLine(theLine);
-		}
-		else
-			ProcessLine(theLine);
-
-		theLine	= theLine->next;
-		progCounter++;
-	}
-
-	progState	= (ProgressState){true, true, true, 0, nil, @"Writing file"};
-
-	[mController reportProgress: &progState];
-
-	// Create output file.
-	if (![self printLinesFromList: mPlainLineListHead])
-		return false;
-
-	if (mOpts.dataSections)
-	{
-		if (![self printDataSections])
-			return false;
-	}
-
-	progState	= (ProgressState){false, false, false, Complete, nil, nil};
-	[mController reportProgress: &progState];
-
-	return true;
-}
-
 //	gatherLineInfos
 // ----------------------------------------------------------------------------
 //	To make life easier as we make changes to the lines, whatever info we need
@@ -729,16 +489,16 @@
 {
 	Line*	theLine		= mPlainLineListHead;
 	UInt32	progCounter	= 0;
+	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		nil];
+
 
 	while (theLine)
 	{
 		if (!(progCounter % (PROGRESS_FREQ * 3)))
-		{
-			ProgressState	progState	=
-				{false, false, false, Nudge, nil, nil};
-
-			[mController reportProgress: &progState];
-		}
+			[mController performSelectorOnMainThread: @selector(reportProgress:)
+				withObject: progDict waitUntilDone: true];
 
 		if (LineIsCode(theLine->chars))
 		{
@@ -784,6 +544,7 @@
 		mNumLines++;
 	}
 
+	[progDict release];
 	mEndOfText	= mTextSect.s.addr + mTextSect.s.size;
 }
 

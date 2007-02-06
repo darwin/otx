@@ -257,14 +257,6 @@ enum {
 	OCModType			// objc_module in (__OBJC,__module_info)
 };
 
-// Constants to indicate various stages of processing to the ProgressReporter
-// protocol.
-enum {
-	Nudge,
-	GeneratingFile,
-	Complete
-};
-
 #define MAX_FIELD_SPACING		100		// spaces between fields
 #define MAX_FORMAT_LENGTH		50		// snprintf() format string
 #define MAX_OPERANDS_LENGTH		1000
@@ -276,7 +268,7 @@ enum {
 #define MAX_STACK_SIZE			40		// Maximum number of stack variables
 
 // Refresh progress bar after processing this many lines.
-#define PROGRESS_FREQ			2000
+#define PROGRESS_FREQ			2500
 //#define CLI_PROGRESS_FREQ		5000	i predict we will want this
 
 // Toggle these to print symbol descriptions and blocks to standard out.
@@ -289,8 +281,6 @@ enum {
 	DMGL_PARAMS | DMGL_ANSI | DMGL_VERBOSE | DMGL_TYPES | DMGL_RET_POSTFIX
 
 #define	COMPARISON_FUNC_TYPE	int (*)(const void*, const void*)
-
-#define _USE_PIPES_	1
 
 // ============================================================================
 
@@ -432,13 +422,15 @@ enum {
 - (void)deleteFuncInfos;
 
 // processors
-- (BOOL)processExe: (NSString*)inOutputFilePath;
-- (void)createVerboseFile: (NSURL**)outVerbosePath
-			 andPlainFile: (NSURL**)outPlainPath;
+- (void)processExe: (NSString*)inOutputFilePath;
+- (BOOL)populateLineLists;
+- (BOOL)populateLineList: (Line**)inList
+			   verbosely: (BOOL)inVerbose
+			 fromSection: (char*)inSectionName
+			   afterLine: (Line**)inLine
+		   includingPath: (BOOL)inIncludePath;
 
 // customizers
-- (BOOL)processVerboseFile: (NSURL*)inVerboseFile
-			  andPlainFile: (NSURL*)inPlainFile;
 - (void)gatherLineInfos;
 - (void)decodeMethodReturnType: (const char*)inTypeCode
 						output: (char*)outCString;
@@ -469,15 +461,6 @@ enum {
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;
 - (void)printBlocks: (UInt32)inFuncIndex;
-#endif
-
-#ifdef _USE_PIPES_
-- (BOOL)populateLineLists;
-- (BOOL)populateLineList: (Line**)inList
-			   verbosely: (BOOL)inVerbose
-			 fromSection: (char*)inSectionName
-			   afterLine: (Line**)inLine
-		   includingPath: (BOOL)inIncludePath;
 #endif
 
 @end

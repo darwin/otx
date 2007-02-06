@@ -4,19 +4,21 @@
 	This file is in the public domain.
 */
 
-typedef struct
-{
-	BOOL		setIndeterminate;
-	BOOL		indeterminate;
-	BOOL		newLine;		// prepend \n in CLI version
-	UInt32		refcon;
-	double*		value;
-	NSString*	description;
-}
-ProgressState;
+#define	PRIndeterminateKey	@"PRIndeterminateKey"	// NSNumber* (BOOL)
+#define	PRValueKey			@"PRValueKey"			// NSNumber* (double)
+#define	PRNewLineKey		@"PRNewLineKey"			// NSNumber* (BOOL)
+#define	PRRefconKey			@"PRRefconKey"			// NSNumber* (UInt32)
+#define	PRDescriptionKey	@"PRDescriptionKey"		// NSString*
+
+// Constants to indicate various stages of processing
+enum {
+	Nudge,
+	GeneratingFile,
+	Complete
+};
 
 @protocol	ProgressReporter
 
-- (void)reportProgress: (ProgressState*)inState;
+- (void)reportProgress: (NSDictionary*)inState;
 
 @end

@@ -88,15 +88,13 @@
 	if (mTextShadow)
 		[mTextShadow release];
 
-//	if (mGradientImage)
-//		[mGradientImage release];
-
 	if (mPrefsViews)
 		free(mPrefsViews);
 
 	[super dealloc];
 }
 
+#pragma mark -
 //	openExe:
 // ----------------------------------------------------------------------------
 //	Open from File menu. Packages are treated as directories, so we can get
@@ -201,10 +199,6 @@
 		colorWithCalibratedRed: kPolishedDarkRed green: kPolishedDarkGreen
 		blue: kPolishedDarkBlue alpha: 1.0] retain];
 
-//	mGradientImage		= [[GradientImage alloc] initWithSize:
-//		[mMainWindow frame].size color1: mPolishedLightColor
-//		color2: mPolishedDarkColor];
-
 	// Add text shadows
 	NSMutableAttributedString*	newString	=
 		[[NSMutableAttributedString alloc] initWithAttributedString:
@@ -234,7 +228,7 @@
 	// At this point, the window is still brushed metal. We can get away with
 	// not setting the background image here because hiding the prog view
 	// resizes the window, which results in our delegate saving the day.
-	[self hideProgView: false];
+	[self hideProgView: false openFile: false];
 }
 
 //	showMainWindow
@@ -258,19 +252,18 @@
 
 - (void)drawMainWindowBackground
 {
-#if	_INSANE_OPTIMIZATION_
-	// Set the gradient image as the window's background color.
-	[mMainWindow setBackgroundColor:
-		[NSColor colorWithPatternImage: mGradientImage]];
-#else
 	// Create an image 1 pixel wide and as tall as the window.
-	NSRect			gradientRect	=
+	NSRect	gradientRect	=
 		NSMakeRect(0, 0, 1, [mMainWindow frame].size.height);
 
-	// OK, this is not as OO as it should be, but true OO is way too slow here,
-	// so- deal with it. By sending a struct 'by reference', we avoid 2 Obj-C
-	// message sends, and "_objc_msgSend" is the 'true slowness' that we are
-	// fighting. Compare against previous revisions for context.
+	// OK, this is not as OO as it should be, but true OO is way too slow here.
+	// By sending a struct 'by reference', we avoid 2 Obj-C message sends, and
+	// "_objc_msgSend" is teh slowness. Compare against previous revisions for
+	// context.
+	
+	/*
+		FIXME: cache this struct
+	*/
 	GradientData	gradientData =
 	{
 		kPolishedLightRed,
@@ -292,7 +285,6 @@
 		[NSColor colorWithPatternImage: gradientImage]];
 
 	[gradientImage release];
-#endif
 }
 
 #pragma mark -
@@ -371,10 +363,14 @@
 	[mOutputFilePath retain];
 	[theTempOutputFilePath release];
 
-	ProgressState	progState	=
-		{true, true, false, 0, nil, @"Loading executable"};
+	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithBool: true], PRIndeterminateKey,
+		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		@"Loading executable", PRDescriptionKey,
+		nil];
 
-	[self reportProgress: &progState];
+	[self reportProgress: progDict];
+	[progDict release];
 
 	if ([self checkOtool] != noErr)
 	{
@@ -383,6 +379,8 @@
 		return;
 	}
 
+	mProcessing	= true;
+	[self adjustInterfaceForMultiThread];
 	[self showProgView];
 }
 
@@ -444,28 +442,75 @@
 		fprintf(stderr, "otx: -[AppController processFile]: "
 			"unable to create processor.\n");
 		[theProcessor release];
-		[self hideProgView: true];
+		[self hideProgView: true openFile: false];
 		return;
 	}
 
-	if (![theProcessor processExe: mOutputFilePath])
-	{
-		fprintf(stderr, "otx: possible permission error\n");
-		[self doErrorAlert];
-		[theProcessor release];
-		[self hideProgView: true];
-		return;
-	}
+	[NSThread detachNewThreadSelector: @selector(processExe:)
+		toTarget: theProcessor withObject: mOutputFilePath];
 
 	[theProcessor release];
-
-	if ([theDefaults boolForKey: OpenOutputFileKey])
-		[[NSWorkspace sharedWorkspace] openFile: mOutputFilePath
-			withApplication: [theDefaults objectForKey: OutputAppKey]];
-
-	[self hideProgView: true];
 }
 
+//	processingThreadDidFinish:
+// ----------------------------------------------------------------------------
+
+- (void)processingThreadDidFinish: (BOOL)successfully
+{
+	mProcessing	= false;
+
+	if (successfully)
+	{
+		[self hideProgView: true openFile:
+			[[NSUserDefaults standardUserDefaults]
+			boolForKey: OpenOutputFileKey]];
+	}
+	else
+	{
+		[self hideProgView: true openFile: false];
+		[self doErrorAlert];
+	}
+}
+
+
+#pragma mark -
+//	adjustInterfaceForMultiThread
+// ----------------------------------------------------------------------------
+//	In future, we may allow the user to do more than twiddle prefs and resize
+//	the window. For now, just disable the fun stuff.
+
+- (void)adjustInterfaceForMultiThread
+{
+	[self syncSaveButton];
+
+	[mArchPopup setEnabled: false];
+	[mThinButton setEnabled: false];
+	[mVerifyButton setEnabled: false];
+	[mOutputText setEnabled: false];
+	[[mMainWindow standardWindowButton: NSWindowCloseButton]
+		setEnabled: false];
+
+	[mMainWindow display];
+}
+
+//	adjustInterfaceForSingleThread
+// ----------------------------------------------------------------------------
+
+- (void)adjustInterfaceForSingleThread
+{
+	[self syncSaveButton];
+
+	[mArchPopup setEnabled: mExeIsFat];
+	[mThinButton setEnabled: mExeIsFat];
+	[mVerifyButton setEnabled: (mArchSelector == CPU_TYPE_I386)];
+	[mOutputText setEnabled: true];
+	[[mMainWindow standardWindowButton: NSWindowCloseButton]
+		setEnabled: true];
+
+	[mMainWindow display];
+}
+
+#pragma mark -
 //	showProgView
 // ----------------------------------------------------------------------------
 
@@ -530,12 +575,10 @@
 		forKey: NSXViewAnimationWindowMinSizeKey];
 
 	// Continue processing after the animation completes.
-	SEL			continueSel	= @selector(continueProcessingFile);
-	NSValue*	selValue	= [NSValue
-		value: &continueSel
-		withObjCType: @encode(SEL)];
+	SEL	continueSel	= @selector(continueProcessingFile);
 
-	[newWindowItem setObject: selValue
+	[newWindowItem setObject:
+		[NSValue value: &continueSel withObjCType: @encode(SEL)]
 		forKey: NSXViewAnimationSelectorKey];
 
 	SmoothViewAnimation*	theAnim	= [[SmoothViewAnimation alloc]
@@ -555,6 +598,7 @@
 // ----------------------------------------------------------------------------
 
 - (void)hideProgView: (BOOL)inAnimate
+			openFile: (BOOL)inOpenFile
 {
 	NSRect	targetWindowFrame	= [mMainWindow frame];
 	NSRect	progViewFrame		= [mProgView frame];
@@ -584,17 +628,30 @@
 	if (inAnimate)
 	{
 		NSMutableDictionary*	newWindowItem =
-			[NSMutableDictionary dictionaryWithCapacity: 4];
+			[NSMutableDictionary dictionaryWithCapacity: 10];
 
 		[newWindowItem setObject: mMainWindow
 			forKey: NSViewAnimationTargetKey];
 		[newWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
 			forKey: NSViewAnimationEndFrameKey];
 
+		UInt32	effects	=
+			NSXViewAnimationUpdateResizeMasksAtEndEffect		|
+			NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect	|
+			NSXViewAnimationPerformSelectorAtEndEffect;
+
+		if (inOpenFile)
+		{
+			effects	|= NSXViewAnimationOpenFileWithAppAtEndEffect;
+			[newWindowItem setObject: mOutputFilePath
+				forKey: NSXViewAnimationFilePathKey];
+			[newWindowItem setObject: [[NSUserDefaults standardUserDefaults]
+				objectForKey: OutputAppKey]
+				forKey: NSXViewAnimationAppNameKey];
+		}
+
 		// Custom keys
-		[newWindowItem setObject:[NSNumber numberWithUnsignedInt:
-			(NSXViewAnimationUpdateResizeMasksAtEndEffect |
-			NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect)]
+		[newWindowItem setObject:[NSNumber numberWithUnsignedInt: effects]
 			forKey: NSXViewAnimationCustomEffectsKey];
 		[newWindowItem setObject: [NSArray arrayWithObjects:
 			origMainMask, origProgMask, nil]
@@ -602,6 +659,12 @@
 		[newWindowItem setObject: [NSArray arrayWithObjects:
 			mMainView, mProgView, nil]
 			forKey: NSXViewAnimationResizeViewsArrayKey];
+
+		SEL	adjustSel	= @selector(adjustInterfaceForSingleThread);
+
+		[newWindowItem setObject:
+			[NSValue value: &adjustSel withObjCType: @encode(SEL)]
+			forKey: NSXViewAnimationSelectorKey];
 
 		NSValue*	maxSizeValue	=
 			[NSValue valueWithSize: maxSize];
@@ -630,6 +693,7 @@
 	}	
 }
 
+#pragma mark -
 //	thinFile:
 // ----------------------------------------------------------------------------
 //	Use lipo to separate out the currently selected arch from a unibin.
@@ -827,8 +891,8 @@
 
 - (void)syncSaveButton
 {
-	[mSaveButton setEnabled:
-		(mFileIsValid && [[mOutputText stringValue] length] > 0)];
+	[mSaveButton setEnabled: (mFileIsValid &&
+		[[mOutputText stringValue] length] > 0) && !mProcessing];
 }
 
 //	syncDescriptionText
@@ -896,6 +960,8 @@
 
 	NSString*	tempString;
 
+	mExeIsFat	= false;
+
 	switch (mArchMagic)
 	{
 		case MH_MAGIC:
@@ -941,6 +1007,7 @@
 				[mVerifyButton setEnabled: true];
 			}
 
+			mExeIsFat			= true;
 			shouldEnableArch	= true;
 			tempString			= @"Fat";
 			break;
@@ -977,7 +1044,7 @@
 
 - (IBAction)syncOutputText: (id)sender
 {
-	if (!mFileIsValid)
+	if (!mFileIsValid || mProcessing)
 		return;
 
 	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
@@ -1160,19 +1227,21 @@
 //	reportProgress:
 // ----------------------------------------------------------------------------
 
-- (void)reportProgress: (ProgressState*)inState
+- (void)reportProgress: (NSDictionary*)inDict
 {
-	if (!inState)
+	if (!inDict)
 	{
-		fprintf(stderr, "otx: AppController<reportProgress:> nil inState\n");
+		fprintf(stderr, "otx: AppController<reportProgress:> nil inDict\n");
 		return;
 	}
 
-	if (inState->description)
+	NSString*	description	= [inDict objectForKey: PRDescriptionKey];
+
+	if (description)
 	{
 		NSMutableAttributedString*	attString	=
 			[[NSMutableAttributedString alloc]
-			initWithString: inState->description];
+			initWithString: description];
 
 		[attString addAttribute: NSShadowAttributeName value: mTextShadow
 			range: NSMakeRange(0, [attString length])];
@@ -1180,47 +1249,46 @@
 		[mProgText display];
 	}
 
-	if (inState->setIndeterminate)
+	NSNumber*	indeterminate	= [inDict objectForKey: PRIndeterminateKey];
+
+	if (indeterminate)
 	{
-		if (inState->indeterminate == false)
-		{
-			if (!inState->value)
-			{
-				fprintf(stderr, "otx: <reportProgress:> nil inState->value "
-					"when setIndeterminate == true\n");
-				return;
-			}
-
-			[mProgBar setDoubleValue: *(inState->value)];
-		}
-
-		[mProgBar setIndeterminate: inState->indeterminate];
+		[mProgBar setIndeterminate: [indeterminate boolValue]];
 		[mProgBar display];
 	}
 
-	switch (inState->refcon)
+	NSNumber*	refcon	= [inDict objectForKey: PRRefconKey];
+
+	if (refcon)
 	{
-		case Nudge:
-			[mProgBar animate: self];
-			[mProgBar display];
+		switch ([refcon unsignedIntValue])
+		{
+			case Nudge:
+				[mProgBar animate: self];
+				[mProgBar display];
 
-			break;
+				break;
 
-		case GeneratingFile:
-			if (!inState->value)
+			case GeneratingFile:
 			{
-				fprintf(stderr, "otx: <reportProgress:> nil inState->value"
-					"when inState->refcon == GeneratingFile\n");
+				NSNumber*	progValue	= [inDict objectForKey: PRValueKey];
+
+				if (!progValue)
+				{
+					fprintf(stderr, "otx: <reportProgress:> nil value "
+						"when refcon == GeneratingFile\n");
+					break;
+				}
+
+				[mProgBar setDoubleValue: [progValue doubleValue]];
+				[mProgBar display];
+
 				break;
 			}
 
-			[mProgBar setDoubleValue: *(inState->value)];
-			[mProgBar display];
-
-			break;
-
-		default:
-			break;
+			default:
+				break;
+		}
 	}
 }
 
@@ -1232,7 +1300,7 @@
 - (NSDragOperation)dropBox: (DropBox*)inDropBox
 			  dragDidEnter: (id <NSDraggingInfo>)inItem
 {
-	if (inDropBox != mDropBox)
+	if (inDropBox != mDropBox || mProcessing)
 		return false;
 
 	NSPasteboard*	thePasteBoard	= [inItem draggingPasteboard];
@@ -1263,7 +1331,7 @@
 - (BOOL)dropBox: (DropBox*)inDropBox
  didReceiveItem: (id<NSDraggingInfo>)inItem
 {
-	if (inDropBox != mDropBox)
+	if (inDropBox != mDropBox || mProcessing)
 		return false;
 
 	NSURL*	theURL	= [NSURL URLFromPasteboard: [inItem draggingPasteboard]];
@@ -1459,6 +1527,46 @@
 				[selValue getValue: &theSel];
 				[self performSelector: (SEL)theSel];
 			}
+		}
+
+		// Perform selectors. The methods' return values are ignored, and the
+		// methods must take no arguments. For any other kind of method, use
+		// NSInvocation instead.
+/*		if (effects & NSXViewAnimationPerformSelectorAtEndEffect)
+		{
+			NSArray*	selArray	= [animObject objectForKey:
+				NSXViewAnimationSelArrayKey];
+
+			if (selArray)
+			{
+				UInt32	numSels	= [selArray count];
+				UInt32	i;
+
+				for (i = 0; i < numSels; i++)
+				{
+					NSValue*	selValue	= [selArray objectAtIndex: i];
+					SEL			theSel;
+
+					if (selValue)
+					{
+						[selValue getValue: &theSel];
+						[self performSelector: (SEL)theSel];
+					}
+				}
+			}
+		}*/
+
+		// Open a file in another application.
+		if (effects & NSXViewAnimationOpenFileWithAppAtEndEffect)
+		{
+			NSString*	filePath	= [animObject objectForKey:
+				NSXViewAnimationFilePathKey];
+			NSString*	appName		= [animObject objectForKey:
+				NSXViewAnimationAppNameKey];
+
+			if (filePath && appName)
+				[[NSWorkspace sharedWorkspace] openFile: filePath
+					withApplication: appName];
 		}
 	}
 }
