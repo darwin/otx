@@ -15,14 +15,6 @@
 #define	kPrefsAnimationTime	0.15
 #define	kMainAnimationTime	0.15
 
-/*	iTunes scraped
-#define kPolishedLightRed	0.776
-#define kPolishedLightGreen	0.776
-#define kPolishedLightBlue	0.772
-#define kPolishedDarkRed	0.586
-#define kPolishedDarkGreen	0.582
-#define kPolishedDarkBlue	0.586*/
-
 #define kPolishedLightRed	0.780
 #define kPolishedLightGreen	0.780
 #define kPolishedLightBlue	0.790
@@ -54,8 +46,8 @@
 #define NSXViewAnimationPerformSelectorAtEndEffect				(1 << 4)
 #define NSXViewAnimationSelectorKey								\
 	@"NSXViewAnimationSelectorKey"								// NSValue*(SEL)
-//#define NSXViewAnimationSelArrayKey							\
-//	@"NSXViewAnimationSelArrayKey"								// NSArray*(SEL)
+#define NSXViewAnimationPerformInNewThreadKey					\
+	@"NSXViewAnimationPerformInNewThreadKey"					// NSNumber*(BOOL)
 
 #define NSXViewAnimationOpenFileWithAppAtEndEffect				(1 << 5)
 #define NSXViewAnimationFilePathKey								\

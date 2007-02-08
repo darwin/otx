@@ -101,18 +101,6 @@ typedef struct
 }
 MethodInfo;
 
-/*	NopList
-
-	Used for deobfuscation. 'list' is a 'count'-sized array of addresses
-	at which an obfuscated sequence of nops was found.
-
-typedef struct NopList
-{
-	unsigned char**	list;
-	UInt32			count;
-}
-NopList;*/
-
 /*	ThunkInfo
 
 	http://developer.apple.com/documentation/DeveloperTools/Conceptual/MachOTopics/Articles/dynamic_code.html#//apple_ref/doc/uid/TP40002528-SW1
@@ -281,6 +269,8 @@ enum {
 	DMGL_PARAMS | DMGL_ANSI | DMGL_VERBOSE | DMGL_TYPES | DMGL_RET_POSTFIX
 
 #define	COMPARISON_FUNC_TYPE	int (*)(const void*, const void*)
+
+#define NEW_THREADS	1
 
 // ============================================================================
 

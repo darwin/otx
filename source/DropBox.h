@@ -11,7 +11,7 @@
 #define	kBorderWidth			6
 #define	kTexturedBorderWidth	7
 
-#define kFillAlpha				0.07
+#define kFillAlpha				0.06
 
 // Alpha values for each one-pixel frame, from outer to inner. The
 // outermost frame(s) overlay NSBox's border.

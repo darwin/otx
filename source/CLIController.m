@@ -29,8 +29,8 @@
 //	initWithArgs:count:
 // ----------------------------------------------------------------------------
 
-- (id)initWithArgs: (char**) argv
-			 count: (SInt32) argc
+- (id)initWithArgs: (char**)argv
+			 count: (SInt32)argc
 {
 	// Check for Smart Crash Reports.
 	[self initSCR];
@@ -488,15 +488,12 @@
 		return;
 	}
 
-//	ProgressState	progState	=
-//		{true, true, false, 0, nil, @"Loading executable"};
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRIndeterminateKey,
 		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
 		@"Loading executable", PRDescriptionKey,
 		nil];
 
-//	[self reportProgress: &progState];
 	[self reportProgress: progDict];
 	[progDict release];
 

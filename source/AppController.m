@@ -225,6 +225,8 @@
 	[mOutputLabelText setAttributedStringValue: newString];
 	[newString release];
 
+	[mProgBar setUsesThreadedAnimation: true];
+
 	// At this point, the window is still brushed metal. We can get away with
 	// not setting the background image here because hiding the prog view
 	// resizes the window, which results in our delegate saving the day.
@@ -389,6 +391,10 @@
 
 - (void)continueProcessingFile
 {
+#ifdef NEW_THREADS
+	NSAutoreleasePool*	pool	= [[NSAutoreleasePool alloc] init];
+#endif
+
 	Class	procClass	= nil;
 
 	switch (mArchSelector)
@@ -442,14 +448,40 @@
 		fprintf(stderr, "otx: -[AppController processFile]: "
 			"unable to create processor.\n");
 		[theProcessor release];
+
+#ifdef NEW_THREADS
+		[self performSelectorOnMainThread:
+			@selector(processingThreadDidFinish:)
+			withObject: [NSNumber numberWithBool: false]
+			waitUntilDone: false];
+#else
 		[self hideProgView: true openFile: false];
+#endif
+
 		return;
 	}
 
+#ifdef NEW_THREADS
+	if (![theProcessor processExe: mOutputFilePath])
+		[self performSelectorOnMainThread:
+			@selector(processingThreadDidFinish:)
+			withObject: [NSNumber numberWithBool: false]
+			waitUntilDone: false];
+#else
 	[NSThread detachNewThreadSelector: @selector(processExe:)
 		toTarget: theProcessor withObject: mOutputFilePath];
+#endif
 
 	[theProcessor release];
+
+#ifdef NEW_THREADS
+	[self performSelectorOnMainThread:
+		@selector(processingThreadDidFinish:)
+		withObject: [NSNumber numberWithBool: true]
+		waitUntilDone: false];
+
+	[pool release];
+#endif
 }
 
 //	processingThreadDidFinish:
@@ -532,7 +564,7 @@
 
 	// Set up an animation.
 	NSMutableDictionary*	newWindowItem =
-		[NSMutableDictionary dictionaryWithCapacity: 7];
+		[NSMutableDictionary dictionaryWithCapacity: 8];
 
 	// Standard keys
 	[newWindowItem setObject: mMainWindow
@@ -580,6 +612,8 @@
 	[newWindowItem setObject:
 		[NSValue value: &continueSel withObjCType: @encode(SEL)]
 		forKey: NSXViewAnimationSelectorKey];
+	[newWindowItem setObject: [NSNumber numberWithBool: true]
+		forKey: NSXViewAnimationPerformInNewThreadKey];
 
 	SmoothViewAnimation*	theAnim	= [[SmoothViewAnimation alloc]
 		initWithViewAnimations: [NSArray arrayWithObjects:
@@ -1281,7 +1315,42 @@
 				}
 
 				[mProgBar setDoubleValue: [progValue doubleValue]];
-				[mProgBar display];
+//				[mProgBar display];
+				[mProgBar setNeedsDisplay: true];
+
+//				[mMainWindow recalculateKeyViewLoop];
+
+/*				SInt32				windowNum	= [mMainWindow windowNumber];
+				NSGraphicsContext*	context		= [mMainWindow graphicsContext];
+
+				NSEvent*	downEvent	= [NSEvent
+					mouseEventWithType: NSLeftMouseDown
+					location: NSMakePoint(10, 10)
+					modifierFlags: 0
+					timestamp: 0
+					windowNumber: windowNum
+					context: context
+					eventNumber: 0
+					clickCount: 1
+					pressure: 0];
+				NSEvent*	upEvent	= [NSEvent
+					mouseEventWithType: NSLeftMouseUp
+					location: NSMakePoint(10, 10)
+					modifierFlags: 0
+					timestamp: 0
+					windowNumber: windowNum
+					context: context
+					eventNumber: 1
+					clickCount: 1
+					pressure: 0];
+
+				[mMainWindow sendEvent: downEvent];
+				[mMainWindow sendEvent: upEvent];*/
+
+//				[mProgBar displayIfNeededIgnoringOpacity];
+//				[mProgBar displayRectIgnoringOpacity: [mProgBar frame]];
+//				[mMainWindow display];
+//				[mMainWindow flushWindow];
 
 				break;
 			}
@@ -1525,7 +1594,15 @@
 				SEL	theSel;
 
 				[selValue getValue: &theSel];
-				[self performSelector: (SEL)theSel];
+
+				NSNumber*	newThread	= [animObject objectForKey:
+					NSXViewAnimationPerformInNewThreadKey];
+
+				if (newThread)
+					[NSThread detachNewThreadSelector: theSel
+						toTarget: self withObject: nil];
+				else
+					[self performSelector: theSel];
 			}
 		}
 

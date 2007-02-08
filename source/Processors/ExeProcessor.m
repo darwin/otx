@@ -177,32 +177,39 @@
 	if (!mArchMagic)
 	{
 		fprintf(stderr, "otx: tried to process non-machO file\n");
+#ifndef NEW_THREADS
 		[mController performSelectorOnMainThread:
 			@selector(processingThreadDidFinish:)
 			withObject: [NSNumber numberWithBool: false]
 			waitUntilDone: false];
+#endif
 		return false;
 	}
 
 	mOutputFilePath	= inOutputFilePath;
 	mMachHeaderPtr	= nil;
 
+#ifndef NEW_THREADS
 	NSAutoreleasePool*	pool	= [[NSAutoreleasePool alloc] init];
+#endif
 
 	if (![self loadMachHeader])
 	{
 		fprintf(stderr, "otx: failed to load mach header\n");
+#ifndef NEW_THREADS
 		[pool release];
 		[mController performSelectorOnMainThread:
 			@selector(processingThreadDidFinish:)
 			withObject: [NSNumber numberWithBool: false]
 			waitUntilDone: false];
+#endif
 		return false;
 	}
 
 	[self loadLCommands];
 
-	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+	NSMutableDictionary*	progDict	=
+		[[NSMutableDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRNewLineKey,
 		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
 		@"Calling otool", PRDescriptionKey,
@@ -214,7 +221,7 @@
 
 	[self populateLineLists];
 
-	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRNewLineKey,
 		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
 		@"Gathering info", PRDescriptionKey,
@@ -235,7 +242,7 @@
 	UInt32	progCounter	= 0;
 	double	progValue	= 0.0;
 
-	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: false], PRIndeterminateKey,
 		[NSNumber numberWithDouble: progValue], PRValueKey,
 		[NSNumber numberWithBool: true], PRNewLineKey,
@@ -255,7 +262,7 @@
 		if (!(progCounter % PROGRESS_FREQ))
 		{
 			progValue	= (double)progCounter / mNumLines * 100;
-			progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+			progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 				[NSNumber numberWithDouble: progValue], PRValueKey,
 				[NSNumber numberWithUnsignedInt: GeneratingFile], PRRefconKey,
 				nil];
@@ -279,7 +286,7 @@
 		progCounter++;
 	}
 
-	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRIndeterminateKey,
 		[NSNumber numberWithBool: true], PRNewLineKey,
 		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
@@ -293,11 +300,13 @@
 	// Create output file.
 	if (![self printLinesFromList: mPlainLineListHead])
 	{
+#ifndef NEW_THREADS
 		[pool release];
 		[mController performSelectorOnMainThread:
 			@selector(processingThreadDidFinish:)
 			withObject: [NSNumber numberWithBool: false]
 			waitUntilDone: false];
+#endif
 		return false;
 	}
 
@@ -305,28 +314,32 @@
 	{
 		if (![self printDataSections])
 		{
+#ifndef NEW_THREADS
 			[pool release];
 			[mController performSelectorOnMainThread:
 				@selector(processingThreadDidFinish:)
 				withObject: [NSNumber numberWithBool: false]
 				waitUntilDone: false];
+#endif
 			return false;
 		}
 	}
 
-	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithUnsignedInt: Complete], PRRefconKey,
 		nil];
 	[mController performSelectorOnMainThread: @selector(reportProgress:)
 		withObject: progDict waitUntilDone: true];
 	[progDict release];
 
+#ifndef NEW_THREADS
 	[mController performSelectorOnMainThread:
 		@selector(processingThreadDidFinish:)
 		withObject: [NSNumber numberWithBool: true]
 		waitUntilDone: false];
 
 	[pool release];
+#endif
 
 	return true;
 }

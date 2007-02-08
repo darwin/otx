@@ -24,8 +24,8 @@
 	ProcOptions			mOpts;
 }
 
-- (id)initWithArgs: (char**) argv
-			 count: (SInt32) argc;
+- (id)initWithArgs: (char**)argv
+			 count: (SInt32)argc;
 - (void)initSCR;
 
 - (void)usage;
@@ -39,8 +39,5 @@
 
 // alerts
 - (void)doErrorAlert;
-
-// ProgressReporter protocol
-//- (void)reportProgress: (ProgressState*)inState;
 
 @end
