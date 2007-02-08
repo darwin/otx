@@ -6,16 +6,10 @@
 
 #define	PRIndeterminateKey	@"PRIndeterminateKey"	// NSNumber* (BOOL)
 #define	PRValueKey			@"PRValueKey"			// NSNumber* (double)
-#define	PRNewLineKey		@"PRNewLineKey"			// NSNumber* (BOOL)
-#define	PRRefconKey			@"PRRefconKey"			// NSNumber* (UInt32)
+#define	PRNewLineKey		@"PRNewLineKey"			// NSNull*
+#define PRAnimateKey		@"PRAnimateKey"			// NSNull*
+#define PRCompleteKey		@"PRCompleteKey"		// NSNull*
 #define	PRDescriptionKey	@"PRDescriptionKey"		// NSString*
-
-// Constants to indicate various stages of processing
-enum {
-	Nudge,
-	GeneratingFile,
-	Complete
-};
 
 @protocol	ProgressReporter
 

@@ -240,7 +240,7 @@
 	// By sending a struct 'by reference', we avoid 2 Obj-C message sends, and
 	// "_objc_msgSend" is teh slowness. Compare against previous revisions for
 	// context.
-	
+
 	/*
 		FIXME: cache this struct
 	*/
@@ -360,7 +360,7 @@
 
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRIndeterminateKey,
-		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		[NSNull null], PRAnimateKey,
 		@"Loading executable", PRDescriptionKey,
 		nil];
 
@@ -1248,11 +1248,14 @@
 {
 	if (!inDict)
 	{
-		fprintf(stderr, "otx: AppController<reportProgress:> nil inDict\n");
+		fprintf(stderr, "otx: [AppController reportProgress:] nil inDict\n");
 		return;
 	}
 
-	NSString*	description	= [inDict objectForKey: PRDescriptionKey];
+	NSString*	description		= [inDict objectForKey: PRDescriptionKey];
+	NSNumber*	indeterminate	= [inDict objectForKey: PRIndeterminateKey];
+	NSNumber*	value			= [inDict objectForKey: PRValueKey];
+	NSNull*		animate			= [inDict objectForKey: PRAnimateKey];
 
 	if (description)
 	{
@@ -1260,82 +1263,14 @@
 		[self applyShadowToText: mProgText];
 	}
 
-	NSNumber*	indeterminate	= [inDict objectForKey: PRIndeterminateKey];
-
 	if (indeterminate)
-	{
 		[mProgBar setIndeterminate: [indeterminate boolValue]];
-		[mProgBar display];
-	}
 
-	NSNumber*	refcon	= [inDict objectForKey: PRRefconKey];
+	if (value)
+		[mProgBar setDoubleValue: [value doubleValue]];
 
-	if (refcon)
-	{
-		switch ([refcon unsignedIntValue])
-		{
-			case Nudge:
-				[mProgBar animate: self];
-				[mProgBar display];
-
-				break;
-
-			case GeneratingFile:
-			{
-				NSNumber*	progValue	= [inDict objectForKey: PRValueKey];
-
-				if (!progValue)
-				{
-					fprintf(stderr, "otx: <reportProgress:> nil value "
-						"when refcon == GeneratingFile\n");
-					break;
-				}
-
-				[mProgBar setDoubleValue: [progValue doubleValue]];
-//				[mProgBar display];
-				[mProgBar setNeedsDisplay: true];
-
-//				[mMainWindow recalculateKeyViewLoop];
-
-/*				SInt32				windowNum	= [mMainWindow windowNumber];
-				NSGraphicsContext*	context		= [mMainWindow graphicsContext];
-
-				NSEvent*	downEvent	= [NSEvent
-					mouseEventWithType: NSLeftMouseDown
-					location: NSMakePoint(10, 10)
-					modifierFlags: 0
-					timestamp: 0
-					windowNumber: windowNum
-					context: context
-					eventNumber: 0
-					clickCount: 1
-					pressure: 0];
-				NSEvent*	upEvent	= [NSEvent
-					mouseEventWithType: NSLeftMouseUp
-					location: NSMakePoint(10, 10)
-					modifierFlags: 0
-					timestamp: 0
-					windowNumber: windowNum
-					context: context
-					eventNumber: 1
-					clickCount: 1
-					pressure: 0];
-
-				[mMainWindow sendEvent: downEvent];
-				[mMainWindow sendEvent: upEvent];*/
-
-//				[mProgBar displayIfNeededIgnoringOpacity];
-//				[mProgBar displayRectIgnoringOpacity: [mProgBar frame]];
-//				[mMainWindow display];
-//				[mMainWindow flushWindow];
-
-				break;
-			}
-
-			default:
-				break;
-		}
-	}
+	if (animate)
+		[mProgBar animate: self];
 }
 
 #pragma mark -

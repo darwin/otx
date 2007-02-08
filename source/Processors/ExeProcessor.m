@@ -210,8 +210,8 @@
 
 	NSMutableDictionary*	progDict	=
 		[[NSMutableDictionary alloc] initWithObjectsAndKeys:
-		[NSNumber numberWithBool: true], PRNewLineKey,
-		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		[NSNull null], PRNewLineKey,
+		[NSNull null], PRAnimateKey,
 		@"Calling otool", PRDescriptionKey,
 		nil];
 
@@ -222,8 +222,8 @@
 	[self populateLineLists];
 
 	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-		[NSNumber numberWithBool: true], PRNewLineKey,
-		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		[NSNull null], PRNewLineKey,
+		[NSNull null], PRAnimateKey,
 		@"Gathering info", PRDescriptionKey,
 		nil];
 
@@ -245,8 +245,7 @@
 	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: false], PRIndeterminateKey,
 		[NSNumber numberWithDouble: progValue], PRValueKey,
-		[NSNumber numberWithBool: true], PRNewLineKey,
-		[NSNumber numberWithUnsignedInt: GeneratingFile], PRRefconKey,
+		[NSNull null], PRNewLineKey,
 		@"Generating file", PRDescriptionKey,
 		nil];
 
@@ -264,7 +263,7 @@
 			progValue	= (double)progCounter / mNumLines * 100;
 			progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 				[NSNumber numberWithDouble: progValue], PRValueKey,
-				[NSNumber numberWithUnsignedInt: GeneratingFile], PRRefconKey,
+//				[NSNumber numberWithUnsignedInt: GeneratingFile], PRRefconKey,
 				nil];
 
 			[mController performSelectorOnMainThread: @selector(reportProgress:)
@@ -288,8 +287,8 @@
 
 	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRIndeterminateKey,
-		[NSNumber numberWithBool: true], PRNewLineKey,
-		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		[NSNull null], PRNewLineKey,
+		[NSNull null], PRAnimateKey,
 		@"Writing file", PRDescriptionKey,
 		nil];
 
@@ -326,7 +325,8 @@
 	}
 
 	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-		[NSNumber numberWithUnsignedInt: Complete], PRRefconKey,
+//		[NSNumber numberWithUnsignedInt: Complete], PRRefconKey,
+		[NSNull null], PRCompleteKey,
 		nil];
 	[mController performSelectorOnMainThread: @selector(reportProgress:)
 		withObject: progDict waitUntilDone: true];
@@ -351,7 +351,7 @@
 {
 	// Create a progState for nudging the barber pole between otool calls.
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
-		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		[NSNull null], PRAnimateKey,
 		nil];
 
 	[mController performSelectorOnMainThread: @selector(reportProgress:)
@@ -502,12 +502,11 @@
 
 - (void)gatherLineInfos
 {
-	Line*	theLine		= mPlainLineListHead;
-	UInt32	progCounter	= 0;
+	Line*			theLine		= mPlainLineListHead;
+	UInt32			progCounter	= 0;
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
-		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		[NSNull null], PRAnimateKey,
 		nil];
-
 
 	while (theLine)
 	{

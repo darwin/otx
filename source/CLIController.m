@@ -490,7 +490,7 @@
 
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRIndeterminateKey,
-		[NSNumber numberWithUnsignedInt: Nudge], PRRefconKey,
+		[NSNull null], PRAnimateKey,
 		@"Loading executable", PRDescriptionKey,
 		nil];
 
@@ -616,40 +616,23 @@
 		return;
 	}
 
-	NSNumber*	newLine	= [inDict objectForKey: PRNewLineKey];
+	NSNull*		newLine		= [inDict objectForKey: PRNewLineKey];
+	NSString*	description	= [inDict objectForKey: PRDescriptionKey];
+	NSNumber*	value		= [inDict objectForKey: PRValueKey];
+	NSNull*		animate		= [inDict objectForKey: PRAnimateKey];
+	NSNull*		complete	= [inDict objectForKey: PRCompleteKey];
 
 	if (newLine)
-	{
-		if ([newLine boolValue])
-			fprintf(stderr, "\n");
-	}
-
-	NSString*	description	= [inDict objectForKey: PRDescriptionKey];
+		fprintf(stderr, "\n");
 
 	if (description)
 		fprintf(stderr, "%s", CSTRING(description));
 
-	NSNumber*	refcon	= [inDict objectForKey: PRRefconKey];
+	if (value || animate)
+		fprintf(stderr, ".");
 
-	if (refcon)
-	{
-		switch ([refcon unsignedIntValue])
-		{
-			case Nudge:
-			case GeneratingFile:
-				fprintf(stderr, "%c", '.');
-
-				break;
-
-			case Complete:
-				fprintf(stderr, "\n");
-
-				break;
-
-			default:
-				break;
-		}
-	}
+	if (complete)
+		fprintf(stderr, "\n");
 }
 
 @end
