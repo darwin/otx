@@ -109,6 +109,8 @@
 // main window
 - (void)setupMainWindow;
 - (IBAction)showMainWindow: (id)sender;
+- (void)drawMainWindowBackground;
+- (void)applyShadowToText: (NSTextField*)inText;
 - (IBAction)selectArch: (id)sender;
 - (IBAction)openExe: (id)sender;
 - (IBAction)syncOutputText: (id)sender;
@@ -130,7 +132,6 @@
 - (void)showProgView;
 - (void)hideProgView: (BOOL)inAnimate
 			openFile: (BOOL)inOpenFile;
-- (void)drawMainWindowBackground;
 
 // prefs window
 - (IBAction)showPrefs: (id)sender;

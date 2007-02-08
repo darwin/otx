@@ -199,33 +199,11 @@
 		colorWithCalibratedRed: kPolishedDarkRed green: kPolishedDarkGreen
 		blue: kPolishedDarkBlue alpha: 1.0] retain];
 
-	// Add text shadows
-	NSMutableAttributedString*	newString	=
-		[[NSMutableAttributedString alloc] initWithAttributedString:
-		[mPathLabelText attributedStringValue]];
+	[self applyShadowToText: mPathLabelText];
+	[self applyShadowToText: mTypeLabelText];
+	[self applyShadowToText: mOutputLabelText];
 
-	[newString addAttribute: NSShadowAttributeName value: mTextShadow
-		range: NSMakeRange(0, [newString length])];
-	[mPathLabelText setAttributedStringValue: newString];
-	[newString release];
-
-	newString	= [[NSMutableAttributedString alloc] initWithAttributedString:
-		[mTypeLabelText attributedStringValue]];
-
-	[newString addAttribute: NSShadowAttributeName value: mTextShadow
-		range: NSMakeRange(0, [newString length])];
-	[mTypeLabelText setAttributedStringValue: newString];
-	[newString release];
-
-	newString	= [[NSMutableAttributedString alloc] initWithAttributedString:
-		[mOutputLabelText attributedStringValue]];
-
-	[newString addAttribute: NSShadowAttributeName value: mTextShadow
-		range: NSMakeRange(0, [newString length])];
-	[mOutputLabelText setAttributedStringValue: newString];
-	[newString release];
-
-	[mProgBar setUsesThreadedAnimation: true];
+//	[mProgBar setUsesThreadedAnimation: true];
 
 	// At this point, the window is still brushed metal. We can get away with
 	// not setting the background image here because hiding the prog view
@@ -287,6 +265,21 @@
 		[NSColor colorWithPatternImage: gradientImage]];
 
 	[gradientImage release];
+}
+
+//	applyShadowToText:
+// ----------------------------------------------------------------------------
+
+- (void)applyShadowToText: (NSTextField*)inText
+{
+	NSMutableAttributedString*	newString	=
+		[[NSMutableAttributedString alloc] initWithAttributedString:
+		[inText attributedStringValue]];
+
+	[newString addAttribute: NSShadowAttributeName value: mTextShadow
+		range: NSMakeRange(0, [newString length])];
+	[inText setAttributedStringValue: newString];
+	[newString release];
 }
 
 #pragma mark -
@@ -969,13 +962,8 @@
 	mArchMagic		= *(UInt32*)[theData bytes];
 	mFileIsValid	= true;
 
-	NSMutableAttributedString*	attString	=
-		[[NSMutableAttributedString alloc] initWithString: [mOFile path]];
-
-	[attString addAttribute: NSShadowAttributeName value: mTextShadow
-		range: NSMakeRange(0, [attString length])];
-	[mPathText setAttributedStringValue: attString];
-	[attString release];
+	[mPathText setStringValue: [mOFile path]];
+	[self applyShadowToText: mPathText];
 
 	// If we just loaded a deobfuscated copy, skip the rest.
 	if (mIgnoreArch)
@@ -1054,13 +1042,8 @@
 			break;
 	}
 
-	attString	= [[NSMutableAttributedString alloc]
-		initWithString: tempString];
-
-	[attString addAttribute: NSShadowAttributeName value: mTextShadow
-		range: NSMakeRange(0, [attString length])];
-	[mTypeText setAttributedStringValue: attString];
-	[attString release];
+	[mTypeText setStringValue: tempString];
+	[self applyShadowToText: mTypeText];
 
 	if (mOutputFileLabel)
 		[mOutputFileLabel retain];
@@ -1273,14 +1256,8 @@
 
 	if (description)
 	{
-		NSMutableAttributedString*	attString	=
-			[[NSMutableAttributedString alloc]
-			initWithString: description];
-
-		[attString addAttribute: NSShadowAttributeName value: mTextShadow
-			range: NSMakeRange(0, [attString length])];
-		[mProgText setAttributedStringValue: attString];
-		[mProgText display];
+		[mProgText setStringValue: description];
+		[self applyShadowToText: mProgText];
 	}
 
 	NSNumber*	indeterminate	= [inDict objectForKey: PRIndeterminateKey];
