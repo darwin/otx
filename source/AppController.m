@@ -1271,6 +1271,17 @@
 
 	if (animate)
 		[mProgBar animate: self];
+
+	// This is a workaround for the bug mentioned by Mike Ash here:
+	// http://mikeash.com/blog/pivot/entry.php?id=25 In our case, it causes
+	// the progress bar to freeze when processing more than once per launch.
+	// In other words, the first time you process an exe, everything is fine.
+	// Subsequent processing of any exe displays a retarded progress bar.
+	NSEvent*	pingUI	= [NSEvent otherEventWithType: NSApplicationDefined
+		location: NSMakePoint(0, 0) modifierFlags: 0 timestamp: 0
+		windowNumber: 0 context: nil subtype: 0 data1: 0 data2: 0];
+
+	[[NSApplication sharedApplication] postEvent: pingUI atStart: false];
 }
 
 #pragma mark -
