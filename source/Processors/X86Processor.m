@@ -1964,7 +1964,12 @@
 
 - (BOOL)codeIsBlockJump: (char*)inCode
 {
-	return IS_JUMP((UInt8)inCode[0], (UInt8)inCode[1]);
+	UInt8	opcode, opcode2;
+
+	sscanf(inCode, "%02hhx", &opcode);
+	sscanf(&inCode[2], "%02hhx", &opcode2);
+
+	return IS_JUMP(opcode, opcode2);
 }
 
 //	gatherFuncInfos
