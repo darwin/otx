@@ -2022,11 +2022,10 @@
 			if ((opcode >= 0x71 && opcode <= 0x7f) ||
 				opcode == 0xe3 || opcode == 0xeb)
 			{
-				SInt8	rel8;
-
-				sscanf(&theLine->info.code[2], "%02hhx", &rel8);
-				jumpTarget	= theLine->info.address + 2 + rel8;
-
+				// No need for sscanf here- opcode2 is already the unsigned
+				// second byte, which in this case is the signed offset that
+				// we want.
+				jumpTarget	= theLine->info.address + 2 + (SInt8)opcode2;
 				validTarget	= true;
 			}
 			else if (opcode == 0xe9	||
