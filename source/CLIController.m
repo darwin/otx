@@ -274,6 +274,7 @@
 	Boolean		dontAsk			= false;
 	CFStringRef	scrDomainName	= CFSTR("com.unsanity.smartcrashreports");
 	CFStringRef	dontAskKey		= CFSTR("DontAskAgain");
+	CFStringRef	installKey		= CFSTR("Install");
 
 	// Attempt to retrieve the stored SCR pref.
 	CFBooleanRef	cfDontAsk	=
@@ -308,7 +309,8 @@
 			"Participation is voluntary, but your support helps make "
 			"otx better. For more information, visit "
 			"http://smartcrashreports.com.\n\n"
-			"y: Yes, I want to help.\nn: No, but maybe next time.\n"
+			"y: Yes, I want to help.\n"
+			"n: No, but maybe next time.\n"
 			"d: Don't install anything and don't ask me again.\n");
 
 		// Get user's response.
@@ -318,6 +320,11 @@
 		{
 			case 'n':
 				// Don't install, but ask again next time.
+				CFPreferencesSetValue(
+					installKey, kCFBooleanFalse, scrDomainName,
+					kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+				CFPreferencesSynchronize(scrDomainName,
+					kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 				break;
 
 			case 'y':
@@ -336,6 +343,9 @@
 				// Set Unsanity prefs to not ask again(for this user only).
 				CFPreferencesSetValue(
 					dontAskKey, kCFBooleanTrue, scrDomainName,
+					kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+				CFPreferencesSetValue(
+					installKey, kCFBooleanFalse, scrDomainName,
 					kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 				CFPreferencesSynchronize(scrDomainName,
 					kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
