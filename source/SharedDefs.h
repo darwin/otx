@@ -8,10 +8,10 @@
 
 /*	ProcOptions
 
-	Options for processing executables. GUI version sets these using
-	NSUserDefaults, CLI version sets them with command line arguments. This
+	Options for processing executables. GUI target sets these using
+	NSUserDefaults, CLI target sets them with command line arguments. This
 	is necessary for the CLI version to behave consistently across
-	invocations, and to keep it from altering the GUI version's prefs.
+	invocations, and to keep it from altering the GUI target's prefs.
 */
 typedef struct
 {
@@ -28,6 +28,7 @@ typedef struct
 ProcOptions;
 
 // Default ProcOptions values
+// TODO: #define DONT_ !
 #define	SHOW_LOCAL_OFFSETS				true
 #define ENTAB_OUTPUT					true
 #define DONT_SHOW_DATA_SECTIONS			false
