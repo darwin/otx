@@ -10,7 +10,7 @@
 #import "ExeProcessor.h"
 #import "PPCProcessor.h"
 #import "X86Processor.h"
-#import "UserDefaultKeys.h"
+//#import "UserDefaultKeys.h"
 
 #import "SmartCrashReportsInstall.h"
 
@@ -64,6 +64,7 @@
 		return nil;
 	}
 
+	// Assign default options.
 	mOpts	= (ProcOptions){
 		SHOW_LOCAL_OFFSETS,
 		ENTAB_OUTPUT,
@@ -101,7 +102,7 @@
 					mArchSelector	= CPU_TYPE_I386;
 				else
 				{
-					fprintf(stderr, "Unknown architecture: \"%s\"\n",
+					fprintf(stderr, "otx: unknown architecture: \"%s\"\n",
 						argv[i]);
 					[self usage];
 					[self release];
@@ -115,38 +116,38 @@
 					switch (argv[i][j])
 					{
 						case 'l':
-							mOpts.localOffsets	= !mOpts.localOffsets;
+							mOpts.localOffsets	= !SHOW_LOCAL_OFFSETS;
 							break;
 						case 'e':
-							mOpts.entabOutput	= !mOpts.entabOutput;
+							mOpts.entabOutput	= !ENTAB_OUTPUT;
 							break;
 						case 'd':
-							mOpts.dataSections	= !mOpts.dataSections;
+							mOpts.dataSections	= !DONT_SHOW_DATA_SECTIONS;
 							break;
 						case 'c':
-							mOpts.checksum	= !mOpts.checksum;
+							mOpts.checksum	= !SHOW_CHECKSUM;
 							break;
 						case 'm':
-							mOpts.verboseMsgSends	= !mOpts.verboseMsgSends;
+							mOpts.verboseMsgSends	= !SHOW_VERBOSE_MSGSENDS;
 							break;
 						case 'b':
 							mOpts.separateLogicalBlocks	=
-								!mOpts.separateLogicalBlocks;
+								!DONT_SEPARATE_LOGICAL_BLOCKS;
 							break;
 						case 'n':
-							mOpts.demangleCppNames	= !mOpts.demangleCppNames;
+							mOpts.demangleCppNames	= !DEMANGLE_CPP_NAMES;
 							break;
 						case 'r':
-							mOpts.returnTypes	= !mOpts.returnTypes;
+							mOpts.returnTypes	= !SHOW_METHOD_RETURN_TYPES;
 							break;
 						case 'v':
-							mOpts.variableTypes	= !mOpts.variableTypes;
+							mOpts.variableTypes	= !SHOW_VARIABLE_TYPES;
 							break;
 						case 'p':
-							mShowProgress	= !mShowProgress;
+							mShowProgress	= true;
 							break;
 						case 'o':
-							mVerify	= !mVerify;
+							mVerify	= true;
 							break;
 
 						default:
@@ -178,7 +179,7 @@
 	// Check that the file exists.
 	if (![fileMan fileExistsAtPath: origFilePath])
 	{
-		fprintf(stderr, "No file found at %s.\n", CSTRING(origFilePath));
+		fprintf(stderr, "otx: No file found at %s.\n", CSTRING(origFilePath));
 		[self release];
 		return nil;
 	}
@@ -192,7 +193,7 @@
 	// Sanity check
 	if (!mOFile)
 	{
-		fprintf(stderr, "Invalid file.\n");
+		fprintf(stderr, "otx: Invalid file.\n");
 		[self release];
 		return nil;
 	}
@@ -203,7 +204,7 @@
 
 	if (!theFileH)
 	{
-		fprintf(stderr, "Unable to open %s.\n",
+		fprintf(stderr, "otx: Unable to open %s.\n",
 			CSTRING([origFilePath lastPathComponent]));
 		[self release];
 		return nil;
@@ -217,7 +218,7 @@
 	}
 	@catch (NSException* e)
 	{
-		fprintf(stderr, "Unable to read from %s. %s\n",
+		fprintf(stderr, "otx: Unable to read from %s. %s\n",
 			CSTRING([origFilePath lastPathComponent]),
 			CSTRING([e reason]));
 		[self release];
@@ -226,7 +227,7 @@
 
 	if ([fileData length] < sizeof(mArchMagic))
 	{
-		fprintf(stderr, "Truncated executable file.\n");
+		fprintf(stderr, "otx: Truncated executable file.\n");
 		[self release];
 		return nil;
 	}
@@ -255,7 +256,7 @@
 			break;
 
 		default:
-			fprintf(stderr, "%s is not a Mach-O file.\n",
+			fprintf(stderr, "otx: %s is not a Mach-O file.\n",
 				CSTRING([origFilePath lastPathComponent]));
 			[self release];
 			return nil;
@@ -442,7 +443,11 @@
 - (IBAction)processFile: (id)sender
 {
 	if (!mOFile)
+	{
+		fprintf(stderr, "otx: [CLIController processFile]: "
+			"tried to process nil object file.\n");
 		return;
+	}
 
 	if (mVerify)
 	{
@@ -471,7 +476,7 @@
 
 		default:
 			fprintf(stderr, "otx: [CLIController processFile]: "
-				"unknown arch type: %d", mArchSelector);
+				"unknown arch type: %d\n", mArchSelector);
 			break;
 	}
 
