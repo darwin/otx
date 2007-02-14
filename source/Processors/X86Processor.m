@@ -1386,6 +1386,7 @@
 			(sendType == sendSuper || sendType == sendSuper_stret) ?
 			"%s[[%s super] %s]" : "%s[%s %s]",
 			returnTypeString, className, selString);
+		mClassNameIsKnown	= true;
 	}
 	else
 	{
@@ -1416,6 +1417,7 @@
 
 		snprintf(tempComment, MAX_COMMENT_LENGTH - 1, formatString,
 			returnTypeString, selString);
+		mClassNameIsKnown	= false;
 	}
 
 	if (tempComment[0])
@@ -1571,6 +1573,19 @@
 
 	switch (opcode)
 	{
+		// pop stack into general registers. For now, just wipe em.
+		case 0x58:
+		case 0x59:
+		case 0x5a:
+		case 0x5b:
+		case 0x5c:
+		case 0x5d:
+		case 0x5e:
+		case 0x5f:
+			mRegInfos[REG2(opcode)]	= (GPRegisterInfo){0};
+
+			break;
+
 		// immediate group 1
 		// add, or, adc, sbb, and, sub, xor, cmp
 		case 0x83:	// EXTS(imm8),r32

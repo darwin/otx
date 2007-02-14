@@ -932,7 +932,10 @@
 		if (mOpts.verboseMsgSends)
 			CommentForMsgSendFromLine(theCommentCString, *ioLine);
 
-		mReturnValueIsKnown	= SelectorIsFriendly(selString);
+// FIXME: break out SelectorIsFriendly separately for each side.
+// PPC doesn't care about mClassNameIsKnown.
+		mReturnValueIsKnown	=
+			(SelectorIsFriendly(selString) && mClassNameIsKnown);
 	}
 
 	// Demangle operands if necessary.

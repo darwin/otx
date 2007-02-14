@@ -726,12 +726,16 @@
 
 		if (className)
 		{
+			mClassNameIsKnown	= true;
 			snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
 				(sendType == sendSuper || sendType == sendSuper_stret) ?
 				"%s[[%s super] %s]" : "%s[%s %s]",
 				returnTypeString, className, selString);
 			goodComment	= true;
 		}
+		else
+			mClassNameIsKnown	= false;
+
 	}
 
 	if (!goodComment)
