@@ -14,6 +14,8 @@
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
+#define REUSE_BLOCKS	1
+
 // ============================================================================
 
 @implementation X86Processor
@@ -2049,7 +2051,75 @@
 			// Retrieve current FunctionInfo.
 			FunctionInfo*	funcInfo	=
 				&mFuncInfos[mCurrentFuncInfoIndex];
+#ifdef REUSE_BLOCKS
+			// 'currentBlock' will point to either an existing block which
+			// we will update, or a newly allocated block.
+			BlockInfo*	currentBlock	= nil;
+			UInt32		i;
 
+			if (funcInfo->blocks)
+			{	// Blocks exist, find 1st one matching this address.
+				// This is an exhaustive search, but the speed hit should
+				// only be an issue with extremely long functions.
+				for (i = 0; i < funcInfo->numBlocks; i++)
+				{
+					if (funcInfo->blocks[i].start == jumpTarget)
+					{
+						currentBlock	= &funcInfo->blocks[i];
+						break;
+					}
+				}
+
+				if (!currentBlock)
+				{
+					// No matching blocks found, so allocate a new one.
+					funcInfo->numBlocks++;
+					funcInfo->blocks	= realloc(funcInfo->blocks,
+						sizeof(BlockInfo) * funcInfo->numBlocks);
+					currentBlock		=
+						&funcInfo->blocks[funcInfo->numBlocks - 1];
+					*currentBlock		= (BlockInfo){0};
+				}
+			}
+			else
+			{	// No existing blocks, allocate one.
+				funcInfo->numBlocks++;
+				funcInfo->blocks	= calloc(1, sizeof(BlockInfo));
+				currentBlock		= funcInfo->blocks;
+			}
+
+			// sanity check
+			if (!currentBlock)
+			{
+				fprintf(stderr, "otx: [X86Processor gatherFuncInfos] "
+					"currentBlock is nil. Flame the dev.\n");
+				return;
+			}
+
+			// Create a new MachineState.
+			GPRegisterInfo*	savedRegs	= malloc(
+				sizeof(GPRegisterInfo) * 8);
+
+			memcpy(savedRegs, mRegInfos, sizeof(GPRegisterInfo) * 8);
+
+			VarInfo*	savedVars	= nil;
+
+			if (mLocalSelves)
+			{
+				savedVars	= malloc(
+					sizeof(VarInfo) * mNumLocalSelves);
+				memcpy(savedVars, mLocalSelves,
+					sizeof(VarInfo) * mNumLocalSelves);
+			}
+
+			MachineState	machState	=
+				{savedRegs, savedVars, mNumLocalSelves};
+
+			// Store the new BlockInfo.
+			BlockInfo	blockInfo	= {jumpTarget, machState};
+
+			memcpy(currentBlock, &blockInfo, sizeof(BlockInfo));
+#else
 	// At this point, the x86 logic departs from the PPC logic. We seem
 	// to get better results by not reusing blocks.
 
@@ -2084,6 +2154,8 @@
 			// Create and store a new BlockInfo.
 			funcInfo->blocks[funcInfo->numBlocks - 1]	=
 				(BlockInfo){jumpTarget, machState};
+#endif
+
 		}
 
 		theLine	= theLine->next;
