@@ -15,45 +15,45 @@
 #define	kPrefsAnimationTime	0.15
 #define	kMainAnimationTime	0.15
 
-#define kPolishedLightRed	0.780
-#define kPolishedLightGreen	0.780
-#define kPolishedLightBlue	0.790
-#define kPolishedDarkRed	0.630
-#define kPolishedDarkGreen	0.630
-#define kPolishedDarkBlue	0.640
+#define kPolishedLightRed	0.800
+#define kPolishedLightGreen	0.800
+#define kPolishedLightBlue	0.810
+#define kPolishedDarkRed	0.670
+#define kPolishedDarkGreen	0.670
+#define kPolishedDarkBlue	0.680
 
 #define NSXViewAnimationCustomEffectsKey	@"NSXViewAnimationCustomEffectsKey"
 
-#define NSXViewAnimationSwapAtBeginningEffect					(1 << 0)
-#define NSXViewAnimationSwapAtEndEffect							(1 << 1)
-#define NSXViewAnimationSwapOldKey								\
-	@"NSXViewAnimationSwapOldKey"								// NSView*
-#define NSXViewAnimationSwapNewKey								\
-	@"NSXViewAnimationSwapNewKey"								// NSView*
+#define NSXViewAnimationSwapAtBeginningEffect				(1 << 0)
+#define NSXViewAnimationSwapAtEndEffect						(1 << 1)
+#define NSXViewAnimationSwapOldKey							\
+	@"NSXViewAnimationSwapOldKey"							// NSView*
+#define NSXViewAnimationSwapNewKey							\
+	@"NSXViewAnimationSwapNewKey"							// NSView*
 
-#define NSXViewAnimationUpdateResizeMasksAtEndEffect			(1 << 2)
-#define NSXViewAnimationResizeMasksArrayKey						\
-	@"NSXViewAnimationResizeMasksArrayKey"						// NSArray*(UInt32)
-#define NSXViewAnimationResizeViewsArrayKey						\
-	@"NSXViewAnimationResizeViewsArrayKey"						// NSArray*(UInt32)
+#define NSXViewAnimationUpdateResizeMasksAtEndEffect		(1 << 2)
+#define NSXViewAnimationResizeMasksArrayKey					\
+	@"NSXViewAnimationResizeMasksArrayKey"					// NSArray*(UInt32)
+#define NSXViewAnimationResizeViewsArrayKey					\
+	@"NSXViewAnimationResizeViewsArrayKey"					// NSArray*(UInt32)
 
-#define NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect		(1 << 3)
-#define NSXViewAnimationWindowMinSizeKey						\
-	@"NSXViewAnimationWindowMinSizeKey"							// NSValue*(NSSize*)
-#define NSXViewAnimationWindowMaxSizeKey						\
-	@"NSXViewAnimationWindowMaxSizeKey"							// NSValue*(NSSize*)
+#define NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect	(1 << 3)
+#define NSXViewAnimationWindowMinSizeKey					\
+	@"NSXViewAnimationWindowMinSizeKey"						// NSValue*(NSSize*)
+#define NSXViewAnimationWindowMaxSizeKey					\
+	@"NSXViewAnimationWindowMaxSizeKey"						// NSValue*(NSSize*)
 
-#define NSXViewAnimationPerformSelectorAtEndEffect				(1 << 4)
-#define NSXViewAnimationSelectorKey								\
-	@"NSXViewAnimationSelectorKey"								// NSValue*(SEL)
-#define NSXViewAnimationPerformInNewThreadKey					\
-	@"NSXViewAnimationPerformInNewThreadKey"					// NSNumber*(BOOL)
+#define NSXViewAnimationPerformSelectorAtEndEffect			(1 << 4)
+#define NSXViewAnimationSelectorKey							\
+	@"NSXViewAnimationSelectorKey"							// NSValue*(SEL)
+#define NSXViewAnimationPerformInNewThreadKey				\
+	@"NSXViewAnimationPerformInNewThreadKey"				// NSNumber*(BOOL)
 
-#define NSXViewAnimationOpenFileWithAppAtEndEffect				(1 << 5)
-#define NSXViewAnimationFilePathKey								\
-	@"NSXViewAnimationFilePathKey"								// NSString*
-#define NSXViewAnimationAppNameKey								\
-	@"NSXViewAnimationAppNameKey"								// NSString*
+#define NSXViewAnimationOpenFileWithAppAtEndEffect			(1 << 5)
+#define NSXViewAnimationFilePathKey							\
+	@"NSXViewAnimationFilePathKey"							// NSString*
+#define NSXViewAnimationAppNameKey							\
+	@"NSXViewAnimationAppNameKey"							// NSString*
 
 // ============================================================================
 
