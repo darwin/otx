@@ -915,6 +915,15 @@
 
 	}	// if ((*ioLine)->info.isFunction)
 
+/**/
+
+if ((*ioLine)->info.address == 0x00002b54)
+{
+	UInt8	theBreak	= 0;
+}
+
+/**/
+
 	// Find a comment if necessary.
 	if (!theCommentCString[0])
 	{
@@ -927,6 +936,7 @@
 			char	tempComment[MAX_COMMENT_LENGTH];
 			UInt32	i, j = 0;
 
+			// Escape newlines, carriage returns and tabs.
 			for (i = 0; i < origCommentLength; i++)
 			{
 				if (mLineCommentCString[i] == '\n')
@@ -968,12 +978,12 @@
 		}
 	}	// if (!theCommentCString[0])
 	else	// otool gave us a comment.
-	{	// Optionally modify otool's comment.
+	{	// Check whether we should trample r3/eax.
+		char*	selString	= SelectorForMsgSend(theCommentCString, *ioLine);
+
+		// Optionally modify otool's comment.
 		if (mOpts.verboseMsgSends)
 			CommentForMsgSendFromLine(theCommentCString, *ioLine);
-
-		// Check whether we should trample r3/eax.
-		char*	selString	= SelectorForMsgSend(theCommentCString, *ioLine);
 
 		mReturnValueIsKnown	= SelectorIsFriendly(selString);
 	}
