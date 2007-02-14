@@ -323,6 +323,13 @@
 
 - (IBAction)processFile: (id)sender
 {
+	if (!mOFile)
+	{
+		fprintf(stderr, "otx: [AppController processFile]: "
+			"tried to process nil object file.\n");
+		return;
+	}
+
 	if (mOutputFileName)
 		[mOutputFileName release];
 
