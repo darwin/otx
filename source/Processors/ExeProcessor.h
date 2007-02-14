@@ -270,8 +270,6 @@ enum {
 
 #define	COMPARISON_FUNC_TYPE	int (*)(const void*, const void*)
 
-#define NEW_THREADS	1
-
 // ============================================================================
 
 @interface ExeProcessor : NSObject

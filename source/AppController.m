@@ -203,8 +203,6 @@
 	[self applyShadowToText: mTypeLabelText];
 	[self applyShadowToText: mOutputLabelText];
 
-//	[mProgBar setUsesThreadedAnimation: true];
-
 	// At this point, the window is still brushed metal. We can get away with
 	// not setting the background image here because hiding the prog view
 	// resizes the window, which results in our delegate saving the day.
@@ -391,11 +389,8 @@
 
 - (void)continueProcessingFile
 {
-#ifdef NEW_THREADS
-	NSAutoreleasePool*	pool	= [[NSAutoreleasePool alloc] init];
-#endif
-
-	Class	procClass	= nil;
+	NSAutoreleasePool*	pool		= [[NSAutoreleasePool alloc] init];
+	Class				procClass	= nil;
 
 	switch (mArchSelector)
 	{
@@ -448,40 +443,34 @@
 		fprintf(stderr, "otx: -[AppController processFile]: "
 			"unable to create processor.\n");
 		[theProcessor release];
-
-#ifdef NEW_THREADS
 		[self performSelectorOnMainThread:
 			@selector(processingThreadDidFinish:)
 			withObject: [NSNumber numberWithBool: false]
 			waitUntilDone: false];
-#else
-		[self hideProgView: true openFile: false];
-#endif
 
 		return;
 	}
 
-#ifdef NEW_THREADS
 	if (![theProcessor processExe: mOutputFilePath])
+	{
+		fprintf(stderr, "otx: -[AppController processFile]: "
+			"unable to process %s.\n", mOFile);
+		[theProcessor release];
 		[self performSelectorOnMainThread:
 			@selector(processingThreadDidFinish:)
 			withObject: [NSNumber numberWithBool: false]
 			waitUntilDone: false];
-#else
-	[NSThread detachNewThreadSelector: @selector(processExe:)
-		toTarget: theProcessor withObject: mOutputFilePath];
-#endif
+
+		return;
+	}
 
 	[theProcessor release];
-
-#ifdef NEW_THREADS
 	[self performSelectorOnMainThread:
 		@selector(processingThreadDidFinish:)
 		withObject: [NSNumber numberWithBool: true]
 		waitUntilDone: false];
 
 	[pool release];
-#endif
 }
 
 //	processingThreadDidFinish:
@@ -818,7 +807,8 @@
 			else
 			{
 				[theAlert addButtonWithTitle: @"OK"];
-				[theAlert setMessageText: @"The executable is healthy."];
+				[theAlert setMessageText: @"No broken nop's."];
+				[theAlert setInformativeText: @"The executable is healthy."];
 				[theAlert beginSheetModalForWindow: mMainWindow
 					modalDelegate: nil didEndSelector: nil contextInfo: nil];
 			}
@@ -1104,20 +1094,20 @@
 
 - (SInt32)checkOtool
 {
-    SInt32 retcode = noErr;
 #ifdef USESMARTERPOPEN
+    SInt32 retcode = noErr;
     NSArray* arguments;
     arguments = [NSArray arrayWithObjects: @"-h", [mOFile path], nil]; //make last one nil
     SmarterPopen*  opener = [[SmarterPopen alloc] init];
     retcode = [opener runTask:@"/usr/bin/otool" withArgs:arguments];
 //    NSString * debugretstr= [opener getResultAsString]; // bhr: for example
     [opener release];
+    return retcode;
 #else
 	NSString*	otoolString	= [NSString stringWithFormat:
 		@"otool -h '%@' > /dev/null", [mOFile path]];    
-	retcode = system(CSTRING(otoolString));
+	return system(CSTRING(otoolString));
 #endif
-    return retcode;
 }
 
 //	doOtoolAlert
@@ -1304,20 +1294,20 @@
 
 	NSPasteboard*	thePasteBoard	= [inItem draggingPasteboard];
 
-	// bail if not a file.
+	// Bail if not a file.
 	if (![[thePasteBoard types] containsObject: NSFilenamesPboardType])
 		return NSDragOperationNone;
 
 	NSArray*	theFiles	= [thePasteBoard
 		propertyListForType: NSFilenamesPboardType];
 
-	// bail if not a single file.
+	// Bail if not a single file.
 	if ([theFiles count] != 1)
 		return NSDragOperationNone;
 
 	NSDragOperation	theSourceDragMask	= [inItem draggingSourceOperationMask];
 
-	// bail if modifier keys pressed.
+	// Bail if modifier keys pressed.
 	if (!(theSourceDragMask & NSDragOperationLink))
 		return NSDragOperationNone;
 
