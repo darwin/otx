@@ -438,7 +438,7 @@ enum {
 - (char*)getPointer: (UInt32)inAddr
 			andType: (UInt8*)outType;
 
-- (char*)selectorForMsgSend: (char*)ioComment
+- (char*)selectorForMsgSend: (char*)outComment
 				   fromLine: (Line*)inLine;
 - (BOOL)selectorIsFriendly: (const char*)inSel;
 - (UInt8)sendTypeFromMsgSend: (char*)inString;

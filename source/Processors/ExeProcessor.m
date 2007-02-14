@@ -1344,7 +1344,7 @@
 // ----------------------------------------------------------------------------
 //	Subclasses may override.
 
-- (char*)selectorForMsgSend: (char*)ioComment
+- (char*)selectorForMsgSend: (char*)outComment
 				   fromLine: (Line*)inLine
 {
 	return nil;

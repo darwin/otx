@@ -595,7 +595,7 @@
 //	selectorForMsgSend:fromLine:
 // ----------------------------------------------------------------------------
 
-- (char*)selectorForMsgSend: (char*)ioComment
+- (char*)selectorForMsgSend: (char*)outComment
 				   fromLine: (Line*)inLine
 {
 	char*	selString	= nil;
@@ -606,10 +606,10 @@
 		return nil;
 
 	// Bail if this is not an objc_msgSend variant.
-	if (memcmp(ioComment, "_objc_msgSend", 13))
+	if (memcmp(outComment, "_objc_msgSend", 13))
 		return nil;
 
-	UInt8	sendType	= SendTypeFromMsgSend(ioComment);
+	UInt8	sendType	= SendTypeFromMsgSend(outComment);
 
 	// Bail for variadics.
 	if (sendType == send_variadic)
