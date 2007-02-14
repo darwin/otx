@@ -96,7 +96,8 @@
 
 				if (!strncmp(archString, "ppc", 4))
 					mArchSelector	= CPU_TYPE_POWERPC;
-				else if (!strncmp(archString, "i386", 5))
+				else if (!strncmp(archString, "i386", 5) ||
+						 !strncmp(archString, "x86", 4))
 					mArchSelector	= CPU_TYPE_I386;
 				else
 				{
