@@ -14,6 +14,8 @@
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
+#define TRACK_LOCAL_VARS	1
+
 // ============================================================================
 
 @implementation PPCProcessor
@@ -845,6 +847,13 @@
 		mNumLocalSelves	= 0;
 	}
 
+	if (mLocalVars)
+	{
+		free(mLocalVars);
+		mLocalVars		= nil;
+		mNumLocalVars	= 0;
+	}
+
 	mCurrentFuncInfoIndex++;
 
 	if (mCurrentFuncInfoIndex >= mNumFuncInfos)
@@ -916,27 +925,49 @@
 		case 0x0c:	// addic		SIMM
 		case 0x0d:	// addic.		SIMM
 		case 0x0e:	// addi | li	SIMM
-			// Check for copied self pointer. This happens mostly in "init"
-			// methods, as in: "self = [super init]"
-			if (mLocalSelves		&&	// self was copied to a local variable
-				RA(theCode) == 1	&&	// current reg is stack pointer (r1)
+			if (RA(theCode) == 1	&&	// current reg is stack pointer (r1)
 				SIMM(theCode) >= 0)		// we're accessing local vars, not args
 			{
+				BOOL	found	= false;
 				UInt32	i;
 
-				// If we're accessing a local var copy of self,
-				// copy that info back to the reg in question.
-				for (i = 0; i < mNumLocalSelves; i++)
+				// Check for copied self pointer. This happens mostly in "init"
+				// methods, as in: "self = [super init]"
+				if (mLocalSelves)	// self was copied to a local variable
 				{
-					if (mLocalSelves[i].offset != UIMM(theCode))
-						continue;
+					// If we're accessing a local var copy of self,
+					// copy that info back to the reg in question.
+					for (i = 0; i < mNumLocalSelves; i++)
+					{
+						if (mLocalSelves[i].offset != UIMM(theCode))
+							continue;
 
-					mRegInfos[RT(theCode)]	= mLocalSelves[i].regInfo;
+						mRegInfos[RT(theCode)]	= mLocalSelves[i].regInfo;
+						found					= true;
 
-					break;
+						break;
+					}
 				}
 
-				break;
+				if (found)
+					break;
+
+				if (mLocalVars)	// self was copied to a local variable
+				{
+					for (i = 0; i < mNumLocalVars; i++)
+					{
+						if (mLocalVars[i].offset != UIMM(theCode))
+							continue;
+
+						mRegInfos[RT(theCode)]	= mLocalVars[i].regInfo;
+						found					= true;
+
+						break;
+					}
+				}
+
+				if (found)
+					break;
 			}
 
 			if (RA(theCode) == 0)	// li
@@ -1164,8 +1195,8 @@
 				mRegInfos[RT(theCode)].value	= SIMM(theCode);
 				mRegInfos[RT(theCode)].isValid	= true;
 			}
-			else if (mRegInfos[RA(theCode)].isValid	&&
-					!mRegInfos[RA(theCode)].classPtr)
+			else if (mRegInfos[RA(theCode)].isValid/*	&& if not valid, check local vars
+					!mRegInfos[RA(theCode)].classPtr*/)
 			{
 				UInt32	tempPtr	= (UInt32)GetPointer(
 					mRegInfos[RA(theCode)].value + SIMM(theCode), nil);
@@ -1177,6 +1208,19 @@
 				}
 				else
 					mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
+			}
+			else if (mLocalVars)
+			{
+				UInt32	i;
+
+				for (i = 0; i < mNumLocalVars; i++)
+				{
+					if (mLocalVars[i].offset == SIMM(theCode))
+					{
+						mRegInfos[RT(theCode)]	= mLocalVars[i].regInfo;
+						break;
+					}
+				}
 			}
 			else
 				mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
@@ -1195,6 +1239,39 @@
 			break;*/
 
 		case 0x24:	// stw
+#ifdef TRACK_LOCAL_VARS
+			if (!mRegInfos[RT(theCode)].isValid	||
+				RA(theCode) != 1				||
+				SIMM(theCode) < 0)
+				break;
+
+			if (mRegInfos[RT(theCode)].classPtr)	// if it's a class
+			{
+				mNumLocalSelves++;
+
+				if (mLocalSelves)
+					mLocalSelves	= realloc(mLocalSelves,
+						mNumLocalSelves * sizeof(VarInfo));
+				else
+					mLocalSelves	= malloc(sizeof(VarInfo));
+
+				mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
+					{mRegInfos[RT(theCode)], UIMM(theCode)};
+			}
+			else
+			{
+				mNumLocalVars++;
+
+				if (mLocalVars)
+					mLocalVars	= realloc(mLocalVars,
+						mNumLocalVars * sizeof(VarInfo));
+				else
+					mLocalVars	= malloc(sizeof(VarInfo));
+
+				mLocalVars[mNumLocalVars - 1]	= (VarInfo)
+					{mRegInfos[RT(theCode)], UIMM(theCode)};
+			}
+#else
 			if (!mRegInfos[RT(theCode)].isValid		||	// only if it's a class
 				!mRegInfos[RT(theCode)].classPtr	||	//  being copied to
 				RA(theCode) != 1					||	// a local variable,
@@ -1211,7 +1288,7 @@
 
 			mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
 				{mRegInfos[RT(theCode)], UIMM(theCode)};
-
+#endif
 			break;
 
 /*		case 0x21:
@@ -1281,10 +1358,25 @@
 
 			mNumLocalSelves	= machState.numLocalSelves;
 			mLocalSelves	= malloc(
-				sizeof(VarInfo) * machState.numLocalSelves);
+				sizeof(VarInfo) * mNumLocalSelves);
 			memcpy(mLocalSelves, machState.localSelves,
-				sizeof(VarInfo) * machState.numLocalSelves);
+				sizeof(VarInfo) * mNumLocalSelves);
 		}
+
+#ifdef TRACK_LOCAL_VARS
+
+		if (machState.localVars)
+		{
+			if (mLocalVars)
+				free(mLocalVars);
+
+			mNumLocalVars	= machState.numLocalVars;
+			mLocalVars		= malloc(
+				sizeof(VarInfo) * mNumLocalVars);
+			memcpy(mLocalVars, machState.localVars,
+				sizeof(VarInfo) * mNumLocalVars);
+		}
+#endif
 
 		// Optionally add a blank line before this block.
 		if (mOpts.separateLogicalBlocks && inLine->chars[0]	!= '\n'	&&
@@ -1527,18 +1619,33 @@
 			savedRegs[LRIndex]	= mLR;
 			savedRegs[CTRIndex]	= mCTR;
 
-			VarInfo*	savedVars	= nil;
+			VarInfo*	savedSelves	= nil;
 
 			if (mLocalSelves)
 			{
-				savedVars	= malloc(
+				savedSelves	= malloc(
 					sizeof(VarInfo) * mNumLocalSelves);
-				memcpy(savedVars, mLocalSelves,
+				memcpy(savedSelves, mLocalSelves,
 					sizeof(VarInfo) * mNumLocalSelves);
 			}
 
+#ifdef TRACK_LOCAL_VARS
+
+			VarInfo*	savedVars	= nil;
+
+			if (mLocalVars)
+			{
+				savedVars	= malloc(
+					sizeof(VarInfo) * mNumLocalVars);
+				memcpy(savedVars, mLocalVars,
+					sizeof(VarInfo) * mNumLocalVars);
+			}
+
+#endif
+
 			MachineState	machState	=
-				{savedRegs, savedVars, mNumLocalSelves};
+				{savedRegs, savedSelves, mNumLocalSelves,
+					savedVars, mNumLocalVars};
 
 			// Store the new BlockInfo.
 			BlockInfo	blockInfo	= {branchTarget, machState};

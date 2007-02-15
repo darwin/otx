@@ -113,6 +113,12 @@
 	if (mThunks)
 		free(mThunks);
 
+	if (mLocalSelves)
+		free(mLocalSelves);
+
+	if (mLocalVars)
+		free(mLocalVars);
+
 	[self deleteFuncInfos];
 	[self deleteLinesFromList: mPlainLineListHead];
 	[self deleteLinesFromList: mVerboseLineListHead];

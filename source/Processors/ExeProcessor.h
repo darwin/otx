@@ -60,6 +60,8 @@ typedef struct
 	GPRegisterInfo*	regInfos;
 	VarInfo*		localSelves;
 	UInt32			numLocalSelves;
+	VarInfo*		localVars;
+	UInt32			numLocalVars;
 }
 MachineState;
 
@@ -345,6 +347,8 @@ enum {
 	UInt32				mNumCatMethodInfos;
 	VarInfo*			mLocalSelves;			// 'self' copied to local variables
 	UInt32				mNumLocalSelves;
+	VarInfo*			mLocalVars;
+	UInt32				mNumLocalVars;
 	objc_class*			mCurrentClass;
 	objc_category*		mCurrentCat;
 	BOOL				mIsInstanceMethod;
