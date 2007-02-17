@@ -14,7 +14,7 @@
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
-#define REUSE_BLOCKS	1
+#define REUSE_BLOCKS		1
 
 // ============================================================================
 
@@ -1586,6 +1586,13 @@
 		mNumLocalSelves	= 0;
 	}
 
+	if (mLocalVars)
+	{
+		free(mLocalVars);
+		mLocalVars		= nil;
+		mNumLocalVars	= 0;
+	}
+
 	mCurrentFuncInfoIndex++;
 
 	if (mCurrentFuncInfoIndex >= mNumFuncInfos)
@@ -1721,21 +1728,39 @@
 			}
 			else	// Copying self from a register to a local var.
 			{
-				if (!mRegInfos[REG1(modRM)].classPtr)
-					break;
+				if (mRegInfos[REG1(modRM)].classPtr && MOD(modRM) == MOD8)
+				{
+					sscanf(&inLine->info.code[4], "%02hhx", &offset);
 
-				sscanf(&inLine->info.code[4], "%02hhx", &offset);
+					mNumLocalSelves++;
 
-				mNumLocalSelves++;
+					if (mLocalSelves)
+						mLocalSelves	= realloc(mLocalSelves,
+							mNumLocalSelves * sizeof(VarInfo));
+					else
+						mLocalSelves	= malloc(sizeof(VarInfo));
 
-				if (mLocalSelves)
-					mLocalSelves	= realloc(mLocalSelves,
-						mNumLocalSelves * sizeof(VarInfo));
-				else
-					mLocalSelves	= malloc(sizeof(VarInfo));
+					mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
+						{mRegInfos[REG1(modRM)], offset};
+				}
+				else if (mRegInfos[REG1(modRM)].isValid && MOD(modRM) == MOD32)
+				{
+					SInt32	varOffset;
 
-				mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
-					{mRegInfos[REG1(modRM)], offset};
+					sscanf(&inLine->info.code[4], "%08x", &varOffset);
+					varOffset	= OSSwapInt32(varOffset);
+
+					mNumLocalVars++;
+
+					if (mLocalVars)
+						mLocalVars	= realloc(mLocalVars,
+							mNumLocalVars * sizeof(VarInfo));
+					else
+						mLocalVars	= malloc(sizeof(VarInfo));
+
+					mLocalVars[mNumLocalVars - 1]	= (VarInfo)
+						{mRegInfos[REG1(modRM)], varOffset};
+				}
 			}
 
 			break;
@@ -1770,21 +1795,45 @@
 						// Zero the destination regardless.
 						mRegInfos[REG1(modRM)]	= (GPRegisterInfo){0};
 
+						// If we're accessing a local var copy of self,
+						// copy that info back to the reg in question.
 						for (i = 0; i < mNumLocalSelves; i++)
 						{
 							if (mLocalSelves[i].offset != offset)
 								continue;
 
-							// If we're accessing a local var copy of self,
-							// copy that info back to the reg in question.
 							mRegInfos[REG1(modRM)]	= mLocalSelves[i].regInfo;
 
-							// and split.
 							break;
 						}
 					}
 				}
-			}								// FIXME
+			}
+			else if (REG2(modRM) == EBP && MOD(modRM) == MOD32)
+			{
+				if (mLocalVars)
+				{
+					SInt32	offset;
+
+					sscanf(&inLine->info.code[4], "%08x", &offset);
+					offset	= OSSwapInt32(offset);
+
+					if (offset < 0)
+					{
+						UInt32	i;
+
+						for (i = 0; i < mNumLocalVars; i++)
+						{
+							if (mLocalVars[i].offset != offset)
+								continue;
+
+							mRegInfos[REG1(modRM)]	= mLocalVars[i].regInfo;
+
+							break;
+						}
+					}
+				}
+			}
 			else if (HAS_ABS_DISP32(modRM))
 			{
 				sscanf(&inLine->info.code[4], "%08x",
@@ -1925,6 +1974,18 @@
 				sizeof(VarInfo) * machState.numLocalSelves);
 			memcpy(mLocalSelves, machState.localSelves,
 				sizeof(VarInfo) * machState.numLocalSelves);
+		}
+
+		if (machState.localVars)
+		{
+			if (mLocalVars)
+				free(mLocalVars);
+
+			mNumLocalVars	= machState.numLocalVars;
+			mLocalVars		= malloc(
+				sizeof(VarInfo) * mNumLocalVars);
+			memcpy(mLocalVars, machState.localVars,
+				sizeof(VarInfo) * mNumLocalVars);
 		}
 
 		// Optionally add a blank line before this block.
@@ -2150,18 +2211,29 @@
 
 			memcpy(savedRegs, mRegInfos, sizeof(GPRegisterInfo) * 8);
 
-			VarInfo*	savedVars	= nil;
+			VarInfo*	savedSelves	= nil;
 
 			if (mLocalSelves)
 			{
-				savedVars	= malloc(
+				savedSelves	= malloc(
 					sizeof(VarInfo) * mNumLocalSelves);
-				memcpy(savedVars, mLocalSelves,
+				memcpy(savedSelves, mLocalSelves,
 					sizeof(VarInfo) * mNumLocalSelves);
 			}
 
+			VarInfo*	savedVars	= nil;
+
+			if (mLocalVars)
+			{
+				savedVars	= malloc(
+					sizeof(VarInfo) * mNumLocalVars);
+				memcpy(savedVars, mLocalVars,
+					sizeof(VarInfo) * mNumLocalVars);
+			}
+
 			MachineState	machState	=
-				{savedRegs, savedVars, mNumLocalSelves};
+				{savedRegs, savedSelves, mNumLocalSelves,
+					savedVars, mNumLocalVars};
 
 			// Store the new BlockInfo.
 			BlockInfo	blockInfo	= {jumpTarget, machState};
@@ -2186,18 +2258,29 @@
 
 			memcpy(savedRegs, mRegInfos, sizeof(GPRegisterInfo) * 8);
 
-			VarInfo*	savedVars	= nil;
+			VarInfo*	savedSelves	= nil;
 
 			if (mLocalSelves)
 			{
-				savedVars	= malloc(
+				savedSelves	= malloc(
 					sizeof(VarInfo) * mNumLocalSelves);
-				memcpy(savedVars, mLocalSelves,
+				memcpy(savedSelves, mLocalSelves,
 					sizeof(VarInfo) * mNumLocalSelves);
 			}
 
+			VarInfo*	savedVars	= nil;
+
+			if (mLocalVars)
+			{
+				savedVars	= malloc(
+					sizeof(VarInfo) * mNumLocalVars);
+				memcpy(savedVars, mLocalVars,
+					sizeof(VarInfo) * mNumLocalVars);
+			}
+
 			MachineState	machState	=
-				{savedRegs, savedVars, mNumLocalSelves};
+				{savedRegs, savedSelves, mNumLocalSelves
+					savedVars, mNumLocalVars};
 
 			// Create and store a new BlockInfo.
 			funcInfo->blocks[funcInfo->numBlocks - 1]	=
