@@ -14,8 +14,6 @@
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
-#define TRACK_LOCAL_VARS	1
-
 // ============================================================================
 
 @implementation PPCProcessor
@@ -1239,7 +1237,6 @@
 			break;*/
 
 		case 0x24:	// stw
-#ifdef TRACK_LOCAL_VARS
 			if (!mRegInfos[RT(theCode)].isValid	||
 				RA(theCode) != 1				||
 				SIMM(theCode) < 0)
@@ -1271,24 +1268,7 @@
 				mLocalVars[mNumLocalVars - 1]	= (VarInfo)
 					{mRegInfos[RT(theCode)], UIMM(theCode)};
 			}
-#else
-			if (!mRegInfos[RT(theCode)].isValid		||	// only if it's a class
-				!mRegInfos[RT(theCode)].classPtr	||	//  being copied to
-				RA(theCode) != 1					||	// a local variable,
-				SIMM(theCode) < 0)						// not an argument
-				break;
 
-			mNumLocalSelves++;
-
-			if (mLocalSelves)
-				mLocalSelves	= realloc(mLocalSelves,
-					mNumLocalSelves * sizeof(VarInfo));
-			else
-				mLocalSelves	= malloc(sizeof(VarInfo));
-
-			mLocalSelves[mNumLocalSelves - 1]	= (VarInfo)
-				{mRegInfos[RT(theCode)], UIMM(theCode)};
-#endif
 			break;
 
 /*		case 0x21:
@@ -1363,8 +1343,6 @@
 				sizeof(VarInfo) * mNumLocalSelves);
 		}
 
-#ifdef TRACK_LOCAL_VARS
-
 		if (machState.localVars)
 		{
 			if (mLocalVars)
@@ -1376,7 +1354,6 @@
 			memcpy(mLocalVars, machState.localVars,
 				sizeof(VarInfo) * mNumLocalVars);
 		}
-#endif
 
 		// Optionally add a blank line before this block.
 		if (mOpts.separateLogicalBlocks && inLine->chars[0]	!= '\n'	&&
@@ -1629,8 +1606,6 @@
 					sizeof(VarInfo) * mNumLocalSelves);
 			}
 
-#ifdef TRACK_LOCAL_VARS
-
 			VarInfo*	savedVars	= nil;
 
 			if (mLocalVars)
@@ -1640,8 +1615,6 @@
 				memcpy(savedVars, mLocalVars,
 					sizeof(VarInfo) * mNumLocalVars);
 			}
-
-#endif
 
 			MachineState	machState	=
 				{savedRegs, savedSelves, mNumLocalSelves,
