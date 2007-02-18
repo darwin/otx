@@ -1110,7 +1110,8 @@
 				case 339:	// mfspr
 					mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
 
-					if (SPR(theCode) == LR)	// from LR
+					if (SPR(theCode) == LR	&&	// from LR
+						mLR.isValid)
 					{	// Copy LR into rD.
 						mRegInfos[RT(theCode)].value	= mLR.value;
 						mRegInfos[RT(theCode)].isValid	= true;
@@ -1525,8 +1526,10 @@
 		else
 		{
 			RestoreRegisters(theLine);
-			UpdateRegisters(theLine);
+//			UpdateRegisters(theLine);
 		}
+
+		UpdateRegisters(theLine);
 
 		// Check if we need to save the machine state.
 		if (IS_BLOCK_BRANCH(theCode) && mCurrentFuncInfoIndex >= 0 &&
