@@ -634,6 +634,12 @@ if (inLine->info.address == 0x2d04)
 		return nil;
 
 	// Get at the selector.
+/*	Intel fix test
+	UInt32	selAddy		= mRegInfos[selectorRegNum].value;
+
+	if (mSwapped)
+		selAddy	= OSSwapInt32(selAddy);
+*/
 	UInt8	selType		= PointerType;
 	char*	selPtr		= GetPointer(
 		mRegInfos[selectorRegNum].value, &selType);
@@ -1236,6 +1242,12 @@ if (inLine->info.address == 0x2d04)
 				if (tempPtr)
 				{
 					mRegInfos[RT(theCode)].value	= *(UInt32*)tempPtr;
+
+/*	Intel fix test	*/
+					if (mSwapped)
+						mRegInfos[RT(theCode)].value	=
+							OSSwapInt32(mRegInfos[RT(theCode)].value);
+
 					mRegInfos[RT(theCode)].isValid	= true;
 				}
 				else
