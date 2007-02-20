@@ -601,17 +601,6 @@
 	char*	selString	= nil;
 	UInt32	theCode		= strtoul(inLine->info.code, nil, 16);
 
-/*
-	Intel test 3
-	What is the value of theCode here?
-*/
-
-if (inLine->info.address == 0x2d04)
-{	// Place a breakpoint here.
-	UInt8	theBreak	= 0;
-}
-/**/
-
 	// Bail if this is not an eligible branch.
 	if (PO(theCode) != 0x12)	// b, bl, ba, bla
 		return nil;
@@ -634,12 +623,6 @@ if (inLine->info.address == 0x2d04)
 		return nil;
 
 	// Get at the selector.
-/*	Intel fix test
-	UInt32	selAddy		= mRegInfos[selectorRegNum].value;
-
-	if (mSwapped)
-		selAddy	= OSSwapInt32(selAddy);
-*/
 	UInt8	selType		= PointerType;
 	char*	selPtr		= GetPointer(
 		mRegInfos[selectorRegNum].value, &selType);
@@ -680,17 +663,6 @@ if (inLine->info.address == 0x2d04)
 - (void)commentForMsgSend: (char*)ioComment
 				 fromLine: (Line*)inLine
 {
-/*
-	Intel test 2
-	Does SelectorForMsgSend() return nil?
-*/
-
-if (inLine->info.address == 0x2d04)
-{	// Place a breakpoint here.
-	UInt8	theBreak	= 0;
-}
-/**/
-
 	char*	selString	= SelectorForMsgSend(ioComment, inLine);
 
 	// Bail if we couldn't find the selector.
@@ -1224,18 +1196,6 @@ if (inLine->info.address == 0x2d04)
 			}
 			else if (mRegInfos[RA(theCode)].isValid)
 			{
-/*
-	Intel test 1
-	Is tempPtr nil?
-	If not, what is it's value?
-*/
-
-if (inLine->info.address == 0x2d04)
-{	// Place a breakpoint here.
-	UInt8	theBreak	= 0;
-}
-/**/
-
 				UInt32	tempPtr	= (UInt32)GetPointer(
 					mRegInfos[RA(theCode)].value + SIMM(theCode), nil);
 
@@ -1243,7 +1203,6 @@ if (inLine->info.address == 0x2d04)
 				{
 					mRegInfos[RT(theCode)].value	= *(UInt32*)tempPtr;
 
-/*	Intel fix test	*/
 					if (mSwapped)
 						mRegInfos[RT(theCode)].value	=
 							OSSwapInt32(mRegInfos[RT(theCode)].value);
