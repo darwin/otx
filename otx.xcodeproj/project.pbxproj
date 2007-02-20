@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3189F53C0B717E6100A9B9F4 /* SmarterPopen.m in Sources */ = {isa = PBXBuildFile; fileRef = 3189F53B0B717E6100A9B9F4 /* SmarterPopen.m */; };
-		3189F53D0B717E6100A9B9F4 /* SmarterPopen.m in Sources */ = {isa = PBXBuildFile; fileRef = 3189F53B0B717E6100A9B9F4 /* SmarterPopen.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E125C39D0A86B2D000098114 /* App Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = E125C39C0A86B2D000098114 /* App Icon.icns */; };
@@ -479,7 +477,6 @@
 				E1B136200B192AAC002EB674 /* ArchSpecifics.m in Sources */,
 				E145F6D30B437F5900615A16 /* SmoothViewAnimation.m in Sources */,
 				E1AD98A60B57311C00E56D96 /* DropBox.m in Sources */,
-				3189F53C0B717E6100A9B9F4 /* SmarterPopen.m in Sources */,
 				E1DBB2850B72638C00501583 /* GradientImage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -506,7 +503,6 @@
 				E1B133960B182788002EB674 /* Searchers.m in Sources */,
 				E1B135E40B185123002EB674 /* ObjcAccessors.m in Sources */,
 				E1B1361F0B192AAC002EB674 /* ArchSpecifics.m in Sources */,
-				3189F53D0B717E6100A9B9F4 /* SmarterPopen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -571,7 +567,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = ppc;
+				ARCHS = "$(NATIVE_ARCH)";
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;

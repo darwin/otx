@@ -10,9 +10,10 @@
 #import "ExeProcessor.h"
 #import "PPCProcessor.h"
 #import "X86Processor.h"
-//#import "UserDefaultKeys.h"
 
 #import "SmartCrashReportsInstall.h"
+
+//#define USE_GETOPT_LONG	1
 
 // ============================================================================
 
@@ -41,9 +42,9 @@
 		return nil;
 	}
 
-	self = [super init];
+//	self = [super init];
 
-	if (!self)
+	if (!(self = [super init]))
 		return nil;
 
 	// Set mArchSelector to the host architecture by default. This code was
@@ -77,9 +78,13 @@
 		SHOW_VARIABLE_TYPES
 	};
 
+	// Parse options.
 	NSString*	origFilePath	= nil;
 	UInt32		i, j;
 
+#ifdef USE_GETOPT_LONG
+
+#else
 	for (i = 1; i < argc; i++)
 	{
 		if (argv[i][0] == '-')
@@ -166,6 +171,7 @@
 				encoding: NSMacOSRomanStringEncoding];
 		}
 	}
+#endif	// USE_GETOPT_LONG
 
 	if (!origFilePath)
 	{
