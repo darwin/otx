@@ -730,38 +730,44 @@
 		mCurrentFuncPtr	= (*ioLine)->info.address;
 
 		// Try to build the method name.
-		MethodInfo*	theInfo	= nil;
+		MethodInfo*	theSwappedInfoPtr	= nil;
+		MethodInfo	theSwappedInfo;
 
-		if (GetObjcMethodFromAddress(&theInfo, mCurrentFuncPtr))
+		if (GetObjcMethodFromAddress(&theSwappedInfoPtr, mCurrentFuncPtr))
 		{
+			theSwappedInfo	= *theSwappedInfoPtr;
+
+			if (mSwapped)
+				swap_method_info(&theSwappedInfo);
+
 			char*	className	= nil;
 			char*	catName		= nil;
 
-			if (theInfo->oc_cat.category_name)
+			if (theSwappedInfo.oc_cat.category_name)
 			{
 				className	= GetPointer(
-					(UInt32)theInfo->oc_cat.class_name, nil);
+					(UInt32)theSwappedInfo.oc_cat.class_name, nil);
 				catName		= GetPointer(
-					(UInt32)theInfo->oc_cat.category_name, nil);
+					(UInt32)theSwappedInfo.oc_cat.category_name, nil);
 			}
-			else if (theInfo->oc_class.name)
+			else if (theSwappedInfo.oc_class.name)
 			{
 				className	= GetPointer(
-					(UInt32)theInfo->oc_class.name, nil);
+					(UInt32)theSwappedInfo.oc_class.name, nil);
 			}
 
 			if (className)
 			{
 				char*	selName	= GetPointer(
-					(UInt32)theInfo->m.method_name, nil);
+					(UInt32)theSwappedInfo.m.method_name, nil);
 
 				if (selName)
 				{
-					if (!theInfo->m.method_types)
+					if (!theSwappedInfo.m.method_types)
 						return;
 
 					char*	methTypes	=
-						GetPointer((UInt32)theInfo->m.method_types, nil);
+						GetPointer((UInt32)theSwappedInfo.m.method_types, nil);
 
 					if (!methTypes)
 						return;
@@ -781,7 +787,7 @@
 
 						snprintf(theMethCName, 1000,
 							methNameFormat,
-							(theInfo->inst) ? '-' : '+',
+							(theSwappedInfo.inst) ? '-' : '+',
 							className, catName, selName, returnCType);
 					}
 					else
@@ -791,7 +797,7 @@
 
 						snprintf(theMethCName, 1000,
 							methNameFormat,
-							(theInfo->inst) ? '-' : '+',
+							(theSwappedInfo.inst) ? '-' : '+',
 							className, selName, returnCType);
 					}
 				}
@@ -1803,22 +1809,26 @@
 					if (ioLine->chars[i] == 0x20)	// all 4 chars are spaces!
 						entabbedLine[j++] = '\t';	// write a tab and split
 					else	// only the 1st char is not a space
-					{		// write 1st char and tab
+					{		// copy 1st char and tab
 						entabbedLine[j++] = ioLine->chars[i];
 						entabbedLine[j++] = '\t';
 					}
 				}
 				else	// 2nd char is not a space
-				{		// write 1st 2 chars and tab
+				{		// copy 1st 2 chars and tab
 					entabbedLine[j++] = ioLine->chars[i];
 					entabbedLine[j++] = ioLine->chars[i + 1];
 					entabbedLine[j++] = '\t';
 				}
 			}
 			else	// 3rd char is not a space
-			{		// copy all 4 chars
-				memcpy(&entabbedLine[j], &ioLine->chars[i], 4);
-				j += 4;
+			{		// copy 1st 3 chars and tab
+//				memcpy(&entabbedLine[j], &ioLine->chars[i], 4);
+//				j += 4;
+				entabbedLine[j++] = ioLine->chars[i];
+				entabbedLine[j++] = ioLine->chars[i + 1];
+				entabbedLine[j++] = ioLine->chars[i + 2];
+				entabbedLine[j++] = '\t';
 			}
 		}
 		else	// 4th char is not a space

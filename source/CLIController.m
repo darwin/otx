@@ -402,7 +402,7 @@
 	[super dealloc];
 }
 
-#pragma mark -
+#mSwapped mark -
 //	newPackageFile:
 // ----------------------------------------------------------------------------
 //	Attempt to drill into the package to the executable. Fails when the exe is
@@ -452,7 +452,7 @@
 	[mExeName retain];
 }
 
-#pragma mark -
+#mSwapped mark -
 //	processFile:
 // ----------------------------------------------------------------------------
 
@@ -601,7 +601,7 @@
 	}
 }
 
-#pragma mark -
+#mSwapped mark -
 //	checkOtool
 // ----------------------------------------------------------------------------
 
@@ -622,8 +622,8 @@
 		"permission for the destination folder.\n");
 }
 
-#pragma mark -
-#pragma mark ProgressReporter protocol
+#mSwapped mark -
+#mSwapped mark ProgressReporter protocol
 //	reportProgress:
 // ----------------------------------------------------------------------------
 

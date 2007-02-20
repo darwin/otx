@@ -28,7 +28,6 @@ typedef struct
 ProcOptions;
 
 // Default ProcOptions values
-// TODO: #define DONT_ !
 #define	SHOW_LOCAL_OFFSETS				true
 #define ENTAB_OUTPUT					true
 #define DONT_SHOW_DATA_SECTIONS			false

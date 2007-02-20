@@ -47,11 +47,17 @@
 		return false;
 	}
 
-	MethodInfo	searchKey	= {{nil, nil, (IMP)inAddress}, {0}, {0}, false};
+	UInt32	swappedAddress	= inAddress;
+
+	if (mSwapped)
+		swappedAddress	= OSSwapInt32(swappedAddress);
+
+	MethodInfo	searchKey	= {{nil, nil, (IMP)swappedAddress}, {0}, {0}, false};
 
 	*outMI	= bsearch(&searchKey,
 		mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
-		(COMPARISON_FUNC_TYPE)MethodInfo_Compare);
+		(COMPARISON_FUNC_TYPE)
+		(mSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
 
 	return (*outMI != nil);
 }
@@ -71,11 +77,17 @@
 		return false;
 	}
 
-	MethodInfo	searchKey	= {{nil, nil, (IMP)inAddress}, {0}, {0}, false};
+	UInt32	swappedAddress	= inAddress;
+
+	if (mSwapped)
+		swappedAddress	= OSSwapInt32(swappedAddress);
+
+	MethodInfo	searchKey	= {{nil, nil, (IMP)swappedAddress}, {0}, {0}, false};
 
 	*outMI	= bsearch(&searchKey,
 		mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
-		(COMPARISON_FUNC_TYPE)MethodInfo_Compare);
+		(COMPARISON_FUNC_TYPE)
+		(mSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
 
 	return (*outMI != nil);
 }
@@ -91,14 +103,19 @@
 		return false;
 
 	// Loop thru inClass and all superclasses.
-	objc_class*	theClassPtr		= inClass;
-	objc_class	theDummyClass	= {0};
-	char*		theSuperName	= nil;
+	objc_class*			theClassPtr		= inClass;
+	objc_class			theSwappedClass	= *theClassPtr;
+	objc_class			theDummyClass	= {0};
+	char*				theSuperName	= nil;
+	objc_ivar_list*		theIvars;
 
 	while (theClassPtr)
 	{
-		objc_ivar_list*	theIvars	= (objc_ivar_list*)
-			GetPointer((UInt32)theClassPtr->ivars, nil);
+		if (mSwapped)
+			swap_objc_class(&theSwappedClass);
+
+		theIvars	= (objc_ivar_list*)GetPointer(
+			(UInt32)theSwappedClass.ivars, nil);
 
 		if (!theIvars)
 		{	// Try again with the superclass.

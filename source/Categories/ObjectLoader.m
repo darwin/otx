@@ -48,7 +48,7 @@
 			{
 				mMachHeaderPtr	= (mach_header*)(mRAMFile + fa.offset);
 				mArchMagic		= *(UInt32*)mMachHeaderPtr;
-				mSwapped		= mArchMagic == MH_CIGAM;
+				mSwapped		= (mArchMagic == MH_CIGAM);
 				break;
 			}
 
@@ -312,7 +312,8 @@
 	objc_module		theModule;
 	UInt32			theModSize;
 	objc_symtab		theSymTab;
-	objc_class		theClass, theSwappedClass, theMetaClass;
+	objc_class		theClass, theSwappedClass;
+	objc_class		theMetaClass, theSwappedMetaClass;
 	objc_category	theCat, theSwappedCat;
 	void**			theDefs;
 	UInt32			theOffset;
@@ -383,25 +384,30 @@
 
 				// Save class's instance method info.
 				objc_method_list	theMethodList;
+				objc_method_list	theSwappedMethodList;
 				objc_method*		theMethods;
 				objc_method			theMethod;
+				objc_method			theSwappedMethod;
 
 				if ([self getObjcMethodList: &theMethodList
 					andMethods: &theMethods
 					fromAddress: (UInt32)theSwappedClass.methodLists])
 				{
-					if (mSwapped)
-						swap_objc_method_list(&theMethodList);
+					theSwappedMethodList	= theMethodList;
 
-					for (k = 0; k < theMethodList.method_count; k++)
+					if (mSwapped)
+						swap_objc_method_list(&theSwappedMethodList);
+
+					for (k = 0; k < theSwappedMethodList.method_count; k++)
 					{
-						theMethod	= theMethods[k];
+						theMethod			= theMethods[k];
+						theSwappedMethod	= theMethod;
 
 						if (mSwapped)
-							swap_objc_method(&theMethod);
+							swap_objc_method(&theSwappedMethod);
 
 						MethodInfo	theMethInfo	=
-							{theMethod, theSwappedClass, {0}, true};
+							{theMethod, theClass, {0}, true};
 
 						mNumClassMethodInfos++;
 
@@ -419,25 +425,30 @@
 				if ([self getObjcMetaClass: &theMetaClass
 					fromClass: &theSwappedClass])
 				{
+					theSwappedMetaClass	= theMetaClass;
+
 					if (mSwapped)
-						swap_objc_class(&theMetaClass);
+						swap_objc_class(&theSwappedMetaClass);
 
 					if ([self getObjcMethodList: &theMethodList
 						andMethods: &theMethods
-						fromAddress: (UInt32)theMetaClass.methodLists])
+						fromAddress: (UInt32)theSwappedMetaClass.methodLists])
 					{
-						if (mSwapped)
-							swap_objc_method_list(&theMethodList);
+						theSwappedMethodList	= theMethodList;
 
-						for (k = 0; k < theMethodList.method_count; k++)
+						if (mSwapped)
+							swap_objc_method_list(&theSwappedMethodList);
+
+						for (k = 0; k < theSwappedMethodList.method_count; k++)
 						{
-							theMethod	= theMethods[k];
+							theMethod			= theMethods[k];
+							theSwappedMethod	= theMethod;
 
 							if (mSwapped)
-								swap_objc_method(&theMethod);
+								swap_objc_method(&theSwappedMethod);
 
 							MethodInfo	theMethInfo	=
-								{theMethod, theSwappedClass, {0}, false};
+								{theMethod, theClass, {0}, false};
 
 							mNumClassMethodInfos++;
 
@@ -485,25 +496,30 @@
 
 				// Save category instance method info.
 				objc_method_list	theMethodList;
+				objc_method_list	theSwappedMethodList;
 				objc_method*		theMethods;
 				objc_method			theMethod;
+				objc_method			theSwappedMethod;
 
 				if ([self getObjcMethodList: &theMethodList
 					andMethods: &theMethods
 					fromAddress: (UInt32)theSwappedCat.instance_methods])
 				{
-					if (mSwapped)
-						swap_objc_method_list(&theMethodList);
+					theSwappedMethodList	= theMethodList;
 
-					for (k = 0; k < theMethodList.method_count; k++)
+					if (mSwapped)
+						swap_objc_method_list(&theSwappedMethodList);
+
+					for (k = 0; k < theSwappedMethodList.method_count; k++)
 					{
-						theMethod	= theMethods[k];
+						theMethod			= theMethods[k];
+						theSwappedMethod	= theMethod;
 
 						if (mSwapped)
-							swap_objc_method(&theMethod);
+							swap_objc_method(&theSwappedMethod);
 
 						MethodInfo	theMethInfo	=
-							{theMethod, theSwappedClass, theSwappedCat, true};
+							{theMethod, theClass, theCat, true};
 
 						mNumCatMethodInfos++;
 
@@ -522,18 +538,21 @@
 					andMethods: &theMethods
 					fromAddress: (UInt32)theSwappedCat.class_methods])
 				{
-					if (mSwapped)
-						swap_objc_method_list(&theMethodList);
+					theSwappedMethodList	= theMethodList;
 
-					for (k = 0; k < theMethodList.method_count; k++)
+					if (mSwapped)
+						swap_objc_method_list(&theSwappedMethodList);
+
+					for (k = 0; k < theSwappedMethodList.method_count; k++)
 					{
-						theMethod	= theMethods[k];
+						theMethod			= theMethods[k];
+						theSwappedMethod	= theMethod;
 
 						if (mSwapped)
-							swap_objc_method(&theMethod);
+							swap_objc_method(&theSwappedMethod);
 
 						MethodInfo	theMethInfo	=
-							{theMethod, theSwappedClass, theSwappedCat, false};
+							{theMethod, theClass, theCat, false};
 
 						mNumCatMethodInfos++;
 
@@ -561,10 +580,20 @@
 	}	// for (i = 0; i < mNumObjcSects; i++)
 
 	// Sort MethodInfos.
-	qsort(mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
-		(COMPARISON_FUNC_TYPE)MethodInfo_Compare);
-	qsort(mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
-		(COMPARISON_FUNC_TYPE)MethodInfo_Compare);
+	if (mSwapped)
+	{
+		qsort(mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
+			(COMPARISON_FUNC_TYPE)MethodInfo_Compare_Swapped);
+		qsort(mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
+			(COMPARISON_FUNC_TYPE)MethodInfo_Compare_Swapped);
+	}
+	else
+	{
+		qsort(mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
+			(COMPARISON_FUNC_TYPE)MethodInfo_Compare);
+		qsort(mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
+			(COMPARISON_FUNC_TYPE)MethodInfo_Compare);
+	}
 }
 
 //	loadCStringSection:

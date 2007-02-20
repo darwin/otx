@@ -277,6 +277,8 @@ enum {
 @interface ExeProcessor : NSObject
 {
 @protected
+	BOOL	mSwapped;
+
 	id		mController;	// who's our daddy
 
 	// guts
@@ -292,7 +294,6 @@ enum {
 	cpu_type_t			mArchSelector;
 	UInt32				mArchMagic;				// 0xFEEDFACE etc.
 	BOOL				mExeIsFat;
-	BOOL				mSwapped;				// PPC host reading x86 exe or vice versa
 	UInt32				mLocalOffset;			// +420 etc.
 	ThunkInfo*			mThunks;				// x86 only
 	UInt32				mNumThunks;				// x86 only
@@ -476,10 +477,28 @@ MethodInfo_Compare(
 	MethodInfo*	mi1,
 	MethodInfo*	mi2)
 {
-	if (mi1->m.method_imp < mi2->m.method_imp)
+	if ((UInt32)mi1->m.method_imp < (UInt32)mi2->m.method_imp)
 		return -1;
 
-	return (mi1->m.method_imp > mi2->m.method_imp);
+	return ((UInt32)mi1->m.method_imp > (UInt32)mi2->m.method_imp);
+}
+
+static int
+MethodInfo_Compare_Swapped(
+	MethodInfo*	mi1,
+	MethodInfo*	mi2)
+{
+	UInt32	imp1	= (UInt32)mi1->m.method_imp;
+	UInt32	imp2	= (UInt32)mi2->m.method_imp;
+
+	imp1	= OSSwapInt32(imp1);
+	imp2	= OSSwapInt32(imp2);
+
+	if (imp1 < imp2)
+		return -1;
+
+	return (imp1 > imp2);
+
 }
 
 static int
@@ -491,4 +510,13 @@ CheckedString_Compare(
 		return -1;
 
 	return (cs1->crc > cs2->crc);
+}
+
+static void
+swap_method_info(
+	MethodInfo*	mi)
+{
+	swap_objc_method(&mi->m);
+	swap_objc_class(&mi->oc_class);
+	swap_objc_category(&mi->oc_cat);
 }

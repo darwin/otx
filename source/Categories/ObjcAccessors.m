@@ -170,6 +170,7 @@
 			break;
 	}
 
+	// FIXME: move this out of here
 	if (mSwapped)
 		theValue	= OSSwapInt32(theValue);
 
@@ -281,12 +282,16 @@
 - (BOOL)getObjcClass: (objc_class*)outClass
 			fromName: (const char*)inName;
 {
-	UInt32		i;
+	UInt32	i, namePtr;
 
 	for (i = 0; i < mNumClassMethodInfos; i++)
 	{
-		if (GetPointer(
-			(UInt32)mClassMethodInfos[i].oc_class.name, nil) == inName)
+		namePtr	= (UInt32)mClassMethodInfos[i].oc_class.name;
+
+		if (mSwapped)
+			namePtr	= OSSwapInt32(namePtr);
+
+		if (GetPointer(namePtr, nil) == inName)
 		{
 			*outClass	= mClassMethodInfos[i].oc_class;
 			return true;
