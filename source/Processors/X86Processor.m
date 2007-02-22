@@ -366,6 +366,8 @@
 						*mRegInfos[REG2(modRM)].classPtr;
 
 // FIXME: swap class here
+					if (mSwapped)
+						swap_objc_class(&swappedClass);
 
 					if (!mIsInstanceMethod)
 					{
@@ -461,6 +463,9 @@
 				objc_ivar	theIvar			= {0};
 				objc_class	swappedClass	=
 					*mRegInfos[REG2(modRM)].classPtr;
+
+				if (mSwapped)
+					swap_objc_class(&swappedClass);
 
 				if (!mIsInstanceMethod)
 				{
@@ -623,6 +628,9 @@
 				objc_class	swappedClass	=
 					*mRegInfos[REG2(modRM)].classPtr;
 
+				if (mSwapped)
+					swap_objc_class(&swappedClass);
+
 				if (!mIsInstanceMethod)
 				{
 					if (!GetObjcMetaClassFromClass(
@@ -784,6 +792,9 @@
 				objc_class	swappedClass	=
 					*mRegInfos[REG2(modRM)].classPtr;
 
+				if (mSwapped)
+					swap_objc_class(&swappedClass);
+
 				if (!mIsInstanceMethod)
 				{
 					if (!GetObjcMetaClassFromClass(
@@ -905,6 +916,9 @@
 				objc_ivar	theIvar			= {0};
 				objc_class	swappedClass	=
 					*mRegInfos[REG2(modRM)].classPtr;
+
+				if (mSwapped)
+					swap_objc_class(&swappedClass);
 
 				if (!mIsInstanceMethod)
 				{
@@ -1478,7 +1492,7 @@
 		(COMPARISON_FUNC_TYPE)CheckedString_Compare);
 
 	if (friendlySel && friendlySel->length == selLength)
-	{	// found a matching CRC, make sure it's not a collision.
+	{	// Found a matching CRC, make sure it's not a collision.
 		if (!strncmp(friendlySel->string, inSel, selLength))
 			return true;
 	}
@@ -1501,32 +1515,22 @@
 
 	if (theSubstring)	// otool knew this was a thunk call
 	{
-		BOOL	applyThunk	= false;
+		BOOL	applyThunk	= true;
 
 		if (!strncmp(&theSubstring[18], "ax", 2))
-		{
 			mCurrentThunk	= EAX;
-			applyThunk		= true;
-		}
 		else if (!strncmp(&theSubstring[18], "bx", 2))
-		{
 			mCurrentThunk	= EBX;
-			applyThunk		= true;
-		}
 		else if (!strncmp(&theSubstring[18], "cx", 2))
-		{
 			mCurrentThunk	= ECX;
-			applyThunk		= true;
-		}
 		else if (!strncmp(&theSubstring[18], "dx", 2))
-		{
 			mCurrentThunk	= EDX;
-			applyThunk		= true;
-		}
+		else
+			applyThunk		= false;
 
 		if (applyThunk)
 		{
-			mRegInfos[mCurrentThunk].value	=
+			mRegInfos[mCurrentThunk].value		=
 				(*ioLine)->next->info.address;
 			mRegInfos[mCurrentThunk].isValid	= true;
 		}
@@ -1548,7 +1552,7 @@
 				found			= true;
 				mCurrentThunk	= mThunks[i].reg;
 
-				mRegInfos[mCurrentThunk].value	=
+				mRegInfos[mCurrentThunk].value		=
 					(*ioLine)->next->info.address;
 				mRegInfos[mCurrentThunk].isValid	= true;
 			}
@@ -1728,7 +1732,7 @@
 						mStack[offset]	= (GPRegisterInfo){0};
 				}
 			}
-			else	// Copying self from a register to a local var.
+			else	// Copying from a register to a local var.
 			{
 				if (mRegInfos[REG1(modRM)].classPtr && MOD(modRM) == MOD8)
 				{

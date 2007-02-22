@@ -2,7 +2,7 @@
 	Selectors.h
 
 	A list of selectors that are known to return an id of the same class that
-	sent the message, or to return nothing. 'crc' is the crc32 of each string.
+	sent the message, or return nothing. 'crc' is the crc32 of each string.
 	The list is sorted to allow binary searching.
 
 	This file is in the public domain.

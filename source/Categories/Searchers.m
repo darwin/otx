@@ -56,8 +56,8 @@
 
 	*outMI	= bsearch(&searchKey,
 		mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
-		(COMPARISON_FUNC_TYPE)
-		(mSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
+			(COMPARISON_FUNC_TYPE)
+			(mSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
 
 	return (*outMI != nil);
 }
@@ -86,8 +86,8 @@
 
 	*outMI	= bsearch(&searchKey,
 		mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
-		(COMPARISON_FUNC_TYPE)
-		(mSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
+			(COMPARISON_FUNC_TYPE)
+			(mSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
 
 	return (*outMI != nil);
 }
