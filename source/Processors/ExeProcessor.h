@@ -277,9 +277,7 @@ enum {
 @interface ExeProcessor : NSObject
 {
 @protected
-	BOOL	mSwapped;
-
-	id		mController;	// who's our daddy
+	id					mController;	// who's our daddy
 
 	// guts
 	NSURL*				mOFile;					// exe on disk
@@ -294,6 +292,7 @@ enum {
 	cpu_type_t			mArchSelector;
 	UInt32				mArchMagic;				// 0xFEEDFACE etc.
 	BOOL				mExeIsFat;
+	BOOL				mSwapped;
 	UInt32				mLocalOffset;			// +420 etc.
 	ThunkInfo*			mThunks;				// x86 only
 	UInt32				mNumThunks;				// x86 only
@@ -498,7 +497,6 @@ MethodInfo_Compare_Swapped(
 		return -1;
 
 	return (imp1 > imp2);
-
 }
 
 static int
