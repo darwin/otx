@@ -2347,12 +2347,15 @@
 			continue;
 
 		// Match for common benign occurences
-		if (*(current - 4) == 0xe9	||	// jmpl
+		if (*(current - 4) == 0xe8	||	// calll
+			*(current - 4) == 0xe9	||	// jmpl
 			*(current - 2) == 0xc2)		// ret
 			continue;
 
 		// Match for (not) common malignant occurences
-		if (*(current - 7) != 0xe9	&&	// jmpl
+		if (*(current - 7) != 0xe8	&&	// calll
+			*(current - 5) != 0xe8	&&	// calll
+			*(current - 7) != 0xe9	&&	// jmpl
 			*(current - 5) != 0xe9	&&	// jmpl
 			*(current - 4) != 0xeb	&&	// jmp
 			*(current - 2) != 0xeb	&&	// jmp
@@ -2413,7 +2416,17 @@
 
 		// This appears redundant, but to avoid false positives, we must
 		// check jumps first(in decreasing size) and return statements last.
-		if (*(item - 7) == 0xe9)		// e9xxxxxxxx0000005589e5
+		if (*(item - 7) == 0xe8)		// e8xxxxxxxx0000005589e5
+		{
+			*(item)		= 0x90;
+			*(item - 1)	= 0x90;
+			*(item - 2)	= 0x90;
+		}
+		else if (*(item - 5) == 0xe8)	// e8xxxxxxxx005589e5
+		{
+			*(item)		= 0x90;
+		}
+		else if (*(item - 7) == 0xe9)	// e9xxxxxxxx0000005589e5
 		{
 			*(item)		= 0x90;
 			*(item - 1)	= 0x90;
