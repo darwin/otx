@@ -365,7 +365,6 @@
 					objc_class	swappedClass	=
 						*mRegInfos[REG2(modRM)].classPtr;
 
-// FIXME: swap class here
 					if (mSwapped)
 						swap_objc_class(&swappedClass);
 

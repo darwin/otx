@@ -111,8 +111,8 @@
 
 	while (theClassPtr)
 	{
-		if (mSwapped)
-			swap_objc_class(&theSwappedClass);
+//		if (mSwapped)
+//			swap_objc_class(&theSwappedClass);
 
 		theIvars	= (objc_ivar_list*)GetPointer(
 			(UInt32)theSwappedClass.ivars, nil);

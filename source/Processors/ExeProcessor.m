@@ -770,7 +770,7 @@
 						GetPointer((UInt32)theSwappedInfo.m.method_types, nil);
 
 					if (!methTypes)
-						return;
+						return;	// FIXME: kinda drastic, huh?
 
 					char	returnCType[MAX_TYPE_STRING_LENGTH];
 
