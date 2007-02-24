@@ -57,8 +57,8 @@
     {
         fprintf(stderr, "otx: -[SmarterPopen runTask]: "
                 "Error with '%s' unable to launch task. %s\n",
-                CSTRING(inCmd),
-                CSTRING([e reason]));
+                UTF8STRING(inCmd),
+                UTF8STRING([e reason]));
         [task release];
         return -1;
     }

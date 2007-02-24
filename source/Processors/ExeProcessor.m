@@ -55,7 +55,7 @@
 	if (!theData)
 	{
 		fprintf(stderr, "otx: error loading executable from disk: %s\n",
-			CSTRING([theError localizedFailureReason]));
+			UTF8STRING([theError localizedFailureReason]));
 		[self release];
 		return nil;
 	}
@@ -392,7 +392,7 @@
 	return true;
 }
 
-//	populateLineList:fromSection:afterLine:
+//	populateLineList:verbosely:fromSection:afterLine:includingPath:
 // ----------------------------------------------------------------------------
 
 - (BOOL)populateLineList: (Line**)inList
@@ -414,10 +414,10 @@
 
 	NSString*	oPath		= [mOFile path];
 	NSString*	otoolString = [NSString stringWithFormat:
-		@"%s %s -s __TEXT %s '%@'%s", cmdString,
+		@"%s %s -s __TEXT %s \"%@\"%s", cmdString,
 		(inVerbose) ? "-V" : "-v", inSectionName, oPath,
 		(inIncludePath) ? "" : " | sed '1 d'"];
-	FILE*		otoolPipe	= popen(CSTRING(otoolString), "r");
+	FILE*		otoolPipe	= popen(UTF8STRING(otoolString), "r");
 
 	if (!otoolPipe)
 	{
@@ -1120,7 +1120,7 @@
 	FILE*	outFile	= nil;
 
 	if (mOutputFilePath)
-		outFile	= fopen(CSTRING(mOutputFilePath), "a");
+		outFile	= fopen(UTF8STRING(mOutputFilePath), "a");
 	else
 		outFile	= stdout;
 
@@ -1388,7 +1388,7 @@
 	char		finalLine[MAX_MD5_LINE];
 	NSString*	md5CommandString	= [NSString stringWithFormat:
 		@"md5 -q '%@'", [mOFile path]];
-	FILE*		md5Pipe				= popen(CSTRING(md5CommandString), "r");
+	FILE*		md5Pipe				= popen(UTF8STRING(md5CommandString), "r");
 
 	if (!md5Pipe)
 	{

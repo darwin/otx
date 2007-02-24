@@ -132,7 +132,7 @@
 	if (!exeBundle)
 	{
 		fprintf(stderr, "otx: [AppController newPackageFile:] "
-			"unable to get bundle from path: %s\n", CSTRING(mOutputFilePath));
+			"unable to get bundle from path: %s\n", UTF8STRING(mOutputFilePath));
 		return;
 	}
 
@@ -142,7 +142,7 @@
 	{
 		fprintf(stderr, "otx: [AppController newPackageFile:] "
 			"unable to get executable path from bundle: %s\n",
-			CSTRING(mOutputFilePath));
+			UTF8STRING(mOutputFilePath));
 		return;
 	}
 
@@ -752,7 +752,7 @@
 		@"lipo '%@' -output '%@' -thin %s", [mOFile path], theThinOutputPath,
 		(mArchSelector == CPU_TYPE_POWERPC) ? "ppc" : "i386"];
     
-	if (system(CSTRING(lipoString)) != 0)
+	if (system(UTF8STRING(lipoString)) != 0)
 		[self doLipoAlert];
 }
 
@@ -945,7 +945,7 @@
 	{
 		fprintf(stderr, "otx: -[AppController syncDescriptionText]: "
 			"unable to read from executable file. %s\n",
-			CSTRING([e reason]));
+			UTF8STRING([e reason]));
 		return;
 	}
 
@@ -1106,7 +1106,8 @@
 #else
 	NSString*	otoolString	= [NSString stringWithFormat:
 		@"otool -h '%@' > /dev/null", [mOFile path]];    
-	return system(CSTRING(otoolString));
+
+	return system(UTF8STRING(otoolString));
 #endif
 }
 

@@ -185,7 +185,7 @@
 	// Check that the file exists.
 	if (![fileMan fileExistsAtPath: origFilePath])
 	{
-		fprintf(stderr, "otx: No file found at %s.\n", CSTRING(origFilePath));
+		fprintf(stderr, "otx: No file found at %s.\n", UTF8STRING(origFilePath));
 		[self release];
 		return nil;
 	}
@@ -211,7 +211,7 @@
 	if (!theFileH)
 	{
 		fprintf(stderr, "otx: Unable to open %s.\n",
-			CSTRING([origFilePath lastPathComponent]));
+			UTF8STRING([origFilePath lastPathComponent]));
 		[self release];
 		return nil;
 	}
@@ -225,8 +225,8 @@
 	@catch (NSException* e)
 	{
 		fprintf(stderr, "otx: Unable to read from %s. %s\n",
-			CSTRING([origFilePath lastPathComponent]),
-			CSTRING([e reason]));
+			UTF8STRING([origFilePath lastPathComponent]),
+			UTF8STRING([e reason]));
 		[self release];
 		return nil;
 	}
@@ -263,7 +263,7 @@
 
 		default:
 			fprintf(stderr, "otx: %s is not a Mach-O file.\n",
-				CSTRING([origFilePath lastPathComponent]));
+				UTF8STRING([origFilePath lastPathComponent]));
 			[self release];
 			return nil;
 	}
@@ -416,7 +416,7 @@
 	if (!exeBundle)
 	{
 		fprintf(stderr, "otx: [AppController newPackageFile:] "
-			"unable to get bundle from path: %s\n", CSTRING(origPath));
+			"unable to get bundle from path: %s\n", UTF8STRING(origPath));
 		return;
 	}
 
@@ -426,7 +426,7 @@
 	{
 		fprintf(stderr, "otx: [AppController newPackageFile:] "
 			"unable to get executable path from bundle: %s\n",
-			CSTRING(origPath));
+			UTF8STRING(origPath));
 		return;
 	}
 
@@ -608,9 +608,9 @@
 - (SInt32)checkOtool
 {
 	NSString*	otoolString	= [NSString stringWithFormat:
-		@"otool -h '%@' > /dev/null", [mOFile path]];
+		@"otool -h \"%@\" > /dev/null", [mOFile path]];
 
-	return system(CSTRING(otoolString));
+	return system(UTF8STRING(otoolString));
 }
 
 //	doErrorAlert
@@ -648,7 +648,7 @@
 		fprintf(stderr, "\n");
 
 	if (description)
-		fprintf(stderr, "%s", CSTRING(description));
+		fprintf(stderr, "%s", UTF8STRING(description));
 
 	if (value || animate)
 		fprintf(stderr, ".");

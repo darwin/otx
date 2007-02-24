@@ -93,7 +93,7 @@
 
 	if (mOutputFilePath)
 	{
-		const char*	outPath		= CSTRING(mOutputFilePath);
+		const char*	outPath		= UTF8STRING(mOutputFilePath);
 		outFile					= fopen(outPath, "w");
 	}
 	else

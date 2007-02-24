@@ -2512,7 +2512,7 @@
 		if (error)
 			fprintf(stderr, "otx: -[X86Processor fixNops]: "
 				"unable to write to new file. %s\n",
-				CSTRING([error localizedDescription]));
+				UTF8STRING([error localizedDescription]));
 		else
 			fprintf(stderr, "otx: -[X86Processor fixNops]: "
 				"unable to write to new file.\n");
