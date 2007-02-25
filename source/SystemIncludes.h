@@ -41,7 +41,8 @@
 #define objc_protocol_list	struct objc_protocol_list
 
 // carpal tunnel inhibitors
-#define CSTRING(s)	[(s) cStringUsingEncoding: NSMacOSRomanStringEncoding]
+//#define CSTRING(s)	[(s) cStringUsingEncoding: NSMacOSRomanStringEncoding]
 #define UTF8STRING(s)	[(s) UTF8String]
-#define NSSTRING(s)	\
-	[NSString stringWithCString: (s) encoding: NSMacOSRomanStringEncoding]
+//#define NSSTRING(s)	\
+//	[NSString stringWithCString: (s) encoding: NSMacOSRomanStringEncoding]
+#define NSSTRING(s)		[NSString stringWithUTF8String: (s)]
