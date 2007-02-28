@@ -20,11 +20,11 @@
 {
 	[self registerForDraggedTypes:
 		[NSArray arrayWithObject: NSFilenamesPboardType]];
-	mFillRect	= true;
 }
 
 //	setFillsRect:
 // ----------------------------------------------------------------------------
+//	Call setFillsRect: YES to draw hilite the entire frame with kFillAlpha.
 
 - (void)setFillsRect: (BOOL)inFill
 {
