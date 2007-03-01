@@ -1319,11 +1319,28 @@
 	if (!selString)
 		return;
 
-	UInt8	sendType			= SendTypeFromMsgSend(ioComment);
-	UInt32	receiverAddy		=
-		(sendType == sendSuper_stret || sendType == send_stret) ?
-		((mStack[1].isValid) ? mStack[1].value : 0) :
-		((mStack[0].isValid) ? mStack[0].value : 0);
+	UInt8	sendType	= SendTypeFromMsgSend(ioComment);
+
+//	UInt32	receiverAddy		=
+//		(sendType == sendSuper_stret || sendType == send_stret) ?
+//		((mStack[1].isValid && !mStack[1].classPtr) ? mStack[1].value : 0) :
+//		((mStack[0].isValid && !mStack[0].classPtr) ? mStack[0].value : 0);
+
+	// Get the address of the class name string, if this a class method.
+	UInt32	classNameAddy	= 0;
+
+	// If *.classPtr is non-nil, it's not a name string.
+	if (sendType == sendSuper_stret || sendType == send_stret)
+	{
+		if (mStack[1].isValid && !mStack[1].classPtr)
+			classNameAddy	= mStack[1].value;
+	}
+	else
+	{
+		if (mStack[0].isValid && !mStack[0].classPtr)
+			classNameAddy	= mStack[0].value;
+	}
+
 	char*	returnTypeString	=
 		(sendType == sendSuper_stret || sendType == send_stret) ?
 		"(struct)" : (sendType == send_fpret) ? "(double)" : "";
@@ -1333,23 +1350,23 @@
 
 	tempComment[0]	= 0;
 
-	if (receiverAddy)
+	if (classNameAddy)
 	{
-		// Get at the receiver
-		UInt8	receiverType	= PointerType;
-		char*	namePtr			= GetPointer(receiverAddy, &receiverType);
+		// Get at the class name
+		UInt8	classNameType	= PointerType;
+		char*	classNamePtr	= GetPointer(classNameAddy, &classNameType);
 
-		switch (receiverType)
+		switch (classNameType)
 		{
 			case PointerType:
-				className	= namePtr;
+				className	= classNamePtr;
 
 				break;
 
 			case OCGenericType:
-				if (namePtr)
+				if (classNamePtr)
 				{
-					UInt32	namePtrValue	= *(UInt32*)namePtr;
+					UInt32	namePtrValue	= *(UInt32*)classNamePtr;
 
 					if (mSwapped)
 						namePtrValue	= OSSwapInt32(namePtrValue);
@@ -1367,21 +1384,21 @@
 				break;
 
 			case OCClassType:
-				if (namePtr)
+				if (classNamePtr)
 					GetObjcDescriptionFromObject(
-						&className, namePtr, OCClassType);
+						&className, classNamePtr, OCClassType);
 
 				break;
 
 			default:
 				fprintf(stderr, "otx: [X86Processor commentForMsgSend]: "
-					"unsupported receiver type: %d at address: 0x%x\n",
-					receiverType, inLine->info.address);
+					"unsupported class name type: %d at address: 0x%x\n",
+					classNameType, inLine->info.address);
 
 				break;
 		}
 	}
-	else	// receiverAddy was nil, maybe we can get at the class name 
+/*	else	// classNameAddy was nil, maybe we can get at the class name 
 	{
 		GPRegisterInfo*	receiverInfo	=
 			(sendType == sendSuper_stret || sendType == send_stret) ?
@@ -1393,37 +1410,37 @@
 			GetObjcDescriptionFromObject(
 				&className, (char*)receiverInfo->classPtr, OCClassType);
 		}
-	}
+	}*/
 
 	if (className)
 	{
 		snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
 			(sendType == sendSuper || sendType == sendSuper_stret) ?
-			"%s[[%s super] %s]" : "%s[%s %s]",
+			"+%s[[%s super] %s]" : "+%s[%s %s]",
 			returnTypeString, className, selString);
-		mClassNameIsKnown	= true;
+//		mClassNameIsKnown	= true;
 	}
 	else
 	{
-		char*	formatString;
+		char*	formatString	= nil;
 
 		switch (sendType)
 		{
 			case send:
 			case send_fpret:
-				formatString	= "%s[(%%esp,1) %s]";
+				formatString	= "-%s[(%%esp,1) %s]";
 				break;
 
 			case sendSuper:
-				formatString	= "%s[[(%%esp,1) super] %s]";
+				formatString	= "-%s[[(%%esp,1) super] %s]";
 				break;
 
 			case send_stret:
-				formatString	= "%s[0x04(%%esp,1) %s]";
+				formatString	= "-%s[0x04(%%esp,1) %s]";
 				break;
 
 			case sendSuper_stret:
-				formatString	= "%s[[0x04(%%esp,1) super] %s]";
+				formatString	= "-%s[[0x04(%%esp,1) super] %s]";
 				break;
 
 			default:
@@ -1432,7 +1449,7 @@
 
 		snprintf(tempComment, MAX_COMMENT_LENGTH - 1, formatString,
 			returnTypeString, selString);
-		mClassNameIsKnown	= false;
+//		mClassNameIsKnown	= false;
 	}
 
 	if (tempComment[0])
@@ -1478,8 +1495,8 @@
 	if (!inSel)
 		return false;
 
-	if (!mClassNameIsKnown)
-		return false;
+//	if (!mClassNameIsKnown)
+//		return false;
 
 	UInt32			selLength	= strlen(inSel);
 	UInt32			selCRC		= crc32(0, inSel, selLength);
@@ -1910,19 +1927,19 @@
 			break;
 
 		case 0xe8:	// calll
-			if (mReturnValueIsKnown)
-			{
-				mReturnValueIsKnown	= false;
+//			if (mReturnValueIsKnown)
+//			{
+//				mReturnValueIsKnown	= false;
 
 				// Copy receiver back to eax.
-				if (mStack[0].isValid)
-					mRegInfos[EAX]	= mStack[0];
-			}
-			else
-			{	// Wipe the stack and return register.
+//				if (mStack[0].isValid)
+//					mRegInfos[EAX]	= mStack[0];
+//			}
+//			else
+//			{	// Wipe the stack and return register.
 				memset(mStack, 0, sizeof(GPRegisterInfo) * MAX_STACK_SIZE);
 				mRegInfos[EAX]	= (GPRegisterInfo){0};
-			}
+//			}
 
 			break;
 

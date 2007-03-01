@@ -938,13 +938,13 @@
 	}	// if (!theCommentCString[0])
 	else	// otool gave us a comment.
 	{	// Check whether we should trample r3/eax.
-		char*	selString	= SelectorForMsgSend(theCommentCString, *ioLine);
+//		char*	selString	= SelectorForMsgSend(theCommentCString, *ioLine);
 
 		// Optionally modify otool's comment.
 		if (mOpts.verboseMsgSends)
 			CommentForMsgSendFromLine(theCommentCString, *ioLine);
 
-		mReturnValueIsKnown	= SelectorIsFriendly(selString);
+//		mReturnValueIsKnown	= SelectorIsFriendly(selString);
 	}
 
 	// Demangle operands if necessary.

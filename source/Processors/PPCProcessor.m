@@ -670,37 +670,53 @@
 		return;
 
 	UInt8	sendType			= SendTypeFromMsgSend(ioComment);
-	UInt32	receiverRegNum		=
-		(sendType == sendSuper_stret || sendType == send_stret) ? 4 : 3;
+
+//	UInt32	receiverRegNum		=
+//		(sendType == sendSuper_stret || sendType == send_stret) ? 4 : 3;
+
+	// Get the address of the class name string, if this a class method.
+	UInt32	classNameAddy	= 0;
+
+	// If *.classPtr is non-nil, it's not a name string.
+	if (sendType == sendSuper_stret || sendType == send_stret)
+	{
+		if (mRegInfos[4].isValid && !mRegInfos[4].classPtr)
+			classNameAddy	= mRegInfos[4].value;
+	}
+	else
+	{
+		if (mRegInfos[3].isValid && !mRegInfos[3].classPtr)
+			classNameAddy	= mRegInfos[3].value;
+	}
+
 	char*	returnTypeString	=
 		(sendType == sendSuper_stret || sendType == send_stret) ?
 		"(struct)" : "";
 
+	char*	className		= nil;
 	char	tempComment[MAX_COMMENT_LENGTH];
-	BOOL	goodComment	= false;
+//	BOOL	goodComment	= false;
 
 	tempComment[0]	= 0;
 
-	if (mRegInfos[receiverRegNum].isValid &&
-		mRegInfos[receiverRegNum].value)
+	if (classNameAddy)
 	{
-		// Get at the receiver
-		UInt8	receiverType	= PointerType;
-		char*	className		= nil;
-		char*	namePtr			=
-			GetPointer(mRegInfos[receiverRegNum].value, &receiverType);
+		// Get at the class name
+		UInt8	classNameType	= PointerType;
+		char*	classNamePtr	=
+			GetPointer(classNameAddy, &classNameType);
 
-		switch (receiverType)
+		switch (classNameType)
 		{
 			case PointerType:
-				className	= namePtr;
+				className	= classNamePtr;
 
 				break;
 
 			case OCGenericType:
-				if (namePtr)
+				if (classNamePtr)
 				{
-					UInt32	namePtrValue	= *(UInt32*)namePtr;
+					UInt32	namePtrValue	= *(UInt32*)classNamePtr;
 
 					if (mSwapped)
 						namePtrValue	= OSSwapInt32(namePtrValue);
@@ -717,32 +733,67 @@
 			case OCStrObjectType:
 				break;
 
+			case OCClassType:
+				if (classNamePtr)
+					GetObjcDescriptionFromObject(
+						&className, classNamePtr, OCClassType);
+
 			default:
 				fprintf(stderr, "otx: [PPCProcessor commentForMsgSend]: "
-					"unsupported receiver type: %d\n", receiverType);
+					"unsupported class name type: %d at address: 0x%x\n",
+					classNameType, inLine->info.address);
 
 				break;
 		}
-
-		if (className)
-		{
-//			mClassNameIsKnown	= true;
-			snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
-				(sendType == sendSuper || sendType == sendSuper_stret) ?
-				"%s[[%s super] %s]" : "%s[%s %s]",
-				returnTypeString, className, selString);
-			goodComment	= true;
-		}
-//		else
-//			mClassNameIsKnown	= false;
-
 	}
 
-	if (!goodComment)
+	if (className)
+	{
+//		mClassNameIsKnown	= true;
 		snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
 			(sendType == sendSuper || sendType == sendSuper_stret) ?
-			"%s[[r%d super] %s]" : "%s[r%d %s]",
-			returnTypeString, receiverRegNum, selString);
+			"+%s[[%s super] %s]" : "+%s[%s %s]",
+			returnTypeString, className, selString);
+//		goodComment	= true;
+	}
+	else
+	{
+		char*	formatString	= nil;
+
+		switch (sendType)
+		{
+			case send:
+				formatString	= "-%s[r3 %s]";
+				break;
+
+			case sendSuper:
+				formatString	= "-%s[[r3 super] %s]";
+				break;
+
+			case send_stret:
+				formatString	= "-%s[r4 %s]";
+				break;
+
+			case sendSuper_stret:
+				formatString	= "-%s[[r4 super] %s]";
+				break;
+
+			default:
+				break;
+		}
+
+		snprintf(tempComment, MAX_COMMENT_LENGTH - 1, formatString,
+			returnTypeString, selString);
+	}
+//	else
+//		mClassNameIsKnown	= false;
+
+
+//	if (!goodComment)
+//		snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
+//			(sendType == sendSuper || sendType == sendSuper_stret) ?
+//			"%s[[r%d super] %s]" : "%s[r%d %s]",
+//			returnTypeString, receiverRegNum, selString);
 
 	if (tempComment[0])
 		strncpy(ioComment, tempComment, strlen(tempComment) + 1);
@@ -1032,9 +1083,9 @@
 			if (!LK(theCode))	// bl, bla
 				break;
 
-			if (mReturnValueIsKnown)
-				mReturnValueIsKnown	= false;
-			else
+//			if (mReturnValueIsKnown)
+//				mReturnValueIsKnown	= false;
+//			else
 				mRegInfos[3]	= (GPRegisterInfo){0};
 
 			break;

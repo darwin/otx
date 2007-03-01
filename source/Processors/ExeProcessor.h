@@ -352,8 +352,8 @@ enum {
 	objc_class*			mCurrentClass;
 	objc_category*		mCurrentCat;
 	BOOL				mIsInstanceMethod;
-	BOOL				mReturnValueIsKnown;	// so don't trample r3/eax
-	BOOL				mClassNameIsKnown;		// currently x86 only
+//	BOOL				mReturnValueIsKnown;	// so don't trample r3/eax
+//	BOOL				mClassNameIsKnown;		// currently x86 only
 
 	// dyld stuff
 	UInt32		mAddrDyldStubBindingHelper;
