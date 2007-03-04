@@ -36,7 +36,7 @@
 	mArchSelector				= CPU_TYPE_I386;
 	mFieldWidths.offset			= 8;
 	mFieldWidths.address		= 10;
-	mFieldWidths.instruction	= 22;
+	mFieldWidths.instruction	= 24;
 	mFieldWidths.mnemonic		= 12;
 	mFieldWidths.operands		= 29;
 
@@ -332,6 +332,7 @@
 		}
 
 		case 0x2b:	// subl	r/m32,r32
+		case 0x3b:	// cmpl r/m32,r32
 		case 0x81:	// immediate group 1 - imm32,r32
 		case 0x88:	// movb	r8,r/m8
 		case 0x89:	// movl	r32,r/m32
@@ -1011,7 +1012,7 @@
 			break;
 	}	// switch (opcode)
 
-	if (!mLineCommentCString[0])
+	if (!mLineCommentCString[0])	// FIXME: this test is outdated
 	{
 		UInt8	theType		= PointerType;
 		UInt32	theValue;
