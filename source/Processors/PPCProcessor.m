@@ -495,7 +495,7 @@
 							break;
 					}
 
-					if (theSymPtr && !mLineCommentCString[0])
+					if (theSymPtr && !mLineCommentCString[0])	// FIXME: more outdated tests
 					{
 						if (theType == PStringType)
 							snprintf(mLineCommentCString, 255,
