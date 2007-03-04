@@ -17,6 +17,8 @@
 #define RB(x)	(((x) >> 11) & 0x1f)		// bits 11 - 15
 #define MB(x)	(((x) >> 6) & 0x1f)			// bits 6 - 10
 #define ME(x)	(((x) >> 1) & 0x1f)			// bits 1 - 5
+#define SV(x)	((x) & 0x1f)				// bits 0 - 4	"Shift Value"
+#define SB(x)	((x) & 0x20)				// bit 5		"Shift Bit"
 #define BO(x)	RT((x))
 #define RS(x)	RT((x))
 

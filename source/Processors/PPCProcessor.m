@@ -1001,7 +1001,8 @@
 				if (found)
 					break;
 
-				if (mLocalVars)	// self was copied to a local variable
+				// Check for other local variables.
+				if (mLocalVars)
 				{
 					for (i = 0; i < mNumLocalVars; i++)
 					{
@@ -1019,6 +1020,7 @@
 					break;
 			}
 
+			// We didn't find any local variables, try immediates.
 			if (RA(theCode) == 0)	// li
 			{
 				mRegInfos[RT(theCode)]			= (GPRegisterInfo){0};
@@ -1058,7 +1060,8 @@
 				break;
 			}
 
-			if (!mRegInfos[RA(theCode)].isValid)	// addis
+			// addis
+			if (!mRegInfos[RA(theCode)].isValid)
 			{
 				mRegInfos[RT(theCode)]	= (GPRegisterInfo){0};
 				break;
@@ -1123,7 +1126,7 @@
 			}
 
 			theNewValue	=
-				mRegInfos[RT(theCode)].value	| (UInt32)UIMM(theCode);
+				mRegInfos[RT(theCode)].value | (UInt32)UIMM(theCode);
 
 			mRegInfos[RA(theCode)]			= (GPRegisterInfo){0};
 			mRegInfos[RA(theCode)].value	= theNewValue;
@@ -1131,7 +1134,7 @@
 
 			break;
 
-		case 0x1f:
+		case 0x1f:	// multiple instructions
 			switch (SO(theCode))
 			{
 				case 23:	// lwzx
@@ -1213,6 +1216,29 @@
 
 					break;
 
+				case 24:	// slw
+					if (!mRegInfos[RS(theCode)].isValid	||
+						!mRegInfos[RB(theCode)].isValid)
+					{
+						mRegInfos[RA(theCode)]	= (GPRegisterInfo){0};
+						break;
+					}
+
+					if (SB(mRegInfos[RB(theCode)].value))
+					{
+						theNewValue	=
+							mRegInfos[RS(theCode)].value <<
+								SV(mRegInfos[RB(theCode)].value);
+					}
+					else	// If RB.5 == 0, RA = 0.
+						theNewValue	= 0;
+
+					mRegInfos[RA(theCode)]			= (GPRegisterInfo){0};
+					mRegInfos[RA(theCode)].value	= theNewValue;
+					mRegInfos[RA(theCode)].isValid	= true;
+
+					break;
+
 				case 536:	// srw
 					if (!mRegInfos[RS(theCode)].isValid	||
 						!mRegInfos[RB(theCode)].isValid)
@@ -1223,7 +1249,7 @@
 
 					theNewValue	=
 						mRegInfos[RS(theCode)].value >>
-						(mRegInfos[RB(theCode)].value & 0x1f);
+							SV(mRegInfos[RB(theCode)].value);
 
 					mRegInfos[RA(theCode)]			= (GPRegisterInfo){0};
 					mRegInfos[RA(theCode)].value	= theNewValue;
