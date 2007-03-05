@@ -1233,6 +1233,7 @@
 		return nil;
 
 	// Bail if this is not an objc_msgSend variant.
+	// FIXME: this is redundant now.
 	if (memcmp(outComment, "_objc_msgSend", 13))
 		return nil;
 
@@ -1314,147 +1315,179 @@
 - (void)commentForMsgSend: (char*)ioComment
 				 fromLine: (Line*)inLine
 {
-	char*	selString	= SelectorForMsgSend(ioComment, inLine);
-
-	// Bail if we couldn't find the selector.
-	if (!selString)
-		return;
-
-	UInt8	sendType	= SendTypeFromMsgSend(ioComment);
-
-//	UInt32	receiverAddy		=
-//		(sendType == sendSuper_stret || sendType == send_stret) ?
-//		((mStack[1].isValid && !mStack[1].classPtr) ? mStack[1].value : 0) :
-//		((mStack[0].isValid && !mStack[0].classPtr) ? mStack[0].value : 0);
-
-	// Get the address of the class name string, if this a class method.
-	UInt32	classNameAddy	= 0;
-
-	// If *.classPtr is non-nil, it's not a name string.
-	if (sendType == sendSuper_stret || sendType == send_stret)
-	{
-		if (mStack[1].isValid && !mStack[1].classPtr)
-			classNameAddy	= mStack[1].value;
-	}
-	else
-	{
-		if (mStack[0].isValid && !mStack[0].classPtr)
-			classNameAddy	= mStack[0].value;
-	}
-
-	char*	returnTypeString	=
-		(sendType == sendSuper_stret || sendType == send_stret) ?
-		"(struct)" : (sendType == send_fpret) ? "(double)" : "";
-
-	char*	className		= nil;
 	char	tempComment[MAX_COMMENT_LENGTH];
 
 	tempComment[0]	= 0;
 
-	if (classNameAddy)
+	if (!strncmp(ioComment, "_objc_msgSend", 13))
 	{
-		// Get at the class name
-		UInt8	classNameType	= PointerType;
-		char*	classNamePtr	= GetPointer(classNameAddy, &classNameType);
+		char*	selString	= SelectorForMsgSend(ioComment, inLine);
 
-		switch (classNameType)
+		// Bail if we couldn't find the selector.
+		if (!selString)
+			return;
+
+		UInt8	sendType	= SendTypeFromMsgSend(ioComment);
+
+		// Get the address of the class name string, if this a class method.
+		UInt32	classNameAddy	= 0;
+
+		// If *.classPtr is non-nil, it's not a name string.
+		if (sendType == sendSuper_stret || sendType == send_stret)
 		{
-			case PointerType:
-				className	= classNamePtr;
-
-				break;
-
-			case OCGenericType:
-				if (classNamePtr)
-				{
-					UInt32	namePtrValue	= *(UInt32*)classNamePtr;
-
-					if (mSwapped)
-						namePtrValue	= OSSwapInt32(namePtrValue);
-
-					className	= GetPointer(namePtrValue, nil);
-				}
-
-				break;
-
-			// Receiver can be a static string in these sections, but we
-			// only want to display class names as receivers.
-			case CFStringType:
-			case ImpPtrType:
-			case OCStrObjectType:
-				break;
-
-			case OCClassType:
-				if (classNamePtr)
-					GetObjcDescriptionFromObject(
-						&className, classNamePtr, OCClassType);
-
-				break;
-
-			default:
-				fprintf(stderr, "otx: [X86Processor commentForMsgSend]: "
-					"unsupported class name type: %d at address: 0x%x\n",
-					classNameType, inLine->info.address);
-
-				break;
+			if (mStack[1].isValid && !mStack[1].classPtr)
+				classNameAddy	= mStack[1].value;
 		}
-	}
-/*	else	// classNameAddy was nil, maybe we can get at the class name 
-	{
-		GPRegisterInfo*	receiverInfo	=
+		else
+		{
+			if (mStack[0].isValid && !mStack[0].classPtr)
+				classNameAddy	= mStack[0].value;
+		}
+
+		char*	returnTypeString	=
 			(sendType == sendSuper_stret || sendType == send_stret) ?
-			((mStack[1].isValid) ? &mStack[1] : nil) :
-			((mStack[0].isValid) ? &mStack[0] : nil);
+			"(struct)" : (sendType == send_fpret) ? "(double)" : "";
 
-		if (receiverInfo && receiverInfo->classPtr)
+		char*	className		= nil;
+
+		if (classNameAddy)
 		{
-			GetObjcDescriptionFromObject(
-				&className, (char*)receiverInfo->classPtr, OCClassType);
+			// Get at the class name
+			UInt8	classNameType	= PointerType;
+			char*	classNamePtr	= GetPointer(classNameAddy, &classNameType);
+
+			switch (classNameType)
+			{
+				case PointerType:
+					className	= classNamePtr;
+
+					break;
+
+				case OCGenericType:
+					if (classNamePtr)
+					{
+						UInt32	namePtrValue	= *(UInt32*)classNamePtr;
+
+						if (mSwapped)
+							namePtrValue	= OSSwapInt32(namePtrValue);
+
+						className	= GetPointer(namePtrValue, nil);
+					}
+
+					break;
+
+				// Receiver can be a static string in these sections, but we
+				// only want to display class names as receivers.
+				case CFStringType:
+				case ImpPtrType:
+				case OCStrObjectType:
+					break;
+
+				case OCClassType:
+					if (classNamePtr)
+						GetObjcDescriptionFromObject(
+							&className, classNamePtr, OCClassType);
+
+					break;
+
+				default:
+					fprintf(stderr, "otx: [X86Processor commentForMsgSend]: "
+						"unsupported class name type: %d at address: 0x%x\n",
+						classNameType, inLine->info.address);
+
+					break;
+			}
 		}
-	}*/
 
-	if (className)
-	{
-		snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
-			(sendType == sendSuper || sendType == sendSuper_stret) ?
-			"+%s[[%s super] %s]" : "+%s[%s %s]",
-			returnTypeString, className, selString);
-//		mClassNameIsKnown	= true;
-	}
-	else
-	{
-		char*	formatString	= nil;
-
-		switch (sendType)
+		if (className)
 		{
-			case send:
-			case send_fpret:
-				formatString	= "-%s[(%%esp,1) %s]";
-				break;
+			snprintf(ioComment, MAX_COMMENT_LENGTH - 1,
+				(sendType == sendSuper || sendType == sendSuper_stret) ?
+				"+%s[[%s super] %s]" : "+%s[%s %s]",
+				returnTypeString, className, selString);
+		}
+		else
+		{
+			char*	formatString	= nil;
 
-			case sendSuper:
-				formatString	= "-%s[[(%%esp,1) super] %s]";
-				break;
+			switch (sendType)
+			{
+				case send:
+				case send_fpret:
+					formatString	= "-%s[(%%esp,1) %s]";
+					break;
 
-			case send_stret:
-				formatString	= "-%s[0x04(%%esp,1) %s]";
-				break;
+				case sendSuper:
+					formatString	= "-%s[[(%%esp,1) super] %s]";
+					break;
 
-			case sendSuper_stret:
-				formatString	= "-%s[[0x04(%%esp,1) super] %s]";
-				break;
+				case send_stret:
+					formatString	= "-%s[0x04(%%esp,1) %s]";
+					break;
 
-			default:
-				break;
+				case sendSuper_stret:
+					formatString	= "-%s[[0x04(%%esp,1) super] %s]";
+					break;
+
+				default:
+					break;
+			}
+
+			snprintf(ioComment, MAX_COMMENT_LENGTH - 1, formatString,
+				returnTypeString, selString);
 		}
 
-		snprintf(tempComment, MAX_COMMENT_LENGTH - 1, formatString,
-			returnTypeString, selString);
-//		mClassNameIsKnown	= false;
+//		if (tempComment[0])
+//			strncpy(ioComment, tempComment, strlen(tempComment) + 1);
 	}
+	else if (!strncmp(ioComment, "_objc_assign_ivar", 17))
+	{
+		if (mStack[2].isValid)
+		{
+			char*		theSymPtr		= nil;
+			objc_ivar	theIvar			= {0};
+			objc_class	swappedClass	= *mCurrentClass;
 
-	if (tempComment[0])
-		strncpy(ioComment, tempComment, strlen(tempComment) + 1);
+			if (mSwapped)
+				swap_objc_class(&swappedClass);
+
+			if (!mIsInstanceMethod)
+			{
+				if (!GetObjcMetaClassFromClass(
+					&swappedClass, &swappedClass))
+					return;
+
+				if (mSwapped)
+					swap_objc_class(&swappedClass);
+			}
+
+			if (!FindIvar(&theIvar, &swappedClass, mStack[2].value))
+				return;
+
+			theSymPtr	= GetPointer((UInt32)theIvar.ivar_name, nil);
+
+			if (!theSymPtr)
+				return;
+
+			if (mOpts.variableTypes)
+			{
+				char	theTypeCString[MAX_TYPE_STRING_LENGTH];
+
+				theTypeCString[0]	= 0;
+
+				GetDescription(theTypeCString,
+					GetPointer((UInt32)theIvar.ivar_type, nil));
+				snprintf(tempComment,
+					MAX_COMMENT_LENGTH - 1, " (%s)%s",
+					theTypeCString, theSymPtr);
+			}
+			else
+				snprintf(tempComment,
+					MAX_COMMENT_LENGTH - 1, " %s", theSymPtr);
+
+			strncat(ioComment, tempComment, strlen(tempComment));
+		}
+	}
 }
 
 //	chooseLine:
@@ -1527,6 +1560,7 @@
 		!(*ioLine)->next)
 		return;
 
+	// Check for thunks.
 	char*	theSubstring	=
 		strstr(mLineOperandsCString, "i686.get_pc_thunk.");
 
@@ -1552,11 +1586,8 @@
 			mRegInfos[mCurrentThunk].isValid	= true;
 		}
 	}
-	else	// otool didn't spot it, maybe we did earlier...
+	else if (mThunks)	// otool didn't spot it, maybe we did earlier...
 	{
-		if (!mThunks)
-			return;
-
 		UInt32	i, target;
 		BOOL	found	= false;
 
@@ -1572,9 +1603,58 @@
 				mRegInfos[mCurrentThunk].value		=
 					(*ioLine)->next->info.address;
 				mRegInfos[mCurrentThunk].isValid	= true;
+
+				return;
 			}
 		}
 	}
+
+/*	if (!strncmp(mLineCommentCString, "_objc_assign_ivar", 17))
+	{	// Check for _objc_assign_ivar.
+		if (mStack[2].isValid)
+		{
+			char		tempComment[MAX_COMMENT_LENGTH];
+			char*		theSymPtr		= nil;
+			objc_ivar	theIvar			= {0};
+			objc_class	swappedClass	= *mCurrentClass;
+
+			if (!mIsInstanceMethod)
+			{
+				if (!GetObjcMetaClassFromClass(
+					&swappedClass, &swappedClass))
+					return;
+
+				if (mSwapped)
+					swap_objc_class(&swappedClass);
+			}
+
+			if (!FindIvar(&theIvar, &swappedClass, mStack[2].value))
+				return;
+
+			theSymPtr	= GetPointer((UInt32)theIvar.ivar_name, nil);
+
+			if (!theSymPtr)
+				return;
+
+			if (mOpts.variableTypes)
+			{
+				char	theTypeCString[MAX_TYPE_STRING_LENGTH];
+
+				theTypeCString[0]	= 0;
+
+				GetDescription(theTypeCString,
+					GetPointer((UInt32)theIvar.ivar_type, nil));
+				snprintf(tempComment,
+					MAX_COMMENT_LENGTH - 1, " %s (%s)%s",
+					theTypeCString, theSymPtr);
+			}
+			else
+				snprintf(tempComment,
+					MAX_COMMENT_LENGTH - 1, " %s %s", theSymPtr);
+
+			strncat(mLineCommentCString, tempComment, strlen(tempComment));
+		}
+	}*/
 }
 
 #pragma mark -
@@ -1926,6 +2006,43 @@
 			mRegInfos[REG2(opcode)].isValid	= true;
 
 			break;
+
+		case 0xc7:	// movl	imm32,r/m32
+		{
+			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+
+			if (/*REG2(modRM) != EBP ||*/ !HAS_SIB(modRM))
+				break;
+
+			SInt8	offset	= 0;
+			SInt32	value	= 0;
+
+			if (HAS_DISP8(modRM))
+			{
+				sscanf(&inLine->info.code[6], "%02hhx", &offset);
+				sscanf(&inLine->info.code[8], "%08x", &value);
+				value	= OSSwapInt32(value);
+			}
+
+			if (offset >= 0)
+			{
+				if (offset / 4 > MAX_STACK_SIZE - 1)
+				{
+					fprintf(stderr, "otx: out of stack bounds: "
+						"stack size needs to be %d\n", (offset / 4) + 1);
+					break;
+				}
+
+				// Convert offset to array index.
+				offset /= 4;
+
+				mStack[offset]			= (GPRegisterInfo){0};
+				mStack[offset].value	= value;
+				mStack[offset].isValid	= true;
+			}
+
+			break;
+		}
 
 		case 0xe8:	// calll
 //			if (mReturnValueIsKnown)

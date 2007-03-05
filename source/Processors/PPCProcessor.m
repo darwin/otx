@@ -142,9 +142,71 @@
 				}
 
 				case kRTAddress_objc_assign_ivar:
-					strncpy(mLineCommentCString, kRTName_objc_assign_ivar,
+				{
+					char	tempComment[MAX_COMMENT_LENGTH];
+
+					strncpy(tempComment, kRTName_objc_assign_ivar,
 						strlen(kRTName_objc_assign_ivar) + 1);
+
+					if (mRegInfos[5].isValid)
+					{
+						objc_ivar	theIvar			= {0};
+						objc_class	swappedClass	= *mCurrentClass;
+
+						if (mSwapped)
+							swap_objc_class(&swappedClass);
+
+						if (!mIsInstanceMethod)
+						{
+							if (!GetObjcMetaClassFromClass(
+								&swappedClass, &swappedClass))
+								break;
+
+							if (mSwapped)
+								swap_objc_class(&swappedClass);
+						}
+
+						if (!FindIvar(&theIvar,
+							&swappedClass, mRegInfos[5].value))
+						{
+							strncpy(mLineCommentCString, tempComment,
+								strlen(tempComment) + 1);
+							break;
+						}
+
+						theSymPtr	= GetPointer(
+							(UInt32)theIvar.ivar_name, nil);
+
+						if (!theSymPtr)
+						{
+							strncpy(mLineCommentCString, tempComment,
+								strlen(tempComment) + 1);
+							break;
+						}
+
+						if (mOpts.variableTypes)
+						{
+							char	theTypeCString[MAX_TYPE_STRING_LENGTH];
+
+							theTypeCString[0]	= 0;
+
+							GetDescription(theTypeCString,
+								GetPointer((UInt32)theIvar.ivar_type, nil));
+							snprintf(mLineCommentCString,
+								MAX_COMMENT_LENGTH - 1, "%s (%s)%s",
+								tempComment, theTypeCString, theSymPtr);
+						}
+						else
+							snprintf(mLineCommentCString,
+								MAX_COMMENT_LENGTH - 1, "%s %s",
+								tempComment, theSymPtr);
+					}
+					else	// !mReginfos[5].isValid
+						strncpy(mLineCommentCString, tempComment,
+							strlen(tempComment) + 1);
+
 					break;
+				}
 
 				case kRTAddress_objc_assign_global:
 					strncpy(mLineCommentCString, kRTName_objc_assign_global,
