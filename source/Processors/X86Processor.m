@@ -25,20 +25,20 @@
 
 - (id)initWithURL: (NSURL*)inURL
 	   controller: (id)inController
-	   andOptions: (ProcOptions*)inOptions;
+		  options: (ProcOptions*)inOptions;
 {
 	if ((self = [super initWithURL: inURL
-		controller: inController andOptions: inOptions]) == nil)
-		return nil;
+		controller: inController options: inOptions]))
+	{
+		strncpy(mArchString, "i386", 5);
 
-	strncpy(mArchString, "i386", 5);
-
-	mArchSelector				= CPU_TYPE_I386;
-	mFieldWidths.offset			= 8;
-	mFieldWidths.address		= 10;
-	mFieldWidths.instruction	= 24;
-	mFieldWidths.mnemonic		= 12;
-	mFieldWidths.operands		= 29;
+		mArchSelector				= CPU_TYPE_I386;
+		mFieldWidths.offset			= 8;
+		mFieldWidths.address		= 10;
+		mFieldWidths.instruction	= 24;
+		mFieldWidths.mnemonic		= 12;
+		mFieldWidths.operands		= 29;
+	}
 
 	return self;
 }
@@ -1012,7 +1012,7 @@
 			break;
 	}	// switch (opcode)
 
-	if (!mLineCommentCString[0])	// FIXME: this test is outdated
+	if (!mLineCommentCString[0])
 	{
 		UInt8	theType		= PointerType;
 		UInt32	theValue;
@@ -1523,7 +1523,7 @@
 //	- returns an id of the same class that sent the message
 //	- doesn't alter the 'return' register (r3 or eax)
 //	AND if we know the class name.
-
+/*
 - (BOOL)selectorIsFriendly: (const char*)inSel
 {
 	if (!inSel)
@@ -1548,7 +1548,7 @@
 	}
 
 	return false;
-}
+}*/
 
 //	postProcessCodeLine:
 // ----------------------------------------------------------------------------

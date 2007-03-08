@@ -387,7 +387,7 @@ enum {
 	void	(*UpdateRegisters)				(id, SEL, Line*);
 	BOOL	(*RestoreRegisters)				(id, SEL, Line*);
 	char*	(*SelectorForMsgSend)			(id, SEL, char*, Line*);
-	BOOL	(*SelectorIsFriendly)			(id, SEL, const char*);
+//	BOOL	(*SelectorIsFriendly)			(id, SEL, const char*);
 	UInt8	(*SendTypeFromMsgSend)			(id, SEL, char*);
 	char*	(*PrepareNameForDemangling)		(id, SEL, char*);
 
@@ -410,7 +410,7 @@ enum {
 
 - (id)initWithURL: (NSURL*)inURL
 	   controller: (id)inController
-	   andOptions: (ProcOptions*)inOptions;
+		  options: (ProcOptions*)inOptions;
 - (void)deleteFuncInfos;
 
 // processors
@@ -442,7 +442,7 @@ enum {
 
 - (char*)selectorForMsgSend: (char*)outComment
 				   fromLine: (Line*)inLine;
-- (BOOL)selectorIsFriendly: (const char*)inSel;
+//- (BOOL)selectorIsFriendly: (const char*)inSel;
 - (UInt8)sendTypeFromMsgSend: (char*)inString;
 
 - (void)insertMD5;

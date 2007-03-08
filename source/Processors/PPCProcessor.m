@@ -23,20 +23,20 @@
 
 - (id)initWithURL: (NSURL*)inURL
 	   controller: (id)inController
-	   andOptions: (ProcOptions*)inOptions;
+		  options: (ProcOptions*)inOptions;
 {
 	if ((self = [super initWithURL: inURL
-		controller: inController andOptions: inOptions]) == nil)
-		return nil;
+		controller: inController options: inOptions]))
+	{
+		strncpy(mArchString, "ppc", 4);
 
-	strncpy(mArchString, "ppc", 4);
-
-	mArchSelector				= CPU_TYPE_POWERPC;
-	mFieldWidths.offset			= 8;
-	mFieldWidths.address		= 10;
-	mFieldWidths.instruction	= 10;
-	mFieldWidths.mnemonic		= 9;
-	mFieldWidths.operands		= 17;
+		mArchSelector				= CPU_TYPE_POWERPC;
+		mFieldWidths.offset			= 8;
+		mFieldWidths.address		= 10;
+		mFieldWidths.instruction	= 10;
+		mFieldWidths.mnemonic		= 9;
+		mFieldWidths.operands		= 17;
+	}
 
 	return self;
 }
@@ -557,7 +557,7 @@
 							break;
 					}
 
-					if (theSymPtr && !mLineCommentCString[0])	// FIXME: more outdated tests
+					if (theSymPtr && !mLineCommentCString[0])
 					{
 						if (theType == PStringType)
 							snprintf(mLineCommentCString, 255,
@@ -892,7 +892,7 @@
 //	A selector is friendly if it's associated method either:
 //	- returns an id of the same class that sent the message
 //	- doesn't alter the 'return' register (r3 or eax)
-
+/*
 - (BOOL)selectorIsFriendly: (const char*)inSel
 {
 	if (!inSel)
@@ -914,7 +914,7 @@
 	}
 
 	return false;
-}
+}*/
 
 #pragma mark -
 //	resetRegisters:

@@ -21,23 +21,21 @@
 
 - (id)initWithViewAnimations: (NSArray*)viewAnimations
 {
-	self = [super initWithViewAnimations: viewAnimations];
-
-	if (!self)
-		return nil;
-
-	// Find the first window object in the array.
-	UInt32	numAnimations	= [viewAnimations count];
-	UInt32	i;
-	id		object;
-
-	for (i = 0; i < numAnimations; i++)
+	if ((self = [super initWithViewAnimations: viewAnimations]))
 	{
-		object	= [[viewAnimations objectAtIndex: i]
-			objectForKey: NSViewAnimationTargetKey];
+		// Find the first window object in the array.
+		UInt32	numAnimations	= [viewAnimations count];
+		UInt32	i;
+		id		object;
 
-		if ([object isKindOfClass: [NSWindow class]])
-			mWindow	= object;
+		for (i = 0; i < numAnimations; i++)
+		{
+			object	= [[viewAnimations objectAtIndex: i]
+				objectForKey: NSViewAnimationTargetKey];
+
+			if ([object isKindOfClass: [NSWindow class]])
+				mWindow	= object;
+		}
 	}
 
 	return self;

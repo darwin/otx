@@ -56,7 +56,22 @@
 
 - (id)init
 {
-	return (self = [super init]);
+	if ((self = [super init]))
+	{
+		mGradientData	= (GradientData)
+		{
+			kPolishedLightRed,
+			kPolishedLightGreen,
+			kPolishedLightBlue,
+			1.0,
+			kPolishedDarkRed,
+			kPolishedDarkGreen,
+			kPolishedDarkBlue,
+			1.0,
+		};
+	}
+
+	return self;
 }
 
 //	dealloc
@@ -241,7 +256,6 @@
 
 	/*
 		FIXME: cache this struct
-	*/
 	GradientData	gradientData =
 	{
 		kPolishedLightRed,
@@ -253,10 +267,11 @@
 		kPolishedDarkBlue,
 		1.0,
 	};
+	*/
 
 	GradientImage*	gradientImage	=
 		[[GradientImage alloc] initWithSize: gradientRect.size
-		data: &gradientData];
+		data: &mGradientData];
 
 	// Set the gradient image as the window's background color.
 	[mMainWindow setBackgroundColor:
@@ -436,7 +451,7 @@
 		[theDefaults boolForKey: ShowIvarTypesKey];
 
 	id	theProcessor	= [[procClass alloc] initWithURL: mOFile
-		controller: self andOptions: &opts];
+		controller: self options: &opts];
 
 	if (!theProcessor)
 	{
@@ -771,7 +786,7 @@
 			ProcOptions		opts	= {0};
 			X86Processor*	theProcessor	=
 				[[X86Processor alloc] initWithURL: mOFile controller: self
-				andOptions: &opts];
+				options: &opts];
 
 			if (!theProcessor)
 			{
@@ -857,7 +872,7 @@
 			ProcOptions		opts	= {0};
 			X86Processor*	theProcessor	=
 				[[X86Processor alloc] initWithURL: mOFile controller: self
-				andOptions: &opts];
+				options: &opts];
 
 			if (!theProcessor)
 			{

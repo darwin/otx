@@ -170,7 +170,6 @@
 			break;
 	}
 
-	// FIXME: move this out of here
 	if (mSwapped)
 		theValue	= OSSwapInt32(theValue);
 

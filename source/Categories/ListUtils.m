@@ -1,8 +1,7 @@
 /*
 	ListUtils.m
 
-	A category on ExeProcessor that contains the linked list
-	manipulation methods.
+	A category on ExeProcessor for linked list manipulation.
 
 	This file is in the public domain.
 */
@@ -11,7 +10,7 @@
 
 @implementation ExeProcessor(ListUtils)
 
-// Each text line is stored in one element of a doubly-linked list. These are
+// Each text line is stored in an element of a doubly-linked list. These are
 // vanilla textbook funcs for maintaining the list.
 
 //	insertLine:before:inList:
@@ -58,6 +57,7 @@
 
 //	replaceLine:withLine:inList:
 // ----------------------------------------------------------------------------
+//	This non-standard method is used for merging the verbose and plain lists.
 
 - (void)replaceLine: (Line*)inLine
 		   withLine: (Line*)newLine
@@ -86,11 +86,14 @@
 
 //	printLinesFromList:
 // ----------------------------------------------------------------------------
+//	Print our modified lines to a FILE*. The FILE* is a real file in the GUI
+//	target, and stdout in the CLI target.
 
 - (BOOL)printLinesFromList: (Line*)listHead
 {
-	FILE*	outFile;
+	FILE*	outFile	= nil;
 
+	// In the CLI target, mOutputFilePath is nil.
 	if (mOutputFilePath)
 	{
 		const char*	outPath		= UTF8STRING(mOutputFilePath);
@@ -106,6 +109,8 @@
 	}
 
 	Line*	theLine	= listHead;
+
+	// Cache the fileno and use SYS_write for maximum speed.
 	SInt32	fileNum	= fileno(outFile);
 
 	while (theLine)
@@ -147,16 +152,16 @@
 
 	while (theLine)
 	{
-		if (theLine->prev)				// if there's one behind us...
+		if (theLine->prev)				// If there's one behind us...
 		{
-			free(theLine->prev->chars);	// delete it
+			free(theLine->prev->chars);	// delete it.
 			free(theLine->prev);
 		}
 
-		if (theLine->next)				// if there are more...
-			theLine	= theLine->next;	// jump to next one
+		if (theLine->next)				// If there are more...
+			theLine	= theLine->next;	// jump to next one and continue.
 		else
-		{								// this is last one, delete it
+		{								// This is the last one, delete it.
 			free(theLine->chars);
 			free(theLine);
 			theLine	= nil;

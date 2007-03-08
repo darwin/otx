@@ -37,7 +37,7 @@ Evaluate(
 
 @implementation GradientImage
 
-//	initWithSize:color1:color2
+//	initWithSize:data:
 // ----------------------------------------------------------------------------
 
 - (id)initWithSize: (NSSize)inSize
@@ -45,59 +45,54 @@ Evaluate(
 {
 	if (!inData)
 	{
-		fprintf(stderr, "otx: [GradientView initWithSize:inData:] "
+		fprintf(stderr, "otx: [GradientView initWithSize:data:] "
 			"nil data\n");
 		return nil;
 	}
 
-	if (!(self = [super initWithSize: inSize]))
-		return nil;
-
-	mData	= *inData;
-
-#if	_INSANE_OPTIMIZATION_
-#else
-
-	CGFunctionCallbacks	cgCallback = {0 , &Evaluate, nil};
-
-	// CGFunctionCreate() cannot fail. Nice.
-	mGradientFunc	= CGFunctionCreate(
-		&mData, 1, gInputRange, 4, gOutputRanges, &cgCallback);
-
-	CGPoint	startPoint	= CGPointMake(0.0, inSize.height);
-	CGPoint	endPoint	= CGPointMake(0.0, 0.0);
-
-	[self lockFocus];
-
-	CGContextRef	savedContext	=
-		(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-
-	CGContextSaveGState(savedContext);
-
-	// CGColorSpaceCreateWithName() CAN fail.
-	CGColorSpaceRef colorSpace	=
-		CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-
-	if (!colorSpace)
+	if ((self = [super initWithSize: inSize]))
 	{
+		mData	= *inData;
+
+		CGFunctionCallbacks	cgCallback = {0 , &Evaluate, nil};
+
+		// CGFunctionCreate() cannot fail. Nice.
+		mGradientFunc	= CGFunctionCreate(
+			&mData, 1, gInputRange, 4, gOutputRanges, &cgCallback);
+
+		CGPoint	startPoint	= CGPointMake(0.0, inSize.height);
+		CGPoint	endPoint	= CGPointMake(0.0, 0.0);
+
+		[self lockFocus];
+
+		CGContextRef	savedContext	=
+			(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+
+		CGContextSaveGState(savedContext);
+
+		// CGColorSpaceCreateWithName() CAN fail.
+		CGColorSpaceRef colorSpace	=
+			CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+
+		if (!colorSpace)
+		{
+			CGContextRestoreGState(savedContext);
+			[self release];
+			return nil;
+		}
+
+		// CGShadingCreateAxial() cannot fail.
+		CGShadingRef	shading	= CGShadingCreateAxial(
+			colorSpace, startPoint, endPoint, mGradientFunc, false, false);
+
+		CGContextDrawShading(savedContext, shading);
+		  
+		[self unlockFocus];
+
+		CGShadingRelease(shading);
+		CGColorSpaceRelease(colorSpace);
 		CGContextRestoreGState(savedContext);
-		[self release];
-		return nil;
 	}
-
-	// CGShadingCreateAxial() cannot fail.
-	CGShadingRef	shading	= CGShadingCreateAxial(
-		colorSpace, startPoint, endPoint, mGradientFunc, false, false);
-
-	CGContextDrawShading(savedContext, shading);
-	  
-	[self unlockFocus];
-
-	CGShadingRelease(shading);
-	CGColorSpaceRelease(colorSpace);
-	CGContextRestoreGState(savedContext);
-
-#endif
 
 	return self;
 }
@@ -108,58 +103,12 @@ Evaluate(
 - (void)dealloc
 {
 	if (mGradientFunc)
+	{
 		CGFunctionRelease(mGradientFunc);
+		mGradientFunc	= nil;
+	}
 
 	[super dealloc];
 }
-
-#if	_INSANE_OPTIMIZATION_
-//	setSize:
-// ----------------------------------------------------------------------------
-
-- (void)setSize: (NSSize)inSize
-{
-	[super setSize: inSize];
-
-	CGFunctionCallbacks	cgCallback = {0 , &Evaluate, nil};
-
-	// CGFunctionCreate() cannot fail. Nice.
-	mGradientFunc	= CGFunctionCreate(
-		&mData, 1, gInputRange, 4, gOutputRanges, &cgCallback);
-
-	[self lockFocus];
-
-	CGPoint	startPoint	= CGPointMake(0.0, inSize.height);
-	CGPoint	endPoint	= CGPointMake(0.0, 0.0);
-
-	CGContextRef	savedContext	=
-		(CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-
-	CGContextSaveGState(savedContext);
-
-	// CGColorSpaceCreateWithName() CAN fail.
-	CGColorSpaceRef colorSpace	=
-		CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-
-	if (!colorSpace)
-	{
-		fprintf(stderr, "[GradientImage setSize:] "
-			"unable to create CGColorSpace\n");
-		return;
-	}
-
-	// CGShadingCreateAxial() cannot fail.
-	CGShadingRef	shading	= CGShadingCreateAxial(
-		colorSpace, startPoint, endPoint, mGradientFunc, false, false);
-
-	CGContextDrawShading(savedContext, shading);
-	  
-	[self unlockFocus];
-
-	CGShadingRelease(shading);
-	CGColorSpaceRelease(colorSpace);
-	CGContextRestoreGState(savedContext);
-}
-#endif
 
 @end

@@ -33,59 +33,58 @@
 
 - (id)initWithURL: (NSURL*)inURL
 	   controller: (id)inController
-	   andOptions: (ProcOptions*)inOptions;
+		  options: (ProcOptions*)inOptions;
 {
 	if (!inURL || !inController || !inOptions)
 		return nil;
 
-	if ((self = [super init]) == nil)
-		return nil;
-
-	mOFile		= inURL;
-	mController	= inController;
-	mOpts		= *inOptions;
-
-	mCurrentFuncInfoIndex	= -1;
-
-	// Load exe into RAM.
-	NSError*	theError	= nil;
-	NSData*		theData		= [NSData dataWithContentsOfURL: mOFile
-		options: 0 error: &theError];
-
-	if (!theData)
+	if ((self = [super init]))
 	{
-		fprintf(stderr, "otx: error loading executable from disk: %s\n",
-			UTF8STRING([theError localizedFailureReason]));
-		[self release];
-		return nil;
+		mOFile					= inURL;
+		mController				= inController;
+		mOpts					= *inOptions;
+		mCurrentFuncInfoIndex	= -1;
+
+		// Load exe into RAM.
+		NSError*	theError	= nil;
+		NSData*		theData		= [NSData dataWithContentsOfURL: mOFile
+			options: 0 error: &theError];
+
+		if (!theData)
+		{
+			fprintf(stderr, "otx: error loading executable from disk: %s\n",
+				UTF8STRING([theError localizedFailureReason]));
+			[self release];
+			return nil;
+		}
+
+		mRAMFileSize	= [theData length];
+
+		if (mRAMFileSize < sizeof(mArchMagic))
+		{
+			fprintf(stderr, "otx: truncated executable file\n");
+			[theData release];
+			[self release];
+			return nil;
+		}
+
+		mRAMFile	= malloc(mRAMFileSize);
+
+		if (!mRAMFile)
+		{
+			fprintf(stderr, "otx: not enough memory to allocate mRAMFile\n");
+			[theData release];
+			[self release];
+			return nil;
+		}
+
+		[theData getBytes: mRAMFile];
+
+		mArchMagic	= *(UInt32*)mRAMFile;
+		mExeIsFat	= (mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM);
+
+		[self speedyDelivery];
 	}
-
-	mRAMFileSize	= [theData length];
-
-	if (mRAMFileSize < sizeof(mArchMagic))
-	{
-		fprintf(stderr, "otx: truncated executable file\n");
-		[theData release];
-		[self release];
-		return nil;
-	}
-
-	mRAMFile	= malloc(mRAMFileSize);
-
-	if (!mRAMFile)
-	{
-		fprintf(stderr, "otx: not enough memory to allocate mRAMFile\n");
-		[theData release];
-		[self release];
-		return nil;
-	}
-
-	[theData getBytes: mRAMFile];
-
-	mArchMagic	= *(UInt32*)mRAMFile;
-	mExeIsFat	= mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM;
-
-	[self speedyDelivery];
 
 	return self;
 }
@@ -96,28 +95,52 @@
 - (void)dealloc
 {
 	if (mRAMFile)
+	{
 		free(mRAMFile);
+		mRAMFile	= nil;
+	}
 
 	if (mFuncSyms)
+	{
 		free(mFuncSyms);
+		mFuncSyms	= nil;
+	}
 
 	if (mObjcSects)
+	{
 		free(mObjcSects);
+		mObjcSects	= nil;
+	}
 
 	if (mClassMethodInfos)
+	{
 		free(mClassMethodInfos);
+		mClassMethodInfos	= nil;
+	}
 
 	if (mCatMethodInfos)
+	{
 		free(mCatMethodInfos);
+		mCatMethodInfos	= nil;
+	}
 
 	if (mThunks)
+	{
 		free(mThunks);
+		mThunks	= nil;
+	}
 
 	if (mLocalSelves)
+	{
 		free(mLocalSelves);
+		mLocalSelves	= nil;
+	}
 
 	if (mLocalVars)
+	{
 		free(mLocalVars);
+		mLocalVars	= nil;
+	}
 
 	[self deleteFuncInfos];
 	[self deleteLinesFromList: mPlainLineListHead];
@@ -769,36 +792,36 @@
 					char*	methTypes	=
 						GetPointer((UInt32)theSwappedInfo.m.method_types, nil);
 
-					if (!methTypes)
-						return;	// FIXME: kinda drastic, huh?
-
-					char	returnCType[MAX_TYPE_STRING_LENGTH];
-
-					returnCType[0]	= 0;
-
-					[self decodeMethodReturnType: methTypes
-						output: returnCType];
-
-					if (catName)
+					if (methTypes)
 					{
-						char*	methNameFormat	= mOpts.returnTypes ?
-							"\n%1$c(%5$s)[%2$s(%3$s) %4$s]\n" :
-							"\n%c[%s(%s) %s]\n";
+						char	returnCType[MAX_TYPE_STRING_LENGTH];
 
-						snprintf(theMethCName, 1000,
-							methNameFormat,
-							(theSwappedInfo.inst) ? '-' : '+',
-							className, catName, selName, returnCType);
-					}
-					else
-					{
-						char*	methNameFormat	= mOpts.returnTypes ?
-							"\n%1$c(%4$s)[%2$s %3$s]\n" : "\n%c[%s %s]\n";
+						returnCType[0]	= 0;
 
-						snprintf(theMethCName, 1000,
-							methNameFormat,
-							(theSwappedInfo.inst) ? '-' : '+',
-							className, selName, returnCType);
+						[self decodeMethodReturnType: methTypes
+							output: returnCType];
+
+						if (catName)
+						{
+							char*	methNameFormat	= mOpts.returnTypes ?
+								"\n%1$c(%5$s)[%2$s(%3$s) %4$s]\n" :
+								"\n%c[%s(%s) %s]\n";
+
+							snprintf(theMethCName, 1000,
+								methNameFormat,
+								(theSwappedInfo.inst) ? '-' : '+',
+								className, catName, selName, returnCType);
+						}
+						else
+						{
+							char*	methNameFormat	= mOpts.returnTypes ?
+								"\n%1$c(%4$s)[%2$s %3$s]\n" : "\n%c[%s %s]\n";
+
+							snprintf(theMethCName, 1000,
+								methNameFormat,
+								(theSwappedInfo.inst) ? '-' : '+',
+								className, selName, returnCType);
+						}
 					}
 				}
 			}
@@ -1324,7 +1347,7 @@
 //	A selector is friendly if it's associated method either:
 //	- returns an id of the same class that sent the message
 //	- doesn't alter the 'return' register (r3 or eax)
-
+/*
 - (BOOL)selectorIsFriendly: (const char*)inSel
 {
 	if (!inSel)
@@ -1346,7 +1369,7 @@
 	}
 
 	return false;
-}
+}*/
 
 //	sendTypeFromMsgSend:
 // ----------------------------------------------------------------------------
@@ -2145,8 +2168,8 @@
 		[self methodForSelector: CommentForMsgSendFromLineSel];
 	SelectorForMsgSend				= SelectorForMsgSendFuncType
 		[self methodForSelector: SelectorForMsgSendSel];
-	SelectorIsFriendly				= SelectorIsFriendlyFuncType
-		[self methodForSelector: SelectorIsFriendlySel];
+//	SelectorIsFriendly				= SelectorIsFriendlyFuncType
+//		[self methodForSelector: SelectorIsFriendlySel];
 	ResetRegisters					= ResetRegistersFuncType
 		[self methodForSelector: ResetRegistersSel];
 	UpdateRegisters					= UpdateRegistersFuncType
