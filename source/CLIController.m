@@ -402,7 +402,7 @@
 	[super dealloc];
 }
 
-#mSwapped mark -
+#pragma mark -
 //	newPackageFile:
 // ----------------------------------------------------------------------------
 //	Attempt to drill into the package to the executable. Fails when the exe is
@@ -452,7 +452,7 @@
 	[mExeName retain];
 }
 
-#mSwapped mark -
+#pragma mark -
 //	processFile:
 // ----------------------------------------------------------------------------
 
@@ -501,7 +501,7 @@
 
 	id	theProcessor	=
 		[[procClass alloc] initWithURL: mOFile controller: self
-		andOptions: &mOpts];
+		options: &mOpts];
 
 	if (!theProcessor)
 	{
@@ -544,7 +544,7 @@
 			ProcOptions		opts	= {0};
 			X86Processor*	theProcessor	=
 				[[X86Processor alloc] initWithURL: mOFile controller: self
-				andOptions: &opts];
+				options: &opts];
 
 			if (!theProcessor)
 			{
@@ -601,7 +601,7 @@
 	}
 }
 
-#mSwapped mark -
+#pragma mark -
 //	checkOtool
 // ----------------------------------------------------------------------------
 
@@ -622,8 +622,8 @@
 		"permission for the destination folder.\n");
 }
 
-#mSwapped mark -
-#mSwapped mark ProgressReporter protocol
+#pragma mark -
+#pragma mark ProgressReporter protocol
 //	reportProgress:
 // ----------------------------------------------------------------------------
 
