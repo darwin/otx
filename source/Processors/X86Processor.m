@@ -2094,7 +2094,7 @@
 
 	for (i = 0; i < funcInfo->numBlocks; i++)
 	{
-		if (funcInfo->blocks[i].start != inLine->info.address)
+		if (funcInfo->blocks[i].address != inLine->info.address)
 			continue;
 
 		// Update machine state.
@@ -2312,7 +2312,7 @@
 				// only be an issue with extremely long functions.
 				for (i = 0; i < funcInfo->numBlocks; i++)
 				{
-					if (funcInfo->blocks[i].start == jumpTarget)
+					if (funcInfo->blocks[i].address == jumpTarget)
 					{
 						currentBlock	= &funcInfo->blocks[i];
 						break;

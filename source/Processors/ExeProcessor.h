@@ -72,7 +72,7 @@ MachineState;
 */
 typedef struct
 {
-	UInt32			start;
+	UInt32			address;
 	MachineState	state;
 }
 BlockInfo;

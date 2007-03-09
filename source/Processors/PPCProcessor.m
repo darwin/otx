@@ -731,7 +731,11 @@
 	if (!selString)
 		return;
 
-	UInt8	sendType			= SendTypeFromMsgSend(ioComment);
+	UInt8	sendType	= SendTypeFromMsgSend(ioComment);
+
+	// Bail on variadic calls.
+	if (sendType == send_variadic)
+		return;
 
 //	UInt32	receiverRegNum		=
 //		(sendType == sendSuper_stret || sendType == send_stret) ? 4 : 3;
@@ -825,6 +829,7 @@
 		switch (sendType)
 		{
 			case send:
+			case send_rtp:
 				formatString	= "-%s[r3 %s]";
 				break;
 
@@ -1463,7 +1468,7 @@
 
 	for (i = 0; i < funcInfo->numBlocks; i++)
 	{
-		if (funcInfo->blocks[i].start != inLine->info.address)
+		if (funcInfo->blocks[i].address != inLine->info.address)
 			continue;
 
 		// Update machine state.
@@ -1701,7 +1706,7 @@
 				// only be an issue with extremely long functions.
 				for (i = 0; i < funcInfo->numBlocks; i++)
 				{
-					if (funcInfo->blocks[i].start == branchTarget)
+					if (funcInfo->blocks[i].address == branchTarget)
 					{
 						currentBlock	= &funcInfo->blocks[i];
 						break;
@@ -1800,7 +1805,7 @@
 	for (i = 0; i < funcInfo->numBlocks; i++)
 	{
 		fprintf(stderr, "\nblock %d at 0x%x:\n\n", i + 1,
-			funcInfo->blocks[i].start);
+			funcInfo->blocks[i].address);
 
 		for (j = 0; j < 32; j++)
 		{
