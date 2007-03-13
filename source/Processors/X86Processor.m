@@ -324,9 +324,66 @@
 
 			sscanf(&inLine->info.code[immOffset], "%02hhx", &imm);
 
-			// Check for a single printable 7-bit char.
-			if (imm >= 0x20 && imm < 0x7f)
-				snprintf(mLineCommentCString, 4, "'%c'", imm);
+/**/
+			if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
+			{
+				if (!mRegInfos[REG2(modRM)].isValid)
+					break;
+
+				// Ignore the 4th addressing mode
+				if (MOD(modRM) == MODx)
+					break;
+
+				objc_ivar	theIvar			= {0};
+				objc_class	swappedClass	=
+					*mRegInfos[REG2(modRM)].classPtr;
+
+				if (mSwapped)
+					swap_objc_class(&swappedClass);
+
+				if (!mIsInstanceMethod)
+				{
+					if (!GetObjcMetaClassFromClass(
+						&swappedClass, &swappedClass))
+						break;
+
+					if (mSwapped)
+						swap_objc_class(&swappedClass);
+				}
+
+				sscanf(&inLine->info.code[4], "%02hhx", &immOffset);
+
+				if (!FindIvar(&theIvar, &swappedClass, immOffset))
+					break;
+
+				theSymPtr	= GetPointer(
+					(UInt32)theIvar.ivar_name, nil);
+
+				if (theSymPtr)
+				{
+					if (mOpts.variableTypes)
+					{
+						char	theTypeCString[MAX_TYPE_STRING_LENGTH];
+
+						theTypeCString[0]	= 0;
+
+						GetDescription(theTypeCString,
+							GetPointer((UInt32)theIvar.ivar_type, nil));
+						snprintf(mLineCommentCString,
+							MAX_COMMENT_LENGTH - 1, "(%s)%s",
+							theTypeCString, theSymPtr);
+					}
+					else
+						snprintf(mLineCommentCString,
+							MAX_COMMENT_LENGTH - 1, "%s",
+							theSymPtr);
+				}
+			}
+/**/
+			else
+				// Check for a single printable 7-bit char.
+				if (imm >= 0x20 && imm < 0x7f)
+					snprintf(mLineCommentCString, 4, "'%c'", imm);
 
 			break;
 		}

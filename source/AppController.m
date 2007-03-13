@@ -246,29 +246,8 @@
 - (void)drawMainWindowBackground
 {
 	// Create an image 1 pixel wide and as tall as the window.
-	NSRect	gradientRect	=
+	NSRect			gradientRect	=
 		NSMakeRect(0, 0, 1, [mMainWindow frame].size.height);
-
-	// OK, this is not as OO as it should be, but true OO is way too slow here.
-	// By sending a struct 'by reference', we avoid 2 Obj-C message sends, and
-	// "_objc_msgSend" is teh slowness. Compare against previous revisions for
-	// context.
-
-	/*
-		FIXME: cache this struct
-	GradientData	gradientData =
-	{
-		kPolishedLightRed,
-		kPolishedLightGreen,
-		kPolishedLightBlue,
-		1.0,
-		kPolishedDarkRed,
-		kPolishedDarkGreen,
-		kPolishedDarkBlue,
-		1.0,
-	};
-	*/
-
 	GradientImage*	gradientImage	=
 		[[GradientImage alloc] initWithSize: gradientRect.size
 		data: &mGradientData];

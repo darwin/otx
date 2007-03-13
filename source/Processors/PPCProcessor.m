@@ -852,15 +852,6 @@
 		snprintf(tempComment, MAX_COMMENT_LENGTH - 1, formatString,
 			returnTypeString, selString);
 	}
-//	else
-//		mClassNameIsKnown	= false;
-
-
-//	if (!goodComment)
-//		snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
-//			(sendType == sendSuper || sendType == sendSuper_stret) ?
-//			"%s[[r%d super] %s]" : "%s[r%d %s]",
-//			returnTypeString, receiverRegNum, selString);
 
 	if (tempComment[0])
 		strncpy(ioComment, tempComment, strlen(tempComment) + 1);

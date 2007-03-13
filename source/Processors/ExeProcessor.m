@@ -960,14 +960,11 @@
 		}
 	}	// if (!theCommentCString[0])
 	else	// otool gave us a comment.
-	{	// Check whether we should trample r3/eax.
-//		char*	selString	= SelectorForMsgSend(theCommentCString, *ioLine);
-
+	{
 		// Optionally modify otool's comment.
 		if (mOpts.verboseMsgSends)
 			CommentForMsgSendFromLine(theCommentCString, *ioLine);
 
-//		mReturnValueIsKnown	= SelectorIsFriendly(selString);
 	}
 
 	// Demangle operands if necessary.
@@ -1341,35 +1338,6 @@
 {
 	return nil;
 }
-
-//	selectorIsFriendly:
-// ----------------------------------------------------------------------------
-//	A selector is friendly if it's associated method either:
-//	- returns an id of the same class that sent the message
-//	- doesn't alter the 'return' register (r3 or eax)
-/*
-- (BOOL)selectorIsFriendly: (const char*)inSel
-{
-	if (!inSel)
-		return false;
-
-	UInt32			selLength	= strlen(inSel);
-	UInt32			selCRC		= crc32(0, inSel, selLength);
-	CheckedString	searchKey	= {selCRC, 0, nil};
-
-	// Search for inSel in our list of friendly sels.
-	CheckedString*	friendlySel	= bsearch(&searchKey,
-		gFriendlySels, NUM_FRIENDLY_SELS, sizeof(CheckedString),
-		(COMPARISON_FUNC_TYPE)CheckedString_Compare);
-
-	if (friendlySel && friendlySel->length == selLength)
-	{	// found a matching CRC, make sure it's not a collision.
-		if (!strncmp(friendlySel->string, inSel, selLength))
-			return true;
-	}
-
-	return false;
-}*/
 
 //	sendTypeFromMsgSend:
 // ----------------------------------------------------------------------------
