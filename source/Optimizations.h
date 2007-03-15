@@ -25,7 +25,6 @@
 #define CommentForSystemCallFuncType			(void	(*)(id, SEL))
 #define CommentForMsgSendFromLineFuncType		(void	(*)(id, SEL, char*, Line*))
 #define SelectorForMsgSendFuncType				(char*	(*)(id, SEL, char*, Line*))
-//#define SelectorIsFriendlyFuncType				(BOOL	(*)(id, SEL, const char*))
 #define SendTypeFromMsgSendFuncType				(UInt8	(*)(id, SEL, char*))
 #define ResetRegistersFuncType					(void	(*)(id, SEL, Line*))
 #define UpdateRegistersFuncType					(void	(*)(id, SEL, Line*))
@@ -35,6 +34,7 @@
 #define GetObjcCatPtrFromMethodFuncType			(BOOL	(*)(id, SEL, objc_category**, UInt32))
 #define GetObjcMethodFromAddressFuncType		(BOOL	(*)(id, SEL, MethodInfo**, UInt32))
 #define GetObjcClassFromNameFuncType			(BOOL	(*)(id, SEL, objc_class*, const char*))
+#define GetObjcClassPtrFromNameFuncType			(BOOL	(*)(id, SEL, objc_class**, const char*))
 #define GetObjcDescriptionFromObjectFuncType	(BOOL	(*)(id, SEL, char**, const char*, UInt8))
 #define GetObjcMetaClassFromClassFuncType		(BOOL	(*)(id, SEL, objc_class*, objc_class*))
 #define InsertLineBeforeFuncType				(void	(*)(id, SEL, Line*, Line*, Line**))
@@ -63,7 +63,6 @@
 #define CommentForSystemCallSel			@selector(commentForSystemCall)
 #define CommentForMsgSendFromLineSel	@selector(commentForMsgSend:fromLine:)
 #define SelectorForMsgSendSel			@selector(selectorForMsgSend:fromLine:)
-//#define SelectorIsFriendlySel			@selector(selectorIsFriendly:)
 #define SendTypeFromMsgSendSel			@selector(sendTypeFromMsgSend:)
 #define ResetRegistersSel				@selector(resetRegisters:)
 #define UpdateRegistersSel				@selector(updateRegisters:)
@@ -73,6 +72,7 @@
 #define GetObjcCatPtrFromMethodSel		@selector(getObjcCatPtr:fromMethod:)
 #define GetObjcMethodFromAddressSel		@selector(getObjcMethod:fromAddress:)
 #define GetObjcClassFromNameSel			@selector(getObjcClass:fromName:)
+#define GetObjcClassPtrFromNameSel		@selector(getObjcClassPtr:fromName:)
 #define GetObjcDescriptionFromObjectSel	@selector(getObjcDescription:fromObject:type:)
 #define GetObjcMetaClassFromClassSel	@selector(getObjcMetaClass:fromClass:)
 #define InsertLineBeforeSel				@selector(insertLine:before:inList:)
@@ -118,8 +118,6 @@
 		CommentForMsgSendFromLine(self, CommentForMsgSendFromLineSel, (a), (b))
 #define SelectorForMsgSend(a, b)												\
 		SelectorForMsgSend(self, SelectorForMsgSendSel, (a), (b))
-//#define SelectorIsFriendly(a)													\
-//		SelectorIsFriendly(self, SelectorIsFriendlySel, (a))
 #define SendTypeFromMsgSend(a)													\
 		SendTypeFromMsgSend(self, SendTypeFromMsgSendSel, (a))
 #define ResetRegisters(a)														\
@@ -138,6 +136,8 @@
 		GetObjcMethodFromAddress(self, GetObjcMethodFromAddressSel, (a), (b))
 #define GetObjcClassFromName(a, b)												\
 		GetObjcClassFromName(self, GetObjcClassFromNameSel, (a), (b))
+#define GetObjcClassPtrFromName(a, b)											\
+		GetObjcClassPtrFromName(self, GetObjcClassPtrFromNameSel, (a), (b))
 #define GetObjcDescriptionFromObject(a, b, c)									\
 		GetObjcDescriptionFromObject(self, GetObjcDescriptionFromObjectSel, (a), (b), (c))
 #define GetObjcMetaClassFromClass(a, b)											\

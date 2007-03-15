@@ -31,6 +31,8 @@
 				fromDef: (UInt32)inDef;
 - (BOOL)getObjcClass: (objc_class*)outClass
 			fromName: (const char*)inName;
+- (BOOL)getObjcClassPtr: (objc_class**)outClassPtr
+			   fromName: (const char*)inName;
 - (BOOL)getObjcMetaClass: (objc_class*)outClass
 			   fromClass: (objc_class*)inClass;
 

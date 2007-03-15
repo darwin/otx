@@ -148,6 +148,14 @@
 					strncpy(tempComment, kRTName_objc_assign_ivar,
 						strlen(kRTName_objc_assign_ivar) + 1);
 
+					// Bail if we don't know about the class.
+					if (!mCurrentClass)
+					{
+						strncpy(mLineCommentCString, tempComment,
+							strlen(tempComment) + 1);
+						break;
+					}
+
 					if (mRegInfos[5].isValid)
 					{
 						objc_ivar	theIvar			= {0};
@@ -737,9 +745,6 @@
 	if (sendType == send_variadic)
 		return;
 
-//	UInt32	receiverRegNum		=
-//		(sendType == sendSuper_stret || sendType == send_stret) ? 4 : 3;
-
 	// Get the address of the class name string, if this a class method.
 	UInt32	classNameAddy	= 0;
 
@@ -761,7 +766,6 @@
 
 	char*	className		= nil;
 	char	tempComment[MAX_COMMENT_LENGTH];
-//	BOOL	goodComment	= false;
 
 	tempComment[0]	= 0;
 
@@ -815,12 +819,10 @@
 
 	if (className)
 	{
-//		mClassNameIsKnown	= true;
 		snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
 			(sendType == sendSuper || sendType == sendSuper_stret) ?
 			"+%s[[%s super] %s]" : "+%s[%s %s]",
 			returnTypeString, className, selString);
-//		goodComment	= true;
 	}
 	else
 	{
@@ -883,35 +885,6 @@
 	}
 }
 
-//	selectorIsFriendly:
-// ----------------------------------------------------------------------------
-//	A selector is friendly if it's associated method either:
-//	- returns an id of the same class that sent the message
-//	- doesn't alter the 'return' register (r3 or eax)
-/*
-- (BOOL)selectorIsFriendly: (const char*)inSel
-{
-	if (!inSel)
-		return false;
-
-	UInt32			selLength	= strlen(inSel);
-	UInt32			selCRC		= crc32(0, inSel, selLength);
-	CheckedString	searchKey	= {selCRC, 0, nil};
-
-	// Search for inSel in our list of friendly sels.
-	CheckedString*	friendlySel	= bsearch(&searchKey,
-		gFriendlySels, NUM_FRIENDLY_SELS, sizeof(CheckedString),
-		(COMPARISON_FUNC_TYPE)CheckedString_Compare);
-
-	if (friendlySel && friendlySel->length == selLength)
-	{	// found a matching CRC, make sure it's not a collision.
-		if (!strncmp(friendlySel->string, inSel, selLength))
-			return true;
-	}
-
-	return false;
-}*/
-
 #pragma mark -
 //	resetRegisters:
 // ----------------------------------------------------------------------------
@@ -932,6 +905,19 @@
 	GetObjcClassPtrFromMethod(&mCurrentClass, inLine->info.address);
 	GetObjcCatPtrFromMethod(&mCurrentCat, inLine->info.address);
 	memset(mRegInfos, 0, sizeof(GPRegisterInfo) * 32);
+
+	// If we didn't get the class from the method, try to get it from the
+	// category.
+	if (!mCurrentClass && mCurrentCat)
+	{
+		objc_category	swappedCat	= *mCurrentCat;
+
+		if (mSwapped)
+			swap_objc_category(&swappedCat);
+
+		GetObjcClassPtrFromName(&mCurrentClass,
+			GetPointer((UInt32)swappedCat.class_name, nil));
+	}
 
 	mRegInfos[3].classPtr	= mCurrentClass;
 	mRegInfos[3].catPtr		= mCurrentCat;
@@ -1144,10 +1130,7 @@
 			if (!LK(theCode))	// bl, bla
 				break;
 
-//			if (mReturnValueIsKnown)
-//				mReturnValueIsKnown	= false;
-//			else
-				mRegInfos[3]	= (GPRegisterInfo){0};
+			mRegInfos[3]	= (GPRegisterInfo){0};
 
 			break;
 		}
@@ -1663,10 +1646,7 @@
 			ResetRegisters(theLine);
 		}
 		else
-		{
 			RestoreRegisters(theLine);
-//			UpdateRegisters(theLine);
-		}
 
 		UpdateRegisters(theLine);
 

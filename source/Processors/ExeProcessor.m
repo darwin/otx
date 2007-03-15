@@ -1814,8 +1814,6 @@
 			}
 			else	// 3rd char is not a space
 			{		// copy 1st 3 chars and tab
-//				memcpy(&entabbedLine[j], &ioLine->chars[i], 4);
-//				j += 4;
 				entabbedLine[j++] = ioLine->chars[i];
 				entabbedLine[j++] = ioLine->chars[i + 1];
 				entabbedLine[j++] = ioLine->chars[i + 2];
@@ -2136,8 +2134,6 @@
 		[self methodForSelector: CommentForMsgSendFromLineSel];
 	SelectorForMsgSend				= SelectorForMsgSendFuncType
 		[self methodForSelector: SelectorForMsgSendSel];
-//	SelectorIsFriendly				= SelectorIsFriendlyFuncType
-//		[self methodForSelector: SelectorIsFriendlySel];
 	ResetRegisters					= ResetRegistersFuncType
 		[self methodForSelector: ResetRegistersSel];
 	UpdateRegisters					= UpdateRegistersFuncType
@@ -2156,6 +2152,8 @@
 		[self methodForSelector: GetObjcMethodFromAddressSel];
 	GetObjcClassFromName			= GetObjcClassFromNameFuncType
 		[self methodForSelector: GetObjcClassFromNameSel];
+	GetObjcClassPtrFromName			= GetObjcClassPtrFromNameFuncType
+		[self methodForSelector: GetObjcClassPtrFromNameSel];
 	GetObjcDescriptionFromObject	= GetObjcDescriptionFromObjectFuncType
 		[self methodForSelector: GetObjcDescriptionFromObjectSel];
 	GetObjcMetaClassFromClass		= GetObjcMetaClassFromClassFuncType

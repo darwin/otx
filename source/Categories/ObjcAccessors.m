@@ -302,6 +302,34 @@
 	return false;
 }
 
+//	getObjcClassPtr:fromName:
+// ----------------------------------------------------------------------------
+//	Same as above, but returns a pointer.
+
+- (BOOL)getObjcClassPtr: (objc_class**)outClassPtr
+			   fromName: (const char*)inName;
+{
+	UInt32	i, namePtr;
+
+	for (i = 0; i < mNumClassMethodInfos; i++)
+	{
+		namePtr	= (UInt32)mClassMethodInfos[i].oc_class.name;
+
+		if (mSwapped)
+			namePtr	= OSSwapInt32(namePtr);
+
+		if (GetPointer(namePtr, nil) == inName)
+		{
+			*outClassPtr	= &mClassMethodInfos[i].oc_class;
+			return true;
+		}
+	}
+
+	*outClassPtr	= nil;
+
+	return false;
+}
+
 //	getObjcMetaClass:fromClass:
 // ----------------------------------------------------------------------------
 

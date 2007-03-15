@@ -324,7 +324,6 @@
 
 			sscanf(&inLine->info.code[immOffset], "%02hhx", &imm);
 
-/**/
 			if (mRegInfos[REG2(modRM)].classPtr)	// address relative to class
 			{
 				if (!mRegInfos[REG2(modRM)].isValid)
@@ -379,7 +378,6 @@
 							theSymPtr);
 				}
 			}
-/**/
 			else
 				// Check for a single printable 7-bit char.
 				if (imm >= 0x20 && imm < 0x7f)
@@ -1493,13 +1491,10 @@
 			snprintf(ioComment, MAX_COMMENT_LENGTH - 1, formatString,
 				returnTypeString, selString);
 		}
-
-//		if (tempComment[0])
-//			strncpy(ioComment, tempComment, strlen(tempComment) + 1);
 	}
 	else if (!strncmp(ioComment, "_objc_assign_ivar", 17))
 	{
-		if (mStack[2].isValid)
+		if (mCurrentClass && mStack[2].isValid)
 		{
 			char*		theSymPtr		= nil;
 			objc_ivar	theIvar			= {0};
@@ -1574,39 +1569,6 @@
 	}
 }
 
-//	selectorIsFriendly:
-// ----------------------------------------------------------------------------
-//	A selector is friendly if it's associated method either:
-//	- returns an id of the same class that sent the message
-//	- doesn't alter the 'return' register (r3 or eax)
-//	AND if we know the class name.
-/*
-- (BOOL)selectorIsFriendly: (const char*)inSel
-{
-	if (!inSel)
-		return false;
-
-//	if (!mClassNameIsKnown)
-//		return false;
-
-	UInt32			selLength	= strlen(inSel);
-	UInt32			selCRC		= crc32(0, inSel, selLength);
-	CheckedString	searchKey	= {selCRC, 0, nil};
-
-	// Search for inSel in our list of friendly sels.
-	CheckedString*	friendlySel	= bsearch(&searchKey,
-		gFriendlySels, NUM_FRIENDLY_SELS, sizeof(CheckedString),
-		(COMPARISON_FUNC_TYPE)CheckedString_Compare);
-
-	if (friendlySel && friendlySel->length == selLength)
-	{	// Found a matching CRC, make sure it's not a collision.
-		if (!strncmp(friendlySel->string, inSel, selLength))
-			return true;
-	}
-
-	return false;
-}*/
-
 //	postProcessCodeLine:
 // ----------------------------------------------------------------------------
 
@@ -1665,53 +1627,6 @@
 			}
 		}
 	}
-
-/*	if (!strncmp(mLineCommentCString, "_objc_assign_ivar", 17))
-	{	// Check for _objc_assign_ivar.
-		if (mStack[2].isValid)
-		{
-			char		tempComment[MAX_COMMENT_LENGTH];
-			char*		theSymPtr		= nil;
-			objc_ivar	theIvar			= {0};
-			objc_class	swappedClass	= *mCurrentClass;
-
-			if (!mIsInstanceMethod)
-			{
-				if (!GetObjcMetaClassFromClass(
-					&swappedClass, &swappedClass))
-					return;
-
-				if (mSwapped)
-					swap_objc_class(&swappedClass);
-			}
-
-			if (!FindIvar(&theIvar, &swappedClass, mStack[2].value))
-				return;
-
-			theSymPtr	= GetPointer((UInt32)theIvar.ivar_name, nil);
-
-			if (!theSymPtr)
-				return;
-
-			if (mOpts.variableTypes)
-			{
-				char	theTypeCString[MAX_TYPE_STRING_LENGTH];
-
-				theTypeCString[0]	= 0;
-
-				GetDescription(theTypeCString,
-					GetPointer((UInt32)theIvar.ivar_type, nil));
-				snprintf(tempComment,
-					MAX_COMMENT_LENGTH - 1, " %s (%s)%s",
-					theTypeCString, theSymPtr);
-			}
-			else
-				snprintf(tempComment,
-					MAX_COMMENT_LENGTH - 1, " %s %s", theSymPtr);
-
-			strncat(mLineCommentCString, tempComment, strlen(tempComment));
-		}
-	}*/
 }
 
 #pragma mark -
@@ -1732,6 +1647,19 @@
 
 	mCurrentThunk	= NO_REG;
 	memset(mRegInfos, 0, sizeof(GPRegisterInfo) * 8);
+
+	// If we didn't get the class from the method, try to get it from the
+	// category.
+	if (!mCurrentClass && mCurrentCat)
+	{
+		objc_category	swappedCat	= *mCurrentCat;
+
+		if (mSwapped)
+			swap_objc_category(&swappedCat);
+
+		GetObjcClassPtrFromName(&mCurrentClass,
+			GetPointer((UInt32)swappedCat.class_name, nil));
+	}
 
 	// Try to find out whether this is a class or instance method.
 	MethodInfo*	thisMethod	= nil;
@@ -2102,19 +2030,8 @@
 		}
 
 		case 0xe8:	// calll
-//			if (mReturnValueIsKnown)
-//			{
-//				mReturnValueIsKnown	= false;
-
-				// Copy receiver back to eax.
-//				if (mStack[0].isValid)
-//					mRegInfos[EAX]	= mStack[0];
-//			}
-//			else
-//			{	// Wipe the stack and return register.
 				memset(mStack, 0, sizeof(GPRegisterInfo) * MAX_STACK_SIZE);
 				mRegInfos[EAX]	= (GPRegisterInfo){0};
-//			}
 
 			break;
 

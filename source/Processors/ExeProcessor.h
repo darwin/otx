@@ -395,6 +395,7 @@ enum {
 	BOOL	(*GetObjcCatPtrFromMethod)		(id, SEL, objc_category**, UInt32);
 	BOOL	(*GetObjcMethodFromAddress)		(id, SEL, MethodInfo**, UInt32);
 	BOOL	(*GetObjcClassFromName)			(id, SEL, objc_class*, const char*);
+	BOOL	(*GetObjcClassPtrFromName)		(id, SEL, objc_class**, const char*);
 	BOOL	(*GetObjcDescriptionFromObject)	(id, SEL, char**, const char*, UInt8);
 	BOOL	(*GetObjcMetaClassFromClass)	(id, SEL, objc_class*, objc_class*);
 
