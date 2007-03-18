@@ -21,6 +21,9 @@ Evaluate(
 	const float*	inValue,
 	float*			outValue)
 {
+	if (!outValue)
+		return;
+
 	if (!inData || !inValue)
 	{	// Default to black in a fast, hackish way.
 		memset(outValue, 0, sizeof(float) * 4);
@@ -86,7 +89,7 @@ Evaluate(
 			colorSpace, startPoint, endPoint, mGradientFunc, false, false);
 
 		CGContextDrawShading(savedContext, shading);
-		  
+
 		[self unlockFocus];
 
 		CGShadingRelease(shading);

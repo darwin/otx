@@ -58,7 +58,7 @@
 {
 	if ((self = [super init]))
 	{
-		mGradientData	= (GradientData)
+/*		mGradientData	= (GradientData)
 		{
 			kPolishedLightRed,
 			kPolishedLightGreen,
@@ -68,10 +68,21 @@
 			kPolishedDarkGreen,
 			kPolishedDarkBlue,
 			1.0,
-		};
+		};*/
 	}
 
 	return self;
+}
+
+//	awakeFromNib
+// ----------------------------------------------------------------------------
+
+- (void)awakeFromNib
+{
+	NSImage*	bgImage	= [NSImage imageNamed: @"Main Window Background"];
+
+	[mMainWindow setBackgroundColor:
+		[NSColor colorWithPatternImage: bgImage]];
 }
 
 //	dealloc
@@ -207,12 +218,12 @@
 
 - (void)setupMainWindow
 {
-	mPolishedLightColor	= [[NSColor
+/*	mPolishedLightColor	= [[NSColor
 		colorWithCalibratedRed: kPolishedLightRed green: kPolishedLightGreen
 		blue: kPolishedLightBlue alpha: 1.0] retain];
 	mPolishedDarkColor	= [[NSColor
 		colorWithCalibratedRed: kPolishedDarkRed green: kPolishedDarkGreen
-		blue: kPolishedDarkBlue alpha: 1.0] retain];
+		blue: kPolishedDarkBlue alpha: 1.0] retain];*/
 
 	[self applyShadowToText: mPathLabelText];
 	[self applyShadowToText: mTypeLabelText];
@@ -241,15 +252,19 @@
 //	drawMainWindowBackground
 // ----------------------------------------------------------------------------
 //	Draw the polished metal gradient background. Adapted from Dave Batton's
-//	example at http://www.mere-mortal-software.com/blog/details.php?d=2007-01-08
+//	code at http://www.mere-mortal-software.com/blog/details.php?d=2007-01-08
+//	Actually, this is completely different except for the comments.
 
-- (void)drawMainWindowBackground
+/*- (void)drawMainWindowBackground
 {
 	// Create an image 1 pixel wide and as tall as the window.
-	NSRect			gradientRect	=
-		NSMakeRect(0, 0, 1, [mMainWindow frame].size.height);
+//	NSRect			gradientRect	=
+//		NSMakeRect(0, 0, 1, [mMainWindow frame].size.height);
+//	NSSize	gradientSize	= NSMakeSize(1.0, [mMainWindow frame].size.height);
+
 	GradientImage*	gradientImage	=
-		[[GradientImage alloc] initWithSize: gradientRect.size
+		[[GradientImage alloc] initWithSize:
+		NSMakeSize(1.0, [mMainWindow frame].size.height)
 		data: &mGradientData];
 
 	// Set the gradient image as the window's background color.
@@ -257,7 +272,7 @@
 		[NSColor colorWithPatternImage: gradientImage]];
 
 	[gradientImage release];
-}
+}*/
 
 //	applyShadowToText:
 // ----------------------------------------------------------------------------
@@ -1674,7 +1689,7 @@
 {
 	if ([inNotification object] == mMainWindow)
 	{
-		[self drawMainWindowBackground];
+//		[self drawMainWindowBackground];
 		[mMainWindow display];
 	}
 }

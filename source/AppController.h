@@ -102,7 +102,7 @@
 	NSColor*					mPolishedLightColor;
 	NSColor*					mPolishedDarkColor;
 	NSShadow*					mTextShadow;
-	GradientData				mGradientData;
+//	GradientData				mGradientData;
 }
 
 - (SInt32)checkOtool;
@@ -110,7 +110,7 @@
 // main window
 - (void)setupMainWindow;
 - (IBAction)showMainWindow: (id)sender;
-- (void)drawMainWindowBackground;
+//- (void)drawMainWindowBackground;
 - (void)applyShadowToText: (NSTextField*)inText;
 - (IBAction)selectArch: (id)sender;
 - (IBAction)openExe: (id)sender;
