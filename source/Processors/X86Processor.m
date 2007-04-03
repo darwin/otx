@@ -20,7 +20,7 @@
 
 @implementation X86Processor
 
-//	initWithURL:controller:andOptions:
+//	initWithURL:controller:options:
 // ----------------------------------------------------------------------------
 
 - (id)initWithURL: (NSURL*)inURL

@@ -439,7 +439,7 @@ enum {
 - (void)chooseLine: (Line**)ioLine;
 - (void)entabLine: (Line*)ioLine;
 - (char*)getPointer: (UInt32)inAddr
-			andType: (UInt8*)outType;
+			   type: (UInt8*)outType;
 
 - (char*)selectorForMsgSend: (char*)outComment
 				   fromLine: (Line*)inLine;

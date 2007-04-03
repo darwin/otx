@@ -218,13 +218,6 @@
 
 - (void)setupMainWindow
 {
-/*	mPolishedLightColor	= [[NSColor
-		colorWithCalibratedRed: kPolishedLightRed green: kPolishedLightGreen
-		blue: kPolishedLightBlue alpha: 1.0] retain];
-	mPolishedDarkColor	= [[NSColor
-		colorWithCalibratedRed: kPolishedDarkRed green: kPolishedDarkGreen
-		blue: kPolishedDarkBlue alpha: 1.0] retain];*/
-
 	[self applyShadowToText: mPathLabelText];
 	[self applyShadowToText: mTypeLabelText];
 	[self applyShadowToText: mOutputLabelText];
@@ -233,6 +226,8 @@
 	// not setting the background image here because hiding the prog view
 	// resizes the window, which results in our delegate saving the day.
 	[self hideProgView: false openFile: false];
+
+	[mMainWindow setFrameAutosaveName: [mMainWindow title]];
 }
 
 //	showMainWindow
@@ -248,31 +243,6 @@
 
 	[mMainWindow makeKeyAndOrderFront: nil];
 }
-
-//	drawMainWindowBackground
-// ----------------------------------------------------------------------------
-//	Draw the polished metal gradient background. Adapted from Dave Batton's
-//	code at http://www.mere-mortal-software.com/blog/details.php?d=2007-01-08
-//	Actually, this is completely different except for the comments.
-
-/*- (void)drawMainWindowBackground
-{
-	// Create an image 1 pixel wide and as tall as the window.
-//	NSRect			gradientRect	=
-//		NSMakeRect(0, 0, 1, [mMainWindow frame].size.height);
-//	NSSize	gradientSize	= NSMakeSize(1.0, [mMainWindow frame].size.height);
-
-	GradientImage*	gradientImage	=
-		[[GradientImage alloc] initWithSize:
-		NSMakeSize(1.0, [mMainWindow frame].size.height)
-		data: &mGradientData];
-
-	// Set the gradient image as the window's background color.
-	[mMainWindow setBackgroundColor:
-		[NSColor colorWithPatternImage: gradientImage]];
-
-	[gradientImage release];
-}*/
 
 //	applyShadowToText:
 // ----------------------------------------------------------------------------
@@ -372,6 +342,42 @@
 	[mOutputFilePath retain];
 	[theTempOutputFilePath release];
 
+	// Check if the output file exists.
+	if ([[NSFileManager defaultManager] fileExistsAtPath: mOutputFilePath])
+	{
+		NSString*	fileName	= [mOutputFilePath lastPathComponent];
+		NSString*	folderName	=
+			[[mOutputFilePath stringByDeletingLastPathComponent]
+			lastPathComponent];
+// amazing. report this.
+/*		NSAlert*	alert		= [NSAlert alertWithMessageText:
+			[NSString stringWithFormat: @"\"%@\" already exists. "
+			@"Do you want to replace it?", fileName]
+			defaultButton: @"Replace" alternateButton: @"Cancel"
+			otherButton: nil informativeTextWithFormat: @"A file or folder"
+			@" with the same name already exists in %@."
+			@" Replacing it will overwrite its current contents.", folderName];*/
+
+		NSAlert*	alert	= [[NSAlert alloc] init];
+
+		[alert addButtonWithTitle: @"Replace"];
+		[alert addButtonWithTitle: @"Cancel"];
+		[alert setMessageText: [NSString stringWithFormat:
+			@"\"%@\" already exists. Do you want to replace it?", fileName]];
+		[alert setInformativeText:
+			[NSString stringWithFormat: @"A file or folder"
+			@" with the same name already exists in %@."
+			@" Replacing it will overwrite its current contents.", folderName]];
+//		[alert beginSheetModalForWindow: mMainWindow
+//			modalDelegate: nil didEndSelector: nil contextInfo: nil];
+		[alert autorelease];
+
+//		UInt32	alertReturn	= [alert runModal];
+
+		if ([alert runModal] == NSAlertSecondButtonReturn)
+			return;
+	}
+
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRIndeterminateKey,
 		[NSNull null], PRAnimateKey,
@@ -418,7 +424,10 @@
 	}
 
 	if (!procClass)
+	{
+		[pool release];
 		return;
+	}
 
 	// Save defaults into the ProcOptions struct.
 	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
@@ -457,19 +466,21 @@
 			withObject: [NSNumber numberWithBool: false]
 			waitUntilDone: false];
 
+		[pool release];
 		return;
 	}
 
 	if (![theProcessor processExe: mOutputFilePath])
 	{
 		fprintf(stderr, "otx: -[AppController processFile]: "
-			"unable to process %s.\n", mOFile);
+			"unable to process %s.\n", UTF8STRING([mOFile path]));
 		[theProcessor release];
 		[self performSelectorOnMainThread:
 			@selector(processingThreadDidFinish:)
 			withObject: [NSNumber numberWithBool: false]
 			waitUntilDone: false];
 
+		[pool release];
 		return;
 	}
 
@@ -485,11 +496,11 @@
 //	processingThreadDidFinish:
 // ----------------------------------------------------------------------------
 
-- (void)processingThreadDidFinish: (BOOL)successfully
+- (void)processingThreadDidFinish: (NSNumber*)successfully
 {
 	mProcessing	= false;
 
-	if (successfully)
+	if ([successfully boolValue])
 	{
 		[self hideProgView: true openFile:
 			[[NSUserDefaults standardUserDefaults]
@@ -1167,18 +1178,52 @@
 }
 
 #pragma mark -
+//	setupPrefsWindow
+// ----------------------------------------------------------------------------
+
+- (void)setupPrefsWindow
+{
+	// Setup toolbar.
+	NSToolbar*	toolbar = [[[NSToolbar alloc]
+		initWithIdentifier: OTXPrefsToolbarID] autorelease];
+
+	[toolbar setDisplayMode: NSToolbarDisplayModeIconAndLabel];
+    [toolbar setDelegate: self];
+
+    [mPrefsWindow setToolbar: toolbar];
+	[mPrefsWindow setShowsToolbarButton: false];
+
+	// Load views.
+	UInt32	numViews	= [[toolbar items] count];
+	UInt32	i;
+
+	mPrefsViews		= calloc(numViews, sizeof(NSView*));
+	mPrefsViews[0]	= mPrefsGeneralView;
+	mPrefsViews[1]	= mPrefsOutputView;
+
+	// Set the General panel as selected.
+	[toolbar setSelectedItemIdentifier: PrefsGeneralToolbarItemID];
+
+	// Set window size.
+	// Maybe it's just me, but when I have to tell an object something by
+	// first asking the object something, I always think there's an instance
+	// method missing.
+	[mPrefsWindow setFrame: [mPrefsWindow frameRectForContentRect:
+		[mPrefsViews[mPrefsCurrentViewIndex] frame]] display: false];
+
+	for (i = 0; i < numViews; i++)
+		[[mPrefsWindow contentView] addSubview: mPrefsViews[i]];
+}
+
 //	showPrefs
 // ----------------------------------------------------------------------------
 
 - (IBAction)showPrefs: (id)sender
 {
-	if (!mPrefsWindow)
-	{
-		fprintf(stderr, "otx: failed to load Preferences.nib\n");
-		return;
-	}
+	// Set window position only if the window is not already onscreen.
+	if (![mPrefsWindow isVisible])
+		[mPrefsWindow center];
 
-	[mPrefsWindow center];
 	[mPrefsWindow makeKeyAndOrderFront: nil];
 }
 
@@ -1187,12 +1232,13 @@
 
 - (IBAction)switchPrefsViews: (id)sender
 {
-	UInt32	theNewIndex		= [sender selectedSegment];
+	NSToolbarItem*	item		= (NSToolbarItem*)sender;
+	UInt32			newIndex	= [item tag];
 
-	if (theNewIndex == mPrefsCurrentViewIndex)
+	if (newIndex == mPrefsCurrentViewIndex)
 		return;
 
-	NSRect	targetViewFrame	= [mPrefsViews[theNewIndex] frame];
+	NSRect	targetViewFrame	= [mPrefsViews[newIndex] frame];
 
 	// Decide whether to swap the views at the beginning or end of the
 	// animation, based on their relative heights.
@@ -1215,35 +1261,35 @@
 	targetWindowFrame.origin.y	-= windowHeightDelta;
 
 	// Create dictionary for new window size.
-	NSMutableDictionary*	theNewWindowItem =
+	NSMutableDictionary*	newWindowItem =
 		[NSMutableDictionary dictionaryWithCapacity: 5];
 
-	[theNewWindowItem setObject: mPrefsWindow
+	[newWindowItem setObject: mPrefsWindow
 		forKey: NSViewAnimationTargetKey];
-	[theNewWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
+	[newWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
 		forKey: NSViewAnimationEndFrameKey];
 
-	[theNewWindowItem setObject: [NSNumber numberWithUnsignedInt: swapWhen]
+	[newWindowItem setObject: [NSNumber numberWithUnsignedInt: swapWhen]
 		forKey: NSXViewAnimationCustomEffectsKey];
-	[theNewWindowItem setObject: mPrefsViews[mPrefsCurrentViewIndex]
+	[newWindowItem setObject: mPrefsViews[mPrefsCurrentViewIndex]
 		forKey: NSXViewAnimationSwapOldKey];
-	[theNewWindowItem setObject: mPrefsViews[theNewIndex]
+	[newWindowItem setObject: mPrefsViews[newIndex]
 		forKey: NSXViewAnimationSwapNewKey];
 
 	// Create animation.
-	SmoothViewAnimation*	theWindowAnim	= [[SmoothViewAnimation alloc]
-		initWithViewAnimations: [NSArray arrayWithObjects:
-		theNewWindowItem, nil]];
-	[theWindowAnim setDelegate: self];
+	SmoothViewAnimation*	windowAnim	= [[SmoothViewAnimation alloc]
+		initWithViewAnimations: [NSArray arrayWithObject:
+		newWindowItem]];
 
-	[theWindowAnim setDuration: kPrefsAnimationTime];
-	[theWindowAnim setAnimationCurve: NSAnimationLinear];
+	[windowAnim setDelegate: self];
+	[windowAnim setDuration: kPrefsAnimationTime];
+	[windowAnim setAnimationCurve: NSAnimationLinear];
 
-	mPrefsCurrentViewIndex	= theNewIndex;
+	mPrefsCurrentViewIndex	= newIndex;
 
 	// Do the deed.
-	[theWindowAnim startAnimation];
-	[theWindowAnim autorelease];
+	[windowAnim startAnimation];
+	[windowAnim autorelease];
 }
 
 #pragma mark -
@@ -1302,23 +1348,23 @@
 	if (inDropBox != mDropBox || mProcessing)
 		return false;
 
-	NSPasteboard*	thePasteBoard	= [inItem draggingPasteboard];
+	NSPasteboard*	pasteBoard	= [inItem draggingPasteboard];
 
 	// Bail if not a file.
-	if (![[thePasteBoard types] containsObject: NSFilenamesPboardType])
+	if (![[pasteBoard types] containsObject: NSFilenamesPboardType])
 		return NSDragOperationNone;
 
-	NSArray*	theFiles	= [thePasteBoard
+	NSArray*	files	= [pasteBoard
 		propertyListForType: NSFilenamesPboardType];
 
 	// Bail if not a single file.
-	if ([theFiles count] != 1)
+	if ([files count] != 1)
 		return NSDragOperationNone;
 
-	NSDragOperation	theSourceDragMask	= [inItem draggingSourceOperationMask];
+	NSDragOperation	sourceDragMask	= [inItem draggingSourceOperationMask];
 
 	// Bail if modifier keys pressed.
-	if (!(theSourceDragMask & NSDragOperationLink))
+	if (!(sourceDragMask & NSDragOperationLink))
 		return NSDragOperationNone;
 
 	return NSDragOperationLink;
@@ -1350,7 +1396,7 @@
 #pragma mark NSAnimation delegates
 //	animationShouldStart:
 // ----------------------------------------------------------------------------
-//	We're only hooking this to accomodate custom effects in NSViewAnimations,
+//	We're only hooking this to perform custom effects with NSViewAnimations,
 //	not to determine whether to start the animation. For this reason, we
 //	always return true, even if a sanity check fails.
 
@@ -1600,7 +1646,7 @@
 
 	mArchSelector	= mHostInfo.cpu_type;
 
-	// Setup the text shadow
+	// Setup our text shadow ivar.
 	mTextShadow	= [[NSShadow alloc] init];
 
 	[mTextShadow setShadowColor: [NSColor
@@ -1608,27 +1654,11 @@
 	[mTextShadow setShadowOffset: NSMakeSize(0.0, -1.0)];
 	[mTextShadow setShadowBlurRadius: 0.0];
 
-	// Setup prefs window
-	UInt32	numViews	= [mPrefsViewPicker segmentCount];
-	UInt32	i;
-
-	mPrefsCurrentViewIndex	= 0;
-	mPrefsViews				= calloc(numViews, sizeof(NSView*));
-	mPrefsViews[0]			= mPrefsGeneralView;
-	mPrefsViews[1]			= mPrefsOutputView;
-
-	[mPrefsWindow setFrame: [mPrefsWindow frameRectForContentRect:
-		[mPrefsViews[mPrefsCurrentViewIndex] frame]] display: false];
-
-	for (i = 0; i < numViews; i++)
-	{
-		[[mPrefsWindow contentView] addSubview: mPrefsViews[i]
-			positioned: NSWindowBelow relativeTo: mPrefsViewPicker];
-	}
-
-	// Setup and show main window
+	// Setup the windows.
+	[self setupPrefsWindow];
 	[self setupMainWindow];
-	[mMainWindow setFrameAutosaveName: [mMainWindow title]];
+
+	// Show the main window.
 	[mMainWindow center];
 	[mMainWindow makeKeyAndOrderFront: nil];
 }
@@ -1680,6 +1710,72 @@
 }
 
 #pragma mark -
+#pragma mark NSToolbar delegates
+//	toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:
+// ----------------------------------------------------------------------------
+
+- (NSToolbarItem*)toolbar: (NSToolbar*)toolbar
+	itemForItemIdentifier: (NSString*)itemIdent
+willBeInsertedIntoToolbar: (BOOL)willBeInserted
+{
+	NSToolbarItem*	item = [[[NSToolbarItem alloc]
+		initWithItemIdentifier: itemIdent] autorelease];
+
+	if ([itemIdent isEqual: PrefsGeneralToolbarItemID])
+	{
+		[item setLabel: @"General"];
+		[item setImage: [NSImage imageNamed: @"Prefs General Icon"]];
+		[item setTarget: self];
+		[item setAction: @selector(switchPrefsViews:)];
+		[item setTag: 0];
+	}
+	else if ([itemIdent isEqual: PrefsOutputToolbarItemID])
+	{
+		[item setLabel: @"Output"];
+		[item setImage: [NSImage imageNamed: @"Prefs Output Icon"]];
+		[item setTarget: self];
+		[item setAction: @selector(switchPrefsViews:)];
+		[item setTag: 1];
+	}
+	else
+		item = nil;
+
+	return item;
+}
+
+//	toolbarDefaultItemIdentifiers:
+// ----------------------------------------------------------------------------
+
+- (NSArray*)toolbarDefaultItemIdentifiers: (NSToolbar*)toolbar
+{
+	return PrefsToolbarItemsArray;
+}
+
+//	toolbarAllowedItemIdentifiers:
+// ----------------------------------------------------------------------------
+
+- (NSArray*)toolbarAllowedItemIdentifiers: (NSToolbar*)toolbar
+{
+	return PrefsToolbarItemsArray;
+}
+
+//	toolbarSelectableItemIdentifiers:
+// ----------------------------------------------------------------------------
+
+- (NSArray*)toolbarSelectableItemIdentifiers: (NSToolbar*)toolbar
+{
+	return PrefsToolbarItemsArray;
+}
+
+//	validateToolbarItem:
+// ----------------------------------------------------------------------------
+
+- (BOOL)validateToolbarItem: (NSToolbarItem*)toolbarItem
+{
+	return true;
+}
+
+#pragma mark -
 #pragma mark NSWindow delegates
 //	windowDidResize:
 // ----------------------------------------------------------------------------
@@ -1688,10 +1784,7 @@
 - (void)windowDidResize: (NSNotification*)inNotification
 {
 	if ([inNotification object] == mMainWindow)
-	{
-//		[self drawMainWindowBackground];
 		[mMainWindow display];
-	}
 }
 
 @end

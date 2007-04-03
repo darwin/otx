@@ -807,6 +807,7 @@
 				if (classNamePtr)
 					GetObjcDescriptionFromObject(
 						&className, classNamePtr, OCClassType);
+				break;
 
 			default:
 				fprintf(stderr, "otx: [PPCProcessor commentForMsgSend]: "

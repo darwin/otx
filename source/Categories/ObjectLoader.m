@@ -342,7 +342,7 @@
 			theMachPtr + theSectInfo->s.offset + theSectInfo->s.size)
 		{
 			// Try to locate the objc_symtab for this module.
-			if (![self getObjcSymtab: &theSymTab andDefs: &theDefs
+			if (![self getObjcSymtab: &theSymTab defs: &theDefs
 				fromModule: &theModule] || !theDefs)
 			{
 				// point to next module
@@ -390,7 +390,7 @@
 				objc_method			theSwappedMethod;
 
 				if ([self getObjcMethodList: &theMethodList
-					andMethods: &theMethods
+					methods: &theMethods
 					fromAddress: (UInt32)theSwappedClass.methodLists])
 				{
 					theSwappedMethodList	= theMethodList;
@@ -431,7 +431,7 @@
 						swap_objc_class(&theSwappedMetaClass);
 
 					if ([self getObjcMethodList: &theMethodList
-						andMethods: &theMethods
+						methods: &theMethods
 						fromAddress: (UInt32)theSwappedMetaClass.methodLists])
 					{
 						theSwappedMethodList	= theMethodList;
@@ -502,7 +502,7 @@
 				objc_method			theSwappedMethod;
 
 				if ([self getObjcMethodList: &theMethodList
-					andMethods: &theMethods
+					methods: &theMethods
 					fromAddress: (UInt32)theSwappedCat.instance_methods])
 				{
 					theSwappedMethodList	= theMethodList;
@@ -535,7 +535,7 @@
 
 				// Save category class method info.
 				if ([self getObjcMethodList: &theMethodList
-					andMethods: &theMethods
+					methods: &theMethods
 					fromAddress: (UInt32)theSwappedCat.class_methods])
 				{
 					theSwappedMethodList	= theMethodList;

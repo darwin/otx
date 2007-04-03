@@ -17,13 +17,13 @@
 - (BOOL)getObjcMethod: (MethodInfo**)outMI
 		  fromAddress: (UInt32)inAddress;
 - (BOOL)getObjcMethodList: (objc_method_list*)outList
-			   andMethods: (objc_method**)outMethods
+				  methods: (objc_method**)outMethods
 			  fromAddress: (UInt32)inAddress;
 - (BOOL)getObjcDescription: (char**)outDescription
 				fromObject: (const char*)inObject
 					  type: (UInt8)inType;
 - (BOOL)getObjcSymtab: (objc_symtab*)outSymTab
-			  andDefs: (void***)outDefs
+				 defs: (void***)outDefs
 		   fromModule: (objc_module*)inModule;
 - (BOOL)getObjcClass: (objc_class*)outClass
 			 fromDef: (UInt32)inDef;

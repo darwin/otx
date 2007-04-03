@@ -12,7 +12,7 @@
 #define kOutputFileBaseTag	200
 #define kOutputFileExtTag	201
 
-#define	kPrefsAnimationTime	0.15
+#define	kPrefsAnimationTime	0.10
 #define	kMainAnimationTime	0.15
 
 #define kPolishedLightRed	0.800
@@ -55,6 +55,14 @@
 #define NSXViewAnimationAppNameKey							\
 	@"NSXViewAnimationAppNameKey"							// NSString*
 
+#define OTXPrefsToolbarID			@"OTX Preferences Window Toolbar"
+#define PrefsGeneralToolbarItemID	@"General Toolbar Item"
+#define PrefsOutputToolbarItemID	@"Output Toolbar Item"
+
+#define PrefsToolbarItemsArray									\
+	[NSArray arrayWithObjects: PrefsGeneralToolbarItemID,		\
+	PrefsOutputToolbarItemID, nil]
+
 // ============================================================================
 
 @interface AppController : NSObject<ProgressReporter>
@@ -79,7 +87,7 @@
 
 // prefs window
 	IBOutlet NSWindow*				mPrefsWindow;
-	IBOutlet NSSegmentedControl*	mPrefsViewPicker;
+//	IBOutlet NSSegmentedControl*	mPrefsViewPicker;
 	IBOutlet NSView*				mPrefsGeneralView;
 	IBOutlet NSView*				mPrefsOutputView;
 
@@ -110,7 +118,6 @@
 // main window
 - (void)setupMainWindow;
 - (IBAction)showMainWindow: (id)sender;
-//- (void)drawMainWindowBackground;
 - (void)applyShadowToText: (NSTextField*)inText;
 - (IBAction)selectArch: (id)sender;
 - (IBAction)openExe: (id)sender;
@@ -119,7 +126,7 @@
 - (void)continueProcessingFile;
 - (void)adjustInterfaceForMultiThread;
 - (void)adjustInterfaceForSingleThread;
-- (void)processingThreadDidFinish: (BOOL)successfully;
+- (void)processingThreadDidFinish: (NSNumber*)successfully;
 - (IBAction)thinFile: (id)sender;
 - (IBAction)verifyNops: (id)sender;
 - (void)syncSaveButton;
@@ -135,6 +142,7 @@
 			openFile: (BOOL)inOpenFile;
 
 // prefs window
+- (void)setupPrefsWindow;
 - (IBAction)showPrefs: (id)sender;
 - (IBAction)switchPrefsViews: (id)sender;
 

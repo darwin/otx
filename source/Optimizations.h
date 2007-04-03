@@ -58,7 +58,7 @@
 #define PostProcessCodeLineSel			@selector(postProcessCodeLine:)
 #define ChooseLineSel					@selector(chooseLine:)
 #define EntabLineSel					@selector(entabLine:)
-#define GetPointerSel					@selector(getPointer:andType:)
+#define GetPointerSel					@selector(getPointer:type:)
 #define CommentForLineSel				@selector(commentForLine:)
 #define CommentForSystemCallSel			@selector(commentForSystemCall)
 #define CommentForMsgSendFromLineSel	@selector(commentForMsgSend:fromLine:)

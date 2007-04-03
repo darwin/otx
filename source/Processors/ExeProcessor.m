@@ -1837,13 +1837,13 @@
 	strncpy(ioLine->chars, entabbedLine, ioLine->length + 1);
 }
 
-//	getPointer:outType:	(was get_pointer)
+//	getPointer:type:	(was get_pointer)
 // ----------------------------------------------------------------------------
 //	Convert a relative ptr to an absolute ptr. Return which data type is being
 //	referenced in outType.
 
 - (char*)getPointer: (UInt32)inAddr
-			andType: (UInt8*)outType
+			   type: (UInt8*)outType
 {
 	if (inAddr == 0)
 		return nil;

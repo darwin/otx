@@ -69,12 +69,12 @@
 	return (*outMI != nil);
 }
 
-//	getObjcMethodList:andMethods:fromAddress: (was get_method_list)
+//	getObjcMethodList:methods:fromAddress: (was get_method_list)
 // ----------------------------------------------------------------------------
 //	Removed the truncation flag. 'left' is no longer used by the caller.
 
 - (BOOL)getObjcMethodList: (objc_method_list*)outList
-			   andMethods: (objc_method**)outMethods
+				  methods: (objc_method**)outMethods
 			  fromAddress: (UInt32)inAddress;
 {
 	UInt32	left, i;
@@ -178,12 +178,12 @@
 	return (*outDescription != nil);
 }
 
-//	getObjcSymtab:andDefs:fromModule: (was get_symtab)
+//	getObjcSymtab:defs:fromModule: (was get_symtab)
 // ----------------------------------------------------------------------------
 //	Removed the truncation flag. 'left' is no longer used by the caller.
 
 - (BOOL)getObjcSymtab: (objc_symtab*)outSymTab
-			  andDefs: (void***)outDefs
+				 defs: (void***)outDefs
 		   fromModule: (objc_module*)inModule;
 {
 	if (!outSymTab)
