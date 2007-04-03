@@ -352,8 +352,6 @@ enum {
 	objc_class*			mCurrentClass;
 	objc_category*		mCurrentCat;
 	BOOL				mIsInstanceMethod;
-//	BOOL				mReturnValueIsKnown;	// so don't trample r3/eax
-//	BOOL				mClassNameIsKnown;		// currently x86 only
 
 	// dyld stuff
 	UInt32		mAddrDyldStubBindingHelper;
@@ -387,7 +385,6 @@ enum {
 	void	(*UpdateRegisters)				(id, SEL, Line*);
 	BOOL	(*RestoreRegisters)				(id, SEL, Line*);
 	char*	(*SelectorForMsgSend)			(id, SEL, char*, Line*);
-//	BOOL	(*SelectorIsFriendly)			(id, SEL, const char*);
 	UInt8	(*SendTypeFromMsgSend)			(id, SEL, char*);
 	char*	(*PrepareNameForDemangling)		(id, SEL, char*);
 
@@ -443,7 +440,6 @@ enum {
 
 - (char*)selectorForMsgSend: (char*)outComment
 				   fromLine: (Line*)inLine;
-//- (BOOL)selectorIsFriendly: (const char*)inSel;
 - (UInt8)sendTypeFromMsgSend: (char*)inString;
 
 - (void)insertMD5;

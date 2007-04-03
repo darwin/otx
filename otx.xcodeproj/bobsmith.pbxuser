@@ -225,7 +225,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = "AppController.h: 61";
 		rLen = 0;
-		rLoc = 2147;
+		rLoc = 1951;
 		rType = 0;
 		vrLen = 1784;
 		vrLoc = 1604;
@@ -235,7 +235,7 @@
 		fRef = E1B132610B180B2F002EB674 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: 442";
 		rLen = 0;
-		rLoc = 14710;
+		rLoc = 14542;
 		rType = 0;
 		vrLen = 1552;
 		vrLoc = 13642;
@@ -279,7 +279,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = "AppController.h: 61";
 		rLen = 0;
-		rLoc = 2147;
+		rLoc = 1951;
 		rType = 0;
 		vrLen = 1784;
 		vrLoc = 1604;
@@ -289,7 +289,7 @@
 		fRef = E1B132610B180B2F002EB674 /* ExeProcessor.h */;
 		name = "ExeProcessor.h: 442";
 		rLen = 0;
-		rLoc = 14710;
+		rLoc = 14542;
 		rType = 0;
 		vrLen = 1552;
 		vrLoc = 13642;
@@ -356,7 +356,7 @@
 		isa = PBXTextBookmark;
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		rLen = 0;
-		rLoc = 2147483616;
+		rLoc = 2147483336;
 		rType = 0;
 	};
 	E12A0D9F0BC1EE8800F29774 /* PBXTextBookmark */ = {
@@ -364,7 +364,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = "AppController.h: 61";
 		rLen = 0;
-		rLoc = 2147;
+		rLoc = 1951;
 		rType = 0;
 		vrLen = 1620;
 		vrLoc = 2147;
@@ -404,7 +404,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = "AppController.h: 61";
 		rLen = 0;
-		rLoc = 2147;
+		rLoc = 1951;
 		rType = 0;
 		vrLen = 1620;
 		vrLoc = 2147;
@@ -438,7 +438,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = "AppController.h: 61";
 		rLen = 0;
-		rLoc = 2147;
+		rLoc = 1951;
 		rType = 0;
 		vrLen = 1620;
 		vrLoc = 2147;
@@ -448,7 +448,7 @@
 		fRef = E13539900A68185500CBDDE5 /* AppController.h */;
 		name = "AppController.h: processingThreadDidFinish:";
 		rLen = 0;
-		rLoc = 4222;
+		rLoc = 3942;
 		rType = 0;
 		vrLen = 1465;
 		vrLoc = 3412;
@@ -491,9 +491,9 @@
 	};
 	E13539900A68185500CBDDE5 /* AppController.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {526, 1860}}";
-			sepNavSelRange = "{4222, 0}";
-			sepNavVisRect = "{{0, 1231}, {526, 629}}";
+			sepNavIntBoundsRect = "{{0, 0}, {526, 1752}}";
+			sepNavSelRange = "{292, 0}";
+			sepNavVisRect = "{{0, 0}, {526, 629}}";
 			sepNavWindowFrame = "{{424, 44}, {565, 702}}";
 		};
 	};
@@ -639,25 +639,25 @@
 	};
 	E1B1325E0B180B25002EB674 /* ExeProcessor.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {853, 27108}}";
-			sepNavSelRange = "{33051, 0}";
-			sepNavVisRect = "{{0, 16222}, {853, 304}}";
+			sepNavIntBoundsRect = "{{0, 0}, {571, 27108}}";
+			sepNavSelRange = "{33080, 0}";
+			sepNavVisRect = "{{0, 16059}, {571, 630}}";
 			sepNavWindowFrame = "{{314, 43}, {610, 703}}";
 		};
 	};
 	E1B132610B180B2F002EB674 /* ExeProcessor.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {884, 6264}}";
-			sepNavSelRange = "{6990, 0}";
-			sepNavVisRect = "{{0, 2631}, {522, 630}}";
+			sepNavIntBoundsRect = "{{0, 0}, {884, 6216}}";
+			sepNavSelRange = "{14645, 0}";
+			sepNavVisRect = "{{0, 5163}, {522, 630}}";
 			sepNavWindowFrame = "{{434, 43}, {561, 703}}";
 		};
 	};
 	E1B132620B180B66002EB674 /* PPCProcessor.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {668, 21540}}";
-			sepNavSelRange = "{18365, 0}";
-			sepNavVisRect = "{{0, 9440}, {577, 630}}";
+			sepNavIntBoundsRect = "{{0, 0}, {853, 21540}}";
+			sepNavSelRange = "{15608, 0}";
+			sepNavVisRect = "{{0, 8026}, {853, 304}}";
 			sepNavWindowFrame = "{{383, 43}, {616, 703}}";
 		};
 	};

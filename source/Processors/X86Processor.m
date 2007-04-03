@@ -14,7 +14,7 @@
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
-#define REUSE_BLOCKS		1
+#define REUSE_BLOCKS	1
 
 // ============================================================================
 
@@ -1331,8 +1331,8 @@
 		return nil;
 
 	// Get at the selector.
-	UInt8	selType		= PointerType;
-	char*	selPtr		= GetPointer(selectorAddy, &selType);
+	UInt8	selType	= PointerType;
+	char*	selPtr	= GetPointer(selectorAddy, &selType);
 
 	switch (selType)
 	{
@@ -1996,7 +1996,7 @@
 		{
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
-			if (/*REG2(modRM) != EBP ||*/ !HAS_SIB(modRM))
+			if (!HAS_SIB(modRM))
 				break;
 
 			SInt8	offset	= 0;
@@ -2072,8 +2072,7 @@
 			continue;
 
 		// Update machine state.
-		MachineState	machState	=
-			funcInfo->blocks[i].state;
+		MachineState	machState	= funcInfo->blocks[i].state;
 
 		memcpy(mRegInfos, machState.regInfos,
 			sizeof(GPRegisterInfo) * 8);
@@ -2166,7 +2165,7 @@
 	if (opcode == 0x55)	// pushl %ebp
 		isFunction	= true;
 	else
-	{
+	{	// Check for the first instruction in this section.
 		Line*	thePrevLine	= inLine->prev;
 
 		while (thePrevLine)
@@ -2428,7 +2427,7 @@
 	*outList	= [self searchForNopsIn: (unsigned char*)mTextSect.contents
 		ofLength: mTextSect.size numFound: outFound];
 
-	return *outFound != 0;
+	return (*outFound != 0);
 }
 
 //	searchForNopsIn:ofLength:numFound:
@@ -2440,13 +2439,13 @@
 						  ofLength: (UInt32)inHaystackLength
 						  numFound: (UInt32*)outFound;
 {
-	unsigned char**	foundList			= nil;
-	unsigned char	searchString[4]	= {0x00, 0x55, 0x89, 0xe5};
+	unsigned char**	foundList		= nil;
 	unsigned char*	current;
+	unsigned char	searchString[4]	= {0x00, 0x55, 0x89, 0xe5};
 
 	*outFound	= 0;
 
-	// loop thru haystack
+	// Loop thru haystack
 	for (current = inHaystack;
 		 current <= inHaystack + inHaystackLength - 4;
 		 current++)
@@ -2454,13 +2453,13 @@
 		if (memcmp(current, searchString, 4) != 0)
 			continue;
 
-		// Match for common benign occurences
+		// Match and bail for common benign occurences.
 		if (*(current - 4) == 0xe8	||	// calll
 			*(current - 4) == 0xe9	||	// jmpl
 			*(current - 2) == 0xc2)		// ret
 			continue;
 
-		// Match for (not) common malignant occurences
+		// Match and bail for (not) common malignant occurences.
 		if (*(current - 7) != 0xe8	&&	// calll
 			*(current - 5) != 0xe8	&&	// calll
 			*(current - 7) != 0xe9	&&	// jmpl
@@ -2615,8 +2614,7 @@
 
 	[newURL autorelease];
 
-	if (![newFile writeToURL: newURL options: NSAtomicWrite
-		error: &error])
+	if (![newFile writeToURL: newURL options: NSAtomicWrite error: &error])
 	{
 		if (error)
 			fprintf(stderr, "otx: -[X86Processor fixNops]: "
@@ -2637,7 +2635,7 @@
 	if (!fileAttrs)
 	{
 		fprintf(stderr, "otx: -[X86Processor fixNops]: "
-			"unable to read attributes from executable\n");
+			"unable to read attributes from executable.\n");
 		return nil;
 	}
 
@@ -2648,7 +2646,7 @@
 	if (![fileMan changeFileAttributes: permsDict atPath: [newURL path]])
 	{
 		fprintf(stderr, "otx: -[X86Processor fixNops]: "
-			"unable to change file permissions for fixed executable\n");
+			"unable to change file permissions for fixed executable.\n");
 	}
 
 	// Return fixed file.

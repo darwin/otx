@@ -15,13 +15,6 @@
 #define	kPrefsAnimationTime	0.10
 #define	kMainAnimationTime	0.15
 
-#define kPolishedLightRed	0.800
-#define kPolishedLightGreen	0.800
-#define kPolishedLightBlue	0.810
-#define kPolishedDarkRed	0.670
-#define kPolishedDarkGreen	0.670
-#define kPolishedDarkBlue	0.680
-
 #define NSXViewAnimationCustomEffectsKey	@"NSXViewAnimationCustomEffectsKey"
 
 #define NSXViewAnimationSwapAtBeginningEffect				(1 << 0)
@@ -87,7 +80,6 @@
 
 // prefs window
 	IBOutlet NSWindow*				mPrefsWindow;
-//	IBOutlet NSSegmentedControl*	mPrefsViewPicker;
 	IBOutlet NSView*				mPrefsGeneralView;
 	IBOutlet NSView*				mPrefsOutputView;
 
@@ -110,7 +102,6 @@
 	NSColor*					mPolishedLightColor;
 	NSColor*					mPolishedDarkColor;
 	NSShadow*					mTextShadow;
-//	GradientData				mGradientData;
 }
 
 - (SInt32)checkOtool;
