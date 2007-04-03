@@ -135,6 +135,16 @@
 			E12A0DB00BC20EED00F29774 /* PBXTextBookmark */ = E12A0DB00BC20EED00F29774 /* PBXTextBookmark */;
 			E12A0DB30BC20EED00F29774 /* PBXTextBookmark */ = E12A0DB30BC20EED00F29774 /* PBXTextBookmark */;
 			E12A0DB40BC20EED00F29774 /* PBXTextBookmark */ = E12A0DB40BC20EED00F29774 /* PBXTextBookmark */;
+			E12A0E160BC22F8B00F29774 /* PBXTextBookmark */ = E12A0E160BC22F8B00F29774 /* PBXTextBookmark */;
+			E12A0E170BC22F8B00F29774 /* PBXTextBookmark */ = E12A0E170BC22F8B00F29774 /* PBXTextBookmark */;
+			E12A0E180BC22F8B00F29774 /* PBXTextBookmark */ = E12A0E180BC22F8B00F29774 /* PBXTextBookmark */;
+			E12A0E190BC22F8B00F29774 /* PBXTextBookmark */ = E12A0E190BC22F8B00F29774 /* PBXTextBookmark */;
+			E12A0E1A0BC22F8B00F29774 /* PBXTextBookmark */ = E12A0E1A0BC22F8B00F29774 /* PBXTextBookmark */;
+			E12A0E1B0BC22F8B00F29774 /* PBXTextBookmark */ = E12A0E1B0BC22F8B00F29774 /* PBXTextBookmark */;
+			E12A0E1C0BC22F8B00F29774 /* PBXTextBookmark */ = E12A0E1C0BC22F8B00F29774 /* PBXTextBookmark */;
+			E12A0E1D0BC22F8B00F29774 /* PBXTextBookmark */ = E12A0E1D0BC22F8B00F29774 /* PBXTextBookmark */;
+			E12A0E1E0BC22F8B00F29774 /* PBXTextBookmark */ = E12A0E1E0BC22F8B00F29774 /* PBXTextBookmark */;
+			E12A0E210BC22F8B00F29774 /* PBXTextBookmark */ = E12A0E210BC22F8B00F29774 /* PBXTextBookmark */;
 		};
 		sourceControlManager = E1C3BA5209A957E100B38A4D /* Source Control */;
 		userBuildSettings = {
@@ -315,7 +325,7 @@
 		isa = PBXTextBookmark;
 		fRef = E1B1325E0B180B25002EB674 /* ExeProcessor.m */;
 		rLen = 0;
-		rLoc = 2147483647;
+		rLoc = "-2147483641";
 		rType = 0;
 	};
 	E12A0D870BC1E97600F29774 /* PBXTextBookmark */ = {
@@ -428,7 +438,7 @@
 		fRef = E1B1325E0B180B25002EB674 /* ExeProcessor.m */;
 		name = "variadic variant detected";
 		rLen = 25;
-		rLoc = 33147;
+		rLoc = 33153;
 		rType = 0;
 		vrLen = 1336;
 		vrLoc = 32452;
@@ -472,6 +482,103 @@
 		rType = 0;
 		vrLen = 1929;
 		vrLoc = 6840;
+	};
+	E12A0E160BC22F8B00F29774 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E16222240A4F80F4007ECB26 /* Optimizations.h */;
+		name = "Optimizations.h: GetPointerSel";
+		rLen = 0;
+		rLoc = 3486;
+		rType = 0;
+		vrLen = 1257;
+		vrLoc = 2894;
+	};
+	E12A0E170BC22F8B00F29774 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B1325E0B180B25002EB674 /* ExeProcessor.m */;
+		name = send_variadic;
+		rLen = 13;
+		rLoc = 33067;
+		rType = 0;
+		vrLen = 509;
+		vrLoc = 32807;
+	};
+	E12A0E180BC22F8B00F29774 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132620B180B66002EB674 /* PPCProcessor.m */;
+		name = send_variadic;
+		rLen = 13;
+		rLoc = 15703;
+		rType = 0;
+		vrLen = 565;
+		vrLoc = 15338;
+	};
+	E12A0E190BC22F8B00F29774 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		rLen = 13;
+		rLoc = 28899;
+		rType = 0;
+	};
+	E12A0E1A0BC22F8B00F29774 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B1325E0B180B25002EB674 /* ExeProcessor.m */;
+		name = sendTypeFromMsgSend;
+		rLen = 19;
+		rLoc = 32582;
+		rType = 0;
+		vrLen = 506;
+		vrLoc = 32263;
+	};
+	E12A0E1B0BC22F8B00F29774 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E16222240A4F80F4007ECB26 /* Optimizations.h */;
+		name = "Optimizations.h: GetPointerSel";
+		rLen = 0;
+		rLoc = 3486;
+		rType = 0;
+		vrLen = 1257;
+		vrLoc = 2894;
+	};
+	E12A0E1C0BC22F8B00F29774 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B1325E0B180B25002EB674 /* ExeProcessor.m */;
+		name = send_variadic;
+		rLen = 13;
+		rLoc = 33067;
+		rType = 0;
+		vrLen = 509;
+		vrLoc = 32807;
+	};
+	E12A0E1D0BC22F8B00F29774 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132620B180B66002EB674 /* PPCProcessor.m */;
+		name = send_variadic;
+		rLen = 13;
+		rLoc = 15703;
+		rType = 0;
+		vrLen = 565;
+		vrLoc = 15338;
+	};
+	E12A0E1E0BC22F8B00F29774 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = "X86Processor.m: 1300";
+		rLen = 0;
+		rLoc = 28916;
+		rType = 0;
+		vrLen = 519;
+		vrLoc = 28593;
+	};
+	E12A0E210BC22F8B00F29774 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E1B132660B180BAC002EB674 /* X86Processor.m */;
+		name = "X86Processor.m: 1300";
+		rLen = 0;
+		rLoc = 28916;
+		rType = 0;
+		vrLen = 519;
+		vrLoc = 28593;
 	};
 	E13539810A68178D00CBDDE5 /* SyscallStrings.h */ = {
 		uiCtxt = {
@@ -517,7 +624,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {632, 1908}}";
 			sepNavSelRange = "{3486, 0}";
-			sepNavVisRect = "{{0, 640}, {611, 173}}";
+			sepNavVisRect = "{{0, 611}, {611, 230}}";
 			sepNavWindowFrame = "{{300, 44}, {718, 702}}";
 		};
 	};
@@ -639,25 +746,25 @@
 	};
 	E1B1325E0B180B25002EB674 /* ExeProcessor.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {571, 27108}}";
-			sepNavSelRange = "{33080, 0}";
-			sepNavVisRect = "{{0, 16059}, {571, 630}}";
+			sepNavIntBoundsRect = "{{0, 0}, {611, 27108}}";
+			sepNavSelRange = "{33187, 0}";
+			sepNavVisRect = "{{0, 16235}, {611, 230}}";
 			sepNavWindowFrame = "{{314, 43}, {610, 703}}";
 		};
 	};
 	E1B132610B180B2F002EB674 /* ExeProcessor.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {884, 6216}}";
-			sepNavSelRange = "{14645, 0}";
-			sepNavVisRect = "{{0, 5163}, {522, 630}}";
+			sepNavSelRange = "{7372, 15}";
+			sepNavVisRect = "{{0, 2607}, {522, 630}}";
 			sepNavWindowFrame = "{{434, 43}, {561, 703}}";
 		};
 	};
 	E1B132620B180B66002EB674 /* PPCProcessor.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {853, 21540}}";
-			sepNavSelRange = "{15608, 0}";
-			sepNavVisRect = "{{0, 8026}, {853, 304}}";
+			sepNavIntBoundsRect = "{{0, 0}, {668, 21540}}";
+			sepNavSelRange = "{16916, 13}";
+			sepNavVisRect = "{{0, 8819}, {611, 230}}";
 			sepNavWindowFrame = "{{383, 43}, {616, 703}}";
 		};
 	};
@@ -671,9 +778,9 @@
 	};
 	E1B132660B180BAC002EB674 /* X86Processor.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {611, 31908}}";
-			sepNavSelRange = "{466, 0}";
-			sepNavVisRect = "{{0, 184}, {611, 173}}";
+			sepNavIntBoundsRect = "{{0, 0}, {611, 31884}}";
+			sepNavSelRange = "{28916, 0}";
+			sepNavVisRect = "{{0, 15467}, {611, 230}}";
 			sepNavWindowFrame = "{{305, 43}, {647, 703}}";
 		};
 	};

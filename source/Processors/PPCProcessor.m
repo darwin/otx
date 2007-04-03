@@ -682,8 +682,8 @@
 	UInt8	sendType	= SendTypeFromMsgSend(outComment);
 
 	// Bail for variadics.
-	if (sendType == send_variadic)
-		return nil;
+//	if (sendType == send_variadic)
+//		return nil;
 
 	UInt32	selectorRegNum	=
 		(sendType == sendSuper_stret || sendType == send_stret) ? 5 : 4;
@@ -742,8 +742,8 @@
 	UInt8	sendType	= SendTypeFromMsgSend(ioComment);
 
 	// Bail on variadic calls.
-	if (sendType == send_variadic)
-		return;
+//	if (sendType == send_variadic)
+//		return;
 
 	// Get the address of the class name string, if this a class method.
 	UInt32	classNameAddy	= 0;

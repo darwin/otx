@@ -1296,8 +1296,8 @@
 	UInt32	sendType	= SendTypeFromMsgSend(outComment);
 
 	// Bail for variadics.
-	if (sendType == send_variadic)
-		return nil;
+//	if (sendType == send_variadic)
+//		return nil;
 
 	UInt32	receiverAddy;
 	UInt32	selectorAddy;
