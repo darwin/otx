@@ -1358,12 +1358,8 @@
 			sendType	= send_rtp;
 		else if (strstr(inString, "_fpret"))
 			sendType	= send_fpret;
-		else	// Holy va_list!
-//		{
+		else
 			sendType	= send_variadic;
-//			fprintf(stderr, "otx: [ExeProcessor sendTypeFromMsgSend]:"
-//				"variadic variant detected.\n");
-//		}
 	}
 
 	return sendType;

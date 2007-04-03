@@ -1294,11 +1294,6 @@
 
 	// Store the variant type locally to reduce string comparisons.
 	UInt32	sendType	= SendTypeFromMsgSend(outComment);
-
-	// Bail for variadics.
-//	if (sendType == send_variadic)
-//		return nil;
-
 	UInt32	receiverAddy;
 	UInt32	selectorAddy;
 
