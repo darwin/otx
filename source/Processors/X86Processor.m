@@ -1415,7 +1415,6 @@
 			{
 				case PointerType:
 					className	= classNamePtr;
-
 					break;
 
 				case OCGenericType:
@@ -1431,8 +1430,9 @@
 
 					break;
 
-				// Receiver can be a static string in these sections, but we
+				// Receiver can be a static string or pointer in these sections, but we
 				// only want to display class names as receivers.
+				case DataGenericType:
 				case CFStringType:
 				case ImpPtrType:
 				case OCStrObjectType:
