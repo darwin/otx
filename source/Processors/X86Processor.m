@@ -392,6 +392,7 @@
 		case 0x88:	// movb	r8,r/m8
 		case 0x89:	// movl	r32,r/m32
 		case 0x8b:	// movl	r/m32,r32
+		case 0xc6:	// movb imm8,r/m32
 			sscanf(&inLine->info.code[2], "%02hhx", &modRM);
 
 			// In immediate group 1 we only want cmpl
@@ -1464,6 +1465,7 @@
 			{
 				case send:
 				case send_fpret:
+				case send_variadic:
 					formatString	= "-%s[(%%esp,1) %s]";
 					break;
 
@@ -1483,8 +1485,9 @@
 					break;
 			}
 
-			snprintf(ioComment, MAX_COMMENT_LENGTH - 1, formatString,
-				returnTypeString, selString);
+			if (formatString)
+				snprintf(ioComment, MAX_COMMENT_LENGTH - 1, formatString,
+					returnTypeString, selString);
 		}
 	}
 	else if (!strncmp(ioComment, "_objc_assign_ivar", 17))
