@@ -787,8 +787,9 @@
 
 				break;
 
-			// Receiver can be a static string in these sections, but we
+			// Receiver can be a static string or pointer in these sections, but we
 			// only want to display class names as receivers.
+			case DataGenericType:
 			case CFStringType:
 			case ImpPtrType:
 			case OCStrObjectType:
@@ -824,6 +825,7 @@
 		{
 			case send:
 			case send_rtp:
+			case send_variadic:
 				formatString	= "-%s[r3 %s]";
 				break;
 
@@ -843,8 +845,9 @@
 				break;
 		}
 
-		snprintf(tempComment, MAX_COMMENT_LENGTH - 1, formatString,
-			returnTypeString, selString);
+		if (formatString)
+			snprintf(tempComment, MAX_COMMENT_LENGTH - 1, formatString,
+				returnTypeString, selString);
 	}
 
 	if (tempComment[0])
