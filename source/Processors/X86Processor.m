@@ -36,8 +36,8 @@
 		mFieldWidths.offset			= 8;
 		mFieldWidths.address		= 10;
 		mFieldWidths.instruction	= 24;
-		mFieldWidths.mnemonic		= 12;
-		mFieldWidths.operands		= 29;
+		mFieldWidths.mnemonic		= 12;	// repnz/scasb
+		mFieldWidths.operands		= 30;	// 0x00000000(%eax,%eax,4),%xmm0
 	}
 
 	return self;
