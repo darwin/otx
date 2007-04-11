@@ -10,6 +10,8 @@
 #import "CLIController.h"
 #endif
 
+// svn requires me to type this in order to delete files. wtf.
+
 // ============================================================================
 
 int main(
