@@ -82,7 +82,9 @@
 	{
 		UInt32	newNextAddy	= AddressFromLine(nextLine->chars);
 
-		if (newNextAddy > thisAddy && newNextAddy <= thisAddy + 12)
+		// I've never seen a valid instruction longer than 12 bytes, but
+		// encrypted code can contain invalid instructions up to 14 bytes long.
+		if (newNextAddy > thisAddy && newNextAddy <= thisAddy + 14)
 			nextAddy	= newNextAddy;
 	}
 
@@ -93,7 +95,7 @@
 	char			formatString[50];
 	char*			theMachPtr			= (char*)mMachHeaderPtr;
 	char*			byteFormat			= "%02x";
-	UInt8			byteFormatLength	= strlen(byteFormat);
+	UInt8			byteFormatLength	= strlen(byteFormat);	// FIXME: hardcode this for speed
 	UInt8			formatMarker		= 0;
 	UInt8			i;
 
