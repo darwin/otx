@@ -10,7 +10,7 @@
 #import "StolenDefs.h"
 #import "Optimizations.h"
 #import "ProgressReporter.h"
-#import "Selectors.h"
+//#import "Selectors.h"
 
 /*	GPRegisterInfo
 
@@ -496,7 +496,7 @@ MethodInfo_Compare_Swapped(
 	return (imp1 > imp2);
 }
 
-static int
+/*static int
 CheckedString_Compare(
 	CheckedString*	cs1,
 	CheckedString*	cs2)
@@ -505,7 +505,7 @@ CheckedString_Compare(
 		return -1;
 
 	return (cs1->crc > cs2->crc);
-}
+}*/
 
 static void
 swap_method_info(

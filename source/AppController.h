@@ -5,7 +5,7 @@
 */
 
 #import "DropBox.h"
-#import "GradientImage.h"
+//#import "GradientImage.h"
 #import "ProgressReporter.h"
 
 #define kOutputTextTag		100
