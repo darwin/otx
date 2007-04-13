@@ -95,7 +95,7 @@
 	char			formatString[50];
 	char*			theMachPtr			= (char*)mMachHeaderPtr;
 	char*			byteFormat			= "%02x";
-	UInt8			byteFormatLength	= strlen(byteFormat);	// FIXME: hardcode this for speed
+	UInt8			byteFormatLength	= 4;	// hardcoded for speed
 	UInt8			formatMarker		= 0;
 	UInt8			i;
 
