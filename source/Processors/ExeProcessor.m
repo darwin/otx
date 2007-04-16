@@ -1374,7 +1374,7 @@
 	char		md5Line[MAX_MD5_LINE];
 	char		finalLine[MAX_MD5_LINE];
 	NSString*	md5CommandString	= [NSString stringWithFormat:
-		@"md5 -q '%@'", [mOFile path]];
+		@"md5 -q \"%@\"", [mOFile path]];
 	FILE*		md5Pipe				= popen(UTF8STRING(md5CommandString), "r");
 
 	if (!md5Pipe)

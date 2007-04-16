@@ -769,7 +769,7 @@
 	}
 
 	NSString*	lipoString	= [NSString stringWithFormat:
-		@"lipo '%@' -output '%@' -thin %s", [mOFile path], theThinOutputPath,
+		@"lipo \"%@\" -output \"%@\" -thin %s", [mOFile path], theThinOutputPath,
 		(mArchSelector == CPU_TYPE_POWERPC) ? "ppc" : "i386"];
     
 	if (system(UTF8STRING(lipoString)) != 0)
@@ -1125,7 +1125,7 @@
     return retcode;
 #else
 	NSString*	otoolString	= [NSString stringWithFormat:
-		@"otool -h '%@' > /dev/null", [mOFile path]];    
+		@"otool -h \"%@\" > /dev/null", [mOFile path]];    
 
 	return system(UTF8STRING(otoolString));
 #endif
