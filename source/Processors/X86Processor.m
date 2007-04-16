@@ -1701,15 +1701,29 @@
 
 	switch (opcode)
 	{
-		// pop stack into general registers. For now, just wipe em.
-		case 0x58:
-		case 0x59:
-		case 0x5a:
-		case 0x5b:
-		case 0x5c:
-		case 0x5d:
-		case 0x5e:
-		case 0x5f:
+		// pop stack into thunk registers.
+		case 0x58:	// eax
+		case 0x59:	// ecx
+		case 0x5a:	// edx
+		case 0x5b:	// ebx
+			mRegInfos[REG2(opcode)]	= (GPRegisterInfo){0};
+
+			if (inLine->prev &&
+				(inLine->prev->info.code[0] == 'e') &&
+				(inLine->prev->info.code[1] == '8') &&
+				(strtoul(&inLine->prev->info.code[2], nil, 16) == 0))
+			{
+				mRegInfos[REG2(opcode)].value	= inLine->info.address;
+				mRegInfos[REG2(opcode)].isValid	= true;
+			}
+
+			break;
+
+		// pop stack into non-thunk registers. Wipe em.
+		case 0x5c:	// esp
+		case 0x5d:	// ebp
+		case 0x5e:	// esi
+		case 0x5f:	// edi
 			mRegInfos[REG2(opcode)]	= (GPRegisterInfo){0};
 
 			break;
