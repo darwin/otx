@@ -12,6 +12,7 @@
 		E125C39D0A86B2D000098114 /* App Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = E125C39C0A86B2D000098114 /* App Icon.icns */; };
 		E13539830A6817C700CBDDE5 /* ObjcSwap.c in Sources */ = {isa = PBXBuildFile; fileRef = E13539820A6817C700CBDDE5 /* ObjcSwap.c */; };
 		E145F6D30B437F5900615A16 /* SmoothViewAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E145F6D20B437F5900615A16 /* SmoothViewAnimation.m */; };
+		E147F8FC0BD5F2AF00F0B657 /* Main Window Background.tif in Resources */ = {isa = PBXBuildFile; fileRef = E147F8FB0BD5F2AE00F0B657 /* Main Window Background.tif */; };
 		E172D5190A74874100C85E7A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* Info.plist */; };
 		E182007209AE4CD800584B07 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = E182007009AE4CD800584B07 /* AppController.m */; };
 		E1978C9E0AC603A40096EE62 /* Help in Resources */ = {isa = PBXBuildFile; fileRef = E1978C6A0AC603A40096EE62 /* Help */; };
@@ -39,7 +40,6 @@
 		E1B135E50B185123002EB674 /* ObjcAccessors.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B135E30B185122002EB674 /* ObjcAccessors.m */; };
 		E1B1361F0B192AAC002EB674 /* ArchSpecifics.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B1361E0B192AAC002EB674 /* ArchSpecifics.m */; };
 		E1B136200B192AAC002EB674 /* ArchSpecifics.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B1361E0B192AAC002EB674 /* ArchSpecifics.m */; };
-		E1CB33E30BAE309700DAD44D /* Main Window Background.tif in Resources */ = {isa = PBXBuildFile; fileRef = E1CB33E20BAE309600DAD44D /* Main Window Background.tif */; };
 		E1CB34440BAF828F00DAD44D /* Prefs General Icon.tif in Resources */ = {isa = PBXBuildFile; fileRef = E1CB34430BAF828E00DAD44D /* Prefs General Icon.tif */; };
 		E1CB347F0BAFB54600DAD44D /* Prefs Output Icon.tif in Resources */ = {isa = PBXBuildFile; fileRef = E1CB347E0BAFB54500DAD44D /* Prefs Output Icon.tif */; };
 		E1F81AC50AE1EE02003D8E2C /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */; };
@@ -95,6 +95,7 @@
 		E13539900A68185500CBDDE5 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AppController.h; path = source/AppController.h; sourceTree = "<group>"; };
 		E145F6D10B437F5900615A16 /* SmoothViewAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SmoothViewAnimation.h; path = source/SmoothViewAnimation.h; sourceTree = "<group>"; };
 		E145F6D20B437F5900615A16 /* SmoothViewAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SmoothViewAnimation.m; path = source/SmoothViewAnimation.m; sourceTree = "<group>"; };
+		E147F8FB0BD5F2AE00F0B657 /* Main Window Background.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "Main Window Background.tif"; sourceTree = "<group>"; };
 		E16222240A4F80F4007ECB26 /* Optimizations.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Optimizations.h; path = source/Optimizations.h; sourceTree = "<group>"; };
 		E182007009AE4CD800584B07 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppController.m; path = source/AppController.m; sourceTree = "<group>"; wrapsLines = 0; };
 		E1978C6B0AC603A40096EE62 /* English */ = {isa = PBXFileReference; lastKnownFileType = folder; name = English; path = English.lproj/Help; sourceTree = "<group>"; };
@@ -132,7 +133,6 @@
 		E1B1361E0B192AAC002EB674 /* ArchSpecifics.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ArchSpecifics.m; path = source/Categories/ArchSpecifics.m; sourceTree = "<group>"; };
 		E1B136210B192ABE002EB674 /* ArchSpecifics.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ArchSpecifics.h; path = source/Categories/ArchSpecifics.h; sourceTree = "<group>"; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
-		E1CB33E20BAE309600DAD44D /* Main Window Background.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "Main Window Background.tif"; sourceTree = "<group>"; };
 		E1CB34430BAF828E00DAD44D /* Prefs General Icon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "Prefs General Icon.tif"; sourceTree = "<group>"; };
 		E1CB347E0BAFB54500DAD44D /* Prefs Output Icon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "Prefs Output Icon.tif"; sourceTree = "<group>"; };
 		E1F483530B38DB4200CECE18 /* SharedDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharedDefs.h; path = source/SharedDefs.h; sourceTree = "<group>"; };
@@ -257,7 +257,7 @@
 			isa = PBXGroup;
 			children = (
 				E125C39C0A86B2D000098114 /* App Icon.icns */,
-				E1CB33E20BAE309600DAD44D /* Main Window Background.tif */,
+				E147F8FB0BD5F2AE00F0B657 /* Main Window Background.tif */,
 				E1CB34430BAF828E00DAD44D /* Prefs General Icon.tif */,
 				E1CB347E0BAFB54500DAD44D /* Prefs Output Icon.tif */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -445,9 +445,9 @@
 				E172D5190A74874100C85E7A /* Info.plist in Resources */,
 				E125C39D0A86B2D000098114 /* App Icon.icns in Resources */,
 				E1978C9E0AC603A40096EE62 /* Help in Resources */,
-				E1CB33E30BAE309700DAD44D /* Main Window Background.tif in Resources */,
 				E1CB34440BAF828F00DAD44D /* Prefs General Icon.tif in Resources */,
 				E1CB347F0BAFB54600DAD44D /* Prefs Output Icon.tif in Resources */,
+				E147F8FC0BD5F2AF00F0B657 /* Main Window Background.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

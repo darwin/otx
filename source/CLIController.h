@@ -31,8 +31,8 @@
 - (void)usage;
 - (SInt32)checkOtool;
 
-- (IBAction)processFile: (id)sender;
-- (IBAction)verifyNops: (id)sender;
+- (void)processFile;
+- (void)verifyNops;
 - (void)newPackageFile: (NSURL*)inPackageFile;
 - (void)newOFile: (NSURL*)inOFile
 	   needsPath: (BOOL)inNeedsPath;

@@ -113,7 +113,8 @@
 - (IBAction)selectArch: (id)sender;
 - (IBAction)openExe: (id)sender;
 - (IBAction)syncOutputText: (id)sender;
-- (IBAction)processFile: (id)sender;
+- (IBAction)attemptToProcessFile: (id)sender;
+- (void)processFile;
 - (void)continueProcessingFile;
 - (void)adjustInterfaceForMultiThread;
 - (void)adjustInterfaceForSingleThread;
@@ -131,6 +132,10 @@
 - (void)showProgView;
 - (void)hideProgView: (BOOL)inAnimate
 			openFile: (BOOL)inOpenFile;
+
+- (void)dupeFileAlertDidEnd: (NSAlert*)alert
+				 returnCode: (int)returnCode
+				contextInfo: (void*)contextInfo;
 
 // prefs window
 - (void)setupPrefsWindow;

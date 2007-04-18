@@ -295,14 +295,14 @@
 	[self syncSaveButton];
 }
 
-//	processFile:
+//	attemptToProcessFile:
 // ----------------------------------------------------------------------------
 
-- (IBAction)processFile: (id)sender
+- (IBAction)attemptToProcessFile: (id)sender
 {
 	if (!mOFile)
 	{
-		fprintf(stderr, "otx: [AppController processFile]: "
+		fprintf(stderr, "otx: [AppController attemptToProcessFile]: "
 			"tried to process nil object file.\n");
 		return;
 	}
@@ -349,16 +349,7 @@
 		NSString*	folderName	=
 			[[mOutputFilePath stringByDeletingLastPathComponent]
 			lastPathComponent];
-// amazing. report this.
-/*		NSAlert*	alert		= [NSAlert alertWithMessageText:
-			[NSString stringWithFormat: @"\"%@\" already exists. "
-			@"Do you want to replace it?", fileName]
-			defaultButton: @"Replace" alternateButton: @"Cancel"
-			otherButton: nil informativeTextWithFormat: @"A file or folder"
-			@" with the same name already exists in %@."
-			@" Replacing it will overwrite its current contents.", folderName];*/
-
-		NSAlert*	alert	= [[NSAlert alloc] init];
+		NSAlert*	alert		= [[NSAlert alloc] init];
 
 		[alert addButtonWithTitle: @"Replace"];
 		[alert addButtonWithTitle: @"Cancel"];
@@ -368,16 +359,22 @@
 			[NSString stringWithFormat: @"A file or folder"
 			@" with the same name already exists in %@."
 			@" Replacing it will overwrite its current contents.", folderName]];
-//		[alert beginSheetModalForWindow: mMainWindow
-//			modalDelegate: nil didEndSelector: nil contextInfo: nil];
-		[alert autorelease];
-
-//		UInt32	alertReturn	= [alert runModal];
-
-		if ([alert runModal] == NSAlertSecondButtonReturn)
-			return;
+		[alert beginSheetModalForWindow: mMainWindow
+			modalDelegate: self
+			didEndSelector: @selector(dupeFileAlertDidEnd:returnCode:contextInfo:)
+			contextInfo: nil];
 	}
+	else
+	{
+		[self processFile];
+	}
+}
 
+//	processFile
+// ----------------------------------------------------------------------------
+
+- (void)processFile
+{
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRIndeterminateKey,
 		[NSNull null], PRAnimateKey,
@@ -418,7 +415,7 @@
 			break;
 
 		default:
-			fprintf(stderr, "otx: [AppController processFile]: "
+			fprintf(stderr, "otx: [AppController continueProcessingFile]: "
 				"unknown arch type: %d", mArchSelector);
 			break;
 	}
@@ -431,8 +428,7 @@
 
 	// Save defaults into the ProcOptions struct.
 	NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
-
-	ProcOptions	opts	= {0};
+	ProcOptions		opts		= {0};
 
 	opts.localOffsets			=
 		[theDefaults boolForKey: ShowLocalOffsetsKey];
@@ -458,7 +454,7 @@
 
 	if (!theProcessor)
 	{
-		fprintf(stderr, "otx: -[AppController processFile]: "
+		fprintf(stderr, "otx: -[AppController continueProcessingFile]: "
 			"unable to create processor.\n");
 		[theProcessor release];
 		[self performSelectorOnMainThread:
@@ -472,7 +468,7 @@
 
 	if (![theProcessor processExe: mOutputFilePath])
 	{
-		fprintf(stderr, "otx: -[AppController processFile]: "
+		fprintf(stderr, "otx: -[AppController continueProcessingFile]: "
 			"unable to process %s.\n", UTF8STRING([mOFile path]));
 		[theProcessor release];
 		[self performSelectorOnMainThread:
@@ -913,7 +909,7 @@
 
 - (BOOL)validateMenuItem: (id<NSMenuItem>)menuItem
 {
-	if ([menuItem action] == @selector(processFile:))
+	if ([menuItem action] == @selector(attemptToProcessFile:))
 	{
 		NSUserDefaults*	theDefaults	= [NSUserDefaults standardUserDefaults];
 
@@ -927,6 +923,21 @@
 	}
 
 	return true;
+}
+
+
+//	dupeFileAlertDidEnd:returnCode:contextInfo:
+// ----------------------------------------------------------------------------
+
+#pragma mark -
+- (void)dupeFileAlertDidEnd: (NSAlert*)alert
+				 returnCode: (int)returnCode
+				contextInfo: (void*)contextInfo
+{
+	if (returnCode == NSAlertSecondButtonReturn)
+		return;
+
+	[self processFile];
 }
 
 #pragma mark -

@@ -453,10 +453,10 @@
 }
 
 #pragma mark -
-//	processFile:
+//	processFile
 // ----------------------------------------------------------------------------
 
-- (IBAction)processFile: (id)sender
+- (void)processFile
 {
 	if (!mOFile)
 	{
@@ -467,7 +467,7 @@
 
 	if (mVerify)
 	{
-		[self verifyNops: nil];
+		[self verifyNops];
 		return;
 	}
 
@@ -530,12 +530,12 @@
 	[theProcessor release];
 }
 
-//	verifyNops:
+//	verifyNops
 // ----------------------------------------------------------------------------
 //	Create an instance of xxxProcessor to search for obfuscated nops. If any
 //	are found, let user decide to fix them or not.
 
-- (IBAction)verifyNops: (id)sender
+- (void)verifyNops
 {
 	switch (mArchSelector)
 	{

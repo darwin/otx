@@ -2,8 +2,8 @@
     IBClasses = (
         {
             ACTIONS = {
+                attemptToProcessFile = id; 
                 openExe = id; 
-                processFile = id; 
                 selectArch = id; 
                 showMainWindow = id; 
                 showPrefs = id; 
@@ -25,7 +25,6 @@
                 mPathText = NSTextField; 
                 mPrefsGeneralView = NSView; 
                 mPrefsOutputView = NSView; 
-                mPrefsViewPicker = NSSegmentedControl; 
                 mPrefsWindow = NSWindow; 
                 mProgBar = NSProgressIndicator; 
                 mProgText = NSTextField; 

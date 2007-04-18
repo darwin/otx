@@ -33,7 +33,7 @@ int main(
 	if (!controller)
 		return -1;
 
-	[controller processFile: nil];
+	[controller processFile];
 	[controller release];
 	[pool release];
 
