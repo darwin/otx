@@ -4,11 +4,11 @@
 	This file is in the public domain.
 */
 
-#define	PRIndeterminateKey	@"PRIndeterminateKey"	// NSNumber* (BOOL)
 #define	PRValueKey			@"PRValueKey"			// NSNumber* (double)
-#define	PRNewLineKey		@"PRNewLineKey"			// NSNull*	// I out-slicked myself...
-#define PRAnimateKey		@"PRAnimateKey"			// NSNull*	//  change these to BOOLs
-#define PRCompleteKey		@"PRCompleteKey"		// NSNull*	//  for readability.
+#define	PRIndeterminateKey	@"PRIndeterminateKey"	// NSNumber* (BOOL)
+#define	PRNewLineKey		@"PRNewLineKey"			// NSNumber* (BOOL)
+#define PRAnimateKey		@"PRAnimateKey"			// NSNumber* (BOOL)
+#define PRCompleteKey		@"PRCompleteKey"		// NSNumber* (BOOL)
 #define	PRDescriptionKey	@"PRDescriptionKey"		// NSString*
 
 @protocol	ProgressReporter

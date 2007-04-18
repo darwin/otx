@@ -512,7 +512,7 @@
 
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRIndeterminateKey,
-		[NSNull null], PRAnimateKey,
+		[NSNumber numberWithBool: true], PRAnimateKey,
 		@"Loading executable", PRDescriptionKey,
 		nil];
 
@@ -638,22 +638,22 @@
 		return;
 	}
 
-	NSNull*		newLine		= [inDict objectForKey: PRNewLineKey];
 	NSString*	description	= [inDict objectForKey: PRDescriptionKey];
+	NSNumber*	newLine		= [inDict objectForKey: PRNewLineKey];
 	NSNumber*	value		= [inDict objectForKey: PRValueKey];
-	NSNull*		animate		= [inDict objectForKey: PRAnimateKey];
-	NSNull*		complete	= [inDict objectForKey: PRCompleteKey];
+	NSNumber*	animate		= [inDict objectForKey: PRAnimateKey];
+	NSNumber*	complete	= [inDict objectForKey: PRCompleteKey];
 
-	if (newLine)
+	if (newLine && [newLine boolValue])
 		fprintf(stderr, "\n");
 
 	if (description)
 		fprintf(stderr, "%s", UTF8STRING(description));
 
-	if (value || animate)
+	if (value || (animate && [animate boolValue]))
 		fprintf(stderr, ".");
 
-	if (complete)
+	if (complete && [complete boolValue])
 		fprintf(stderr, "\n");
 }
 

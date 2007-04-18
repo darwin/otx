@@ -220,8 +220,8 @@
 
 	NSMutableDictionary*	progDict	=
 		[[NSMutableDictionary alloc] initWithObjectsAndKeys:
-		[NSNull null], PRNewLineKey,
-		[NSNull null], PRAnimateKey,
+		[NSNumber numberWithBool: true], PRNewLineKey,
+		[NSNumber numberWithBool: true], PRAnimateKey,
 		@"Calling otool", PRDescriptionKey,
 		nil];
 
@@ -232,8 +232,8 @@
 	[self populateLineLists];
 
 	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-		[NSNull null], PRNewLineKey,
-		[NSNull null], PRAnimateKey,
+		[NSNumber numberWithBool: true], PRNewLineKey,
+		[NSNumber numberWithBool: true], PRAnimateKey,
 		@"Gathering info", PRDescriptionKey,
 		nil];
 
@@ -255,7 +255,7 @@
 	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: false], PRIndeterminateKey,
 		[NSNumber numberWithDouble: progValue], PRValueKey,
-		[NSNull null], PRNewLineKey,
+		[NSNumber numberWithBool: true], PRNewLineKey,
 		@"Generating file", PRDescriptionKey,
 		nil];
 
@@ -296,8 +296,8 @@
 
 	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRIndeterminateKey,
-		[NSNull null], PRNewLineKey,
-		[NSNull null], PRAnimateKey,
+		[NSNumber numberWithBool: true], PRNewLineKey,
+		[NSNumber numberWithBool: true], PRAnimateKey,
 		@"Writing file", PRDescriptionKey,
 		nil];
 
@@ -320,7 +320,7 @@
 	}
 
 	progDict	= [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-		[NSNull null], PRCompleteKey,
+		[NSNumber numberWithBool: true], PRCompleteKey,
 		nil];
 	[mController performSelectorOnMainThread: @selector(reportProgress:)
 		withObject: progDict waitUntilDone: true];
@@ -336,7 +336,7 @@
 {
 	// Create a progState for nudging the barber pole between otool calls.
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
-		[NSNull null], PRAnimateKey,
+		[NSNumber numberWithBool: true], PRAnimateKey,
 		nil];
 
 	[mController performSelectorOnMainThread: @selector(reportProgress:)
@@ -490,7 +490,7 @@
 	Line*			theLine		= mPlainLineListHead;
 	UInt32			progCounter	= 0;
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
-		[NSNull null], PRAnimateKey,
+		[NSNumber numberWithBool: true], PRAnimateKey,
 		nil];
 
 	while (theLine)

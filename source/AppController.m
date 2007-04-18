@@ -377,7 +377,7 @@
 {
 	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
 		[NSNumber numberWithBool: true], PRIndeterminateKey,
-		[NSNull null], PRAnimateKey,
+		[NSNumber numberWithBool: true], PRAnimateKey,
 		@"Loading executable", PRDescriptionKey,
 		nil];
 
@@ -1319,7 +1319,7 @@
 	NSString*	description		= [inDict objectForKey: PRDescriptionKey];
 	NSNumber*	indeterminate	= [inDict objectForKey: PRIndeterminateKey];
 	NSNumber*	value			= [inDict objectForKey: PRValueKey];
-	NSNull*		animate			= [inDict objectForKey: PRAnimateKey];
+	NSNumber*	animate			= [inDict objectForKey: PRAnimateKey];
 
 	if (description)
 	{
@@ -1333,7 +1333,7 @@
 	if (value)
 		[mProgBar setDoubleValue: [value doubleValue]];
 
-	if (animate)
+	if (animate && [animate boolValue])
 		[mProgBar animate: self];
 
 	// This is a workaround for the bug mentioned by Mike Ash here:
