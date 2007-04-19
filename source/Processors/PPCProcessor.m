@@ -713,8 +713,9 @@
 			break;
 
 		default:
-			fprintf(stderr, "otx: [PPCProcessor commentForMsgSend]: "
-				"unsupported selector type: %d\n", selType);
+			fprintf(stderr, "otx: [PPCProcessor selectorForMsgSend:fromLine:]: "
+				"unsupported selector type: %d at address: 0x%x\n",
+				selType, inLine->info.address);
 
 			break;
 	}

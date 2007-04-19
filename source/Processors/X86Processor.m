@@ -1354,7 +1354,8 @@
 
 		default:
 			fprintf(stderr, "otx: [X86Processor selectorForMsgSend:fromLine:]: "
-				"unsupported selector type: %d\n", selType);
+				"unsupported selector type: %d at address: 0x%x\n",
+				selType, inLine->info.address);
 
 			break;
 	}
