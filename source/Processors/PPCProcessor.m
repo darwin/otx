@@ -769,9 +769,17 @@
 
 		switch (classNameType)
 		{
+			// Receiver can be a static string or pointer in these sections, but we
+			// only want to display class names as receivers.
+			case DataGenericType:
+			case DataConstType:
+			case CFStringType:
+			case ImpPtrType:
+			case OCStrObjectType:
+				break;
+
 			case PointerType:
 				className	= classNamePtr;
-
 				break;
 
 			case OCGenericType:
@@ -785,14 +793,6 @@
 					className	= GetPointer(namePtrValue, nil);
 				}
 
-				break;
-
-			// Receiver can be a static string or pointer in these sections, but we
-			// only want to display class names as receivers.
-			case DataGenericType:
-			case CFStringType:
-			case ImpPtrType:
-			case OCStrObjectType:
 				break;
 
 			case OCClassType:
