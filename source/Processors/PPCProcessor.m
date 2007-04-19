@@ -751,11 +751,10 @@
 			classNameAddy	= mRegInfos[3].value;
 	}
 
+	char*	className			= nil;
 	char*	returnTypeString	=
 		(sendType == sendSuper_stret || sendType == send_stret) ?
 		"(struct)" : "";
-
-	char*	className		= nil;
 	char	tempComment[MAX_COMMENT_LENGTH];
 
 	tempComment[0]	= 0;
@@ -859,14 +858,14 @@
 
 - (void)chooseLine: (Line**)ioLine
 {
-	if (!(*ioLine) || !(*ioLine)->info.isCode || !(*ioLine)->alt)
+	if (!(*ioLine) || !(*ioLine)->info.isCode ||
+		!(*ioLine)->alt || !(*ioLine)->alt->chars)
 		return;
 
 	UInt32	theCode	= strtoul(
 		(const char*)(*ioLine)->info.code, nil, 16);
 
-	if (PO(theCode) == 18	&&	// b, ba, bl, bla
-		(*ioLine)->alt->chars)
+	if (PO(theCode) == 18)	// b, ba, bl, bla
 	{
 		Line*	theNewLine	= malloc(sizeof(Line));
 
@@ -875,6 +874,8 @@
 		strncpy(theNewLine->chars, (*ioLine)->alt->chars,
 			theNewLine->length + 1);
 
+		// Swap in the verbose line and free the previous verbose lines.
+		DeleteLinesBefore((*ioLine)->alt, &mVerboseLineListHead);
 		ReplaceLine(*ioLine, theNewLine, &mPlainLineListHead);
 		*ioLine	= theNewLine;
 	}

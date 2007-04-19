@@ -22,5 +22,7 @@
 			 inList: (Line**)listHead;
 - (BOOL)printLinesFromList: (Line*)listHead;
 - (void)deleteLinesFromList: (Line*)listHead;
+- (void)deleteLinesBefore: (Line*)inLine
+				 fromList: (Line**)listHead;
 
 @end

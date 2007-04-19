@@ -40,6 +40,7 @@
 #define InsertLineBeforeFuncType				(void	(*)(id, SEL, Line*, Line*, Line**))
 #define InsertLineAfterFuncType					(void	(*)(id, SEL, Line*, Line*, Line**))
 #define ReplaceLineFuncType						(void	(*)(id, SEL, Line*, Line*, Line**))
+#define DeleteLinesBeforeFuncType				(void	(*)(id, SEL, Line*, Line**))
 #define FindSymbolByAddressFuncType				(BOOL	(*)(id, SEL, UInt32))
 #define FindClassMethodByAddressFuncType		(BOOL	(*)(id, SEL, MethodInfo**, UInt32))
 #define FindCatMethodByAddressFuncType			(BOOL	(*)(id, SEL, MethodInfo**, UInt32))
@@ -78,6 +79,7 @@
 #define InsertLineBeforeSel				@selector(insertLine:before:inList:)
 #define InsertLineAfterSel				@selector(insertLine:after:inList:)
 #define ReplaceLineSel					@selector(replaceLine:withLine:inList:)
+#define DeleteLinesBeforeSel			@selector(deleteLinesBefore:fromList:)
 #define FindSymbolByAddressSel			@selector(findSymbolByAddress:)
 #define FindClassMethodByAddressSel		@selector(findClassMethod:byAddress:)
 #define FindCatMethodByAddressSel		@selector(findCatMethod:byAddress:)
@@ -148,6 +150,8 @@
 		InsertLineAfter(self, InsertLineAfterSel, (a), (b), (c))
 #define ReplaceLine(a, b, c)													\
 		ReplaceLine(self, ReplaceLineSel, (a), (b), (c))
+#define DeleteLinesBefore(a, b)													\
+		DeleteLinesBefore(self, DeleteLinesBeforeSel, (a), (b))
 #define FindSymbolByAddress(a)													\
 		FindSymbolByAddress(self, FindSymbolByAddressSel, (a))
 #define FindClassMethodByAddress(a, b)											\

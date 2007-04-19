@@ -2160,6 +2160,8 @@
 		[self methodForSelector: InsertLineAfterSel];
 	ReplaceLine						= ReplaceLineFuncType
 		[self methodForSelector: ReplaceLineSel];
+	DeleteLinesBefore				= DeleteLinesBeforeFuncType
+		[self methodForSelector: DeleteLinesBeforeSel];
 	FindSymbolByAddress				= FindSymbolByAddressFuncType
 		[self methodForSelector: FindSymbolByAddressSel];
 	FindClassMethodByAddress		= FindClassMethodByAddressFuncType

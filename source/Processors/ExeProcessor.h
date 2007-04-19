@@ -396,9 +396,10 @@ enum {
 	BOOL	(*GetObjcDescriptionFromObject)	(id, SEL, char**, const char*, UInt8);
 	BOOL	(*GetObjcMetaClassFromClass)	(id, SEL, objc_class*, objc_class*);
 
-	void	(*InsertLineBefore)	(id, SEL, Line*, Line*, Line**);
-	void	(*InsertLineAfter)	(id, SEL, Line*, Line*, Line**);
-	void	(*ReplaceLine)		(id, SEL, Line*, Line*, Line**);
+	void	(*InsertLineBefore)		(id, SEL, Line*, Line*, Line**);
+	void	(*InsertLineAfter)		(id, SEL, Line*, Line*, Line**);
+	void	(*ReplaceLine)			(id, SEL, Line*, Line*, Line**);
+	void	(*DeleteLinesBefore)	(id, SEL, Line*, Line**);
 
 	BOOL	(*FindSymbolByAddress)		(id, SEL, UInt32);
 	BOOL	(*FindClassMethodByAddress)	(id, SEL, MethodInfo**, UInt32);

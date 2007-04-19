@@ -146,7 +146,7 @@
 //	deleteLinesFromList:
 // ----------------------------------------------------------------------------
 
-- (void)deleteLinesFromList: (Line*)listHead;
+- (void)deleteLinesFromList: (Line*)listHead
 {
 	Line*	theLine	= listHead;
 
@@ -167,6 +167,37 @@
 			theLine	= nil;
 		}
 	}
+}
+
+//	deleteLinesBefore:fromList:
+// ----------------------------------------------------------------------------
+
+- (void)deleteLinesBefore: (Line*)inLine
+				 fromList: (Line**)listHead
+{
+	Line*	theLine	= *listHead;
+
+	while (theLine)
+	{
+		if (theLine->prev)				// If there's one behind us...
+		{
+			free(theLine->prev->chars);	// delete it.
+			free(theLine->prev);
+		}
+
+		if (theLine->next && theLine->next != inLine)	// If there are more...
+			theLine	= theLine->next;	// jump to next one and continue.
+		else
+		{								// This is the last one, delete it.
+			free(theLine->chars);
+			free(theLine);
+			theLine	= nil;
+		}
+	}
+
+	// Update the head.
+	*listHead			= inLine;
+	(*listHead)->prev	= nil;
 }
 
 @end

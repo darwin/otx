@@ -1397,11 +1397,10 @@
 				classNameAddy	= mStack[0].value;
 		}
 
+		char*	className			= nil;
 		char*	returnTypeString	=
 			(sendType == sendSuper_stret || sendType == send_stret) ?
 			"(struct)" : (sendType == send_fpret) ? "(double)" : "";
-
-		char*	className		= nil;
 
 		if (classNameAddy)
 		{
@@ -1548,15 +1547,15 @@
 
 - (void)chooseLine: (Line**)ioLine
 {
-	if (!(*ioLine) || !(*ioLine)->info.isCode || !(*ioLine)->alt)
+	if (!(*ioLine) || !(*ioLine)->info.isCode ||
+		!(*ioLine)->alt || !(*ioLine)->alt->chars)
 		return;
 
 	UInt8	theCode;
 
 	sscanf((*ioLine)->info.code, "%02hhx", &theCode);
 
-	if ((theCode == 0xe8 || theCode == 0xff || theCode == 0x9a) &&
-		(*ioLine)->alt->chars)
+	if (theCode == 0xe8 || theCode == 0xff || theCode == 0x9a)
 	{
 		Line*	theNewLine	= malloc(sizeof(Line));
 
@@ -1565,6 +1564,8 @@
 		strncpy(theNewLine->chars, (*ioLine)->alt->chars,
 			theNewLine->length + 1);
 
+		// Swap in the verbose line and free the previous verbose lines.
+		DeleteLinesBefore((*ioLine)->alt, &mVerboseLineListHead);
 		ReplaceLine(*ioLine, theNewLine, &mPlainLineListHead);
 		*ioLine	= theNewLine;
 	}
