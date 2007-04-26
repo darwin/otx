@@ -1327,11 +1327,11 @@
 		[self applyShadowToText: mProgText];
 	}
 
-	if (indeterminate)
-		[mProgBar setIndeterminate: [indeterminate boolValue]];
-
 	if (value)
 		[mProgBar setDoubleValue: [value doubleValue]];
+
+	if (indeterminate)
+		[mProgBar setIndeterminate: [indeterminate boolValue]];
 
 	if (animate && [animate boolValue])
 		[mProgBar animate: self];
