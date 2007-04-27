@@ -26,7 +26,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleGetInfoString</key>
-	<string>0.15b
+	<string>0.16b
 Public Domain</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>Help</string>
@@ -47,7 +47,7 @@ Public Domain</string>
 	<key>CFBundleSignature</key>
 	<string>ot++</string>
 	<key>CFBundleVersion</key>
-	<string>287</string>
+	<string>288</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>The otx project and all original otx source files are in the public domain.</string>
 	<key>NSMainNibFile</key>
