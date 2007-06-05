@@ -79,8 +79,10 @@
 {
 	UInt32	theCode	= strtoul(inLine->info.code, nil, 16);
 
+// FIXME the following fixed swappage reveals bugs from later on.
+
 	if (mSwapped)
-		OSSwapInt32(theCode);
+		theCode	= OSSwapInt32(theCode);
 
 	char*	theDummyPtr	= nil;
 	char*	theSymPtr	= nil;
