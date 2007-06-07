@@ -81,8 +81,17 @@
 
 // FIXME the following fixed swappage reveals bugs from later on.
 
-	if (mSwapped)
-		theCode	= OSSwapInt32(theCode);
+/*
+
+if (inLine->info.address == 0x27e4)
+{
+	UInt8	theBreak	= 0;
+}
+
+*/
+
+//	if (mSwapped)
+//		theCode	= OSSwapInt32(theCode);
 
 	char*	theDummyPtr	= nil;
 	char*	theSymPtr	= nil;
