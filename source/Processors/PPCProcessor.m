@@ -77,22 +77,7 @@
 
 - (void)commentForLine: (Line*)inLine;
 {
-	UInt32	theCode	= strtoul(inLine->info.code, nil, 16);
-
-// FIXME the following fixed swappage reveals bugs from later on.
-
-/*
-
-if (inLine->info.address == 0x27e4)
-{
-	UInt8	theBreak	= 0;
-}
-
-*/
-
-//	if (mSwapped)
-//		theCode	= OSSwapInt32(theCode);
-
+	UInt32	theCode		= strtoul(inLine->info.code, nil, 16);
 	char*	theDummyPtr	= nil;
 	char*	theSymPtr	= nil;
 	UInt8	opcode		= PO(theCode);
@@ -356,6 +341,9 @@ if (inLine->info.address == 0x27e4)
 				objc_ivar	theIvar		= {0};
 				objc_class	swappedClass	=
 					*mRegInfos[RA(theCode)].classPtr;
+
+				if (mSwapped)
+					swap_objc_class(&swappedClass);
 
 				if (!mIsInstanceMethod)
 				{
