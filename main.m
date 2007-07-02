@@ -27,7 +27,7 @@ int main(
 #ifdef OTX_CLI
 
 	NSAutoreleasePool*	pool		= [[NSAutoreleasePool alloc] init];
-	CLIController*		controller	= 
+	CLIController*		controller	=
 		[[CLIController alloc] initWithArgs: argv count: argc];
 
 	if (!controller)

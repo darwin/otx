@@ -299,6 +299,7 @@ enum {
 	GPRegisterInfo		mStack[MAX_STACK_SIZE];
 	TextFieldWidths		mFieldWidths;
 	ProcOptions			mOpts;
+	FILE*				mCPFiltPipe;
 
 	// base pointers for indirect addressing
 	SInt8				mCurrentThunk;		// x86 register identifier

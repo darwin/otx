@@ -16,6 +16,8 @@
 #import "ObjectLoader.h"
 #import "UserDefaultKeys.h"
 
+#define OTX_CPPFILT 1
+
 // ============================================================================
 
 @implementation ExeProcessor
@@ -28,7 +30,7 @@
 // destruction. Do not reuse a single instance of those subclasses for
 // multiple processings.
 
-//	initWithURL:controller:andOptions:
+//	initWithURL:controller:options:
 // ----------------------------------------------------------------------------
 
 - (id)initWithURL: (NSURL*)inURL
@@ -38,7 +40,7 @@
 	if (!inURL || !inController || !inOptions)
 		return nil;
 
-	if ((self = [super init]))
+	if (self = [super init])
 	{
 		mOFile					= inURL;
 		mController				= inController;
@@ -82,6 +84,15 @@
 
 		mArchMagic	= *(UInt32*)mRAMFile;
 		mExeIsFat	= (mArchMagic == FAT_MAGIC || mArchMagic == FAT_CIGAM);
+
+		// Setup the C++ name demangler.
+		if (mOpts.demangleCppNames)
+		{
+			mCPFiltPipe	= popen("c++filt -_", "r+");
+
+			if (!mCPFiltPipe)
+				fprintf(stderr, "otx: unable to open c++filt pipe.\n");
+		}
 
 		[self speedyDelivery];
 	}
@@ -140,6 +151,12 @@
 	{
 		free(mLocalVars);
 		mLocalVars	= nil;
+	}
+
+	if (mCPFiltPipe)
+	{
+		if (pclose(mCPFiltPipe) == -1)
+			perror("otx: unable to close c++filt pipe");
 	}
 
 	[self deleteFuncInfos];
@@ -607,6 +624,28 @@
 	// If we got here, we have a symbol name.
 	if (mOpts.demangleCppNames)
 	{
+#if OTX_CPPFILT
+		if (strstr(ioLine->chars, "__Z") == ioLine->chars)
+		{
+			char	demangledName[MAX_COMMENT_LENGTH];
+
+			// Replace trailing colon with \0.
+			char*	colonPos	= strchr(ioLine->chars, ':');
+
+			if (colonPos)
+				*colonPos	= 0;
+
+			fputs(ioLine->chars, mCPFiltPipe);
+			fputs("\n", mCPFiltPipe);
+			fgets(demangledName, MAX_COMMENT_LENGTH, mCPFiltPipe);
+
+			free(ioLine->chars);
+			ioLine->length	= strlen(demangledName);
+			ioLine->chars	= malloc(ioLine->length + 1);
+
+			strncpy(ioLine->chars, demangledName, ioLine->length + 1);
+		}
+#else
 		char*	demString	=
 			PrepareNameForDemangling(ioLine->chars);
 
@@ -637,6 +676,7 @@
 				free(cpName);
 			}
 		}
+#endif
 	}
 }
 
@@ -970,6 +1010,27 @@
 	// Demangle operands if necessary.
 	if (mLineOperandsCString[0] && mOpts.demangleCppNames)
 	{
+#if OTX_CPPFILT
+		if (strstr(mLineOperandsCString, "__Z") == mLineOperandsCString)
+		{
+			char	demangledName[MAX_COMMENT_LENGTH];
+
+			fputs(mLineOperandsCString, mCPFiltPipe);
+			fputs("\n", mCPFiltPipe);
+			fgets(demangledName, MAX_COMMENT_LENGTH, mCPFiltPipe);
+
+			// Replace trailing newline with \0.
+			char*	colonPos	= strchr(demangledName, '\n');
+
+			if (colonPos)
+				*colonPos	= 0;
+
+			UInt32	demangledLength	= strlen(demangledName);
+
+			if (demangledLength < MAX_OPERANDS_LENGTH - 1)
+				strncpy(mLineOperandsCString, demangledName, demangledLength + 1);
+		}
+#else
 		char*	demString	=
 			PrepareNameForDemangling(mLineOperandsCString);
 
@@ -989,11 +1050,33 @@
 				free(cpName);
 			}
 		}
+#endif
 	}
 
 	// Demangle comment if necessary.
 	if (theCommentCString[0] && mOpts.demangleCppNames)
 	{
+#if OTX_CPPFILT
+		if (strstr(theCommentCString, "__Z") == theCommentCString)
+		{
+			char	demangledName[MAX_COMMENT_LENGTH];
+
+			fputs(theCommentCString, mCPFiltPipe);
+			fputs("\n", mCPFiltPipe);
+			fgets(demangledName, MAX_COMMENT_LENGTH, mCPFiltPipe);
+
+			// Replace trailing newline with \0.
+			char*	colonPos	= strchr(demangledName, '\n');
+
+			if (colonPos)
+				*colonPos	= 0;
+
+			UInt32	demangledLength	= strlen(demangledName);
+
+			if (demangledLength < MAX_OPERANDS_LENGTH - 1)
+				strncpy(theCommentCString, demangledName, demangledLength + 1);
+		}
+#else
 		char*	demString	=
 			PrepareNameForDemangling(theCommentCString);
 
@@ -1013,6 +1096,7 @@
 				free(cpName);
 			}
 		}
+#endif
 	}
 
 	// Optionally add local offset.
@@ -1860,6 +1944,9 @@
 		// not somewhere in the middle.
 		if (*(thePtr - 1) != 0 && inAddr != mCStringSect.s.addr)
 			thePtr	= nil;
+		// Check if this may be a Pascal string. Thanks, Metrowerks.
+		else if (outType && strlen(thePtr) == thePtr[0] + 1)
+			*outType	= PStringType;
 	}
 	else	// (__TEXT,__const) (Str255* sometimes)
 	if (inAddr >= mConstTextSect.s.addr &&
@@ -1867,7 +1954,7 @@
 	{
 		thePtr	= (mConstTextSect.contents + (inAddr - mConstTextSect.s.addr));
 
-		if (strlen(thePtr) == thePtr[0] + 1 && outType)
+		if (outType && strlen(thePtr) == thePtr[0] + 1)
 			*outType	= PStringType;
 		else
 			thePtr	= nil;
