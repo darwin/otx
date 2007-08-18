@@ -242,15 +242,6 @@
 	sscanf(inLine->info.code, "%02hhx", &opcode);
 	mLineCommentCString[0]	= 0;
 
-/**/
-
-if (inLine->info.address == 0x0000ee05)
-{
-	UInt8	theBreak	= 9;
-}
-
-/**/
-
 	switch (opcode)
 	{
 		case 0x0f:	// 2-byte and SSE opcodes	**add sysenter support here
