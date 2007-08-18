@@ -56,22 +56,7 @@
 
 - (id)init
 {
-	if ((self = [super init]))
-	{
-/*		mGradientData	= (GradientData)
-		{
-			kPolishedLightRed,
-			kPolishedLightGreen,
-			kPolishedLightBlue,
-			1.0,
-			kPolishedDarkRed,
-			kPolishedDarkGreen,
-			kPolishedDarkBlue,
-			1.0,
-		};*/
-	}
-
-	return self;
+	return (self = [super init]);
 }
 
 //	awakeFromNib
