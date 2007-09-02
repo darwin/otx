@@ -15,9 +15,7 @@
 
 #import "SmartCrashReportsInstall.h"
 
-#ifdef USESMARTERPOPEN
-  #import "SmarterPopen.h"
-#endif
+#define UNIFIED_TOOLBAR_DELTA 12
 
 @implementation AppController
 
@@ -64,10 +62,37 @@
 
 - (void)awakeFromNib
 {
-	NSImage*	bgImage	= [NSImage imageNamed: @"Main Window Background"];
+	if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+	{	// Adjust main window for Leopard.
+		// Save the resize masks and apply new ones.
+		UInt32	origMainViewMask	= [mMainView autoresizingMask];
+		UInt32	origProgViewMask	= [mProgView autoresizingMask];
 
-	[mMainWindow setBackgroundColor:
-		[NSColor colorWithPatternImage: bgImage]];
+		[mMainView setAutoresizingMask: NSViewMaxYMargin];
+		[mProgView setAutoresizingMask: NSViewMaxYMargin];
+
+		NSRect	curFrame	= [mMainWindow frame];
+		NSSize	maxSize		= [mMainWindow contentMaxSize];
+		NSSize	minSize		= [mMainWindow contentMinSize];
+
+		curFrame.size.height	-= UNIFIED_TOOLBAR_DELTA;
+		minSize.height			-= UNIFIED_TOOLBAR_DELTA;
+		maxSize.height			-= UNIFIED_TOOLBAR_DELTA;
+
+		[mMainWindow setContentMinSize: minSize];
+		[mMainWindow setFrame: curFrame display: false];
+		[mMainWindow setContentMaxSize: maxSize];
+
+		[mMainView setAutoresizingMask: origMainViewMask];
+		[mProgView setAutoresizingMask: origProgViewMask];
+	}
+	else
+	{
+		NSImage*	bgImage	= [NSImage imageNamed: @"Main Window Background"];
+
+		[mMainWindow setBackgroundColor:
+			[NSColor colorWithPatternImage: bgImage]];
+	}
 }
 
 //	dealloc
