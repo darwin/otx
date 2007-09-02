@@ -16,8 +16,6 @@
 #import "ObjectLoader.h"
 #import "UserDefaultKeys.h"
 
-#define OTX_CPPFILT 1
-
 // ============================================================================
 
 @implementation ExeProcessor
@@ -624,7 +622,6 @@
 	// If we got here, we have a symbol name.
 	if (mOpts.demangleCppNames)
 	{
-#if OTX_CPPFILT
 		if (strstr(ioLine->chars, "__Z") == ioLine->chars)
 		{
 			char	demangledName[MAX_COMMENT_LENGTH];
@@ -645,38 +642,6 @@
 
 			strncpy(ioLine->chars, demangledName, ioLine->length + 1);
 		}
-#else
-		char*	demString	=
-			PrepareNameForDemangling(ioLine->chars);
-
-		if (demString)
-		{
-			char*	cpName	= cplus_demangle(demString, DEMANGLE_OPTS);
-
-			free(demString);
-
-			if (cpName)
-			{
-				if (strlen(cpName) < MAX_LINE_LENGTH - 1)
-				{
-					free(ioLine->chars);
-					ioLine->length	= strlen(cpName) + 1;
-
-					// cpName is null-terminated but has no '\n'. Allocate
-					// space for both.
-					ioLine->chars	= malloc(ioLine->length + 2);
-
-					// copy cpName and terminate it.
-					strncpy(ioLine->chars, cpName, ioLine->length + 1);
-
-					// add '\n' and terminate it.
-					strncat(ioLine->chars, "\n", 1);
-				}
-
-				free(cpName);
-			}
-		}
-#endif
 	}
 }
 
@@ -1010,7 +975,6 @@
 	// Demangle operands if necessary.
 	if (mLineOperandsCString[0] && mOpts.demangleCppNames)
 	{
-#if OTX_CPPFILT
 		if (strstr(mLineOperandsCString, "__Z") == mLineOperandsCString)
 		{
 			char	demangledName[MAX_COMMENT_LENGTH];
@@ -1030,33 +994,11 @@
 			if (demangledLength < MAX_OPERANDS_LENGTH - 1)
 				strncpy(mLineOperandsCString, demangledName, demangledLength + 1);
 		}
-#else
-		char*	demString	=
-			PrepareNameForDemangling(mLineOperandsCString);
-
-		if (demString)
-		{
-			char*	cpName	= cplus_demangle(demString, DEMANGLE_OPTS);
-
-			free(demString);
-
-			if (cpName)
-			{
-				UInt32	cpLength	= strlen(cpName);
-
-				if (cpLength < MAX_OPERANDS_LENGTH - 1)
-					strncpy(mLineOperandsCString, cpName, cpLength + 1);
-
-				free(cpName);
-			}
-		}
-#endif
 	}
 
 	// Demangle comment if necessary.
 	if (theCommentCString[0] && mOpts.demangleCppNames)
 	{
-#if OTX_CPPFILT
 		if (strstr(theCommentCString, "__Z") == theCommentCString)
 		{
 			char	demangledName[MAX_COMMENT_LENGTH];
@@ -1076,27 +1018,6 @@
 			if (demangledLength < MAX_OPERANDS_LENGTH - 1)
 				strncpy(theCommentCString, demangledName, demangledLength + 1);
 		}
-#else
-		char*	demString	=
-			PrepareNameForDemangling(theCommentCString);
-
-		if (demString)
-		{
-			char*	cpName	= cplus_demangle(demString, DEMANGLE_OPTS);
-
-			free(demString);
-
-			if (cpName)
-			{
-				UInt32	cpLength	= strlen(cpName);
-
-				if (cpLength < MAX_COMMENT_LENGTH - 1)
-					strncpy(theCommentCString, cpName, cpLength + 1);
-
-				free(cpName);
-			}
-		}
-#endif
 	}
 
 	// Optionally add local offset.

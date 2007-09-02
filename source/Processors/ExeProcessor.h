@@ -266,10 +266,6 @@ enum {
 #define _OTX_DEBUG_DYSYMBOLS_	0
 #define _OTX_DEBUG_BLOCKS_		0	// too numerous, add it yourself.
 
-// Options for cplus_demangle()
-#define DEMANGLE_OPTS			\
-	DMGL_PARAMS | DMGL_ANSI | DMGL_VERBOSE | DMGL_TYPES | DMGL_RET_POSTFIX
-
 #define	COMPARISON_FUNC_TYPE	int (*)(const void*, const void*)
 
 // ============================================================================
