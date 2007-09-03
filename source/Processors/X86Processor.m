@@ -2182,9 +2182,34 @@
 	sscanf(inLine->info.code, "%02hhx", &opcode);
 
 	if (opcode == 0x55)	// pushl %ebp
-	{	// Allow for nops.
-		if (!thePrevLine->info.isCode)
-			isFunction	= true;
+	{
+		// Assume it's a func, unless it's preceded by nops and a symbol.
+		isFunction	= true;
+
+		BOOL	foundNops	= false;
+
+		while (thePrevLine)
+		{
+			if (!thePrevLine->info.isCode)
+			{
+				if (foundNops)
+				{
+					isFunction	= false;
+					break;
+				}
+				else
+					break;
+			}
+
+			sscanf(thePrevLine->info.code, "%02hhx", &opcode);
+
+			if (opcode == 0x90)
+				foundNops	= true;
+			else
+				break;
+
+			thePrevLine	= thePrevLine->prev;
+		}
 	}
 	else
 	{	// Check for the first instruction in this section.
