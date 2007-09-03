@@ -47,9 +47,13 @@ enum {
 #define HAS_REL_DISP32(x)	(MOD((x)) == MOD32)
 #define HAS_ABS_DISP32(x)	(MOD((x)) == MODimm && REG2((x)) == EBP)
 
-#define IS_JUMP(o, so)										\
+/*#define IS_JUMP(o, so)										\
 	((o) == 0xe3 || (o) == 0xe9 || (o) == 0xeb	||			\
 		((o) >= 0x71 && (o) <= 0x7f) ||						\
+		((o) == 0x0f && (so) >= 0x81 && (so) <= 0x8f))*/
+#define IS_JUMP(o, so)												\
+	((o) == 0xe3 || (o) == 0xe9 || (o) == 0xeb	|| (o) == 0xc3 ||	\
+		((o) >= 0x71 && (o) <= 0x7f) ||								\
 		((o) == 0x0f && (so) >= 0x81 && (so) <= 0x8f))
 
 // ============================================================================
