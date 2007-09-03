@@ -1879,7 +1879,16 @@
 
 			mRegInfos[REG1(modRM)]	= (GPRegisterInfo){0};
 
-			if (MOD(modRM) == MOD8)
+			if (MOD(modRM) == MODimm)
+			{
+
+				mRegInfos[REG1(modRM)]	= (GPRegisterInfo){0};
+				mRegInfos[REG1(modRM)].value	=
+					(UInt32)GetPointer(mRegInfos[REG2(modRM)].value, NULL);
+				mRegInfos[REG1(modRM)].isValid	= true;
+				// FIXME should we update .classPtr here?
+			}
+			else if (MOD(modRM) == MOD8)
 			{
 				SInt8	offset;
 

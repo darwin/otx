@@ -33,7 +33,7 @@ enum {
 	EDI		// 7
 };
 
-// Macros for various ugly x86 data
+// Macros for various x86 data
 #define LO(x)				((x) & 0xf)				// bits 0-3
 #define HI(x)				(((x) >> 4) & 0xf)		// bits 4-7
 //#define DIR(x)			(((x) >> 1) & 0x1)		// bit 1
