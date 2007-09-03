@@ -1719,6 +1719,7 @@
 			{
 				mRegInfos[REG2(opcode)].value	= inLine->info.address;
 				mRegInfos[REG2(opcode)].isValid	= true;
+				mCurrentThunk					= REG2(opcode);
 			}
 
 			break;
