@@ -7,8 +7,6 @@
 	This file is in the public domain.
 */
 
-#import "demangle.h"
-
 #import "ExeProcessor.h"
 #import "ArchSpecifics.h"
 #import "ListUtils.h"
@@ -1446,41 +1444,6 @@
 	strncpy(newLine->chars, finalLine, newLine->length + 1);
 
 	InsertLineAfter(newLine, mPlainLineListHead, &mPlainLineListHead);
-}
-
-//	prepareNameForDemangling:
-// ----------------------------------------------------------------------------
-//	For cplus_demangle(), we must remove any extra leading underscores and
-//	any trailing colons. Caller owns the returned string.
-
-- (char*)prepareNameForDemangling: (char*)inName
-{
-	char*	preparedName	= nil;
-
-	// Bail if 1st char is not '_'.
-	if (strchr(inName, '_') != inName)
-		return nil;
-
-	// Find start of mangled name or bail.
-	char*	symString	= strstr(inName, "_Z");
-
-	if (!symString)
-		return nil;
-
-	// Find trailing colon.
-	UInt32	newSize		= strlen(symString);
-	char*	colonPos	= strrchr(symString, ':');
-
-	// Remove the colon.
-	if (colonPos)
-		newSize	= colonPos - symString;
-
-	// Copy adjusted symbol into new string.
-	preparedName	= calloc(1, newSize + 1);
-
-	strncpy(preparedName, symString, newSize);
-
-	return preparedName;
 }
 
 #pragma mark -

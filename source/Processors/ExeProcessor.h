@@ -10,7 +10,6 @@
 #import "StolenDefs.h"
 #import "Optimizations.h"
 #import "ProgressReporter.h"
-//#import "Selectors.h"
 
 /*	GPRegisterInfo
 
@@ -441,7 +440,6 @@ enum {
 - (UInt8)sendTypeFromMsgSend: (char*)inString;
 
 - (void)insertMD5;
-- (char*)prepareNameForDemangling: (char*)inName;
 
 - (void)speedyDelivery;
 
