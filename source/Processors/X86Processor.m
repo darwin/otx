@@ -2177,15 +2177,17 @@
 	// Obvious avenues expended, brute force check now.
 	BOOL	isFunction	= false;
 	UInt8	opcode;
+	Line*	thePrevLine	= inLine->prev;
 
 	sscanf(inLine->info.code, "%02hhx", &opcode);
 
 	if (opcode == 0x55)	// pushl %ebp
-		isFunction	= true;
+	{	// Allow for nops.
+		if (!thePrevLine->info.isCode)
+			isFunction	= true;
+	}
 	else
 	{	// Check for the first instruction in this section.
-		Line*	thePrevLine	= inLine->prev;
-
 		while (thePrevLine)
 		{
 			if (thePrevLine->info.isCode)
