@@ -828,7 +828,7 @@
 					}
 				}
 			}
-		}	// if (theInfo != nil)
+		}	// if (GetObjcMethodFromAddress(&theSwappedInfoPtr, mCurrentFuncPtr))
 
 		// Add or replace the method name if possible, else add '\n'.
 		if ((*ioLine)->prev && (*ioLine)->prev->info.isCode)	// prev line is code
@@ -905,7 +905,7 @@
 			}
 		}
 
-		ResetRegisters((*ioLine));
+		ResetRegisters(*ioLine);
 
 	}	// if ((*ioLine)->info.isFunction)
 
