@@ -86,6 +86,7 @@ typedef struct
 	UInt32		address;
 	BlockInfo*	blocks;
 	UInt32		numBlocks;
+	UInt32		genericFuncNum;	// 'AnonX' if > 0
 }
 FunctionInfo;
 
@@ -256,6 +257,9 @@ enum {
 #define MAX_ARCH_STRING_LENGTH	20		// "ppc", "i386" etc.
 #define MAX_STACK_SIZE			40		// maximum number of stack variables
 
+#define ANON_FUNC_BASE			"Anon"
+#define ANON_FUNC_BASE_LENGTH	4
+
 // Refresh progress bar after processing this many lines.
 #define PROGRESS_FREQ			2500
 //#define CLI_PROGRESS_FREQ		5000	i predict we will want this
@@ -308,6 +312,7 @@ enum {
 	FunctionInfo*		mFuncInfos;
 	UInt32				mNumFuncInfos;
 	SInt64				mCurrentFuncInfoIndex;
+	UInt32				mCurrentGenericFuncNum;
 
 	// Mach-O sections
 	section_info		mCStringSect;
@@ -492,16 +497,19 @@ MethodInfo_Compare_Swapped(
 	return (imp1 > imp2);
 }
 
-/*static int
-CheckedString_Compare(
-	CheckedString*	cs1,
-	CheckedString*	cs2)
+static int
+Function_Info_Compare(
+	FunctionInfo*	f1,
+	FunctionInfo*	f2)
 {
-	if (cs1->crc < cs2->crc)
+	UInt32	addr1	= f1->address;
+	UInt32	addr2	= f2->address;
+
+	if (addr1 < addr2)
 		return -1;
 
-	return (cs1->crc > cs2->crc);
-}*/
+	return (addr1 > addr2);
+}
 
 static void
 swap_method_info(

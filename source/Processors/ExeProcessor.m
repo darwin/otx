@@ -539,8 +539,16 @@
 				else
 					mFuncInfos	= malloc(sizeof(FunctionInfo));
 
+				UInt32	genericFuncNum	= 0;
+
+				if (theLine->prev && theLine->prev->info.isCode)
+				{
+					mCurrentGenericFuncNum++;
+					genericFuncNum	= mCurrentGenericFuncNum;
+				}
+
 				mFuncInfos[mNumFuncInfos - 1]	= (FunctionInfo)
-					{theLine->info.address, nil, 0};
+					{theLine->info.address, nil, 0, genericFuncNum};
 			}
 		}
 		else	// not code...
@@ -676,7 +684,7 @@
 	theCommentCString[0]		= 0;
 
 	// Swap in saved registers if necessary
-	BOOL	needNewLine	= [self restoreRegisters: (*ioLine)];
+	BOOL	needNewLine	= RestoreRegisters(*ioLine);
 
 	mLineOperandsCString[0]	= 0;
 
@@ -741,6 +749,7 @@
 				strlen(theOrigCommentCString) + 1);
 	}
 
+	BOOL	needFuncName	= false;
 	char	theMethCName[1000];
 
 	theMethCName[0]	= 0;
@@ -867,7 +876,7 @@
 				InsertLineBefore(theNewLine, *ioLine, &mPlainLineListHead);
 			}
 			else
-				needNewLine	= true;
+				needFuncName	= true;
 		}
 		else	// prev line is not code
 		{
@@ -906,7 +915,6 @@
 		}
 
 		ResetRegisters(*ioLine);
-
 	}	// if ((*ioLine)->info.isFunction)
 
 	// Find a comment if necessary.
@@ -967,7 +975,6 @@
 		// Optionally modify otool's comment.
 		if (mOpts.verboseMsgSends)
 			CommentForMsgSendFromLine(theCommentCString, *ioLine);
-
 	}
 
 	// Demangle operands if necessary.
@@ -1056,6 +1063,27 @@
 
 	for (; i > 1; i--)
 		instSpaces[i - 2] = 0x20;
+
+	// Insert a generic function name if needed.
+	if (needFuncName)
+	{
+		FunctionInfo	searchKey	= {(*ioLine)->info.address, NULL, 0, 0};
+		FunctionInfo*	funcInfo	= bsearch(&searchKey,
+			mFuncInfos, mNumFuncInfos, sizeof(FunctionInfo),
+			(COMPARISON_FUNC_TYPE)Function_Info_Compare);
+
+		if (funcInfo)
+		{
+			// sizeof(UINT32_MAX) + '\n' * 2 + ':' + null term
+			UInt8	maxlength	= ANON_FUNC_BASE_LENGTH + 14;
+			Line*	funcName	= calloc(1, sizeof(Line));
+
+			funcName->chars		= malloc(maxlength);
+			funcName->length	= snprintf(funcName->chars, maxlength,
+				"\n%s%d:\n", ANON_FUNC_BASE, funcInfo->genericFuncNum);
+			InsertLineBefore(funcName, *ioLine, &mPlainLineListHead);
+		}
+	}
 
 	// Finally, assemble the new string.
 	char	finalFormatCString[MAX_FORMAT_LENGTH];

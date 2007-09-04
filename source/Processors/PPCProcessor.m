@@ -114,116 +114,133 @@
 		case 0x12:	// b, ba, bl, bla
 		{
 			// ignore non-absolute branches
-			if (!AA(theCode))
-				break;
-
-			UInt32	target	= LI(theCode);
-
-			switch (target)
+			if (AA(theCode))
 			{
-				case kRTAddress_objc_msgSend:
+				UInt32	target	= LI(theCode);
+
+				switch (target)
 				{
-					char	tempComment[MAX_COMMENT_LENGTH];
-
-					strncpy(tempComment, kRTName_objc_msgSend,
-						strlen(kRTName_objc_msgSend) + 1);
-
-					if (mOpts.verboseMsgSends)
-						CommentForMsgSendFromLine(tempComment, inLine);
-
-					strncpy(mLineCommentCString, tempComment,
-						strlen(tempComment) + 1);
-
-					break;
-				}
-
-				case kRTAddress_objc_assign_ivar:
-				{
-					char	tempComment[MAX_COMMENT_LENGTH];
-
-					strncpy(tempComment, kRTName_objc_assign_ivar,
-						strlen(kRTName_objc_assign_ivar) + 1);
-
-					// Bail if we don't know about the class.
-					if (!mCurrentClass)
+					case kRTAddress_objc_msgSend:
 					{
+						char	tempComment[MAX_COMMENT_LENGTH];
+
+						strncpy(tempComment, kRTName_objc_msgSend,
+							strlen(kRTName_objc_msgSend) + 1);
+
+						if (mOpts.verboseMsgSends)
+							CommentForMsgSendFromLine(tempComment, inLine);
+
 						strncpy(mLineCommentCString, tempComment,
 							strlen(tempComment) + 1);
+
 						break;
 					}
 
-					if (mRegInfos[5].isValid)
+					case kRTAddress_objc_assign_ivar:
 					{
-						objc_ivar	theIvar			= {0};
-						objc_class	swappedClass	= *mCurrentClass;
+						char	tempComment[MAX_COMMENT_LENGTH];
 
-						if (mSwapped)
-							swap_objc_class(&swappedClass);
+						strncpy(tempComment, kRTName_objc_assign_ivar,
+							strlen(kRTName_objc_assign_ivar) + 1);
 
-						if (!mIsInstanceMethod)
+						// Bail if we don't know about the class.
+						if (!mCurrentClass)
 						{
-							if (!GetObjcMetaClassFromClass(
-								&swappedClass, &swappedClass))
-								break;
+							strncpy(mLineCommentCString, tempComment,
+								strlen(tempComment) + 1);
+							break;
+						}
+
+						if (mRegInfos[5].isValid)
+						{
+							objc_ivar	theIvar			= {0};
+							objc_class	swappedClass	= *mCurrentClass;
 
 							if (mSwapped)
 								swap_objc_class(&swappedClass);
-						}
 
-						if (!FindIvar(&theIvar,
-							&swappedClass, mRegInfos[5].value))
-						{
+							if (!mIsInstanceMethod)
+							{
+								if (!GetObjcMetaClassFromClass(
+									&swappedClass, &swappedClass))
+									break;
+
+								if (mSwapped)
+									swap_objc_class(&swappedClass);
+							}
+
+							if (!FindIvar(&theIvar,
+								&swappedClass, mRegInfos[5].value))
+							{
+								strncpy(mLineCommentCString, tempComment,
+									strlen(tempComment) + 1);
+								break;
+							}
+
+							theSymPtr	= GetPointer(
+								(UInt32)theIvar.ivar_name, nil);
+
+							if (!theSymPtr)
+							{
+								strncpy(mLineCommentCString, tempComment,
+									strlen(tempComment) + 1);
+								break;
+							}
+
+							if (mOpts.variableTypes)
+							{
+								char	theTypeCString[MAX_TYPE_STRING_LENGTH];
+
+								theTypeCString[0]	= 0;
+
+								GetDescription(theTypeCString,
+									GetPointer((UInt32)theIvar.ivar_type, nil));
+								snprintf(mLineCommentCString,
+									MAX_COMMENT_LENGTH - 1, "%s (%s)%s",
+									tempComment, theTypeCString, theSymPtr);
+							}
+							else
+								snprintf(mLineCommentCString,
+									MAX_COMMENT_LENGTH - 1, "%s %s",
+									tempComment, theSymPtr);
+						}
+						else	// !mReginfos[5].isValid
 							strncpy(mLineCommentCString, tempComment,
 								strlen(tempComment) + 1);
-							break;
-						}
 
-						theSymPtr	= GetPointer(
-							(UInt32)theIvar.ivar_name, nil);
-
-						if (!theSymPtr)
-						{
-							strncpy(mLineCommentCString, tempComment,
-								strlen(tempComment) + 1);
-							break;
-						}
-
-						if (mOpts.variableTypes)
-						{
-							char	theTypeCString[MAX_TYPE_STRING_LENGTH];
-
-							theTypeCString[0]	= 0;
-
-							GetDescription(theTypeCString,
-								GetPointer((UInt32)theIvar.ivar_type, nil));
-							snprintf(mLineCommentCString,
-								MAX_COMMENT_LENGTH - 1, "%s (%s)%s",
-								tempComment, theTypeCString, theSymPtr);
-						}
-						else
-							snprintf(mLineCommentCString,
-								MAX_COMMENT_LENGTH - 1, "%s %s",
-								tempComment, theSymPtr);
+						break;
 					}
-					else	// !mReginfos[5].isValid
-						strncpy(mLineCommentCString, tempComment,
-							strlen(tempComment) + 1);
 
-					break;
+					case kRTAddress_objc_assign_global:
+						strncpy(mLineCommentCString, kRTName_objc_assign_global,
+							strlen(kRTName_objc_assign_global) + 1);
+						break;
+
+					case kRTAddress_objc_assign_strongCast:
+						strncpy(mLineCommentCString, kRTName_objc_assign_strongCast,
+							strlen(kRTName_objc_assign_strongCast) + 1);
+						break;
+
+					default:
+						break;
 				}
+			}
+			else	// not an absolute branch
+			{
+				localAddy	= LI(theCode);
 
-				case kRTAddress_objc_assign_global:
-					strncpy(mLineCommentCString, kRTName_objc_assign_global,
-						strlen(kRTName_objc_assign_global) + 1);
-					break;
+				UInt32	absoluteAddy	=
+					inLine->info.address + LI(theCode);
 
-				case kRTAddress_objc_assign_strongCast:
-					strncpy(mLineCommentCString, kRTName_objc_assign_strongCast,
-						strlen(kRTName_objc_assign_strongCast) + 1);
-					break;
+				FunctionInfo	searchKey	= {absoluteAddy, NULL, 0, 0};
+				FunctionInfo*	funcInfo	= bsearch(&searchKey,
+					mFuncInfos, mNumFuncInfos, sizeof(FunctionInfo),
+					(COMPARISON_FUNC_TYPE)Function_Info_Compare);
 
-				default:
-					break;
+				if (funcInfo)
+					snprintf(mLineCommentCString,
+						ANON_FUNC_BASE_LENGTH + 11, "%s%d",
+						ANON_FUNC_BASE, funcInfo->genericFuncNum);
 			}
 
 			break;

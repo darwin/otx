@@ -950,6 +950,28 @@
 
 			break;
 
+		case 0xe8:	// call
+		case 0xe9:	// jmp
+		{
+			sscanf(&inLine->info.code[2], "%08x", &localAddy);
+			localAddy	= OSSwapInt32(localAddy);
+
+			UInt32	absoluteAddy	=
+				inLine->info.address + 5 + (SInt32)localAddy;
+
+			FunctionInfo	searchKey	= {absoluteAddy, NULL, 0, 0};
+			FunctionInfo*	funcInfo	= bsearch(&searchKey,
+				mFuncInfos, mNumFuncInfos, sizeof(FunctionInfo),
+				(COMPARISON_FUNC_TYPE)Function_Info_Compare);
+
+			if (funcInfo)
+				snprintf(mLineCommentCString,
+					ANON_FUNC_BASE_LENGTH + 11, "%s%d",
+					ANON_FUNC_BASE, funcInfo->genericFuncNum);
+
+			break;
+		}
+
 		case 0xf2:	// repne/repnz or movsd, mulsd etc
 		case 0xf3:	// rep/repe or movss, mulss etc
 		{
