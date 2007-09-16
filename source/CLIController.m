@@ -586,9 +586,7 @@
 				}
 			}
 			else
-			{
 				printf("The executable is healthy.\n");
-			}
 
 //			[theProcessor release];
 

@@ -1135,21 +1135,10 @@
 
 - (SInt32)checkOtool
 {
-#ifdef USESMARTERPOPEN
-    SInt32 retcode = noErr;
-    NSArray* arguments;
-    arguments = [NSArray arrayWithObjects: @"-h", [mOFile path], nil]; //make last one nil
-    SmarterPopen*  opener = [[SmarterPopen alloc] init];
-    retcode = [opener runTask:@"/usr/bin/otool" withArgs:arguments];
-//    NSString * debugretstr= [opener getResultAsString]; // bhr: for example
-    [opener release];
-    return retcode;
-#else
 	NSString*	otoolString	= [NSString stringWithFormat:
 		@"otool -h \"%@\" > /dev/null", [mOFile path]];    
 
 	return system(UTF8STRING(otoolString));
-#endif
 }
 
 //	doOtoolAlert
