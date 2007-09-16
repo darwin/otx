@@ -5,11 +5,12 @@
 */
 
 #import "SharedDefs.h"
+#import "ErrorReporter.h"
 #import "ProgressReporter.h"
 
 // ============================================================================
 
-@interface CLIController : NSObject<ProgressReporter>
+@interface CLIController : NSObject<ProgressReporter, ErrorReporter>
 {
 @private
 	NSURL*				mOFile;
@@ -29,15 +30,11 @@
 - (void)initSCR;
 
 - (void)usage;
-- (SInt32)checkOtool;
 
 - (void)processFile;
 - (void)verifyNops;
 - (void)newPackageFile: (NSURL*)inPackageFile;
 - (void)newOFile: (NSURL*)inOFile
 	   needsPath: (BOOL)inNeedsPath;
-
-// alerts
-- (void)doErrorAlert;
 
 @end

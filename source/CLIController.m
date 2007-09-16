@@ -471,7 +471,7 @@
 		return;
 	}
 
-	if ([self checkOtool] != noErr)
+	if ([self checkOtool: [mOFile path]] != noErr)
 	{
 		fprintf(stderr,
 			"otx: otool was not found. Please install otool and try again.\n");
@@ -600,24 +600,15 @@
 }
 
 #pragma mark -
-//	checkOtool
+#pragma mark ErrorReporter protocol
+//	reportError:suggestion:
 // ----------------------------------------------------------------------------
 
-- (SInt32)checkOtool
+- (void)reportError: (NSString*)inMessageText
+		 suggestion: (NSString*)inInformativeText
 {
-	NSString*	otoolString	= [NSString stringWithFormat:
-		@"otool -h \"%@\" > /dev/null", [mOFile path]];
-
-	return system(UTF8STRING(otoolString));
-}
-
-//	doErrorAlert
-// ----------------------------------------------------------------------------
-
-- (void)doErrorAlert
-{
-	fprintf(stderr, "otx: Could not create file. You must have write "
-		"permission for the destination folder.\n");
+	fprintf(stderr, "otx: %s\n     %s\n",
+		UTF8STRING(inMessageText), UTF8STRING(inInformativeText));
 }
 
 #pragma mark -

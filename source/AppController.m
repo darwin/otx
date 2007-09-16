@@ -8,10 +8,13 @@
 
 #import "AppController.h"
 #import "ExeProcessor.h"
+#import "SysUtils.h"
 #import "PPCProcessor.h"
 #import "SmoothViewAnimation.h"
 #import "X86Processor.h"
 #import "UserDefaultKeys.h"
+
+#import "ListUtils.h"
 
 #import "SmartCrashReportsInstall.h"
 
@@ -394,10 +397,10 @@
 	[self reportProgress: progDict];
 	[progDict release];
 
-	if ([self checkOtool] != noErr)
+	if ([self checkOtool: [mOFile path]] != noErr)
 	{
-		fprintf(stderr, "otx: otool not found\n");
-		[self doOtoolAlert];
+		[self reportError: @"otool was not found."
+		       suggestion: @"Please install otool and try again."];
 		return;
 	}
 
@@ -515,7 +518,9 @@
 	else
 	{
 		[self hideProgView: true openFile: false];
-		[self doErrorAlert];
+		[self reportError: @"Could not create file."
+		       suggestion: @"You must have write permission for the "
+		                    "destination folder."];
 	}
 }
 
@@ -779,7 +784,8 @@
 		(mArchSelector == CPU_TYPE_POWERPC) ? "ppc" : "i386"];
     
 	if (system(UTF8STRING(lipoString)) != 0)
-		[self doLipoAlert];
+		[self reportError: @"lipo was not found."
+		       suggestion: @"Please install lipo and try again."];
 }
 
 #pragma mark -
@@ -1130,64 +1136,6 @@
 }
 
 #pragma mark -
-//	checkOtool
-// ----------------------------------------------------------------------------
-
-- (SInt32)checkOtool
-{
-	NSString*	otoolString	= [NSString stringWithFormat:
-		@"otool -h \"%@\" > /dev/null", [mOFile path]];    
-
-	return system(UTF8STRING(otoolString));
-}
-
-//	doOtoolAlert
-// ----------------------------------------------------------------------------
-
-- (void)doOtoolAlert
-{
-	NSAlert*	theAlert	= [[NSAlert alloc] init];
-
-	[theAlert addButtonWithTitle: @"OK"];
-	[theAlert setMessageText: @"otool was not found."];
-	[theAlert setInformativeText: @"Please install otool and try again."];
-	[theAlert beginSheetModalForWindow: mMainWindow
-		modalDelegate: nil didEndSelector: nil contextInfo: nil];
-	[theAlert release];
-}
-
-//	doLipoAlert
-// ----------------------------------------------------------------------------
-
-- (void)doLipoAlert
-{
-	NSAlert*	theAlert	= [[NSAlert alloc] init];
-
-	[theAlert addButtonWithTitle: @"OK"];
-	[theAlert setMessageText: @"lipo was not found."];
-	[theAlert setInformativeText: @"Please install lipo and try again."];
-	[theAlert beginSheetModalForWindow: mMainWindow
-		modalDelegate: nil didEndSelector: nil contextInfo: nil];
-	[theAlert release];
-}
-
-//	doErrorAlert
-// ----------------------------------------------------------------------------
-
-- (void)doErrorAlert
-{
-	NSAlert*	theAlert	= [[NSAlert alloc] init];
-
-	[theAlert addButtonWithTitle: @"OK"];
-	[theAlert setMessageText: @"Could not create file."];
-	[theAlert setInformativeText:
-		@"You must have write permission for the destination folder."];
-	[theAlert beginSheetModalForWindow: mMainWindow
-		modalDelegate: nil didEndSelector: nil contextInfo: nil];
-	[theAlert release];
-}
-
-#pragma mark -
 //	setupPrefsWindow
 // ----------------------------------------------------------------------------
 
@@ -1300,6 +1248,24 @@
 	// Do the deed.
 	[windowAnim startAnimation];
 	[windowAnim autorelease];
+}
+
+#pragma mark -
+#pragma mark ErrorReporter protocol
+//	reportError:suggestion:
+// ----------------------------------------------------------------------------
+
+- (void)reportError: (NSString*)inMessageText
+		 suggestion: (NSString*)inInformativeText
+{
+	NSAlert*	theAlert	= [[NSAlert alloc] init];
+
+	[theAlert addButtonWithTitle: @"OK"];
+	[theAlert setMessageText: inMessageText];
+	[theAlert setInformativeText: inInformativeText];
+	[theAlert beginSheetModalForWindow: mMainWindow
+		modalDelegate: nil didEndSelector: nil contextInfo: nil];
+	[theAlert release];
 }
 
 #pragma mark -

@@ -9,7 +9,7 @@
 
 #import "ExeProcessor.h"
 
-@interface	ExeProcessor(ArchSpecifics)
+@interface ExeProcessor(ArchSpecifics)
 
 - (void)gatherFuncInfos;
 - (void)postProcessCodeLine: (Line**)ioLine;

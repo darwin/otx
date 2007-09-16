@@ -5,7 +5,7 @@
 */
 
 #import "DropBox.h"
-//#import "GradientImage.h"
+#import "ErrorReporter.h"
 #import "ProgressReporter.h"
 
 #define kOutputTextTag		100
@@ -58,7 +58,7 @@
 
 // ============================================================================
 
-@interface AppController : NSObject<ProgressReporter>
+@interface AppController : NSObject<ProgressReporter, ErrorReporter>
 {
 // main window
 	IBOutlet NSWindow*				mMainWindow;
@@ -104,8 +104,6 @@
 	NSShadow*					mTextShadow;
 }
 
-- (SInt32)checkOtool;
-
 // main window
 - (void)setupMainWindow;
 - (IBAction)showMainWindow: (id)sender;
@@ -141,10 +139,5 @@
 - (void)setupPrefsWindow;
 - (IBAction)showPrefs: (id)sender;
 - (IBAction)switchPrefsViews: (id)sender;
-
-// alerts
-- (void)doOtoolAlert;
-- (void)doLipoAlert;
-- (void)doErrorAlert;
 
 @end

@@ -11,7 +11,7 @@
 #define PRCompleteKey		@"PRCompleteKey"		// NSNumber* (BOOL)
 #define	PRDescriptionKey	@"PRDescriptionKey"		// NSString*
 
-@protocol	ProgressReporter
+@protocol ProgressReporter
 
 - (void)reportProgress: (NSDictionary*)inState;
 

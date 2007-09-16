@@ -9,7 +9,7 @@
 
 #import "ExeProcessor.h"
 
-@interface	ExeProcessor(ListUtils)
+@interface ExeProcessor(ListUtils)
 
 - (void)insertLine: (Line*)inLine
 			before: (Line*)nextLine

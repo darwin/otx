@@ -8,7 +8,7 @@
 
 #import "ExeProcessor.h"
 
-@interface	ExeProcessor(ObjectLoader)
+@interface ExeProcessor(ObjectLoader)
 
 - (BOOL)loadMachHeader;
 - (void)loadLCommands;

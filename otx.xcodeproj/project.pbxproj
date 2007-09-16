@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		252DFABB0C9D38A100C712BD /* SysUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 252DFABA0C9D38A100C712BD /* SysUtils.m */; };
 		25A62EFD0C38A7C500B08D38 /* Prefs Output Icon.tif in Resources */ = {isa = PBXBuildFile; fileRef = 25A62EFA0C38A7C500B08D38 /* Prefs Output Icon.tif */; };
 		25A62EFE0C38A7C500B08D38 /* Prefs General Icon.tif in Resources */ = {isa = PBXBuildFile; fileRef = 25A62EFB0C38A7C500B08D38 /* Prefs General Icon.tif */; };
 		25A62EFF0C38A7C500B08D38 /* Main Window Background.tif in Resources */ = {isa = PBXBuildFile; fileRef = 25A62EFC0C38A7C500B08D38 /* Main Window Background.tif */; };
@@ -53,6 +54,9 @@
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		252DFA080C9D2E7D00C712BD /* ErrorReporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ErrorReporter.h; path = source/Protocols/ErrorReporter.h; sourceTree = "<group>"; };
+		252DFAB90C9D38A100C712BD /* SysUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SysUtils.h; path = source/Categories/SysUtils.h; sourceTree = "<group>"; };
+		252DFABA0C9D38A100C712BD /* SysUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SysUtils.m; path = source/Categories/SysUtils.m; sourceTree = "<group>"; };
 		25A62EFA0C38A7C500B08D38 /* Prefs Output Icon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = "Prefs Output Icon.tif"; path = "images/Prefs Output Icon.tif"; sourceTree = "<group>"; };
 		25A62EFB0C38A7C500B08D38 /* Prefs General Icon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = "Prefs General Icon.tif"; path = "images/Prefs General Icon.tif"; sourceTree = "<group>"; };
 		25A62EFC0C38A7C500B08D38 /* Main Window Background.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = "Main Window Background.tif"; path = "images/Main Window Background.tif"; sourceTree = "<group>"; };
@@ -260,6 +264,8 @@
 				E1B132EA0B1824D7002EB674 /* ObjectLoader.m */,
 				E1B133950B182788002EB674 /* Searchers.h */,
 				E1B133940B182788002EB674 /* Searchers.m */,
+				252DFAB90C9D38A100C712BD /* SysUtils.h */,
+				252DFABA0C9D38A100C712BD /* SysUtils.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -268,6 +274,7 @@
 			isa = PBXGroup;
 			children = (
 				E1B132FB0B182599002EB674 /* Deobfuscator.h */,
+				252DFA080C9D2E7D00C712BD /* ErrorReporter.h */,
 				E1B132FC0B182599002EB674 /* ProgressReporter.h */,
 			);
 			name = Protocols;
@@ -372,6 +379,7 @@
 				E1B136200B192AAC002EB674 /* ArchSpecifics.m in Sources */,
 				E145F6D30B437F5900615A16 /* SmoothViewAnimation.m in Sources */,
 				E1AD98A60B57311C00E56D96 /* DropBox.m in Sources */,
+				252DFABB0C9D38A100C712BD /* SysUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

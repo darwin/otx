@@ -18,7 +18,7 @@ NopList;
 
 // ============================================================================
 
-@protocol	Deobfuscator
+@protocol Deobfuscator
 
 - (BOOL)verifyNops: (unsigned char***)outList
 		  numFound: (UInt32*)outFound;

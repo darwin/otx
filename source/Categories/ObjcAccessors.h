@@ -8,7 +8,7 @@
 
 #import "ExeProcessor.h"
 
-@interface	ExeProcessor(ObjcAccessors)
+@interface ExeProcessor(ObjcAccessors)
 
 - (BOOL)getObjcClassPtr: (objc_class**)outClass
 			 fromMethod: (UInt32)inAddress;
