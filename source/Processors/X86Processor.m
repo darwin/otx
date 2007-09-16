@@ -954,8 +954,7 @@
 		case 0xe9:	// jmp
 		{
 			// Insert anonymous label if there's not a label yet.
-			if (mLineCommentCString[0] ||
-				strstr(mLineOperandsCString, "0x") != mLineOperandsCString)
+			if (mLineCommentCString[0])
 				break;
 
 			sscanf(&inLine->info.code[2], "%08x", &localAddy);
