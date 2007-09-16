@@ -953,6 +953,11 @@
 		case 0xe8:	// call
 		case 0xe9:	// jmp
 		{
+			// Insert anonymous label if there's not a label yet.
+			if (mLineCommentCString[0] ||
+				strstr(mLineOperandsCString, "0x") != mLineOperandsCString)
+				break;
+
 			sscanf(&inLine->info.code[2], "%08x", &localAddy);
 			localAddy	= OSSwapInt32(localAddy);
 
@@ -964,7 +969,7 @@
 				mFuncInfos, mNumFuncInfos, sizeof(FunctionInfo),
 				(COMPARISON_FUNC_TYPE)Function_Info_Compare);
 
-			if (funcInfo)
+			if (funcInfo && funcInfo->genericFuncNum != 0)
 				snprintf(mLineCommentCString,
 					ANON_FUNC_BASE_LENGTH + 11, "%s%d",
 					ANON_FUNC_BASE, funcInfo->genericFuncNum);

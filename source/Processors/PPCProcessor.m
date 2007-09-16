@@ -227,6 +227,11 @@
 			}
 			else	// not an absolute branch
 			{
+				// Insert anonymous label if there's not a label yet.
+				if (mLineCommentCString[0] ||
+					strstr(mLineOperandsCString, "0x") != mLineOperandsCString)
+					break;
+
 				localAddy	= LI(theCode);
 
 				UInt32	absoluteAddy	=
@@ -237,7 +242,7 @@
 					mFuncInfos, mNumFuncInfos, sizeof(FunctionInfo),
 					(COMPARISON_FUNC_TYPE)Function_Info_Compare);
 
-				if (funcInfo)
+				if (funcInfo && funcInfo->genericFuncNum != 0)
 					snprintf(mLineCommentCString,
 						ANON_FUNC_BASE_LENGTH + 11, "%s%d",
 						ANON_FUNC_BASE, funcInfo->genericFuncNum);
