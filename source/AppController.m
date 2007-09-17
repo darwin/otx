@@ -33,7 +33,7 @@
 		[NSDictionary dictionaryWithObjectsAndKeys:
 		@"1",		AskOutputDirKey,
 		@"YES",		DemangleCppNamesKey,
-		@"YES",		EntabOutputKey,
+		@"NO",		EntabOutputKey,
 		@"YES",		OpenOutputFileKey,
 		@"BBEdit",	OutputAppKey,
 		@"txt",		OutputFileExtensionKey,
@@ -1198,13 +1198,6 @@
 
 	NSRect	targetViewFrame	= [mPrefsViews[newIndex] frame];
 
-	// Decide whether to swap the views at the beginning or end of the
-	// animation, based on their relative heights.
-	UInt32	swapWhen	= (targetViewFrame.size.height <
-		[mPrefsViews[mPrefsCurrentViewIndex] frame].size.height) ?
-		NSXViewAnimationSwapAtBeginningEffect				:
-		NSXViewAnimationSwapAtEndEffect;
-
 	// Calculate the new window size.
 	NSRect	origWindowFrame		= [mPrefsWindow frame];
 	NSRect	targetWindowFrame	= origWindowFrame;
@@ -1227,7 +1220,8 @@
 	[newWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
 		forKey: NSViewAnimationEndFrameKey];
 
-	[newWindowItem setObject: [NSNumber numberWithUnsignedInt: swapWhen]
+	[newWindowItem setObject: [NSNumber numberWithUnsignedInt:
+		NSXViewAnimationSwapAtBeginningAndEndEffect]
 		forKey: NSXViewAnimationCustomEffectsKey];
 	[newWindowItem setObject: mPrefsViews[mPrefsCurrentViewIndex]
 		forKey: NSXViewAnimationSwapOldKey];
@@ -1404,16 +1398,16 @@
 		if (!animObject)
 			continue;
 
-		NSNumber*	effects	=
+		NSNumber*	effectsNumber	=
 			[animObject objectForKey: NSXViewAnimationCustomEffectsKey];
 
-		if (!effects)
+		if (!effectsNumber)
 			continue;
 
-		// Hide/show 2 views.
-		if ([effects unsignedIntValue] &
-			NSXViewAnimationSwapAtBeginningEffect)
-		{
+		UInt32	effects	= [effectsNumber unsignedIntValue];
+
+		if (effects & NSXViewAnimationSwapAtBeginningEffect)
+		{	// Hide/show 2 views.
 			NSView*	oldView	= [animObject
 				objectForKey: NSXViewAnimationSwapOldKey];
 			NSView*	newView	= [animObject
@@ -1424,6 +1418,14 @@
 
 			if (newView)
 				[newView setHidden: false];
+		}
+		else if (effects & NSXViewAnimationSwapAtBeginningAndEndEffect)
+		{	// Hide a view.
+			NSView*	oldView	= [animObject
+				objectForKey: NSXViewAnimationSwapOldKey];
+
+			if (oldView)
+				[oldView setHidden: true];
 		}
 	}
 
@@ -1469,9 +1471,8 @@
 
 		UInt32	effects	= [effectsNumber unsignedIntValue];
 
-		// Hide/show 2 views.
 		if (effects & NSXViewAnimationSwapAtEndEffect)
-		{
+		{	// Hide/show 2 views.
 			NSView*	oldView	= [animObject
 				objectForKey: NSXViewAnimationSwapOldKey];
 			NSView*	newView	= [animObject
@@ -1479,6 +1480,14 @@
 
 			if (oldView)
 				[oldView setHidden: true];
+
+			if (newView)
+				[newView setHidden: false];
+		}
+		else if (effects & NSXViewAnimationSwapAtBeginningAndEndEffect)
+		{	// Show a view.
+			NSView*	newView	= [animObject
+				objectForKey: NSXViewAnimationSwapNewKey];
 
 			if (newView)
 				[newView setHidden: false];
@@ -1558,33 +1567,6 @@
 			}
 		}
 
-		// Perform selectors. The methods' return values are ignored, and the
-		// methods must take no arguments. For any other kind of method, use
-		// NSInvocation instead.
-/*		if (effects & NSXViewAnimationPerformSelectorAtEndEffect)
-		{
-			NSArray*	selArray	= [animObject objectForKey:
-				NSXViewAnimationSelArrayKey];
-
-			if (selArray)
-			{
-				UInt32	numSels	= [selArray count];
-				UInt32	i;
-
-				for (i = 0; i < numSels; i++)
-				{
-					NSValue*	selValue	= [selArray objectAtIndex: i];
-					SEL			theSel;
-
-					if (selValue)
-					{
-						[selValue getValue: &theSel];
-						[self performSelector: (SEL)theSel];
-					}
-				}
-			}
-		}*/
-
 		// Open a file in another application.
 		if (effects & NSXViewAnimationOpenFileWithAppAtEndEffect)
 		{
@@ -1621,6 +1603,12 @@
 		(host_info_t)&mHostInfo, &infoCount);
 
 	mArchSelector	= mHostInfo.cpu_type;
+
+	if (mArchSelector != CPU_TYPE_POWERPC	&&
+		mArchSelector != CPU_TYPE_I386)
+	{	// We're running on a machine that doesn't exist.
+		fprintf(stderr, "otx: I shouldn't be here...\n");
+	}
 
 	// Setup our text shadow ivar.
 	mTextShadow	= [[NSShadow alloc] init];

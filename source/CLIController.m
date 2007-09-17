@@ -42,8 +42,6 @@
 		return nil;
 	}
 
-//	self = [super init];
-
 	if (!(self = [super init]))
 		return nil;
 
@@ -68,7 +66,7 @@
 	// Assign default options.
 	mOpts	= (ProcOptions){
 		SHOW_LOCAL_OFFSETS,
-		ENTAB_OUTPUT,
+		DONT_ENTAB_OUTPUT,
 		DONT_SHOW_DATA_SECTIONS,
 		SHOW_CHECKSUM,
 		SHOW_VERBOSE_MSGSENDS,
@@ -82,9 +80,6 @@
 	NSString*	origFilePath	= nil;
 	UInt32		i, j;
 
-#ifdef USE_GETOPT_LONG
-
-#else
 	for (i = 1; i < argc; i++)
 	{
 		if (argv[i][0] == '-')
@@ -124,7 +119,7 @@
 							mOpts.localOffsets	= !SHOW_LOCAL_OFFSETS;
 							break;
 						case 'e':
-							mOpts.entabOutput	= !ENTAB_OUTPUT;
+							mOpts.entabOutput	= !DONT_ENTAB_OUTPUT;
 							break;
 						case 'd':
 							mOpts.dataSections	= !DONT_SHOW_DATA_SECTIONS;
@@ -171,7 +166,6 @@
 				encoding: NSMacOSRomanStringEncoding];
 		}
 	}
-#endif	// USE_GETOPT_LONG
 
 	if (!origFilePath)
 	{
