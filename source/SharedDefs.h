@@ -26,14 +26,3 @@ typedef struct
  	BOOL	variableTypes;			// v
 }
 ProcOptions;
-
-// Default ProcOptions values
-#define	SHOW_LOCAL_OFFSETS				true
-#define	ENTAB_OUTPUT					true
-#define	DONT_SHOW_DATA_SECTIONS			false
-#define	SHOW_CHECKSUM					true
-#define	SHOW_VERBOSE_MSGSENDS			true
-#define	DONT_SEPARATE_LOGICAL_BLOCKS	false
-#define	DEMANGLE_CPP_NAMES				true
-#define	SHOW_METHOD_RETURN_TYPES		true
-#define	SHOW_VARIABLE_TYPES				true
