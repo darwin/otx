@@ -580,22 +580,12 @@
 	}	// for (i = 0; i < mNumObjcSects; i++)
 
 	// Sort MethodInfos.
-//	if (mSwapped)
-//	{
-//		qsort(mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
-//			(COMPARISON_FUNC_TYPE)MethodInfo_Compare_Swapped);
-//		qsort(mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
-//			(COMPARISON_FUNC_TYPE)MethodInfo_Compare_Swapped);
-//	}
-//	else
-//	{
-		qsort(mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
-			(COMPARISON_FUNC_TYPE)
-			(mSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
-		qsort(mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
-			(COMPARISON_FUNC_TYPE)
-			(mSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
-//	}
+	qsort(mClassMethodInfos, mNumClassMethodInfos, sizeof(MethodInfo),
+		(COMPARISON_FUNC_TYPE)
+		(mSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
+	qsort(mCatMethodInfos, mNumCatMethodInfos, sizeof(MethodInfo),
+		(COMPARISON_FUNC_TYPE)
+		(mSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
 }
 
 //	loadCStringSection:
