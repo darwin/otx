@@ -28,7 +28,7 @@
 		fat_arch	fa;
 
 		// fat_header and fat_arch are always big-endian. Swap if we're
-		// running on intel.
+		// running on Intel.
 #if TARGET_RT_LITTLE_ENDIAN
 		swap_fat_header(&fh, OSLittleEndian);
 #endif
