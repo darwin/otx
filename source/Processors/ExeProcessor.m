@@ -515,6 +515,7 @@
 
 		if (LineIsCode(theLine->chars))
 		{
+			// FIXME: this should not assume the existence of alt list.
 			theLine->info.isCode		=
 			theLine->alt->info.isCode	= true;
 			theLine->info.address		=
@@ -543,10 +544,7 @@
 				UInt32	genericFuncNum	= 0;
 
 				if (theLine->prev && theLine->prev->info.isCode)
-				{
-					mCurrentGenericFuncNum++;
-					genericFuncNum	= mCurrentGenericFuncNum;
-				}
+					genericFuncNum	= ++mCurrentGenericFuncNum;
 
 				mFuncInfos[mNumFuncInfos - 1]	= (FunctionInfo)
 					{theLine->info.address, nil, 0, genericFuncNum};
