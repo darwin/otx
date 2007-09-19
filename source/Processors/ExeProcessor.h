@@ -71,7 +71,9 @@ MachineState;
 */
 typedef struct
 {
-	UInt32			address;
+	UInt32			beginAddress;
+	UInt32			endAddress;
+	BOOL			isEpilog;
 	MachineState	state;
 }
 BlockInfo;
