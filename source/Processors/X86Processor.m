@@ -2122,7 +2122,7 @@
 
 	for (i = 0; i < funcInfo->numBlocks; i++)
 	{
-		if (funcInfo->blocks[i].address != inLine->info.address)
+		if (funcInfo->blocks[i].beginAddress != inLine->info.address)
 			continue;
 
 		// Update machine state.
@@ -2366,7 +2366,7 @@
 				// only be an issue with extremely long functions.
 				for (i = 0; i < funcInfo->numBlocks; i++)
 				{
-					if (funcInfo->blocks[i].address == jumpTarget)
+					if (funcInfo->blocks[i].beginAddress == jumpTarget)
 					{
 						currentBlock	= &funcInfo->blocks[i];
 						break;
@@ -2397,6 +2397,28 @@
 				fprintf(stderr, "otx: [X86Processor gatherFuncInfos] "
 					"currentBlock is nil. Flame the dev.\n");
 				return;
+			}
+
+			// Find the end of this block.
+			Line*	theEndLine	= theLine;
+			UInt32	endAddress	= 0;
+			BOOL	isEpilog	= false;
+
+			while (theEndLine)
+			{
+				if (IS_RET(opcode))
+				{
+					isEpilog	= true;
+					endAddress	= theEndLine->info.address;
+					break;
+				}
+				else if (IS_JUMP(opcode, opcode2))
+				{
+					endAddress	= theEndLine->info.address;
+					break;
+				}
+				else
+					theEndLine	= theEndLine->next;
 			}
 
 			// Create a new MachineState.
@@ -2430,7 +2452,8 @@
 					savedVars, mNumLocalVars};
 
 			// Store the new BlockInfo.
-			BlockInfo	blockInfo	= {jumpTarget, machState};
+			BlockInfo	blockInfo	=
+				{jumpTarget, endAddress, isEpilog, machState};
 
 			memcpy(currentBlock, &blockInfo, sizeof(BlockInfo));
 #else
@@ -2481,6 +2504,19 @@
 				(BlockInfo){jumpTarget, machState};
 #endif
 
+		}
+		else if (IS_RET(opcode) && mCurrentFuncInfoIndex >= 0)
+		{	// Mark the containing block as an epilog.
+			// Retrieve current FunctionInfo.
+			FunctionInfo*	funcInfo	=
+				&mFuncInfos[mCurrentFuncInfoIndex];
+
+			// We let the above logic handle the creation of BlockInfo's, since
+			// this method is called twice anyway.
+			if (funcInfo->blocks)
+			{
+				
+			}
 		}
 
 		theLine	= theLine->next;

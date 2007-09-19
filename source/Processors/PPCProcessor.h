@@ -65,6 +65,8 @@
 	(((PO((i)) == 0x13 && SO((i)) == 0x10) || (PO((i)) == 0x10))	\
 	&& (BO((i)) != 0x14))
 
+#define IS_BLR(i)	(PO((i)) == 0x13)
+
 // Addresses and names of functions in the ObjC runtime page, stolen from
 // http://www.opensource.apple.com/darwinsource/10.4.7.ppc/objc4-267.1/runtime/objc-rtp.h
 

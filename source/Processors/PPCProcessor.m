@@ -1459,7 +1459,7 @@
 
 	for (i = 0; i < funcInfo->numBlocks; i++)
 	{
-		if (funcInfo->blocks[i].address != inLine->info.address)
+		if (funcInfo->blocks[i].beginAddress != inLine->info.address)
 			continue;
 
 		// Update machine state.
@@ -1694,7 +1694,7 @@
 				// only be an issue with extremely long functions.
 				for (i = 0; i < funcInfo->numBlocks; i++)
 				{
-					if (funcInfo->blocks[i].address == branchTarget)
+					if (funcInfo->blocks[i].beginAddress == branchTarget)
 					{
 						currentBlock	= &funcInfo->blocks[i];
 						break;
@@ -1725,6 +1725,28 @@
 				fprintf(stderr, "otx: [PPCProcessor gatherFuncInfos] "
 					"currentBlock is nil. Flame the dev.\n");
 				return;
+			}
+
+			// Find the end of this block.
+			Line*	theEndLine	= theLine;
+			UInt32	endAddress	= 0;
+			BOOL	isEpilog	= false;
+
+			while (theEndLine)
+			{
+				if (IS_BLR(theCode))
+				{
+					isEpilog	= true;
+					endAddress	= theEndLine->info.address;
+					break;
+				}
+				else if (IS_BLOCK_BRANCH(theCode))
+				{
+					endAddress	= theEndLine->info.address;
+					break;
+				}
+				else
+					theEndLine	= theEndLine->next;
 			}
 
 			// Create a new MachineState.
@@ -1760,7 +1782,8 @@
 					savedVars, mNumLocalVars};
 
 			// Store the new BlockInfo.
-			BlockInfo	blockInfo	= {branchTarget, machState};
+			BlockInfo	blockInfo	=
+				{branchTarget, endAddress, isEpilog, machState};
 
 			memcpy(currentBlock, &blockInfo, sizeof(BlockInfo));
 		}
@@ -1793,7 +1816,7 @@
 	for (i = 0; i < funcInfo->numBlocks; i++)
 	{
 		fprintf(stderr, "\nblock %d at 0x%x:\n\n", i + 1,
-			funcInfo->blocks[i].address);
+			funcInfo->blocks[i].beginAddress);
 
 		for (j = 0; j < 32; j++)
 		{
