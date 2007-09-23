@@ -9,6 +9,7 @@
 #import "CLIController.h"
 #import "ExeProcessor.h"
 #import "PPCProcessor.h"
+#import "SysUtils.h"
 #import "X86Processor.h"
 
 #import "SmartCrashReportsInstall.h"

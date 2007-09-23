@@ -8,11 +8,11 @@
 
 #import "AppController.h"
 #import "ExeProcessor.h"
-#import "SysUtils.h"
 #import "PPCProcessor.h"
 #import "SmoothViewAnimation.h"
-#import "X86Processor.h"
+#import "SysUtils.h"
 #import "UserDefaultKeys.h"
+#import "X86Processor.h"
 
 #import "ListUtils.h"
 
