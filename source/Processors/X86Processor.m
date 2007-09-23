@@ -236,6 +236,7 @@
 	char*	theDummyPtr	= nil;
 	char*	theSymPtr	= nil;
 	UInt32	localAddy	= 0;
+	UInt32	targetAddy	= 0;
 	UInt8	modRM		= 0;
 	UInt8	opcode;
 
@@ -246,26 +247,58 @@
 	{
 		case 0x0f:	// 2-byte and SSE opcodes	**add sysenter support here
 		{
-			if (inLine->info.code[2] != '2' ||
-				inLine->info.code[3] != 'e')	// ucomiss
-				break;
-
-			// sscanf interprets source values as big-endian, regardless of
-			// host architecture. If source value is little-endian, as in x86
-			// instructions, we must always swap.
-			sscanf(&inLine->info.code[6], "%08x", &localAddy);
-			localAddy	= OSSwapInt32(localAddy);
-
-			theDummyPtr	= GetPointer(localAddy, nil);
-
-			if (theDummyPtr)
+			if (inLine->info.code[2] == '2' &&
+				inLine->info.code[3] == 'e')	// ucomiss
 			{
-				UInt32	theInt32	= *(UInt32*)theDummyPtr;
+				// sscanf interprets source values as big-endian, regardless of
+				// host architecture. If source value is little-endian, as in x86
+				// instructions, we must always swap.
+				sscanf(&inLine->info.code[6], "%08x", &localAddy);
+				localAddy	= OSSwapInt32(localAddy);
 
-				if (mSwapped)
-					theInt32	= OSSwapInt32(theInt32);
+				theDummyPtr	= GetPointer(localAddy, nil);
 
-				snprintf(mLineCommentCString, 30, "%G", *(float*)&theInt32);
+				if (theDummyPtr)
+				{
+					UInt32	theInt32	= *(UInt32*)theDummyPtr;
+
+					if (mSwapped)
+						theInt32	= OSSwapInt32(theInt32);
+
+					snprintf(mLineCommentCString, 30, "%G", *(float*)&theInt32);
+				}
+			}
+			else if (inLine->info.code[2] == '8' &&
+					 inLine->info.code[3] == '4')	// jcc
+			{
+				if (!inLine->next)
+					break;
+
+				SInt32	targetOffset;
+
+				sscanf(&inLine->info.code[4], "%08x", &targetOffset);
+				targetOffset	= OSSwapInt32(targetOffset);
+				targetAddy	= inLine->next->info.address + targetOffset;
+
+				// Search current FunctionInfo for blocks that start at this address.
+				FunctionInfo*	funcInfo	=
+					&mFuncInfos[mCurrentFuncInfoIndex];
+
+				if (!funcInfo->blocks)
+					break;
+
+				UInt32	i;
+
+				for (i = 0; i < funcInfo->numBlocks; i++)
+				{
+					if (funcInfo->blocks[i].beginAddress != targetAddy)
+						continue;
+
+					if (funcInfo->blocks[i].isEpilog)
+						snprintf(mLineCommentCString, 8, "return;");
+
+					break;
+				}
 			}
 
 			break;
@@ -307,6 +340,47 @@
 			}
 
 			break;
+
+		case 0x70: case 0x71: case 0x72: case 0x73: case 0x74: case 0x75: 
+		case 0x76: case 0x77: case 0x78: case 0x79: case 0x7a: case 0x7b: 
+		case 0x7c: case 0x7d: case 0x7e: case 0xe3:	// jcc
+		case 0xeb:	// jmp
+		{
+			if (!inLine->next)
+				break;
+
+			SInt8	simm;
+
+			sscanf(&inLine->info.code[2], "%02hhx", &simm);
+
+			targetAddy	= inLine->next->info.address + simm;
+/*			FunctionInfo	searchKey		= {absoluteAddy, NULL, 0, 0};
+			FunctionInfo*	funcInfo		= bsearch(&searchKey,
+				mFuncInfos, mNumFuncInfos, sizeof(FunctionInfo),
+				(COMPARISON_FUNC_TYPE)Function_Info_Compare);*/
+
+			// Search current FunctionInfo for blocks that start at this address.
+			FunctionInfo*	funcInfo	=
+				&mFuncInfos[mCurrentFuncInfoIndex];
+
+			if (!funcInfo->blocks)
+				break;
+
+			UInt32	i;
+
+			for (i = 0; i < funcInfo->numBlocks; i++)
+			{
+				if (funcInfo->blocks[i].beginAddress != targetAddy)
+					continue;
+
+				if (funcInfo->blocks[i].isEpilog)
+					snprintf(mLineCommentCString, 8, "return;");
+
+				break;
+			}
+
+			break;
+		}
 
 		// immediate group 1 - add, sub, cmp etc
 		case 0x80:	// imm8,r8
@@ -963,6 +1037,7 @@
 			UInt32	absoluteAddy	=
 				inLine->info.address + 5 + (SInt32)localAddy;
 
+// FIXME: can we use mCurrentFuncInfoIndex here?
 			FunctionInfo	searchKey	= {absoluteAddy, NULL, 0, 0};
 			FunctionInfo*	funcInfo	= bsearch(&searchKey,
 				mFuncInfos, mNumFuncInfos, sizeof(FunctionInfo),
@@ -2358,6 +2433,8 @@
 			// 'currentBlock' will point to either an existing block which
 			// we will update, or a newly allocated block.
 			BlockInfo*	currentBlock	= nil;
+			Line*		endLine			= NULL;
+			BOOL		isEpilog		= false;
 			UInt32		i;
 
 			if (funcInfo->blocks)
@@ -2368,20 +2445,84 @@
 				{
 					if (funcInfo->blocks[i].beginAddress == jumpTarget)
 					{
-						currentBlock	= &funcInfo->blocks[i];
+						currentBlock = &funcInfo->blocks[i];
 						break;
 					}
 				}
 
-				if (!currentBlock)
-				{
-					// No matching blocks found, so allocate a new one.
+				if (currentBlock)
+				{	// Determine if the target block is an epilog.
+					if (currentBlock->endLine == NULL)
+					{
+						Line*	beginLine	= theLine;
+						Line*	tempLine	= theLine;
+
+						// Find the first line of the target block.
+						if (jumpTarget > theLine->info.address)
+						{
+							while (tempLine)
+							{
+								if (tempLine->info.address == jumpTarget)
+								{
+									beginLine	= tempLine;
+									break;
+								}
+
+								tempLine	= tempLine->next;
+							}
+						}
+						else
+						{
+							while (tempLine)
+							{
+								if (tempLine->info.address == jumpTarget)
+								{
+									beginLine	= tempLine;
+									break;
+								}
+
+								tempLine	= tempLine->prev;
+							}
+						}
+
+						// Walk through the block. It's an epilog if it ends
+						// with 'ret' and contains no 'call's.
+						Line*	nextLine	= beginLine;
+						BOOL	canBeEpliog	= true;
+						UInt8	tempOpcode, tempOpcode2;
+
+						while (nextLine)
+						{
+							sscanf(nextLine->info.code, "%02hhx",
+								&tempOpcode);
+							sscanf(&nextLine->info.code[2], "%02hhx",
+								&tempOpcode2);
+
+							if (IS_CALL(tempOpcode))
+								canBeEpliog = false;
+
+							if (IS_JUMP(tempOpcode, tempOpcode2))
+							{
+								endLine	= nextLine;
+
+								if (canBeEpliog && IS_RET(tempOpcode))
+									isEpilog = true;
+
+								break;
+							}
+
+							nextLine = nextLine->next;
+						}
+					}
+				}
+				else
+				{	// No matching blocks found, so allocate a new one.
 					funcInfo->numBlocks++;
-					funcInfo->blocks	= realloc(funcInfo->blocks,
+					funcInfo->blocks = realloc(funcInfo->blocks,
 						sizeof(BlockInfo) * funcInfo->numBlocks);
-					currentBlock		=
+					currentBlock =
 						&funcInfo->blocks[funcInfo->numBlocks - 1];
-					*currentBlock		= (BlockInfo){0};
+					*currentBlock = (BlockInfo){0};
 				}
 			}
 			else
@@ -2397,28 +2538,6 @@
 				fprintf(stderr, "otx: [X86Processor gatherFuncInfos] "
 					"currentBlock is nil. Flame the dev.\n");
 				return;
-			}
-
-			// Find the end of this block.
-			Line*	theEndLine	= theLine;
-			UInt32	endAddress	= 0;
-			BOOL	isEpilog	= false;
-
-			while (theEndLine)
-			{
-				if (IS_RET(opcode))
-				{
-					isEpilog	= true;
-					endAddress	= theEndLine->info.address;
-					break;
-				}
-				else if (IS_JUMP(opcode, opcode2))
-				{
-					endAddress	= theEndLine->info.address;
-					break;
-				}
-				else
-					theEndLine	= theEndLine->next;
 			}
 
 			// Create a new MachineState.
@@ -2453,7 +2572,7 @@
 
 			// Store the new BlockInfo.
 			BlockInfo	blockInfo	=
-				{jumpTarget, endAddress, isEpilog, machState};
+				{jumpTarget, endLine, isEpilog, machState};
 
 			memcpy(currentBlock, &blockInfo, sizeof(BlockInfo));
 #else
@@ -2504,19 +2623,6 @@
 				(BlockInfo){jumpTarget, machState};
 #endif
 
-		}
-		else if (IS_RET(opcode) && mCurrentFuncInfoIndex >= 0)
-		{	// Mark the containing block as an epilog.
-			// Retrieve current FunctionInfo.
-			FunctionInfo*	funcInfo	=
-				&mFuncInfos[mCurrentFuncInfoIndex];
-
-			// We let the above logic handle the creation of BlockInfo's, since
-			// this method is called twice anyway.
-			if (funcInfo->blocks)
-			{
-				
-			}
 		}
 
 		theLine	= theLine->next;

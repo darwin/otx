@@ -1459,7 +1459,8 @@
 
 	for (i = 0; i < funcInfo->numBlocks; i++)
 	{
-		if (funcInfo->blocks[i].beginAddress != inLine->info.address)
+		if (funcInfo->blocks[i].beginAddress !=
+			inLine->info.address)
 			continue;
 
 		// Update machine state.
@@ -1686,6 +1687,9 @@
 			// 'currentBlock' will point to either an existing block which
 			// we will update, or a newly allocated block.
 			BlockInfo*	currentBlock	= nil;
+//			UInt32		endAddress		= 0;
+			Line*		endLine			= NULL;
+			BOOL		isEpilog		= false;
 			UInt32		i;
 
 			if (funcInfo->blocks)
@@ -1694,22 +1698,54 @@
 				// only be an issue with extremely long functions.
 				for (i = 0; i < funcInfo->numBlocks; i++)
 				{
-					if (funcInfo->blocks[i].beginAddress == branchTarget)
+					if (funcInfo->blocks[i].beginAddress ==
+						branchTarget)
 					{
-						currentBlock	= &funcInfo->blocks[i];
+						currentBlock = &funcInfo->blocks[i];
 						break;
 					}
 				}
 
-				if (!currentBlock)
-				{
-					// No matching blocks found, so allocate a new one.
+				if (currentBlock)
+				{	// Find the end of this block. A block is an epilog if it
+					// ends with a 'blr' and contains no 'bl's.
+//					if (currentBlock->endAddress == 0)
+					if (currentBlock->endLine == NULL)
+					{
+						Line*	nextLine	= theLine;
+						BOOL	canBeEpliog = true;
+						UInt32	tempCode;
+
+						while (nextLine)
+						{
+							tempCode = strtoul(nextLine->info.code, nil, 16);
+
+							if (IS_BRANCH_LINK(tempCode))
+								canBeEpliog = false;
+
+							if (IS_BLOCK_BRANCH(tempCode))
+							{
+								endLine = nextLine;
+
+								if (canBeEpliog && IS_BLR(tempCode))
+									isEpilog = true;
+
+								break;
+							}
+
+							nextLine = nextLine->next;
+						}
+					}
+				}
+				else
+			//	if (!currentBlock)
+				{	// No matching blocks found, so allocate a new one.
 					funcInfo->numBlocks++;
-					funcInfo->blocks	= realloc(funcInfo->blocks,
+					funcInfo->blocks = realloc(funcInfo->blocks,
 						sizeof(BlockInfo) * funcInfo->numBlocks);
-					currentBlock		=
+					currentBlock =
 						&funcInfo->blocks[funcInfo->numBlocks - 1];
-					*currentBlock		= (BlockInfo){0};
+					*currentBlock = (BlockInfo){0};
 				}
 			}
 			else
@@ -1727,27 +1763,35 @@
 				return;
 			}
 
-			// Find the end of this block.
+/*			// Find the end of this block. A block is an epilog if it ends
+			// with a 'blr' and contains no 'bl's.
 			Line*	theEndLine	= theLine;
+			UInt32	tempCode;
 			UInt32	endAddress	= 0;
+			BOOL	canBeEpilog	= true;
 			BOOL	isEpilog	= false;
 
 			while (theEndLine)
 			{
-				if (IS_BLR(theCode))
+				tempCode	= strtoul(theEndLine->info.code, nil, 16);
+
+				if (PO(tempCode) == 0x12)	// b, bl, ba, bla
+					canBeEpilog	= false;
+
+				if (IS_BLR(tempCode))
 				{
-					isEpilog	= true;
+					isEpilog	= canBeEpilog;
 					endAddress	= theEndLine->info.address;
 					break;
 				}
-				else if (IS_BLOCK_BRANCH(theCode))
+				else if (IS_BLOCK_BRANCH(tempCode))
 				{
 					endAddress	= theEndLine->info.address;
 					break;
 				}
-				else
-					theEndLine	= theEndLine->next;
-			}
+
+				theEndLine	= theEndLine->next;
+			}*/
 
 			// Create a new MachineState.
 			GPRegisterInfo*	savedRegs	= malloc(
@@ -1783,7 +1827,8 @@
 
 			// Store the new BlockInfo.
 			BlockInfo	blockInfo	=
-				{branchTarget, endAddress, isEpilog, machState};
+//				{branchTarget, endAddress, isEpilog, machState};
+				{branchTarget, endLine, isEpilog, machState};
 
 			memcpy(currentBlock, &blockInfo, sizeof(BlockInfo));
 		}

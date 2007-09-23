@@ -48,6 +48,51 @@ typedef struct
 }
 VarInfo;
 
+/*	LineInfo
+
+	Used exclusively in the Line struct below, LineInfo encapsulates the
+	details pertaining to a line of disassemled code that are not part
+	of the basic linked list element.
+*/
+typedef struct
+{
+	UInt32	address;
+	char	code[25];	// machine code as ASCII text
+	BOOL	isCode;		// false for function and section names etc.
+	BOOL	isFunction;	// true if this is the first instruction in a function.
+}
+LineInfo;
+
+/*	Line
+
+	Represents a line of text from otool's output. For each __text section,
+	otool is called twice- with symbolic operands(-V) and without(-v). The
+	resulting 2 text files are each read into a doubly-linked list of Line's.
+	Each Line contains a pointer to the corresponding Line in the other list.
+	The reason for this approach is due to otool's inaccuracy in guessing
+	symbols. From comments in ofile_print.c:
+
+		"Both a verbose (symbolic) and non-verbose modes are supported to aid
+		in seeing the values even if they are not correct."
+
+	With both versions on hand, we can choose the better one for each Line.
+	The criteria for choosing is defined in chooseLine:. This does result in a
+	slight loss of info, in the rare case that otool guesses correctly for
+	any instruction that is not a function call.
+*/
+struct Line
+{
+	char*			chars;		// C string
+	UInt32			length;		// C string length
+	struct Line*	next;		// next line in this list
+	struct Line*	prev;		// previous line in this list
+	struct Line*	alt;		// "this" line in the other list
+	LineInfo		info;		// details
+};
+
+// "typedef struct Line" doesn't work, so we do this instead.
+#define Line	struct Line
+
 /*	MachineState
 
 	Saved state of the CPU registers and local copies of self. 'localSelves'
@@ -71,8 +116,10 @@ MachineState;
 */
 typedef struct
 {
+//	Line*			beginLine;
 	UInt32			beginAddress;
-	UInt32			endAddress;
+	Line*			endLine;
+//	UInt32			endAddress;
 	BOOL			isEpilog;
 	MachineState	state;
 }
@@ -158,50 +205,6 @@ typedef struct
 	SInt8	reg;		// register to which the thunk is being saved
 }
 ThunkInfo;
-
-/*	LineInfo
-
-	Used exclusively in the Line struct below, LineInfo encapsulates the
-	details pertaining to a line of disassemled code that are not part
-	of the basic linked list element.
-*/
-typedef struct
-{
-	UInt32	address;
-	char	code[25];	// machine code as ASCII text
-	BOOL	isCode;		// false for function and section names etc.
-	BOOL	isFunction;	// true if this is the first instruction in a function.
-}
-LineInfo;
-
-/*	Line
-
-	Represents a line of text from otool's output. For each __text section,
-	otool is called twice- with symbolic operands(-V) and without(-v). The
-	resulting 2 text files are each read into a doubly-linked list of Line's.
-	Each Line contains a pointer to the corresponding Line in the other list.
-	The reason for this approach is due to otool's inaccuracy in guessing
-	symbols. From comments in ofile_print.c:
-
-		"Both a verbose (symbolic) and non-verbose modes are supported to aid
-		in seeing the values even if they are not correct."
-
-	With both versions on hand, we can choose the better one for each Line.
-	The criteria for choosing is defined in chooseLine:. This does result in a
-	slight loss of info, in the rare case that otool guesses correctly for
-	any instruction that is not a function call.
-*/
-struct Line
-{
-	char*			chars;		// C string
-	UInt32			length;		// C string length
-	struct Line*	next;		// next line in this list
-	struct Line*	prev;		// previous line in this list
-	struct Line*	alt;		// "this" line in the other list
-	LineInfo		info;		// details
-};
-
-#define Line	struct Line
 
 /*	TextFieldWidths
 
