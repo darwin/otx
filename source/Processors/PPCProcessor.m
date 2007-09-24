@@ -105,15 +105,17 @@
 
 			break;
 
-		// Check for absolute branches to the ObjC runtime page. Similar to
-		// the comm page behavior described at
-		// http://www.opensource.apple.com/darwinsource/10.4.7.ppc/xnu-792.6.76/osfmk/ppc/cpu_capabilities.h
-		// However, the ObjC runtime page is not really a comm page, and it
-		// cannot be accessed by bca and bcla instructions, due to their
-		// 16-bit limitation.
+		case 0x10:	// bc, bca, bcl, bcla
 		case 0x12:	// b, ba, bl, bla
 		{
-			// ignore non-absolute branches
+			// Check for absolute branches to the ObjC runtime page. Similar to
+			// the comm page behavior described at
+			// http://www.opensource.apple.com/darwinsource/10.4.7.ppc/xnu-792.6.76/osfmk/ppc/cpu_capabilities.h
+			// However, the ObjC runtime page is not really a comm page, and it
+			// cannot be accessed by bca and bcla instructions, due to their
+			// 16-bit limitation.
+
+			// Deal with absolute branches.
 			if (AA(theCode))
 			{
 				UInt32	target	= LI(theCode);
@@ -227,14 +229,18 @@
 			}
 			else	// not an absolute branch
 			{
-				// Insert anonymous label if there's not a label yet.
+				// Insert anonymous label or 'return' if there's not a comment yet.
 				if (mLineCommentCString[0])
 					break;
 
-				localAddy	= LI(theCode);
+				UInt32	absoluteAddy;
 
-				UInt32	absoluteAddy	=
-					inLine->info.address + LI(theCode);
+				if (opcode == 0x12)
+					absoluteAddy =
+						inLine->info.address + LI(theCode);
+				else
+					absoluteAddy =
+						inLine->info.address + BD(theCode);
 
 				FunctionInfo	searchKey	= {absoluteAddy, NULL, 0, 0};
 				FunctionInfo*	funcInfo	= bsearch(&searchKey,
@@ -242,9 +248,30 @@
 					(COMPARISON_FUNC_TYPE)Function_Info_Compare);
 
 				if (funcInfo && funcInfo->genericFuncNum != 0)
+				{
 					snprintf(mLineCommentCString,
 						ANON_FUNC_BASE_LENGTH + 11, "%s%d",
 						ANON_FUNC_BASE, funcInfo->genericFuncNum);
+					break;
+				}
+
+				funcInfo = &mFuncInfos[mCurrentFuncInfoIndex];
+
+				if (!funcInfo->blocks)
+					break;
+
+				UInt32	i;
+
+				for (i = 0; i < funcInfo->numBlocks; i++)
+				{
+					if (funcInfo->blocks[i].beginAddress != absoluteAddy)
+						continue;
+
+					if (funcInfo->blocks[i].isEpilog)
+						snprintf(mLineCommentCString, 8, "return;");
+
+					break;
+				}
 			}
 
 			break;
@@ -1687,7 +1714,6 @@
 			// 'currentBlock' will point to either an existing block which
 			// we will update, or a newly allocated block.
 			BlockInfo*	currentBlock	= nil;
-//			UInt32		endAddress		= 0;
 			Line*		endLine			= NULL;
 			BOOL		isEpilog		= false;
 			UInt32		i;
@@ -1698,8 +1724,7 @@
 				// only be an issue with extremely long functions.
 				for (i = 0; i < funcInfo->numBlocks; i++)
 				{
-					if (funcInfo->blocks[i].beginAddress ==
-						branchTarget)
+					if (funcInfo->blocks[i].beginAddress == branchTarget)
 					{
 						currentBlock = &funcInfo->blocks[i];
 						break;
@@ -1707,13 +1732,44 @@
 				}
 
 				if (currentBlock)
-				{	// Find the end of this block. A block is an epilog if it
-					// ends with a 'blr' and contains no 'bl's.
-//					if (currentBlock->endAddress == 0)
+				{	// Determine if the target block is an epilog.
 					if (currentBlock->endLine == NULL)
 					{
-						Line*	nextLine	= theLine;
-						BOOL	canBeEpliog = true;
+						Line*	beginLine	= theLine;
+						Line*	tempLine	= theLine;
+
+						// Find the first line of the target block.
+						if (branchTarget > theLine->info.address)
+						{
+							while (tempLine)
+							{
+								if (tempLine->info.address == branchTarget)
+								{
+									beginLine	= tempLine;
+									break;
+								}
+
+								tempLine	= tempLine->next;
+							}
+						}
+						else
+						{
+							while (tempLine)
+							{
+								if (tempLine->info.address == branchTarget)
+								{
+									beginLine	= tempLine;
+									break;
+								}
+
+								tempLine	= tempLine->prev;
+							}
+						}
+
+						// Walk through the block. It's an epilog if it ends
+						// with 'blr' and contains no 'bl's.
+						Line*	nextLine	= beginLine;
+						BOOL	canBeEpliog	= true;
 						UInt32	tempCode;
 
 						while (nextLine)
@@ -1738,7 +1794,6 @@
 					}
 				}
 				else
-			//	if (!currentBlock)
 				{	// No matching blocks found, so allocate a new one.
 					funcInfo->numBlocks++;
 					funcInfo->blocks = realloc(funcInfo->blocks,
@@ -1762,36 +1817,6 @@
 					"currentBlock is nil. Flame the dev.\n");
 				return;
 			}
-
-/*			// Find the end of this block. A block is an epilog if it ends
-			// with a 'blr' and contains no 'bl's.
-			Line*	theEndLine	= theLine;
-			UInt32	tempCode;
-			UInt32	endAddress	= 0;
-			BOOL	canBeEpilog	= true;
-			BOOL	isEpilog	= false;
-
-			while (theEndLine)
-			{
-				tempCode	= strtoul(theEndLine->info.code, nil, 16);
-
-				if (PO(tempCode) == 0x12)	// b, bl, ba, bla
-					canBeEpilog	= false;
-
-				if (IS_BLR(tempCode))
-				{
-					isEpilog	= canBeEpilog;
-					endAddress	= theEndLine->info.address;
-					break;
-				}
-				else if (IS_BLOCK_BRANCH(tempCode))
-				{
-					endAddress	= theEndLine->info.address;
-					break;
-				}
-
-				theEndLine	= theEndLine->next;
-			}*/
 
 			// Create a new MachineState.
 			GPRegisterInfo*	savedRegs	= malloc(
@@ -1827,7 +1852,6 @@
 
 			// Store the new BlockInfo.
 			BlockInfo	blockInfo	=
-//				{branchTarget, endAddress, isEpilog, machState};
 				{branchTarget, endLine, isEpilog, machState};
 
 			memcpy(currentBlock, &blockInfo, sizeof(BlockInfo));

@@ -345,19 +345,14 @@
 		case 0x76: case 0x77: case 0x78: case 0x79: case 0x7a: case 0x7b: 
 		case 0x7c: case 0x7d: case 0x7e: case 0xe3:	// jcc
 		case 0xeb:	// jmp
-		{
+		{	// FIXME: this doesn't recognize tail calls.
 			if (!inLine->next)
 				break;
 
 			SInt8	simm;
 
 			sscanf(&inLine->info.code[2], "%02hhx", &simm);
-
 			targetAddy	= inLine->next->info.address + simm;
-/*			FunctionInfo	searchKey		= {absoluteAddy, NULL, 0, 0};
-			FunctionInfo*	funcInfo		= bsearch(&searchKey,
-				mFuncInfos, mNumFuncInfos, sizeof(FunctionInfo),
-				(COMPARISON_FUNC_TYPE)Function_Info_Compare);*/
 
 			// Search current FunctionInfo for blocks that start at this address.
 			FunctionInfo*	funcInfo	=

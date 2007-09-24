@@ -116,10 +116,8 @@ MachineState;
 */
 typedef struct
 {
-//	Line*			beginLine;
 	UInt32			beginAddress;
 	Line*			endLine;
-//	UInt32			endAddress;
 	BOOL			isEpilog;
 	MachineState	state;
 }
