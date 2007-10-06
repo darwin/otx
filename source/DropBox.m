@@ -24,7 +24,7 @@
 
 //	setFillsRect:
 // ----------------------------------------------------------------------------
-//	Call setFillsRect: YES to draw hilite the entire frame with kFillAlpha.
+//	Call setFillsRect: YES to draw the entire frame hilited with kFillAlpha.
 
 - (void)setFillsRect: (BOOL)inFill
 {
