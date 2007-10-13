@@ -1671,12 +1671,20 @@
 
 - (void)gatherFuncInfos
 {
-	Line*	theLine	= mPlainLineListHead;
-	UInt32	theCode;
+	Line*			theLine		= mPlainLineListHead;
+	UInt32			theCode;
+	UInt32			progCounter	= 0;
+	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithBool: true], PRAnimateKey,
+		nil];
 
 	// Loop thru lines.
 	while (theLine)
 	{
+		if (!(progCounter % PROGRESS_FREQ))
+			[mController performSelectorOnMainThread: @selector(reportProgress:)
+				withObject: progDict waitUntilDone: true];
+
 		if (!theLine->info.isCode)
 		{
 			theLine	= theLine->next;
@@ -1858,6 +1866,7 @@
 		}
 
 		theLine	= theLine->next;
+		progCounter++;
 	}
 
 	mCurrentFuncInfoIndex	= -1;
