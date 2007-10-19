@@ -2516,6 +2516,8 @@
 
 							nextLine = nextLine->next;
 						}
+
+						currentBlock->endLine	= endLine;
 					}
 				}
 				else
