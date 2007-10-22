@@ -1683,7 +1683,7 @@
 	{
 		if (!(progCounter % PROGRESS_FREQ))
 			[mController performSelectorOnMainThread: @selector(reportProgress:)
-				withObject: progDict waitUntilDone: true];
+				withObject: progDict waitUntilDone: false];
 
 		if (!theLine->info.isCode)
 		{
