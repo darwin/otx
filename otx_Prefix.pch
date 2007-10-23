@@ -11,3 +11,6 @@
 #ifdef __OBJC__
 	#import <Cocoa/Cocoa.h>
 #endif
+
+#define OS_IS_PRE_TIGER		NSAppKitVersionNumber < NSAppKitVersionNumber10_4
+#define OS_IS_POST_TIGER	floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4

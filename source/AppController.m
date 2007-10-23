@@ -65,7 +65,7 @@
 
 - (void)awakeFromNib
 {
-	if (floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_4)
+	if (OS_IS_POST_TIGER)
 	{	// Adjust main window for Leopard.
 		// Save the resize masks and apply new ones.
 		UInt32	origMainViewMask	= [mMainView autoresizingMask];
