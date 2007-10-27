@@ -74,7 +74,8 @@
 		DONT_SEPARATE_LOGICAL_BLOCKS,
 		DEMANGLE_CPP_NAMES,
 		SHOW_METHOD_RETURN_TYPES,
-		SHOW_VARIABLE_TYPES
+		SHOW_VARIABLE_TYPES,
+		SHOW_RETURN_STATEMENTS
 	};
 
 	// Parse options.
@@ -140,6 +141,9 @@
 							break;
 						case 'r':
 							mOpts.returnTypes	= !SHOW_METHOD_RETURN_TYPES;
+							break;
+						case 'R':
+							mOpts.returnStatements	= !SHOW_RETURN_STATEMENTS;
 							break;
 						case 'v':
 							mOpts.variableTypes	= !SHOW_VARIABLE_TYPES;

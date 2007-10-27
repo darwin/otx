@@ -4,6 +4,8 @@
 	This file is in the public domain.
 */
 
+//#import <AppKit/NSWindow.h>
+
 #import "SystemIncludes.h"
 
 #import "AppController.h"
@@ -18,7 +20,10 @@
 
 #import "SmartCrashReportsInstall.h"
 
-#define UNIFIED_TOOLBAR_DELTA 12
+#define UNIFIED_TOOLBAR_DELTA			12
+#define CONTENT_BORDER_SIZE_TOP			2
+#define CONTENT_BORDER_SIZE_BOTTOM		10
+#define CONTENT_BORDER_MARGIN_BOTTOM	4
 
 @implementation AppController
 
@@ -44,6 +49,7 @@
 		@"YES",		ShowLocalOffsetsKey,
 		@"YES",		ShowMD5Key,
 		@"YES",		ShowMethodReturnTypesKey,
+		@"YES",		ShowReturnStatementsKey,
 		@"0",		UseCustomNameKey,
 		@"YES",		VerboseMsgSendsKey,
 		nil];
@@ -65,7 +71,7 @@
 
 - (void)awakeFromNib
 {
-	if (OS_IS_POST_TIGER)
+/*	if (OS_IS_POST_TIGER)
 	{	// Adjust main window for Leopard.
 		// Save the resize masks and apply new ones.
 		UInt32	origMainViewMask	= [mMainView autoresizingMask];
@@ -88,6 +94,18 @@
 
 		[mMainView setAutoresizingMask: origMainViewMask];
 		[mProgView setAutoresizingMask: origProgViewMask];
+
+		// Set up smaller gradients.
+		[mMainWindow setAutorecalculatesContentBorderThickness: false
+													   forEdge: NSMaxYEdge];
+		[mMainWindow setAutorecalculatesContentBorderThickness: false
+													   forEdge: NSMinYEdge];
+		[mMainWindow setContentBorderThickness: CONTENT_BORDER_SIZE_TOP
+									   forEdge: NSMaxYEdge];
+		[mMainWindow setContentBorderThickness: CONTENT_BORDER_SIZE_BOTTOM
+									   forEdge: NSMinYEdge];
+
+		// Set up text shadows.
 	}
 	else
 	{
@@ -95,7 +113,7 @@
 
 		[mMainWindow setBackgroundColor:
 			[NSColor colorWithPatternImage: bgImage]];
-	}
+	}*/
 }
 
 //	dealloc
@@ -231,9 +249,69 @@
 
 - (void)setupMainWindow
 {
-	[self applyShadowToText: mPathLabelText];
-	[self applyShadowToText: mTypeLabelText];
-	[self applyShadowToText: mOutputLabelText];
+	if (OS_IS_POST_TIGER)
+	{	// Adjust main window for Leopard.
+		// Save the resize masks and apply new ones.
+		UInt32	origMainViewMask	= [mMainView autoresizingMask];
+		UInt32	origProgViewMask	= [mProgView autoresizingMask];
+
+		[mMainView setAutoresizingMask: NSViewMaxYMargin];
+		[mProgView setAutoresizingMask: NSViewMaxYMargin];
+
+		NSRect	curFrame	= [mMainWindow frame];
+		NSSize	maxSize		= [mMainWindow contentMaxSize];
+		NSSize	minSize		= [mMainWindow contentMinSize];
+
+		curFrame.size.height	-= UNIFIED_TOOLBAR_DELTA;
+		minSize.height			-= UNIFIED_TOOLBAR_DELTA - CONTENT_BORDER_MARGIN_BOTTOM;
+		maxSize.height			-= UNIFIED_TOOLBAR_DELTA - CONTENT_BORDER_MARGIN_BOTTOM;
+
+		[mMainWindow setContentMinSize: minSize];
+		[mMainWindow setFrame: curFrame
+					  display: true];
+		[mMainWindow setContentMaxSize: maxSize];
+
+		// Grow the prog view for the gradient.
+		[mMainView setAutoresizingMask: NSViewMinYMargin | NSViewNotSizable];
+		[mProgView setAutoresizingMask: NSViewHeightSizable | NSViewMaxYMargin];
+
+		curFrame.size.height += CONTENT_BORDER_MARGIN_BOTTOM;
+		[mMainWindow setFrame: curFrame
+					  display: true];
+
+		[mMainView setAutoresizingMask: origMainViewMask];
+		[mProgView setAutoresizingMask: origProgViewMask];
+
+		// Set up smaller gradients.
+		[mMainWindow setAutorecalculatesContentBorderThickness: false
+													   forEdge: NSMaxYEdge];
+		[mMainWindow setAutorecalculatesContentBorderThickness: false
+													   forEdge: NSMinYEdge];
+		[mMainWindow setContentBorderThickness: CONTENT_BORDER_SIZE_TOP
+									   forEdge: NSMaxYEdge];
+		[mMainWindow setContentBorderThickness: CONTENT_BORDER_SIZE_BOTTOM
+									   forEdge: NSMinYEdge];
+
+		// Set up text shadows.
+		[[mPathText cell] setBackgroundStyle: NSBackgroundStyleRaised];
+		[[mPathLabelText cell] setBackgroundStyle: NSBackgroundStyleRaised];
+		[[mTypeText cell] setBackgroundStyle: NSBackgroundStyleRaised];
+		[[mTypeLabelText cell] setBackgroundStyle: NSBackgroundStyleRaised];
+		[[mOutputLabelText cell] setBackgroundStyle: NSBackgroundStyleRaised];
+		[[mProgText cell] setBackgroundStyle: NSBackgroundStyleRaised];
+	}
+	else
+	{
+		NSImage*	bgImage	= [NSImage imageNamed: @"Main Window Background"];
+
+		[mMainWindow setBackgroundColor:
+		 [NSColor colorWithPatternImage: bgImage]];
+
+		// Set up text shadows.
+		[self applyShadowToText: mPathLabelText];
+		[self applyShadowToText: mTypeLabelText];
+		[self applyShadowToText: mOutputLabelText];
+	}
 
 	// At this point, the window is still brushed metal. We can get away with
 	// not setting the background image here because hiding the prog view
@@ -262,14 +340,17 @@
 
 - (void)applyShadowToText: (NSTextField*)inText
 {
-	NSMutableAttributedString*	newString	=
-		[[NSMutableAttributedString alloc] initWithAttributedString:
-		[inText attributedStringValue]];
+	if (OS_IS_TIGER)	// not needed on Leopard
+	{
+		NSMutableAttributedString*	newString	=
+			[[NSMutableAttributedString alloc] initWithAttributedString:
+			[inText attributedStringValue]];
 
-	[newString addAttribute: NSShadowAttributeName value: mTextShadow
-		range: NSMakeRange(0, [newString length])];
-	[inText setAttributedStringValue: newString];
-	[newString release];
+		[newString addAttribute: NSShadowAttributeName value: mTextShadow
+			range: NSMakeRange(0, [newString length])];
+		[inText setAttributedStringValue: newString];
+		[newString release];
+	}
 }
 
 #pragma mark -
@@ -461,6 +542,8 @@
 		[theDefaults boolForKey: ShowMethodReturnTypesKey];
 	opts.variableTypes			=
 		[theDefaults boolForKey: ShowIvarTypesKey];
+	opts.returnStatements		=
+		[theDefaults boolForKey: ShowReturnStatementsKey];
 
 	id	theProcessor	= [[procClass alloc] initWithURL: mOFile
 		controller: self options: &opts];
@@ -920,10 +1003,10 @@
 	free(theNops);
 }
 
-//	validateMenuItem
+//	validateMenuItem:
 // ----------------------------------------------------------------------------
 
-- (BOOL)validateMenuItem: (id<NSMenuItem>)menuItem
+- (BOOL)validateMenuItem: (NSMenuItem*)menuItem
 {
 	if ([menuItem action] == @selector(attemptToProcessFile:))
 	{

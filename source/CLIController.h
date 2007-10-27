@@ -18,6 +18,7 @@
 #define	DEMANGLE_CPP_NAMES				true
 #define	SHOW_METHOD_RETURN_TYPES		true
 #define	SHOW_VARIABLE_TYPES				true
+#define	SHOW_RETURN_STATEMENTS			true
 
 // ============================================================================
 
