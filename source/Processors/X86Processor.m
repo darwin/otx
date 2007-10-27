@@ -2455,7 +2455,8 @@
 
 				if (currentBlock)
 				{	// Determine if the target block is an epilog.
-					if (currentBlock->endLine == NULL)
+					if (currentBlock->endLine == NULL &&
+						mOpts.returnStatements)
 					{
 						Line*	beginLine	= theLine;
 						Line*	tempLine	= theLine;
