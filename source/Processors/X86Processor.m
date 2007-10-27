@@ -2517,7 +2517,7 @@
 							nextLine = nextLine->next;
 						}
 
-						currentBlock->endLine	= endLine;
+//						currentBlock->endLine	= endLine;
 					}
 				}
 				else

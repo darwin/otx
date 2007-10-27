@@ -1740,7 +1740,11 @@
 				}
 
 				if (currentBlock)
-				{	// Determine if the target block is an epilog.
+				{
+                    // FIXME: spending too much time here finding the 1st line.
+                    // Should do another pass later to find epilogs.
+
+                    // Determine if the target block is an epilog.
 					if (currentBlock->endLine == NULL)
 					{
 						Line*	beginLine	= theLine;
@@ -1800,7 +1804,7 @@
 							nextLine = nextLine->next;
 						}
 
-						currentBlock->endLine	= endLine;
+//						currentBlock->endLine	= endLine;
 					}
 				}
 				else
