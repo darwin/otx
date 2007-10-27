@@ -28,6 +28,13 @@ static const float	gTexturedAlphas[4][kTexturedBorderWidth]	=
 	 {0.4, 0.4, 1.0, 0.8, 0.6, 0.4, 0.2},	// NSBezelBorder
 	 {0.4, 0.4, 1.0, 0.8, 0.6, 0.4, 0.2}};	// NSGrooveBorder
 
+// Leopard textured windows require a bit less.
+static const float	gLeopardTexturedAlphas[4][kTexturedBorderWidth]	=
+   {{1.0, 0.8, 0.6, 0.4, 0.2, 0.0, 0.0},	// NSNoBorder
+	{0.4, 0.8, 0.6, 0.4, 0.2, 0.0, 0.0},	// NSLineBorder
+	{0.4, 0.4, 0.8, 0.6, 0.4, 0.2, 0.0},	// NSBezelBorder
+	{0.4, 0.4, 0.8, 0.6, 0.4, 0.2, 0.0}};	// NSGrooveBorder
+
 // ============================================================================
 
 @interface DropBox : NSBox

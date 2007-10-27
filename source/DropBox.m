@@ -122,7 +122,8 @@
 	for (i = 0; i < borderWidth; i++)
 	{
 		color	= [baseColor colorWithAlphaComponent: (isTextured) ?
-			gTexturedAlphas[borderType][i] : gAlphas[borderType][i]];
+			((OS_IS_POST_TIGER) ? gLeopardTexturedAlphas[borderType][i] :
+			gTexturedAlphas[borderType][i]) : gAlphas[borderType][i]];
 		[color set];
 		NSFrameRectWithWidthUsingOperation(
 			innerRect, 1.0, NSCompositeSourceOver);
