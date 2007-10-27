@@ -24,5 +24,6 @@ typedef struct
  	BOOL	demangleCppNames;		// n
  	BOOL	returnTypes;			// r
  	BOOL	variableTypes;			// v
+	BOOL	returnStatements;		// R
 }
 ProcOptions;

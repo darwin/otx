@@ -17,5 +17,6 @@
 #define ShowLocalOffsetsKey			@"ShowLocalOffsets"
 #define ShowMD5Key					@"ShowMD5"
 #define ShowMethodReturnTypesKey	@"ShowMethodReturnTypes"
+#define ShowReturnStatementsKey		@"ShowReturnStatements"
 #define UseCustomNameKey			@"UseCustomName"
 #define VerboseMsgSendsKey			@"VerboseMsgSends"
