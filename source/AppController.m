@@ -66,56 +66,6 @@
 	return (self = [super init]);
 }
 
-//	awakeFromNib
-// ----------------------------------------------------------------------------
-
-- (void)awakeFromNib
-{
-/*	if (OS_IS_POST_TIGER)
-	{	// Adjust main window for Leopard.
-		// Save the resize masks and apply new ones.
-		UInt32	origMainViewMask	= [mMainView autoresizingMask];
-		UInt32	origProgViewMask	= [mProgView autoresizingMask];
-
-		[mMainView setAutoresizingMask: NSViewMaxYMargin];
-		[mProgView setAutoresizingMask: NSViewMaxYMargin];
-
-		NSRect	curFrame	= [mMainWindow frame];
-		NSSize	maxSize		= [mMainWindow contentMaxSize];
-		NSSize	minSize		= [mMainWindow contentMinSize];
-
-		curFrame.size.height	-= UNIFIED_TOOLBAR_DELTA;
-		minSize.height			-= UNIFIED_TOOLBAR_DELTA;
-		maxSize.height			-= UNIFIED_TOOLBAR_DELTA;
-
-		[mMainWindow setContentMinSize: minSize];
-		[mMainWindow setFrame: curFrame display: false];
-		[mMainWindow setContentMaxSize: maxSize];
-
-		[mMainView setAutoresizingMask: origMainViewMask];
-		[mProgView setAutoresizingMask: origProgViewMask];
-
-		// Set up smaller gradients.
-		[mMainWindow setAutorecalculatesContentBorderThickness: false
-													   forEdge: NSMaxYEdge];
-		[mMainWindow setAutorecalculatesContentBorderThickness: false
-													   forEdge: NSMinYEdge];
-		[mMainWindow setContentBorderThickness: CONTENT_BORDER_SIZE_TOP
-									   forEdge: NSMaxYEdge];
-		[mMainWindow setContentBorderThickness: CONTENT_BORDER_SIZE_BOTTOM
-									   forEdge: NSMinYEdge];
-
-		// Set up text shadows.
-	}
-	else
-	{
-		NSImage*	bgImage	= [NSImage imageNamed: @"Main Window Background"];
-
-		[mMainWindow setBackgroundColor:
-			[NSColor colorWithPatternImage: bgImage]];
-	}*/
-}
-
 //	dealloc
 // ----------------------------------------------------------------------------
 
