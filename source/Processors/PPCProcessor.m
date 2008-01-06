@@ -14,13 +14,11 @@
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
-//#define _OTX_SCAN_FORWARD_ 1
-
 // ============================================================================
 
 @implementation PPCProcessor
 
-//	initWithURL:controller:andOptions:
+//	initWithURL:controller:options:
 // ----------------------------------------------------------------------------
 
 - (id)initWithURL: (NSURL*)inURL
@@ -67,9 +65,7 @@
 		*(UInt32*)((char*)mMachHeaderPtr +
 		(inLine->info.address - mTextOffset));
 
-	if (mSwapped)
-		theInstruction	= OSSwapInt32(theInstruction);
-
+	theInstruction	= OSSwapBigToHostInt32(theInstruction);
 	snprintf(inLine->info.code, 10, "%08x", theInstruction);
 }
 
@@ -160,8 +156,9 @@
 							objc_ivar	theIvar			= {0};
 							objc_class	swappedClass	= *mCurrentClass;
 
-							if (mSwapped)
+							#if __LITTLE_ENDIAN__
 								swap_objc_class(&swappedClass);
+							#endif
 
 							if (!mIsInstanceMethod)
 							{
@@ -169,8 +166,9 @@
 									&swappedClass, &swappedClass))
 									break;
 
-								if (mSwapped)
+								#if __LITTLE_ENDIAN__
 									swap_objc_class(&swappedClass);
+								#endif
 							}
 
 							if (!FindIvar(&theIvar,
@@ -311,8 +309,9 @@
 						&swappedClass, &swappedClass))
 						break;
 
-					if (mSwapped)
+					#if __LITTLE_ENDIAN__
 						swap_objc_class(&swappedClass);
+					#endif
 				}
 
 				if (!FindIvar(&theIvar, &swappedClass, UIMM(theCode)))
@@ -352,8 +351,7 @@
 				{
 					UInt64	theInt64	= *(UInt64*)theDummyPtr;
 
-					if (mSwapped)
-						theInt64	= OSSwapInt64(theInt64);
+					theInt64	= OSSwapBigToHostInt64(theInt64);
 
 					// dance around printf's type coersion
 					snprintf(mLineCommentCString,
@@ -363,8 +361,7 @@
 				{
 					UInt32	theInt32	= *(UInt32*)theDummyPtr;
 
-					if (mSwapped)
-						theInt32	= OSSwapInt32(theInt32);
+					theInt32	= OSSwapBigToHostInt32(theInt32);
 
 					// dance around printf's type coersion
 					snprintf(mLineCommentCString,
@@ -393,8 +390,9 @@
 				objc_class	swappedClass	=
 					*mRegInfos[RA(theCode)].classPtr;
 
-				if (mSwapped)
+				#if __LITTLE_ENDIAN__
 					swap_objc_class(&swappedClass);
+				#endif
 
 				if (!mIsInstanceMethod)
 				{
@@ -402,8 +400,9 @@
 						&swappedClass, &swappedClass))
 						break;
 
-					if (mSwapped)
+					#if __LITTLE_ENDIAN__
 						swap_objc_class(&swappedClass);
+					#endif
 				}
 
 				if (!FindIvar(&theIvar, &swappedClass, UIMM(theCode)))
@@ -451,10 +450,7 @@
 					{
 						case DataGenericType:
 							theValue	= *(UInt32*)theSymPtr;
-
-							if (mSwapped)
-								theValue	= OSSwapInt32(theValue);
-
+							theValue	= OSSwapBigToHostInt32(theValue);
 							theDummyPtr	= GetPointer(theValue, &theType);
 
 							switch (theType)
@@ -481,9 +477,7 @@
 							char*	dyldComment	= nil;
 
 							theValue	= *(UInt32*)theSymPtr;
-
-							if (mSwapped)
-								theValue	= OSSwapInt32(theValue);
+							theValue	= OSSwapBigToHostInt32(theValue);
 
 							switch(theValue)
 							{
@@ -518,11 +512,9 @@
 								break;
 							}
 
-							if (mSwapped)
-								theCFString.oc_string.chars	=
-									(char*)OSSwapInt32(
-									(UInt32)theCFString.oc_string.chars);
-
+							theCFString.oc_string.chars	=
+								(char*)OSSwapBigToHostInt32(
+								(UInt32)theCFString.oc_string.chars);
 							theSymPtr	= GetPointer(
 								(UInt32)theCFString.oc_string.chars, nil);
 
@@ -533,10 +525,7 @@
 						case NLSymType:
 						{
 							theValue	= *(UInt32*)theSymPtr;
-
-							if (mSwapped)
-								theValue	= OSSwapInt32(theValue);
-
+							theValue	= OSSwapBigToHostInt32(theValue);
 							theDummyPtr	= GetPointer(theValue, nil);
 
 							if (!theDummyPtr)
@@ -546,17 +535,12 @@
 							}
 
 							theValue	= *(UInt32*)(theDummyPtr + 4);
-
-							if (mSwapped)
-								theValue	= OSSwapInt32(theValue);
+							theValue	= OSSwapBigToHostInt32(theValue);
 
 							if (theValue != typeid_NSString)
 							{
 								theValue	= *(UInt32*)theDummyPtr;
-
-								if (mSwapped)
-									theValue	= OSSwapInt32(theValue);
-
+								theValue	= OSSwapBigToHostInt32(theValue);
 								theDummyPtr	= GetPointer(theValue, nil);
 
 								if (!theDummyPtr)
@@ -575,11 +559,9 @@
 								break;
 							}
 
-							if (mSwapped)
-								theCFString.oc_string.chars	=
-									(char*)OSSwapInt32(
-									(UInt32)theCFString.oc_string.chars);
-
+							theCFString.oc_string.chars	=
+								(char*)OSSwapBigToHostInt32(
+								(UInt32)theCFString.oc_string.chars);
 							theSymPtr	= GetPointer(
 								(UInt32)theCFString.oc_string.chars, nil);
 
@@ -630,8 +612,7 @@
 					if ((opcode == 0x0e || opcode == 0x18) &&	// li | addi | ori
 						localAddy >= 0x20202020 && localAddy < 0x7f7f7f7f)
 					{
-						if (mSwapped)
-							localAddy	= OSSwapInt32(localAddy);
+						localAddy	= OSSwapBigToHostInt32(localAddy);
 
 						char*	fcc	= (char*)&localAddy;
 
@@ -754,9 +735,7 @@
 			{
 				UInt32	selPtrValue	= *(UInt32*)selPtr;
 
-				if (mSwapped)
-					selPtrValue	= OSSwapInt32(selPtrValue);
-
+				selPtrValue	= OSSwapBigToHostInt32(selPtrValue);
 				selString	= GetPointer(selPtrValue, nil);
 			}
 
@@ -837,10 +816,8 @@
 				{
 					UInt32	namePtrValue	= *(UInt32*)classNamePtr;
 
-					if (mSwapped)
-						namePtrValue	= OSSwapInt32(namePtrValue);
-
-					className	= GetPointer(namePtrValue, nil);
+					namePtrValue	= OSSwapBigToHostInt32(namePtrValue);
+					className		= GetPointer(namePtrValue, nil);
 				}
 
 				break;
@@ -959,8 +936,9 @@
 	{
 		objc_category	swappedCat	= *mCurrentCat;
 
-		if (mSwapped)
+		#if __LITTLE_ENDIAN__
 			swap_objc_category(&swappedCat);
+		#endif
 
 		GetObjcClassPtrFromName(&mCurrentClass,
 			GetPointer((UInt32)swappedCat.class_name, nil));
@@ -1367,11 +1345,8 @@
 				if (tempPtr)
 				{
 					mRegInfos[RT(theCode)].value	= *(UInt32*)tempPtr;
-
-					if (mSwapped)
-						mRegInfos[RT(theCode)].value	=
-							OSSwapInt32(mRegInfos[RT(theCode)].value);
-
+					mRegInfos[RT(theCode)].value	=
+						OSSwapBigToHostInt32(mRegInfos[RT(theCode)].value);
 					mRegInfos[RT(theCode)].isValid	= true;
 				}
 				else

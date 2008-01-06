@@ -262,9 +262,7 @@
 				{
 					UInt32	theInt32	= *(UInt32*)theDummyPtr;
 
-					if (mSwapped)
-						theInt32	= OSSwapInt32(theInt32);
-
+					theInt32	= OSSwapLittleToHostInt32(theInt32);
 					snprintf(mLineCommentCString, 30, "%G", *(float*)&theInt32);
 				}
 			}
@@ -333,9 +331,7 @@
 			{
 				UInt64	theInt64	= *(UInt64*)theDummyPtr;
 
-				if (mSwapped)
-					theInt64	= OSSwapInt64(theInt64);
-
+				theInt64	= OSSwapLittleToHostInt64(theInt64);
 				snprintf(mLineCommentCString, 30, "%lG", *(double*)&theInt64);
 			}
 
@@ -408,8 +404,9 @@
 				objc_class	swappedClass	=
 					*mRegInfos[REG2(modRM)].classPtr;
 
-				if (mSwapped)
+				#if __BIG_ENDIAN__
 					swap_objc_class(&swappedClass);
+				#endif
 
 				if (!mIsInstanceMethod)
 				{
@@ -417,8 +414,9 @@
 						&swappedClass, &swappedClass))
 						break;
 
-					if (mSwapped)
+					#if __BIG_ENDIAN__
 						swap_objc_class(&swappedClass);
+					#endif
 				}
 
 				sscanf(&inLine->info.code[4], "%02hhx", &immOffset);
@@ -493,8 +491,9 @@
 					objc_class	swappedClass	=
 						*mRegInfos[REG2(modRM)].classPtr;
 
-					if (mSwapped)
+					#if __BIG_ENDIAN__
 						swap_objc_class(&swappedClass);
+					#endif
 
 					if (!mIsInstanceMethod)
 					{
@@ -502,8 +501,9 @@
 							&swappedClass, &swappedClass))
 							break;
 
-						if (mSwapped)
+						#if __BIG_ENDIAN__
 							swap_objc_class(&swappedClass);
+						#endif
 					}
 
 					if (MOD(modRM) == MOD8)
@@ -591,8 +591,9 @@
 				objc_class	swappedClass	=
 					*mRegInfos[REG2(modRM)].classPtr;
 
-				if (mSwapped)
+				#if __BIG_ENDIAN__
 					swap_objc_class(&swappedClass);
+				#endif
 
 				if (!mIsInstanceMethod)
 				{
@@ -600,8 +601,9 @@
 						&swappedClass, &swappedClass))
 						break;
 
-					if (mSwapped)
+					#if __BIG_ENDIAN__
 						swap_objc_class(&swappedClass);
+					#endif
 				}
 
 				if (MOD(modRM) == MOD8)
@@ -712,8 +714,9 @@
 					fcc[2] >= 0x20 && fcc[2] < 0x7f &&
 					fcc[3] >= 0x20 && fcc[3] < 0x7f)
 				{
-					if (!mSwapped)
+					#if __LITTLE_ENDIAN__	// reversed on purpose
 						localAddy	= OSSwapInt32(localAddy);
+					#endif
 
 					snprintf(mLineCommentCString,
 						7, "'%.4s'", fcc);
@@ -755,8 +758,9 @@
 				objc_class	swappedClass	=
 					*mRegInfos[REG2(modRM)].classPtr;
 
-				if (mSwapped)
+				#if __BIG_ENDIAN__
 					swap_objc_class(&swappedClass);
+				#endif
 
 				if (!mIsInstanceMethod)
 				{
@@ -764,8 +768,9 @@
 						&swappedClass, &swappedClass))
 						break;
 
-					if (mSwapped)
+					#if __BIG_ENDIAN__
 						swap_objc_class(&swappedClass);
+					#endif
 				}
 
 				if (MOD(modRM) == MOD8)
@@ -802,8 +807,9 @@
 							tempFCC[2] >= 0x20 && tempFCC[2] < 0x7f &&
 							tempFCC[3] >= 0x20 && tempFCC[3] < 0x7f)
 						{
-							if (!mSwapped)
+							#if __LITTLE_ENDIAN__	// reversed on purpose
 								imm	= OSSwapInt32(imm);
+							#endif
 
 							snprintf(fcc, 7, "'%.4s'", tempFCC);
 						}
@@ -879,8 +885,9 @@
 						fcc[2] >= 0x20 && fcc[2] < 0x7f &&
 						fcc[3] >= 0x20 && fcc[3] < 0x7f)
 					{
-						if (!mSwapped)
+						#if __LITTLE_ENDIAN__	// reversed on purpose
 							localAddy	= OSSwapInt32(localAddy);
+						#endif
 
 						snprintf(mLineCommentCString,
 							7, "'%.4s'", fcc);
@@ -919,8 +926,9 @@
 				objc_class	swappedClass	=
 					*mRegInfos[REG2(modRM)].classPtr;
 
-				if (mSwapped)
+				#if __BIG_ENDIAN__
 					swap_objc_class(&swappedClass);
+				#endif
 
 				if (!mIsInstanceMethod)
 				{
@@ -928,8 +936,9 @@
 						&swappedClass, &swappedClass))
 						break;
 
-					if (mSwapped)
+					#if __BIG_ENDIAN__
 						swap_objc_class(&swappedClass);
+					#endif
 				}
 
 				if (MOD(modRM) == MOD8)
@@ -997,8 +1006,7 @@
 				{
 					UInt32	theInt32	= *(UInt32*)theDummyPtr;
 
-					if (mSwapped)
-						theInt32	= OSSwapInt32(theInt32);
+					theInt32	= OSSwapLittleToHostInt32(theInt32);
 
 					// dance around printf's type coersion
 					snprintf(mLineCommentCString,
@@ -1008,8 +1016,7 @@
 				{
 					UInt64	theInt64	= *(UInt64*)theDummyPtr;
 
-					if (mSwapped)
-						theInt64	= OSSwapInt64(theInt64);
+					theInt64	= OSSwapLittleToHostInt64(theInt64);
 
 					// dance around printf's type coersion
 					snprintf(mLineCommentCString,
@@ -1071,8 +1078,9 @@
 				objc_class	swappedClass	=
 					*mRegInfos[REG2(modRM)].classPtr;
 
-				if (mSwapped)
+				#if __BIG_ENDIAN__
 					swap_objc_class(&swappedClass);
+				#endif
 
 				if (!mIsInstanceMethod)
 				{
@@ -1080,8 +1088,9 @@
 						&swappedClass, &swappedClass))
 						break;
 
-					if (mSwapped)
+					#if __BIG_ENDIAN__
 						swap_objc_class(&swappedClass);
+					#endif
 				}
 
 				if (MOD(modRM) == MOD8)
@@ -1140,9 +1149,7 @@
 					{
 						UInt32	theInt32	= *(UInt32*)theDummyPtr;
 
-						if (mSwapped)
-							theInt32	= OSSwapInt32(theInt32);
-
+						theInt32	= OSSwapLittleToHostInt32(theInt32);
 						snprintf(mLineCommentCString,
 							30, "%G", *(float*)&theInt32);
 					}
@@ -1150,9 +1157,7 @@
 					{
 						UInt64	theInt64	= *(UInt64*)theDummyPtr;
 
-						if (mSwapped)
-							theInt64	= OSSwapInt64(theInt64);
-
+						theInt64	= OSSwapLittleToHostInt64(theInt64);
 						snprintf(mLineCommentCString,
 							30, "%lG", *(double*)&theInt64);
 					}
@@ -1179,10 +1184,7 @@
 			{
 				case DataGenericType:
 					theValue	= *(UInt32*)theDummyPtr;
-
-					if (mSwapped)
-						theValue	= OSSwapInt32(theValue);
-
+					theValue	= OSSwapLittleToHostInt32(theValue);
 					theDummyPtr	= GetPointer(theValue, &theType);
 
 					switch (theType)
@@ -1221,10 +1223,7 @@
 					}
 
 					theValue	= (UInt32)theCFString.oc_string.chars;
-
-					if (mSwapped)
-						theValue	= OSSwapInt32(theValue);
-
+					theValue	= OSSwapLittleToHostInt32(theValue);
 					theSymPtr	= GetPointer(theValue, nil);
 
 					break;
@@ -1233,10 +1232,7 @@
 				case NLSymType:
 				{
 					theValue	= *(UInt32*)theDummyPtr;
-
-					if (mSwapped)
-						theValue	= OSSwapInt32(theValue);
-
+					theValue	= OSSwapLittleToHostInt32(theValue);
 					theDummyPtr	= GetPointer(theValue, nil);
 
 					if (!theDummyPtr)
@@ -1246,17 +1242,12 @@
 					}
 
 					theValue	= *(UInt32*)(theDummyPtr + 4);
-
-					if (mSwapped)
-						theValue	= OSSwapInt32(theValue);
+					theValue	= OSSwapLittleToHostInt32(theValue);
 
 					if (theValue != typeid_NSString)
 					{
 						theValue	= *(UInt32*)theDummyPtr;
-
-						if (mSwapped)
-							theValue	= OSSwapInt32(theValue);
-
+						theValue	= OSSwapLittleToHostInt32(theValue);
 						theDummyPtr	= GetPointer(theValue, nil);
 
 						if (!theDummyPtr)
@@ -1276,10 +1267,7 @@
 					}
 
 					theValue	= (UInt32)theCFString.oc_string.chars;
-
-					if (mSwapped)
-						theValue	= OSSwapInt32(theValue);
-
+					theValue	= OSSwapLittleToHostInt32(theValue);
 					theSymPtr	= GetPointer( theValue, nil);
 
 					break;
@@ -1441,9 +1429,7 @@
 			{
 				UInt32	selPtrValue	= *(UInt32*)selPtr;
 
-				if (mSwapped)
-					selPtrValue	= OSSwapInt32(selPtrValue);
-
+				selPtrValue	= OSSwapLittleToHostInt32(selPtrValue);
 				selString	= GetPointer(selPtrValue, nil);
 			}
 
@@ -1526,9 +1512,7 @@
 					{
 						UInt32	namePtrValue	= *(UInt32*)classNamePtr;
 
-						if (mSwapped)
-							namePtrValue	= OSSwapInt32(namePtrValue);
-
+						namePtrValue	= OSSwapLittleToHostInt32(namePtrValue);
 						className	= GetPointer(namePtrValue, nil);
 					}
 
@@ -1598,8 +1582,9 @@
 			objc_ivar	theIvar			= {0};
 			objc_class	swappedClass	= *mCurrentClass;
 
-			if (mSwapped)
+			#if __BIG_ENDIAN__
 				swap_objc_class(&swappedClass);
+			#endif
 
 			if (!mIsInstanceMethod)
 			{
@@ -1607,8 +1592,9 @@
 					&swappedClass, &swappedClass))
 					return;
 
-				if (mSwapped)
+				#if __BIG_ENDIAN__
 					swap_objc_class(&swappedClass);
+				#endif
 			}
 
 			if (!FindIvar(&theIvar, &swappedClass, mStack[2].value))
@@ -1754,8 +1740,9 @@
 	{
 		objc_category	swappedCat	= *mCurrentCat;
 
-		if (mSwapped)
+		#if __BIG_ENDIAN__
 			swap_objc_category(&swappedCat);
+		#endif
 
 		GetObjcClassPtrFromName(&mCurrentClass,
 			GetPointer((UInt32)swappedCat.class_name, nil));
