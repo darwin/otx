@@ -278,6 +278,9 @@ enum {
 
 @interface ExeProcessor : NSObject
 {
+@private
+	BOOL	mSwapped;
+
 @protected
 	id					mController;	// who's our daddy
 
@@ -294,7 +297,6 @@ enum {
 	cpu_type_t			mArchSelector;
 	UInt32				mArchMagic;				// 0xFEEDFACE etc.
 	BOOL				mExeIsFat;
-	BOOL				mSwapped;
 	UInt32				mLocalOffset;			// +420 etc.
 	ThunkInfo*			mThunks;				// x86 only
 	UInt32				mNumThunks;				// x86 only
