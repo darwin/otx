@@ -427,6 +427,7 @@ enum {
 
 // customizers
 - (void)gatherLineInfos;
+- (void)findFunctions;
 - (void)decodeMethodReturnType: (const char*)inTypeCode
 						output: (char*)outCString;
 - (void)getDescription: (char*)ioCString

@@ -258,6 +258,9 @@
 	// Gather info about lines while they're virgin.
 	[self gatherLineInfos];
 
+	// Find functions and allocate funcInfo's.
+	[self findFunctions];
+
 	// Gather info about logical blocks. The second pass applies info
 	// for backward branches.
 	[self gatherFuncInfos];
@@ -515,40 +518,19 @@
 
 		if (LineIsCode(theLine->chars))
 		{
-			// FIXME: this should not assume the existence of alt list.
-			theLine->info.isCode		=
-			theLine->alt->info.isCode	= true;
-			theLine->info.address		=
-			theLine->alt->info.address	= AddressFromLine(theLine->chars);
+			theLine->info.isCode	= true;
+			theLine->info.address	= AddressFromLine(theLine->chars);
+			CodeFromLine(theLine);	// FIXME: return a value like the cool kids do.
 
-			CodeFromLine(theLine);
-
-			strncpy(theLine->alt->info.code, theLine->info.code,
-				strlen(theLine->info.code) + 1);
-
-			theLine->info.isFunction		=
-			theLine->alt->info.isFunction	= LineIsFunction(theLine);
+			if (theLine->alt)
+			{
+				theLine->alt->info.isCode	= theLine->info.isCode;
+				theLine->alt->info.address	= theLine->info.address;
+				strncpy(theLine->alt->info.code, theLine->info.code,
+					strlen(theLine->info.code) + 1);
+			}
 
 			CheckThunk(theLine);
-
-			if (theLine->info.isFunction)
-			{
-				mNumFuncInfos++;
-
-				if (mFuncInfos)
-					mFuncInfos	= realloc(mFuncInfos,
-						sizeof(FunctionInfo) * mNumFuncInfos);
-				else
-					mFuncInfos	= malloc(sizeof(FunctionInfo));
-
-				UInt32	genericFuncNum	= 0;
-
-				if (theLine->prev && theLine->prev->info.isCode)
-					genericFuncNum	= ++mCurrentGenericFuncNum;
-
-				mFuncInfos[mNumFuncInfos - 1]	= (FunctionInfo)
-					{theLine->info.address, nil, 0, genericFuncNum};
-			}
 		}
 		else	// not code...
 		{
@@ -565,6 +547,52 @@
 
 	[progDict release];
 	mEndOfText	= mTextSect.s.addr + mTextSect.s.size;
+}
+
+//	findFunctions
+// ----------------------------------------------------------------------------
+
+- (void)findFunctions
+{
+	// Loop once to flag all funcs.
+	Line*	theLine	= mPlainLineListHead;
+
+	while (theLine)
+	{
+		theLine->info.isFunction	= LineIsFunction(theLine);
+
+		if (theLine->alt)
+			theLine->alt->info.isFunction	= theLine->info.isFunction;
+
+		theLine	= theLine->next;
+	}
+
+	// Loop again to allocate funcInfo's.
+	theLine	= mPlainLineListHead;
+
+	while (theLine)
+	{
+		if (theLine->info.isFunction)
+		{
+			mNumFuncInfos++;
+
+			if (mFuncInfos)
+				mFuncInfos	= realloc(mFuncInfos,
+					sizeof(FunctionInfo) * mNumFuncInfos);
+			else
+				mFuncInfos	= malloc(sizeof(FunctionInfo));
+
+			UInt32	genericFuncNum	= 0;
+
+			if (theLine->prev && theLine->prev->info.isCode)
+				genericFuncNum	= ++mCurrentGenericFuncNum;
+
+			mFuncInfos[mNumFuncInfos - 1]	= (FunctionInfo)
+				{theLine->info.address, nil, 0, genericFuncNum};
+		}
+
+		theLine	= theLine->next;
+	}
 }
 
 //	processLine:
@@ -1071,17 +1099,24 @@
 			mFuncInfos, mNumFuncInfos, sizeof(FunctionInfo),
 			(COMPARISON_FUNC_TYPE)Function_Info_Compare);
 
-		if (funcInfo)
-		{
-			// sizeof(UINT32_MAX) + '\n' * 2 + ':' + null term
-			UInt8	maxlength	= ANON_FUNC_BASE_LENGTH + 14;
-			Line*	funcName	= calloc(1, sizeof(Line));
+		// sizeof(UINT32_MAX) + '\n' * 2 + ':' + null term
+		UInt8	maxlength	= ANON_FUNC_BASE_LENGTH + 14;
+		Line*	funcName	= calloc(1, sizeof(Line));
 
-			funcName->chars		= malloc(maxlength);
+		funcName->chars		= malloc(maxlength);
+
+		// Hack Alert: In the case that we have too few funcInfo's, print
+		// \nAnon???. Of course, we'll still intermittently crash later, but
+		// when we don't, the output will look pretty.
+		// Replace "if (funcInfo)" from rev 319 around this...
+		if (funcInfo)
 			funcName->length	= snprintf(funcName->chars, maxlength,
 				"\n%s%d:\n", ANON_FUNC_BASE, funcInfo->genericFuncNum);
-			InsertLineBefore(funcName, *ioLine, &mPlainLineListHead);
-		}
+		else
+			funcName->length	= snprintf(funcName->chars, maxlength,
+				"\n%s???:\n", ANON_FUNC_BASE);
+
+		InsertLineBefore(funcName, *ioLine, &mPlainLineListHead);
 	}
 
 	// Finally, assemble the new string.

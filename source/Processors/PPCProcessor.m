@@ -14,6 +14,8 @@
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
+//#define _OTX_SCAN_FORWARD_ 1
+
 // ============================================================================
 
 @implementation PPCProcessor
@@ -255,6 +257,7 @@
 					break;
 				}
 
+// FIXME: mCurrentFuncInfoIndex is -1 here when it should not be
 				funcInfo = &mFuncInfos[mCurrentFuncInfoIndex];
 
 				if (!funcInfo->blocks)
@@ -1562,7 +1565,7 @@
 	if (FindSymbolByAddress(theAddy))
 		return true;
 
-	// If otool gave us a function name, but it came from a dynamic symbol...
+	// If otool gave us a function name...
 	if (inLine->prev && !inLine->prev->info.isCode)
 		return true;
 
