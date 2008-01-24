@@ -492,9 +492,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = (
 					ppc,
-					ppc64,
 					i386,
-					x86_64,
 				);
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_DYNAMIC_NO_PIC = YES;

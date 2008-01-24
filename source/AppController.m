@@ -4,8 +4,6 @@
 	This file is in the public domain.
 */
 
-//#import <AppKit/NSWindow.h>
-
 #import "SystemIncludes.h"
 
 #import "AppController.h"
@@ -243,12 +241,15 @@
 									   forEdge: NSMinYEdge];
 
 		// Set up text shadows.
-		[[mPathText cell] setBackgroundStyle: NSBackgroundStyleRaised];
+/*		[[mPathText cell] setBackgroundStyle: NSBackgroundStyleRaised];
 		[[mPathLabelText cell] setBackgroundStyle: NSBackgroundStyleRaised];
 		[[mTypeText cell] setBackgroundStyle: NSBackgroundStyleRaised];
 		[[mTypeLabelText cell] setBackgroundStyle: NSBackgroundStyleRaised];
 		[[mOutputLabelText cell] setBackgroundStyle: NSBackgroundStyleRaised];
-		[[mProgText cell] setBackgroundStyle: NSBackgroundStyleRaised];
+		[[mProgText cell] setBackgroundStyle: NSBackgroundStyleRaised];*/
+		[self applyShadowToText: mPathLabelText];
+		[self applyShadowToText: mTypeLabelText];
+		[self applyShadowToText: mOutputLabelText];
 	}
 	else
 	{
@@ -290,8 +291,8 @@
 
 - (void)applyShadowToText: (NSTextField*)inText
 {
-	if (OS_IS_TIGER)	// not needed on Leopard
-	{
+//	if (OS_IS_TIGER)	// not needed on Leopard
+//	{
 		NSMutableAttributedString*	newString	=
 			[[NSMutableAttributedString alloc] initWithAttributedString:
 			[inText attributedStringValue]];
@@ -300,7 +301,7 @@
 			range: NSMakeRange(0, [newString length])];
 		[inText setAttributedStringValue: newString];
 		[newString release];
-	}
+//	}
 }
 
 #pragma mark -
