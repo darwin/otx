@@ -12,6 +12,7 @@
 		25A62EFE0C38A7C500B08D38 /* Prefs General Icon.tif in Resources */ = {isa = PBXBuildFile; fileRef = 25A62EFB0C38A7C500B08D38 /* Prefs General Icon.tif */; };
 		25A62EFF0C38A7C500B08D38 /* Main Window Background.tif in Resources */ = {isa = PBXBuildFile; fileRef = 25A62EFC0C38A7C500B08D38 /* Main Window Background.tif */; };
 		25A62F060C38A86C00B08D38 /* App Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 25A62F050C38A86C00B08D38 /* App Icon.icns */; };
+		25E79C530D4E81690037363C /* SysUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 252DFABA0C9D38A100C712BD /* SysUtils.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E13539830A6817C700CBDDE5 /* ObjcSwap.c in Sources */ = {isa = PBXBuildFile; fileRef = E13539820A6817C700CBDDE5 /* ObjcSwap.c */; };
@@ -398,6 +399,7 @@
 				E1B133960B182788002EB674 /* Searchers.m in Sources */,
 				E1B135E40B185123002EB674 /* ObjcAccessors.m in Sources */,
 				E1B1361F0B192AAC002EB674 /* ArchSpecifics.m in Sources */,
+				25E79C530D4E81690037363C /* SysUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
