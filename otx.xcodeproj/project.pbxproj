@@ -37,7 +37,6 @@
 		E1B135E50B185123002EB674 /* ObjcAccessors.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B135E30B185122002EB674 /* ObjcAccessors.m */; };
 		E1B1361F0B192AAC002EB674 /* ArchSpecifics.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B1361E0B192AAC002EB674 /* ArchSpecifics.m */; };
 		E1B136200B192AAC002EB674 /* ArchSpecifics.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B1361E0B192AAC002EB674 /* ArchSpecifics.m */; };
-		E1F81AC50AE1EE02003D8E2C /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */; };
 		E1F81ADD0AE1EEEC003D8E2C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */; };
 		E1F81B090AE1EF07003D8E2C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */; };
 		E1F81B3F0AE1EF2D003D8E2C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81B0A0AE1EF2C003D8E2C /* Security.framework */; };
@@ -120,7 +119,6 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				E1F81B090AE1EF07003D8E2C /* CoreFoundation.framework in Frameworks */,
 				E1F81B3F0AE1EF2D003D8E2C /* Security.framework in Frameworks */,
-				E1F81AC50AE1EE02003D8E2C /* SmartCrashReportsInstall.o in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
