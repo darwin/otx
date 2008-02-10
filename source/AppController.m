@@ -16,8 +16,6 @@
 
 #import "ListUtils.h"
 
-#import "SmartCrashReportsInstall.h"
-
 #define UNIFIED_TOOLBAR_DELTA			12
 #define CONTENT_BORDER_SIZE_TOP			2
 #define CONTENT_BORDER_SIZE_BOTTOM		10
@@ -1623,12 +1621,6 @@
 
 - (void)applicationWillFinishLaunching: (NSNotification*)inNotification
 {
-	// Check for Smart Crash Reports.
-	Boolean authRequired = false;
-
-	if (UnsanitySCR_CanInstall(&authRequired))
-		UnsanitySCR_Install(authRequired ? kUnsanitySCR_GlobalInstall : 0);
-
 	// Set mArchSelector to the host architecture by default. This code was
 	// lifted from http://developer.apple.com/technotes/tn/tn2086.html
 	mach_msg_type_number_t	infoCount	= HOST_BASIC_INFO_COUNT;
