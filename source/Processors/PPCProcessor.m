@@ -807,6 +807,43 @@
 			case OCStrObjectType:
 				break;
 
+            case NLSymType:
+				if (classNamePtr)
+				{
+					UInt32	namePtrValue	= *(UInt32*)classNamePtr;
+
+					namePtrValue	= OSSwapBigToHostInt32(namePtrValue);
+					classNamePtr    = GetPointer(namePtrValue, &classNameType);
+
+                    switch (classNameType)
+                    {
+                        case CFStringType:
+                            if (classNamePtr != NULL)
+                            {
+                                cf_string_object    classNameCFString   =
+                                    *(cf_string_object*)classNamePtr;
+
+                                namePtrValue	= (UInt32)classNameCFString.oc_string.chars;
+                                namePtrValue	= OSSwapBigToHostInt32(namePtrValue);
+                                classNamePtr    = GetPointer(namePtrValue, nil);
+                                className       = classNamePtr;
+                            }
+
+                            break;
+
+                        // Not sure what these are for, but they're NULL.
+                        case NLSymType:
+                            break;
+
+                        default:
+                            printf("otx: [PPCProcessor commentForMsgSend:fromLine:]: "
+                                "non-lazy symbol pointer points to unrecognized section: %d\n", classNameType);
+                            break;
+                    }
+				}
+
+                break;
+
 			case PointerType:
 				className	= classNamePtr;
 				break;
@@ -829,7 +866,7 @@
 				break;
 
 			default:
-				fprintf(stderr, "otx: [PPCProcessor commentForMsgSend]: "
+				fprintf(stderr, "otx: [PPCProcessor commentForMsgSend:fromLine:]: "
 					"unsupported class name type: %d at address: 0x%x\n",
 					classNameType, inLine->info.address);
 
