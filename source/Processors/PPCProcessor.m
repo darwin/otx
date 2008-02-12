@@ -303,6 +303,10 @@
 				objc_class	swappedClass	=
 					*mRegInfos[RA(theCode)].classPtr;
 
+                #if __LITTLE_ENDIAN__
+                    swap_objc_class(&swappedClass);
+                #endif
+
 				if (!mIsInstanceMethod)
 				{
 					if (!GetObjcMetaClassFromClass(
@@ -1696,7 +1700,7 @@
 	// Loop thru lines.
 	while (theLine)
 	{
-		if (!(progCounter % PROGRESS_FREQ))
+		if (!(progCounter % (PROGRESS_FREQ * 100)))
 			[mController performSelectorOnMainThread: @selector(reportProgress:)
 				withObject: progDict waitUntilDone: false];
 
@@ -1891,6 +1895,7 @@
 		progCounter++;
 	}
 
+    [progDict release];
 	mCurrentFuncInfoIndex	= -1;
 }
 
