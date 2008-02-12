@@ -104,20 +104,17 @@
 
 	// Loop thru inClass and all superclasses.
 	objc_class*			theClassPtr		= inClass;
-	objc_class			theSwappedClass	= *theClassPtr;
+	objc_class			theSwappedClass = *theClassPtr;
 	objc_class			theDummyClass	= {0};
 	char*				theSuperName	= nil;
 	objc_ivar_list*		theIvars;
 
 	while (theClassPtr)
 	{
-//		if (mSwapped)
-//			swap_objc_class(&theSwappedClass);
-
 		theIvars	= (objc_ivar_list*)GetPointer(
 			(UInt32)theSwappedClass.ivars, nil);
 
-		if (!theIvars)
+		if (!theIvars || theIvars->ivar_count == 0)
 		{	// Try again with the superclass.
 			theSuperName	= GetPointer(
 				(UInt32)theClassPtr->super_class, nil);
@@ -129,6 +126,10 @@
 				break;
 
 			theClassPtr	= &theDummyClass;
+            theSwappedClass	= *theClassPtr;
+
+            if (mSwapped)
+                swap_objc_class(&theSwappedClass);
 
 			continue;
 		}
