@@ -176,7 +176,9 @@
 		[mOutputFilePath retain];
 	}
 
-	if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: mOutputFilePath])
+    NSWorkspace* workSpace = [NSWorkspace sharedWorkspace];
+
+	if ([workSpace isFilePackageAtPath: mOutputFilePath])
 		mExeName	= [[mOutputFilePath lastPathComponent]
 			stringByDeletingPathExtension];
 	else
@@ -239,12 +241,6 @@
 									   forEdge: NSMinYEdge];
 
 		// Set up text shadows.
-/*		[[mPathText cell] setBackgroundStyle: NSBackgroundStyleRaised];
-		[[mPathLabelText cell] setBackgroundStyle: NSBackgroundStyleRaised];
-		[[mTypeText cell] setBackgroundStyle: NSBackgroundStyleRaised];
-		[[mTypeLabelText cell] setBackgroundStyle: NSBackgroundStyleRaised];
-		[[mOutputLabelText cell] setBackgroundStyle: NSBackgroundStyleRaised];
-		[[mProgText cell] setBackgroundStyle: NSBackgroundStyleRaised];*/
 		[self applyShadowToText: mPathLabelText];
 		[self applyShadowToText: mTypeLabelText];
 		[self applyShadowToText: mOutputLabelText];
@@ -1037,7 +1033,6 @@
 
 	mArchMagic		= *(UInt32*)[theData bytes];
 	mFileIsValid	= true;
-
 	[mPathText setStringValue: [mOFile path]];
 	[self applyShadowToText: mPathText];
 
