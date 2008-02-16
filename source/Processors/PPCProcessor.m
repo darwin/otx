@@ -1693,9 +1693,8 @@
 	Line*			theLine		= mPlainLineListHead;
 	UInt32			theCode;
 	UInt32			progCounter	= 0;
-	NSDictionary*	progDict	= [[NSDictionary alloc] initWithObjectsAndKeys:
-		[NSNumber numberWithBool: true], PRAnimateKey,
-		nil];
+	NSDictionary*	progDict	= [[[NSDictionary alloc] initWithObjectsAndKeys:
+		[NSNumber numberWithBool: true], PRAnimateKey, nil] autorelease];
 
 	// Loop thru lines.
 	while (theLine)
@@ -1895,7 +1894,6 @@
 		progCounter++;
 	}
 
-    [progDict release];
 	mCurrentFuncInfoIndex	= -1;
 }
 
