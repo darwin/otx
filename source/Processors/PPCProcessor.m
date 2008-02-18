@@ -809,6 +809,9 @@
 			case CFStringType:
 			case ImpPtrType:
 			case OCStrObjectType:
+            case OCModType:
+            case PStringType:
+            case DoubleType:
 				break;
 
             case NLSymType:
@@ -835,8 +838,9 @@
 
                             break;
 
-                        // Not sure what these are for, but they're NULL.
+                        // Not sure why these exist, but we ignore them.
                         case NLSymType:
+                        case FloatType:
                             break;
 
                         default:
