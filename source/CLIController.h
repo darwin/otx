@@ -1,52 +1,48 @@
 /*
-	CLIController.h
+    CLIController.h
 
-	This file is in the public domain.
+    This file is in the public domain.
 */
+
+#import <Cocoa/Cocoa.h>
 
 #import "SharedDefs.h"
 #import "ErrorReporter.h"
 #import "ProgressReporter.h"
 
 // Default ProcOptions values
-#define	SHOW_LOCAL_OFFSETS				true
-#define	DONT_ENTAB_OUTPUT				false
-#define	DONT_SHOW_DATA_SECTIONS			false
-#define	SHOW_CHECKSUM					true
-#define	SHOW_VERBOSE_MSGSENDS			true
-#define	DONT_SEPARATE_LOGICAL_BLOCKS	false
-#define	DEMANGLE_CPP_NAMES				true
-#define	SHOW_METHOD_RETURN_TYPES		true
-#define	SHOW_VARIABLE_TYPES				true
-#define	SHOW_RETURN_STATEMENTS			true
+#define SHOW_LOCAL_OFFSETS              YES
+#define DONT_ENTAB_OUTPUT               NO
+#define DONT_SHOW_DATA_SECTIONS         NO
+#define SHOW_CHECKSUM                   YES
+#define SHOW_VERBOSE_MSGSENDS           YES
+#define DONT_SEPARATE_LOGICAL_BLOCKS    NO
+#define DEMANGLE_CPP_NAMES              YES
+#define SHOW_METHOD_RETURN_TYPES        YES
+#define SHOW_VARIABLE_TYPES             YES
+#define SHOW_RETURN_STATEMENTS          YES
 
 // ============================================================================
 
 @interface CLIController : NSObject<ProgressReporter, ErrorReporter>
 {
 @private
-	NSURL*				mOFile;
-	char*				mRAMFile;
-	cpu_type_t			mArchSelector;
-	UInt32				mArchMagic;
-	BOOL				mFileIsValid;
-	BOOL				mIgnoreArch;
-	NSString*			mExeName;
-	BOOL				mVerify;
-	BOOL				mShowProgress;
-	ProcOptions			mOpts;
+    NSURL*              iOFile;
+    cpu_type_t          iArchSelector;
+    UInt32              iFileArchMagic;
+    NSString*           iExeName;
+    BOOL                iVerify;
+    BOOL                iShowProgress;
+    ProcOptions         iOpts;
 }
 
 - (id)initWithArgs: (char**)argv
-			 count: (SInt32)argc;
-- (void)initSCR;
-
+             count: (SInt32)argc;
 - (void)usage;
-
 - (void)processFile;
 - (void)verifyNops;
 - (void)newPackageFile: (NSURL*)inPackageFile;
 - (void)newOFile: (NSURL*)inOFile
-	   needsPath: (BOOL)inNeedsPath;
+       needsPath: (BOOL)inNeedsPath;
 
 @end

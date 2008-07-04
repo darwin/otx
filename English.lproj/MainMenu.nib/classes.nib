@@ -21,6 +21,8 @@
 			<dict>
 				<key>delegate</key>
 				<string>id</string>
+				<key>i_delegate</key>
+				<string>id</string>
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSBox</string>
@@ -72,43 +74,43 @@
 			<string>ObjC</string>
 			<key>OUTLETS</key>
 			<dict>
-				<key>mArchPopup</key>
+				<key>iArchPopup</key>
 				<string>NSPopUpButton</string>
-				<key>mDropBox</key>
+				<key>iDropBox</key>
 				<string>DropBox</string>
-				<key>mMainView</key>
+				<key>iMainView</key>
 				<string>NSView</string>
-				<key>mMainWindow</key>
+				<key>iMainWindow</key>
 				<string>NSWindow</string>
-				<key>mOutputLabelText</key>
+				<key>iOutputLabelText</key>
 				<string>NSTextField</string>
-				<key>mOutputText</key>
+				<key>iOutputText</key>
 				<string>NSTextField</string>
-				<key>mPathLabelText</key>
+				<key>iPathLabelText</key>
 				<string>NSTextField</string>
-				<key>mPathText</key>
+				<key>iPathText</key>
 				<string>NSTextField</string>
-				<key>mPrefsGeneralView</key>
+				<key>iPrefsGeneralView</key>
 				<string>NSView</string>
-				<key>mPrefsOutputView</key>
+				<key>iPrefsOutputView</key>
 				<string>NSView</string>
-				<key>mPrefsWindow</key>
+				<key>iPrefsWindow</key>
 				<string>NSWindow</string>
-				<key>mProgBar</key>
+				<key>iProgBar</key>
 				<string>NSProgressIndicator</string>
-				<key>mProgText</key>
+				<key>iProgText</key>
 				<string>NSTextField</string>
-				<key>mProgView</key>
+				<key>iProgView</key>
 				<string>NSView</string>
-				<key>mSaveButton</key>
+				<key>iSaveButton</key>
 				<string>NSButton</string>
-				<key>mThinButton</key>
+				<key>iThinButton</key>
 				<string>NSButton</string>
-				<key>mTypeLabelText</key>
+				<key>iTypeLabelText</key>
 				<string>NSTextField</string>
-				<key>mTypeText</key>
+				<key>iTypeText</key>
 				<string>NSTextField</string>
-				<key>mVerifyButton</key>
+				<key>iVerifyButton</key>
 				<string>NSButton</string>
 			</dict>
 			<key>SUPERCLASS</key>

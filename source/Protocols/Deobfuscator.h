@@ -1,18 +1,20 @@
 /*
-	Deobfuscator.h
+    Deobfuscator.h
 
-	This file is in the public domain.
+    This file is in the public domain.
 */
 
-/*	NopList
+#import <Cocoa/Cocoa.h>
 
-	'list' is a 'count'-sized array of addresses at which an obfuscated
-	sequence of nops was found.
+/*  NopList
+
+    'list' is a 'count'-sized array of addresses at which an obfuscated
+    sequence of nops was found.
 */
 typedef struct NopList
 {
-	unsigned char**	list;
-	UInt32			count;
+    unsigned char** list;
+    UInt32          count;
 }
 NopList;
 
@@ -21,11 +23,11 @@ NopList;
 @protocol Deobfuscator
 
 - (BOOL)verifyNops: (unsigned char***)outList
-		  numFound: (UInt32*)outFound;
+          numFound: (UInt32*)outFound;
 - (unsigned char**)searchForNopsIn: (unsigned char*)inHaystack
-						  ofLength: (UInt32)inHaystackLength
-						  numFound: (UInt32*)outFound;
+                          ofLength: (UInt32)inHaystackLength
+                          numFound: (UInt32*)outFound;
 - (NSURL*)fixNops: (NopList*)inList
-		   toPath: (NSString*)inOutputFilePath;
+           toPath: (NSString*)inOutputFilePath;
 
 @end

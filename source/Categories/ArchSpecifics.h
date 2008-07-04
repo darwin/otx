@@ -1,15 +1,17 @@
 /*
-	ArchSpecifics.h
+    ArchSpecifics.h
 
-	A category on ExeProcessor that contains most of the
-	architecture-specific methods.
+    A category on Exe32Processor that contains most of the
+    architecture-specific methods.
 
-	This file is in the public domain.
+    This file is in the public domain.
 */
 
-#import "ExeProcessor.h"
+#import <Cocoa/Cocoa.h>
 
-@interface ExeProcessor(ArchSpecifics)
+#import "Exe32Processor.h"
+
+@interface Exe32Processor(ArchSpecifics)
 
 - (void)gatherFuncInfos;
 - (void)postProcessCodeLine: (Line**)ioLine;
@@ -18,12 +20,12 @@
 - (void)codeFromLine: (Line*)inLine;
 - (void)checkThunk: (Line*)inLine;
 - (BOOL)getThunkInfo: (ThunkInfo*)outInfo
-			 forLine: (Line*)inLine;
+             forLine: (Line*)inLine;
 
 - (void)commentForLine: (Line*)inLine;
 - (void)commentForSystemCall;
 - (void)commentForMsgSend: (char*)ioComment
-				 fromLine: (Line*)inLine;
+                 fromLine: (Line*)inLine;
 
 - (void)resetRegisters: (Line*)inLine;
 - (void)updateRegisters: (Line*)inLine;

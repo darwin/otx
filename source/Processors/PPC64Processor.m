@@ -1,24 +1,23 @@
 /*
-    PPCProcessor.m
+    PPC64Processor.m
 
-    A subclass of ExeProcessor that handles PPC-specific issues.
+    A subclass of Exe64Processor that handles PPC64-specific issues.
 
     This file is in the public domain.
 */
 
 #import <Cocoa/Cocoa.h>
 
+#import "PPC64Processor.h"
 #import "PPCProcessor.h"
 #import "ArchSpecifics.h"
 #import "ListUtils.h"
 #import "ObjcAccessors.h"
-#import "ObjectLoader.h"
+#import "Object64Loader.h"
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
-extern BOOL gCancel;
-
-@implementation PPCProcessor
+@implementation PPC64Processor
 
 //  initWithURL:controller:options:
 // ----------------------------------------------------------------------------
@@ -30,11 +29,11 @@ extern BOOL gCancel;
     if ((self = [super initWithURL: inURL
         controller: inController options: inOptions]))
     {
-        strncpy(iArchString, "ppc", 4);
+        strncpy(iArchString, "ppc64", 6);
 
-        iArchSelector               = CPU_TYPE_POWERPC;
+        iArchSelector               = CPU_TYPE_POWERPC64;
         iFieldWidths.offset         = 8;
-        iFieldWidths.address        = 10;
+        iFieldWidths.address        = 18;
         iFieldWidths.instruction    = 10;
         iFieldWidths.mnemonic       = 9;
         iFieldWidths.operands       = 17;
@@ -66,7 +65,7 @@ extern BOOL gCancel;
 //  loadDyldDataSection:
 // ----------------------------------------------------------------------------
 
-- (void)loadDyldDataSection: (section*)inSect
+- (void)loadDyldDataSection: (section_64*)inSect
 {
     [super loadDyldDataSection: inSect];
 
@@ -79,7 +78,7 @@ extern BOOL gCancel;
 //  codeFromLine:
 // ----------------------------------------------------------------------------
 
-- (void)codeFromLine: (Line*)inLine
+- (void)codeFromLine: (Line64*)inLine
 {
     UInt32  theInstruction  = (iMachHeader.filetype == MH_OBJECT) ?
         *(UInt32*)((char*)iMachHeaderPtr + (inLine->info.address + iTextOffset)) :
@@ -93,7 +92,7 @@ extern BOOL gCancel;
 //  commentForLine:
 // ----------------------------------------------------------------------------
 
-- (void)commentForLine: (Line*)inLine;
+- (void)commentForLine: (Line64*)inLine;
 {
     UInt32  theCode     = strtoul(inLine->info.code, nil, 16);
     char*   theDummyPtr = nil;
@@ -173,17 +172,16 @@ extern BOOL gCancel;
 
                         if (iRegInfos[5].isValid)
                         {
-                            objc_ivar   theIvar         = {0};
-                            objc_class  swappedClass    = *iCurrentClass;
+                            objc2_ivar_t* theIvar = NULL;
+                            objc2_class_t swappedClass = *iCurrentClass;
 
                             #if __LITTLE_ENDIAN__
-                                swap_objc_class(&swappedClass);
+                                swap_objc2_class(&swappedClass);
                             #endif
 
                             if (!iIsInstanceMethod)
                             {
-                                if (!GetObjcMetaClassFromClass(
-                                    &swappedClass, &swappedClass))
+                                if (!GetObjcMetaClassFromClass(&swappedClass, &swappedClass))
                                     break;
 
                                 #if __LITTLE_ENDIAN__
@@ -191,21 +189,17 @@ extern BOOL gCancel;
                                 #endif
                             }
 
-                            if (!FindIvar(&theIvar,
-                                &swappedClass, iRegInfos[5].value))
+                            if (!FindIvar(&theIvar, &swappedClass, iRegInfos[5].value))
                             {
-                                strncpy(iLineCommentCString, tempComment,
-                                    strlen(tempComment) + 1);
+                                strncpy(iLineCommentCString, tempComment, strlen(tempComment) + 1);
                                 break;
                             }
 
-                            theSymPtr   = GetPointer(
-                                (UInt32)theIvar.ivar_name, nil);
+                            theSymPtr = GetPointer(theIvar->name, nil);
 
                             if (!theSymPtr)
                             {
-                                strncpy(iLineCommentCString, tempComment,
-                                    strlen(tempComment) + 1);
+                                strncpy(iLineCommentCString, tempComment, strlen(tempComment) + 1);
                                 break;
                             }
 
@@ -215,20 +209,16 @@ extern BOOL gCancel;
 
                                 theTypeCString[0]   = 0;
 
-                                GetDescription(theTypeCString,
-                                    GetPointer((UInt32)theIvar.ivar_type, nil));
-                                snprintf(iLineCommentCString,
-                                    MAX_COMMENT_LENGTH - 1, "%s (%s)%s",
+                                GetDescription(theTypeCString, GetPointer(theIvar->type, nil));
+                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s (%s)%s",
                                     tempComment, theTypeCString, theSymPtr);
                             }
                             else
-                                snprintf(iLineCommentCString,
-                                    MAX_COMMENT_LENGTH - 1, "%s %s",
+                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s %s",
                                     tempComment, theSymPtr);
                         }
                         else    // !mReginfos[5].isValid
-                            strncpy(iLineCommentCString, tempComment,
-                                strlen(tempComment) + 1);
+                            strncpy(iLineCommentCString, tempComment, strlen(tempComment) + 1);
 
                         break;
                     }
@@ -262,9 +252,9 @@ extern BOOL gCancel;
                     absoluteAddy =
                         inLine->info.address + BD(theCode);
 
-                FunctionInfo    searchKey   = {absoluteAddy, NULL, 0, 0};
-                FunctionInfo*   funcInfo    = bsearch(&searchKey,
-                    iFuncInfos, iNumFuncInfos, sizeof(FunctionInfo),
+                Function64Info  searchKey   = {absoluteAddy, NULL, 0, 0};
+                Function64Info* funcInfo    = bsearch(&searchKey,
+                    iFuncInfos, iNumFuncInfos, sizeof(Function64Info),
                     (COMPARISON_FUNC_TYPE)Function_Info_Compare);
 
                 if (funcInfo && funcInfo->genericFuncNum != 0)
@@ -302,10 +292,28 @@ extern BOOL gCancel;
             if (SO(theCode) != 528) // bcctr
                 break;
 
+            if (iRegInfos[4].messageRefSel != NULL)
+            {
+                char* sel = iRegInfos[4].messageRefSel;
+
+                strncpy(iLineOperandsCString, " ", 2);
+
+                if (iRegInfos[3].className != NULL)
+                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1,
+                        "+[%s %s]", iRegInfos[3].className, sel);
+                else // Instance method?
+                    if (iRegInfos[3].isValid)
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1,
+                            "objc_msgSend(%%r3, %s)", sel);
+                    else
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1,
+                            "-[%%r3 %s]", sel);
+            }
+
             // Print value of ctr, ignoring the low 2 bits.
-            if (iCTR.isValid)
-                snprintf(iLineCommentCString, 10, "0x%x",
-                    iCTR.value & ~3);
+//            if (iCTR.isValid)
+//                snprintf(iLineCommentCString, 10, "0x%x",
+//                    iCTR.value & ~3);
 
             break;
 
@@ -319,18 +327,16 @@ extern BOOL gCancel;
 
             if (iRegInfos[RA(theCode)].classPtr)
             {   // search instance vars
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[RA(theCode)].classPtr;
+                objc2_ivar_t* theIvar = NULL;
+                objc2_class_t swappedClass = *iRegInfos[RA(theCode)].classPtr;
 
                 #if __LITTLE_ENDIAN__
-                    swap_objc_class(&swappedClass);
+                    swap_objc2_class(&swappedClass);
                 #endif
 
                 if (!iIsInstanceMethod)
                 {
-                    if (!GetObjcMetaClassFromClass(
-                        &swappedClass, &swappedClass))
+                    if (!GetObjcMetaClassFromClass(&swappedClass, &swappedClass))
                         break;
 
                     #if __LITTLE_ENDIAN__
@@ -341,26 +347,22 @@ extern BOOL gCancel;
                 if (!FindIvar(&theIvar, &swappedClass, UIMM(theCode)))
                     break;
 
-                theSymPtr   = GetPointer(
-                    (UInt32)theIvar.ivar_name, nil);
+                theSymPtr = GetPointer(theIvar->name, nil);
 
                 if (theSymPtr)
                 {
                     if (iOpts.variableTypes)
                     {
-                        char    theTypeCString[MAX_TYPE_STRING_LENGTH];
+                        char theTypeCString[MAX_TYPE_STRING_LENGTH];
 
-                        theTypeCString[0]   = 0;
+                        theTypeCString[0] = 0;
 
-                        GetDescription(theTypeCString,
-                            GetPointer((UInt32)theIvar.ivar_type, nil));
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
+                        GetDescription(theTypeCString, GetPointer(theIvar->type, nil));
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
                 }
             }
             else
@@ -410,58 +412,36 @@ extern BOOL gCancel;
 
             if (iRegInfos[RA(theCode)].classPtr)    // relative to a class
             {   // search instance vars
-                objc_ivar   theIvar     = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[RA(theCode)].classPtr;
-
-                #if __LITTLE_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (!GetObjcMetaClassFromClass(
-                        &swappedClass, &swappedClass))
-                        break;
-
-                    #if __LITTLE_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-                }
+                objc2_ivar_t* theIvar = NULL;
+                objc2_class_t swappedClass = *iRegInfos[RA(theCode)].classPtr;
 
                 if (!FindIvar(&theIvar, &swappedClass, UIMM(theCode)))
                     break;
 
-                theSymPtr   = GetPointer(
-                    (UInt32)theIvar.ivar_name, nil);
+                theSymPtr = GetPointer(theIvar->name, nil);
 
                 if (theSymPtr)
                 {
                     if (iOpts.variableTypes)
                     {
-                        char    theTypeCString[MAX_TYPE_STRING_LENGTH];
+                        char theTypeCString[MAX_TYPE_STRING_LENGTH];
 
-                        theTypeCString[0]   = 0;
+                        theTypeCString[0] = 0;
 
-                        GetDescription(theTypeCString,
-                            GetPointer((UInt32)theIvar.ivar_type, nil));
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
+                        GetDescription(theTypeCString, GetPointer(theIvar->type, nil));
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
                 }
             }
             else    // absolute address
             {
                 if (opcode == 0x18) // ori      UIMM
-                    localAddy   = iRegInfos[RA(theCode)].value |
-                        UIMM(theCode);
+                    localAddy   = iRegInfos[RA(theCode)].value | UIMM(theCode);
                 else
-                    localAddy   = iRegInfos[RA(theCode)].value +
-                        SIMM(theCode);
+                    localAddy   = iRegInfos[RA(theCode)].value + SIMM(theCode);
 
                 UInt8   theType = PointerType;
                 UInt32  theValue;
@@ -527,8 +507,8 @@ extern BOOL gCancel;
 
                         case CFStringType:
                         {
-                            cf_string_object    theCFString = 
-                                *(cf_string_object*)theSymPtr;
+                            cf_string_object_64 theCFString = 
+                                *(cf_string_object_64*)theSymPtr;
 
                             if (theCFString.oc_string.length == 0)
                             {
@@ -537,10 +517,8 @@ extern BOOL gCancel;
                             }
 
                             theCFString.oc_string.chars =
-                                (char*)OSSwapBigToHostInt32(
-                                (UInt32)theCFString.oc_string.chars);
-                            theSymPtr   = GetPointer(
-                                (UInt32)theCFString.oc_string.chars, nil);
+                                OSSwapBigToHostInt64(theCFString.oc_string.chars);
+                            theSymPtr   = GetPointer(theCFString.oc_string.chars, nil);
 
                             break;
                         }
@@ -574,8 +552,8 @@ extern BOOL gCancel;
                                 }
                             }
 
-                            cf_string_object    theCFString = 
-                                *(cf_string_object*)theDummyPtr;
+                            cf_string_object_64 theCFString = 
+                                *(cf_string_object_64*)theDummyPtr;
 
                             if (theCFString.oc_string.length == 0)
                             {
@@ -584,10 +562,8 @@ extern BOOL gCancel;
                             }
 
                             theCFString.oc_string.chars =
-                                (char*)OSSwapBigToHostInt32(
-                                (UInt32)theCFString.oc_string.chars);
-                            theSymPtr   = GetPointer(
-                                (UInt32)theCFString.oc_string.chars, nil);
+                                OSSwapBigToHostInt64(theCFString.oc_string.chars);
+                            theSymPtr = GetPointer(theCFString.oc_string.chars, nil);
 
                             break;
                         }
@@ -606,7 +582,7 @@ extern BOOL gCancel;
                                 {
                                     case OCClassType:
                                         iRegInfos[RT(theCode)].classPtr =
-                                            (objc_class*)theSymPtr;
+                                            (objc2_class_t*)theSymPtr;
                                         break;
 
                                     default:
@@ -652,6 +628,80 @@ extern BOOL gCancel;
 
             break;
         }   // case 0x0e...
+
+        case 0x3a:  // ld
+        {
+            if (iRegInfos[RA(theCode)].isValid == NO)
+                break;
+
+            UInt64 address = iRegInfos[RA(theCode)].value + DS(theCode);
+            UInt8 type;
+            char* symName = NULL;
+
+            theSymPtr = GetPointer(address, &type);
+
+            if (theSymPtr)
+            {
+                switch (type)
+                {
+                    case CFStringType:
+                        GetObjcDescriptionFromObject(&symName, theSymPtr, type);
+
+                        if (symName)
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", symName);
+
+                        break;
+
+                    case OCClassRefType:
+                    case OCSuperRefType:
+                    case OCProtoRefType:
+                    case OCProtoListType:
+                    case OCMsgRefType:
+                    case OCSelRefType:
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                if (address >= iDataSect.s.addr && address < (iDataSect.s.addr + iDataSect.size))
+                {
+                    objc2_ivar_t* foundIvar = NULL;
+                    objc2_ivar_t* maybeIvar = (objc2_ivar_t*)((iDataSect.contents) + (address - iDataSect.s.addr));
+
+                    if (maybeIvar->offset != 0)
+                    {
+                        UInt64 offset = OSSwapBigToHostInt64(maybeIvar->offset);
+
+                        if (FindIvar(&foundIvar, iCurrentClass, offset))
+                        {
+                            theSymPtr = GetPointer(foundIvar->name, nil);
+
+                            if (theSymPtr)
+                            {
+                                if (iOpts.variableTypes)
+                                {
+                                    char theTypeCString[MAX_TYPE_STRING_LENGTH];
+
+                                    theTypeCString[0] = 0;
+
+                                    GetDescription(theTypeCString, GetPointer(foundIvar->type, nil));
+                                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
+                                        theTypeCString, theSymPtr);
+                                }
+                                else
+                                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                            }
+                        }
+                    }
+                }
+            }
+
+            break;
+        }
 
         default:
             break;
@@ -721,7 +771,7 @@ extern BOOL gCancel;
 // ----------------------------------------------------------------------------
 
 - (char*)selectorForMsgSend: (char*)outComment
-                   fromLine: (Line*)inLine
+                   fromLine: (Line64*)inLine
 {
     char*   selString   = nil;
     UInt32  theCode     = strtoul(inLine->info.code, nil, 16);
@@ -780,9 +830,15 @@ extern BOOL gCancel;
 // ----------------------------------------------------------------------------
 
 - (void)commentForMsgSend: (char*)ioComment
-                 fromLine: (Line*)inLine
+                 fromLine: (Line64*)inLine
 {
-    char*   selString   = SelectorForMsgSend(ioComment, inLine);
+    char tempComment[MAX_COMMENT_LENGTH];
+
+    tempComment[0] = 0;
+
+    if (!strncmp(ioComment, "_objc_msgSend", 13))
+    {
+    char* selString = SelectorForMsgSend(ioComment, inLine);
 
     // Bail if we couldn't find the selector.
     if (!selString)
@@ -809,9 +865,9 @@ extern BOOL gCancel;
     char*   returnTypeString    =
         (sendType == sendSuper_stret || sendType == send_stret) ?
         "(struct)" : "";
-    char    tempComment[MAX_COMMENT_LENGTH];
+//    char    tempComment[MAX_COMMENT_LENGTH];
 
-    tempComment[0]  = 0;
+//    tempComment[0]  = 0;
 
     if (classNameAddy)
     {
@@ -822,53 +878,49 @@ extern BOOL gCancel;
 
         switch (classNameType)
         {
-            // Receiver can be various things in these sections, but we
+            // Receiver can be a static string or pointer in these sections, but we
             // only want to display class names as receivers.
             case DataGenericType:
             case DataConstType:
             case CFStringType:
             case ImpPtrType:
             case OCStrObjectType:
-            case OCModType:
-            case PStringType:
-            case DoubleType:
                 break;
 
             case NLSymType:
-                if (classNamePtr)
-                {
-                    UInt32	namePtrValue	= *(UInt32*)classNamePtr;
+				if (classNamePtr)
+				{
+					UInt64	namePtrValue	= *(UInt32*)classNamePtr;
 
-                    namePtrValue	= OSSwapBigToHostInt32(namePtrValue);
-                    classNamePtr    = GetPointer(namePtrValue, &classNameType);
+					namePtrValue	= OSSwapBigToHostInt32(namePtrValue);
+					classNamePtr    = GetPointer(namePtrValue, &classNameType);
 
                     switch (classNameType)
                     {
                         case CFStringType:
                             if (classNamePtr != NULL)
                             {
-                                cf_string_object    classNameCFString   =
-                                    *(cf_string_object*)classNamePtr;
+                                cf_string_object_64 classNameCFString   =
+                                    *(cf_string_object_64*)classNamePtr;
 
-                                namePtrValue	= (UInt32)classNameCFString.oc_string.chars;
-                                namePtrValue	= OSSwapBigToHostInt32(namePtrValue);
+                                namePtrValue	= classNameCFString.oc_string.chars;
+                                namePtrValue	= OSSwapBigToHostInt64(namePtrValue);
                                 classNamePtr    = GetPointer(namePtrValue, nil);
                                 className       = classNamePtr;
                             }
 
                             break;
 
-                        // Not sure what these are for, but they're out there.
+                        // Not sure what these are for, but they're NULL.
                         case NLSymType:
-                        case FloatType:
                             break;
 
                         default:
                             printf("otx: [PPCProcessor commentForMsgSend:fromLine:]: "
                                 "non-lazy symbol pointer points to unrecognized section: %d\n", classNameType);
-                        break;
+                            break;
                     }
-                }
+				}
 
                 break;
 
@@ -941,15 +993,56 @@ extern BOOL gCancel;
             snprintf(tempComment, MAX_COMMENT_LENGTH - 1, formatString,
                 returnTypeString, selString);
     }
+    }   // if (!strncmp(ioComment, "_objc_msgSend", 13))
+    else if (!strncmp(ioComment, "_objc_assign_ivar", 17))
+    {
+        if (iCurrentClass && iRegInfos[5].isValid)
+        {
+            char* theSymPtr = nil;
+            objc2_ivar_t* theIvar = NULL;
+            objc2_class_t swappedClass = *iCurrentClass;
 
-    if (tempComment[0])
-        strncpy(ioComment, tempComment, strlen(tempComment) + 1);
+            if (!iIsInstanceMethod)
+            {
+                if (!GetObjcMetaClassFromClass(&swappedClass, &swappedClass))
+                    return;
+
+                #if __BIG_ENDIAN__
+                    swap_objc_class(&swappedClass);
+                #endif
+            }
+
+            if (!FindIvar(&theIvar, &swappedClass, iRegInfos[5].value))
+                return;
+
+            theSymPtr = GetPointer(theIvar->name, nil);
+
+            if (!theSymPtr)
+                return;
+
+            if (iOpts.variableTypes)
+            {
+                char    theTypeCString[MAX_TYPE_STRING_LENGTH];
+
+                theTypeCString[0]   = 0;
+
+                GetDescription(theTypeCString, GetPointer(theIvar->type, nil));
+                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, " (%s)%s",
+                    theTypeCString, theSymPtr);
+            }
+            else
+                snprintf(tempComment,
+                    MAX_COMMENT_LENGTH - 1, " %s", theSymPtr);
+
+            strncat(ioComment, tempComment, strlen(tempComment));
+        }
+    }
 }
 
 //  chooseLine:
 // ----------------------------------------------------------------------------
 
-- (void)chooseLine: (Line**)ioLine
+- (void)chooseLine: (Line64**)ioLine
 {
     if (!(*ioLine) || !(*ioLine)->info.isCode ||
         !(*ioLine)->alt || !(*ioLine)->alt->chars)
@@ -960,9 +1053,9 @@ extern BOOL gCancel;
 
     if (PO(theCode) == 18)  // b, ba, bl, bla
     {
-        Line*   theNewLine  = malloc(sizeof(Line));
+        Line64* theNewLine  = malloc(sizeof(Line64));
 
-        memcpy(theNewLine, (*ioLine)->alt, sizeof(Line));
+        memcpy(theNewLine, (*ioLine)->alt, sizeof(Line64));
         theNewLine->chars   = malloc(theNewLine->length + 1);
         strncpy(theNewLine->chars, (*ioLine)->alt->chars,
             theNewLine->length + 1);
@@ -978,7 +1071,7 @@ extern BOOL gCancel;
 //  resetRegisters:
 // ----------------------------------------------------------------------------
 
-- (void)resetRegisters: (Line*)inLine
+- (void)resetRegisters: (Line64*)inLine
 {
     if (!inLine)
     {
@@ -992,12 +1085,12 @@ extern BOOL gCancel;
     // if the function was called indirectly. In the case of direct calls,
     // r12 will be overwritten before it is used, if it is used at all.
     GetObjcClassPtrFromMethod(&iCurrentClass, inLine->info.address);
-    GetObjcCatPtrFromMethod(&iCurrentCat, inLine->info.address);
-    memset(iRegInfos, 0, sizeof(GPRegisterInfo) * 32);
+//    GetObjcCatPtrFromMethod(&iCurrentCat, inLine->info.address);
+    memset(iRegInfos, 0, sizeof(GP64RegisterInfo) * 32);
 
     // If we didn't get the class from the method, try to get it from the
     // category.
-    if (!iCurrentClass && iCurrentCat)
+/*    if (!iCurrentClass && iCurrentCat)
     {
         objc_category   swappedCat  = *iCurrentCat;
 
@@ -1006,19 +1099,19 @@ extern BOOL gCancel;
         #endif
 
         GetObjcClassPtrFromName(&iCurrentClass,
-            GetPointer((UInt32)swappedCat.class_name, nil));
-    }
+            GetPointer(swappedCat.class_name, nil));
+    }*/
 
     iRegInfos[3].classPtr   = iCurrentClass;
-    iRegInfos[3].catPtr     = iCurrentCat;
+//    iRegInfos[3].catPtr     = iCurrentCat;
     iRegInfos[3].isValid    = YES;
     iRegInfos[12].value     = iCurrentFuncPtr;
     iRegInfos[12].isValid   = YES;
-    iLR                     = (GPRegisterInfo){0};
-    iCTR                    = (GPRegisterInfo){0};
+    iLR                     = (GP64RegisterInfo){0};
+    iCTR                    = (GP64RegisterInfo){0};
 
     // Try to find out whether this is a class or instance method.
-    MethodInfo* thisMethod  = nil;
+    Method64Info* thisMethod  = nil;
 
     if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
         iIsInstanceMethod   = thisMethod->inst;
@@ -1051,7 +1144,7 @@ extern BOOL gCancel;
 // http://developer.apple.com/documentation/DeveloperTools/Conceptual/LowLevelABI/Articles/32bitPowerPC.html
 // http://developer.apple.com/documentation/DeveloperTools/Conceptual/MachOTopics/Articles/dynamic_code.html
 
-- (void)updateRegisters: (Line*)inLine;
+- (void)updateRegisters: (Line64*)inLine;
 {
     if (!inLine)
     {
@@ -1060,9 +1153,8 @@ extern BOOL gCancel;
         return;
     }
 
-    UInt32  theNewValue;
-    UInt32  theCode     = strtoul(
-        (const char*)inLine->info.code, nil, 16);
+    UInt64 theNewValue;
+    UInt32 theCode = strtoul((const char*)inLine->info.code, nil, 16);
 
     if (IS_BRANCH_LINK(theCode))
     {
@@ -1076,14 +1168,14 @@ extern BOOL gCancel;
         {
             if (!iRegInfos[RA(theCode)].isValid)
             {
-                iRegInfos[RT(theCode)]  = (GPRegisterInfo){0};
+                iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
                 break;
             }
 
             UInt64  theProduct  =
                 (SInt32)iRegInfos[RA(theCode)].value * SIMM(theCode);
 
-            iRegInfos[RT(theCode)]          = (GPRegisterInfo){0};
+            iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
             iRegInfos[RT(theCode)].value    = theProduct & 0xffffffff;
             iRegInfos[RT(theCode)].isValid  = YES;
 
@@ -1093,13 +1185,13 @@ extern BOOL gCancel;
         case 0x08:  // subfic       SIMM
             if (!iRegInfos[RA(theCode)].isValid)
             {
-                iRegInfos[RT(theCode)]  = (GPRegisterInfo){0};
+                iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
                 break;
             }
 
             theNewValue = iRegInfos[RA(theCode)].value - SIMM(theCode);
 
-            iRegInfos[RT(theCode)]          = (GPRegisterInfo){0};
+            iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
             iRegInfos[RT(theCode)].value    = theNewValue;
             iRegInfos[RT(theCode)].isValid  = YES;
 
@@ -1157,7 +1249,7 @@ extern BOOL gCancel;
             // We didn't find any local variables, try immediates.
             if (RA(theCode) == 0)   // li
             {
-                iRegInfos[RT(theCode)]          = (GPRegisterInfo){0};
+                iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
                 iRegInfos[RT(theCode)].value    = UIMM(theCode);
                 iRegInfos[RT(theCode)].isValid  = YES;
             }
@@ -1166,16 +1258,25 @@ extern BOOL gCancel;
                 // Update rD if we know what rA is.
                 if (!iRegInfos[RA(theCode)].isValid)
                 {
-                    iRegInfos[RT(theCode)]  = (GPRegisterInfo){0};
+                    iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
                     break;
                 }
 
-                iRegInfos[RT(theCode)].classPtr = nil;
-                iRegInfos[RT(theCode)].catPtr   = nil;
+                iRegInfos[RT(theCode)].classPtr = NULL;
+                iRegInfos[RT(theCode)].className = NULL;
+                iRegInfos[RT(theCode)].messageRefSel = NULL;
+//                iRegInfos[RT(theCode)].catPtr   = nil;
 
                 theNewValue = iRegInfos[RA(theCode)].value + SIMM(theCode);
 
-                iRegInfos[RT(theCode)]          = (GPRegisterInfo){0};
+                UInt8 type;
+                char* ref = GetPointer(theNewValue, &type);
+
+                if (type == OCMsgRefType)
+                    iRegInfos[RT(theCode)].messageRefSel = ref;
+                else if (type == OCClassRefType)
+                    iRegInfos[RT(theCode)].className = ref;
+
                 iRegInfos[RT(theCode)].value    = theNewValue;
                 iRegInfos[RT(theCode)].isValid  = YES;
             }
@@ -1184,11 +1285,11 @@ extern BOOL gCancel;
 
         case 0x0f:  // addis | lis
             iRegInfos[RT(theCode)].classPtr = nil;
-            iRegInfos[RT(theCode)].catPtr   = nil;
+//            iRegInfos[RT(theCode)].catPtr   = nil;
 
             if (RA(theCode) == 0)   // lis
             {
-                iRegInfos[RT(theCode)]          = (GPRegisterInfo){0};
+                iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
                 iRegInfos[RT(theCode)].value    = UIMM(theCode) << 16;
                 iRegInfos[RT(theCode)].isValid  = YES;
                 break;
@@ -1197,14 +1298,14 @@ extern BOOL gCancel;
             // addis
             if (!iRegInfos[RA(theCode)].isValid)
             {
-                iRegInfos[RT(theCode)]  = (GPRegisterInfo){0};
+                iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
                 break;
             }
 
             theNewValue = iRegInfos[RA(theCode)].value +
                 (SIMM(theCode) << 16);
 
-            iRegInfos[RT(theCode)]          = (GPRegisterInfo){0};
+            iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
             iRegInfos[RT(theCode)].value    = theNewValue;
             iRegInfos[RT(theCode)].isValid  = YES;
 
@@ -1220,7 +1321,7 @@ extern BOOL gCancel;
             if (!LK(theCode))   // bl, bla
                 break;
 
-            iRegInfos[3]    = (GPRegisterInfo){0};
+            iRegInfos[3]    = (GP64RegisterInfo){0};
 
             break;
         }
@@ -1228,7 +1329,7 @@ extern BOOL gCancel;
         {
             if (!iRegInfos[RT(theCode)].isValid)
             {
-                iRegInfos[RA(theCode)]  = (GPRegisterInfo){0};
+                iRegInfos[RA(theCode)]  = (GP64RegisterInfo){0};
                 break;
             }
 
@@ -1242,7 +1343,7 @@ extern BOOL gCancel;
 
             theNewValue = rotatedRT & theMask;
 
-            iRegInfos[RA(theCode)]          = (GPRegisterInfo){0};
+            iRegInfos[RA(theCode)]          = (GP64RegisterInfo){0};
             iRegInfos[RA(theCode)].value    = theNewValue;
             iRegInfos[RA(theCode)].isValid  = YES;
 
@@ -1252,24 +1353,47 @@ extern BOOL gCancel;
         case 0x18:  // ori
             if (!iRegInfos[RT(theCode)].isValid)
             {
-                iRegInfos[RA(theCode)]  = (GPRegisterInfo){0};
+                iRegInfos[RA(theCode)]  = (GP64RegisterInfo){0};
                 break;
             }
 
             theNewValue =
                 iRegInfos[RT(theCode)].value | (UInt32)UIMM(theCode);
 
-            iRegInfos[RA(theCode)]          = (GPRegisterInfo){0};
+            iRegInfos[RA(theCode)]          = (GP64RegisterInfo){0};
             iRegInfos[RA(theCode)].value    = theNewValue;
             iRegInfos[RA(theCode)].isValid  = YES;
 
             break;
 
+        case 0x1e:  // rldicl
+        {
+            if (!iRegInfos[RT(theCode)].isValid)
+            {
+                iRegInfos[RA(theCode)]  = (GP64RegisterInfo){0};
+                break;
+            }
+
+            UInt8 shift = SH(theCode);
+            UInt8 maskBegin = MB64(theCode);
+
+            UInt64  rotatedRT = rotl64(iRegInfos[RT(theCode)].value, shift);
+            UInt64  theMask = (UInt64)-1 >> maskBegin;
+
+            theNewValue = rotatedRT & theMask;
+
+            iRegInfos[RA(theCode)]          = (GP64RegisterInfo){0};
+            iRegInfos[RA(theCode)].value    = theNewValue;
+            iRegInfos[RA(theCode)].isValid  = YES;
+
+            break;
+        }
+
         case 0x1f:  // multiple instructions
             switch (SO(theCode))
             {
                 case 23:    // lwzx
-                    iRegInfos[RT(theCode)]  = (GPRegisterInfo){0};
+                    iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
                     break;
 
                 case 8:     // subfc
@@ -1277,7 +1401,7 @@ extern BOOL gCancel;
                     if (!iRegInfos[RA(theCode)].isValid ||
                         !iRegInfos[RB(theCode)].isValid)
                     {
-                        iRegInfos[RT(theCode)]  = (GPRegisterInfo){0};
+                        iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
                         break;
                     }
 
@@ -1286,14 +1410,29 @@ extern BOOL gCancel;
                         (iRegInfos[RA(theCode)].value ^= 0xffffffff) +
                         iRegInfos[RB(theCode)].value + 1;
 
-                    iRegInfos[RT(theCode)]          = (GPRegisterInfo){0};
+                    iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
                     iRegInfos[RT(theCode)].value    = theNewValue;
                     iRegInfos[RT(theCode)].isValid  = YES;
 
                     break;
 
+                case 266:   // add
+                    if (iRegInfos[RA(theCode)].isValid && iRegInfos[RB(theCode)].isValid)
+                    {
+                        iRegInfos[RT(theCode)].value =
+                            iRegInfos[RA(theCode)].value + iRegInfos[RB(theCode)].value;
+                        iRegInfos[RT(theCode)].isValid = YES;
+                        iRegInfos[RT(theCode)].classPtr = NULL;
+                        iRegInfos[RT(theCode)].className = NULL;
+                        iRegInfos[RT(theCode)].messageRefSel = NULL;
+                    }
+                    else
+                        iRegInfos[RT(theCode)] = (GP64RegisterInfo){0};
+
+                    break;
+
                 case 339:   // mfspr
-                    iRegInfos[RT(theCode)]  = (GPRegisterInfo){0};
+                    iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
 
                     if (SPR(theCode) == LR  &&  // from LR
                         iLR.isValid)
@@ -1308,7 +1447,7 @@ extern BOOL gCancel;
                     if (!iRegInfos[RT(theCode)].isValid ||
                         !iRegInfos[RB(theCode)].isValid)
                     {
-                        iRegInfos[RA(theCode)]  = (GPRegisterInfo){0};
+                        iRegInfos[RA(theCode)]  = (GP64RegisterInfo){0};
                         break;
                     }
 
@@ -1316,7 +1455,7 @@ extern BOOL gCancel;
                         (iRegInfos[RT(theCode)].value |
                          iRegInfos[RB(theCode)].value);
 
-                    iRegInfos[RA(theCode)]          = (GPRegisterInfo){0};
+                    iRegInfos[RA(theCode)]          = (GP64RegisterInfo){0};
                     iRegInfos[RA(theCode)].value    = theNewValue;
                     iRegInfos[RA(theCode)].isValid  = YES;
 
@@ -1326,8 +1465,12 @@ extern BOOL gCancel;
                     {
                         iRegInfos[RA(theCode)].classPtr =
                             iRegInfos[RB(theCode)].classPtr;
-                        iRegInfos[RA(theCode)].catPtr   =
-                            iRegInfos[RB(theCode)].catPtr;
+                        iRegInfos[RA(theCode)].className =
+                            iRegInfos[RB(theCode)].className;
+                        iRegInfos[RA(theCode)].messageRefSel =
+                            iRegInfos[RB(theCode)].messageRefSel;
+//                        iRegInfos[RA(theCode)].catPtr   =
+//                            iRegInfos[RB(theCode)].catPtr;
                     }
 
                     break;
@@ -1337,7 +1480,7 @@ extern BOOL gCancel;
                     {
                         if (!iRegInfos[RS(theCode)].isValid)
                         {
-                            iCTR    = (GPRegisterInfo){0};
+                            iCTR = (GP64RegisterInfo){0};
                             break;
                         }
 
@@ -1351,7 +1494,7 @@ extern BOOL gCancel;
                     if (!iRegInfos[RS(theCode)].isValid ||
                         !iRegInfos[RB(theCode)].isValid)
                     {
-                        iRegInfos[RA(theCode)]  = (GPRegisterInfo){0};
+                        iRegInfos[RA(theCode)] = (GP64RegisterInfo){0};
                         break;
                     }
 
@@ -1364,7 +1507,7 @@ extern BOOL gCancel;
                     else    // If RB.5 == 0, RA = 0.
                         theNewValue = 0;
 
-                    iRegInfos[RA(theCode)]          = (GPRegisterInfo){0};
+                    iRegInfos[RA(theCode)]          = (GP64RegisterInfo){0};
                     iRegInfos[RA(theCode)].value    = theNewValue;
                     iRegInfos[RA(theCode)].isValid  = YES;
 
@@ -1374,7 +1517,7 @@ extern BOOL gCancel;
                     if (!iRegInfos[RS(theCode)].isValid ||
                         !iRegInfos[RB(theCode)].isValid)
                     {
-                        iRegInfos[RA(theCode)]  = (GPRegisterInfo){0};
+                        iRegInfos[RA(theCode)]  = (GP64RegisterInfo){0};
                         break;
                     }
 
@@ -1382,7 +1525,7 @@ extern BOOL gCancel;
                         iRegInfos[RS(theCode)].value >>
                             SV(iRegInfos[RB(theCode)].value);
 
-                    iRegInfos[RA(theCode)]          = (GPRegisterInfo){0};
+                    iRegInfos[RA(theCode)]          = (GP64RegisterInfo){0};
                     iRegInfos[RA(theCode)].value    = theNewValue;
                     iRegInfos[RA(theCode)].isValid  = YES;
 
@@ -1398,7 +1541,7 @@ extern BOOL gCancel;
         case 0x22:  // lbz
             if (RA(theCode) == 0)
             {
-                iRegInfos[RT(theCode)]          = (GPRegisterInfo){0};
+                iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
                 iRegInfos[RT(theCode)].value    = SIMM(theCode);
                 iRegInfos[RT(theCode)].isValid  = YES;
             }
@@ -1409,14 +1552,14 @@ extern BOOL gCancel;
 
                 if (tempPtr)
                 {
-                    iRegInfos[RT(theCode)]          = (GPRegisterInfo){0};
+                    iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
                     iRegInfos[RT(theCode)].value    = *(UInt32*)tempPtr;
                     iRegInfos[RT(theCode)].value    =
                         OSSwapBigToHostInt32(iRegInfos[RT(theCode)].value);
                     iRegInfos[RT(theCode)].isValid  = YES;
                 }
                 else
-                    iRegInfos[RT(theCode)]  = (GPRegisterInfo){0};
+                    iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
             }
             else if (iLocalVars)
             {
@@ -1432,12 +1575,12 @@ extern BOOL gCancel;
                 }
             }
             else
-                iRegInfos[RT(theCode)]  = (GPRegisterInfo){0};
+                iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
 
             break;
 
 /*      case 0x22:  // lbz
-            mRegInfos[RT(theCode)]  = (GPRegisterInfo){0};
+            mRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
 
             if (RA(theCode) == 0)
             {
@@ -1457,16 +1600,16 @@ extern BOOL gCancel;
             {
                 iNumLocalSelves++;
                 iLocalSelves    = realloc(iLocalSelves,
-                    iNumLocalSelves * sizeof(VarInfo));
-                iLocalSelves[iNumLocalSelves - 1]   = (VarInfo)
+                    iNumLocalSelves * sizeof(Var64Info));
+                iLocalSelves[iNumLocalSelves - 1]   = (Var64Info)
                     {iRegInfos[RT(theCode)], UIMM(theCode)};
             }
             else
             {
                 iNumLocalVars++;
                 iLocalVars  = realloc(iLocalVars,
-                    iNumLocalVars * sizeof(VarInfo));
-                iLocalVars[iNumLocalVars - 1]   = (VarInfo)
+                    iNumLocalVars * sizeof(Var64Info));
+                iLocalVars[iNumLocalVars - 1]   = (Var64Info)
                     {iRegInfos[RT(theCode)], UIMM(theCode)};
             }
 
@@ -1487,6 +1630,117 @@ extern BOOL gCancel;
         case 0x2f:
             break;*/
 
+        case 0x3a:  // ld
+        {
+            if (RA(theCode) == 0)
+            {
+                iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
+                iRegInfos[RT(theCode)].value    = DS(theCode);
+                iRegInfos[RT(theCode)].isValid  = YES;
+            }
+            else if (iRegInfos[RA(theCode)].className != NULL && DS(theCode) == 0)
+            {
+                iRegInfos[RT(theCode)] = iRegInfos[RA(theCode)];
+            }
+            else if (iRegInfos[RA(theCode)].isValid)
+            {
+                iRegInfos[RT(theCode)].classPtr = NULL;
+                iRegInfos[RT(theCode)].className = NULL;
+                iRegInfos[RT(theCode)].messageRefSel = NULL;
+
+                UInt64 newValue = iRegInfos[RA(theCode)].value + DS(theCode);
+
+                iRegInfos[RT(theCode)].value = newValue;
+                iRegInfos[RT(theCode)].isValid = YES;
+
+                UInt8 type;
+
+                char* ref = GetPointer(newValue, &type);
+
+                if (type == OCClassRefType || type == OCSuperRefType)
+                    iRegInfos[RT(theCode)].className = ref;
+            }
+            else if (RA(theCode) == 1 && DS(theCode) >= 0)
+            {
+                BOOL    found = NO;
+                UInt32  i;
+
+                // Check for copied self pointer. This happens mostly in "init"
+                // methods, as in: "self = [super init]"
+                if (iLocalSelves)   // self was copied to a local variable
+                {
+                    // If we're accessing a local var copy of self,
+                    // copy that info back to the reg in question.
+                    for (i = 0; i < iNumLocalSelves; i++)
+                    {
+                        if (iLocalSelves[i].offset != UIMM(theCode))
+                            continue;
+
+                        iRegInfos[RT(theCode)] = iLocalSelves[i].regInfo;
+                        found = YES;
+                        break;
+                    }
+                }
+
+                if (found)
+                    break;
+
+                // Check for other local variables.
+                if (iLocalVars)
+                {
+                    for (i = 0; i < iNumLocalVars; i++)
+                    {
+                        if (iLocalVars[i].offset != UIMM(theCode))
+                            continue;
+
+                        iRegInfos[RT(theCode)] = iLocalVars[i].regInfo;
+                        break;
+                    }
+                }
+            }
+            else
+                iRegInfos[RT(theCode)] = (GP64RegisterInfo){0};
+
+/*            else if (iRegInfos[RA(theCode)].isValid)
+            {
+                UInt64 address = iRegInfos[RA(theCode)].value + DS(theCode);
+                UInt8 ptrType = PointerType;
+
+                char* sel = GetPointer(address, &ptrType);
+
+                if (sel != NULL && ptrType == OCMsgRefType)
+                    iRegInfos[RT(theCode)].messageRefSel = sel;
+                else
+                    iRegInfos[RT(theCode)].messageRefSel = NULL;
+
+                iRegInfos[RT(theCode)].classPtr = NULL;
+                iRegInfos[RT(theCode)].className = NULL;
+                iRegInfos[RT(theCode)].value    = address;
+                iRegInfos[RT(theCode)].isValid  = YES;
+            }*/
+
+            break;
+        }
+
+        case 0x3e:  // std
+            if (!iRegInfos[RT(theCode)].isValid || RA(theCode) != 1 || DS(theCode) < 0)
+                break;
+
+            if (iRegInfos[RT(theCode)].classPtr)    // if it's a class
+            {
+                iNumLocalSelves++;
+                iLocalSelves = realloc(iLocalSelves, iNumLocalSelves * sizeof(Var64Info));
+                iLocalSelves[iNumLocalSelves - 1] = (Var64Info){iRegInfos[RT(theCode)], DS(theCode)};
+            }
+            else
+            {
+                iNumLocalVars++;
+                iLocalVars = realloc(iLocalVars, iNumLocalVars * sizeof(Var64Info));
+                iLocalVars[iNumLocalVars - 1] = (Var64Info) {iRegInfos[RT(theCode)], DS(theCode)};
+            }
+
+            break;
+
         default:
             break;
     }
@@ -1495,7 +1749,7 @@ extern BOOL gCancel;
 //  restoreRegisters:
 // ----------------------------------------------------------------------------
 
-- (BOOL)restoreRegisters: (Line*)inLine
+- (BOOL)restoreRegisters: (Line64*)inLine
 {
     if (!inLine)
     {
@@ -1509,8 +1763,8 @@ extern BOOL gCancel;
     if (iCurrentFuncInfoIndex < 0)
         return NO;
 
-    // Search current FunctionInfo for blocks that start at this address.
-    FunctionInfo*   funcInfo    =
+    // Search current Function64Info for blocks that start at this address.
+    Function64Info* funcInfo    =
         &iFuncInfos[iCurrentFuncInfoIndex];
 
     if (!funcInfo->blocks)
@@ -1525,11 +1779,11 @@ extern BOOL gCancel;
             continue;
 
         // Update machine state.
-        MachineState    machState   =
+        Machine64State  machState   =
             funcInfo->blocks[i].state;
 
         memcpy(iRegInfos, machState.regInfos,
-            sizeof(GPRegisterInfo) * 32);
+            sizeof(GP64RegisterInfo) * 32);
         iLR     = machState.regInfos[LRIndex];
         iCTR    = machState.regInfos[CTRIndex];
 
@@ -1540,9 +1794,9 @@ extern BOOL gCancel;
 
             iNumLocalSelves = machState.numLocalSelves;
             iLocalSelves    = malloc(
-                sizeof(VarInfo) * iNumLocalSelves);
+                sizeof(Var64Info) * iNumLocalSelves);
             memcpy(iLocalSelves, machState.localSelves,
-                sizeof(VarInfo) * iNumLocalSelves);
+                sizeof(Var64Info) * iNumLocalSelves);
         }
 
         if (machState.localVars)
@@ -1552,9 +1806,9 @@ extern BOOL gCancel;
 
             iNumLocalVars   = machState.numLocalVars;
             iLocalVars      = malloc(
-                sizeof(VarInfo) * iNumLocalVars);
+                sizeof(Var64Info) * iNumLocalVars);
             memcpy(iLocalVars, machState.localVars,
-                sizeof(VarInfo) * iNumLocalVars);
+                sizeof(Var64Info) * iNumLocalVars);
         }
 
         // Optionally add a blank line before this block.
@@ -1571,7 +1825,7 @@ extern BOOL gCancel;
 //  lineIsFunction:
 // ----------------------------------------------------------------------------
 
-- (BOOL)lineIsFunction: (Line*)inLine
+- (BOOL)lineIsFunction: (Line64*)inLine
 {
     if (!inLine)
         return NO;
@@ -1582,15 +1836,15 @@ extern BOOL gCancel;
         theAddy == iAddrDyldFuncLookupPointer)
         return YES;
 
-    MethodInfo* theDummyInfo    = nil;
+    Method64Info* theDummyInfo    = nil;
 
     // In Obj-C apps, the majority of funcs will have Obj-C symbols, so check
     // those first.
     if (FindClassMethodByAddress(&theDummyInfo, theAddy))
         return YES;
 
-    if (FindCatMethodByAddress(&theDummyInfo, theAddy))
-        return YES;
+//    if (FindCatMethodByAddress(&theDummyInfo, theAddy))
+//        return YES;
 
     // If it's not an Obj-C method, maybe there's an nlist.
     if (FindSymbolByAddress(theAddy))
@@ -1607,7 +1861,7 @@ extern BOOL gCancel;
     if ((theCode & 0xfc1fffff) == 0x7c0802a6)   // mflr to any reg
     {   // Allow for late mflr
         BOOL    foundUB = NO;
-        Line*   thePrevLine = inLine->prev;
+        Line64* thePrevLine = inLine->prev;
 
         // Walk back to the most recent unconditional branch, looking
         // for existing symbols.
@@ -1705,9 +1959,9 @@ extern BOOL gCancel;
 
 - (void)gatherFuncInfos
 {
-    Line*           theLine     = iPlainLineListHead;
-    UInt32          theCode;
-    UInt32          progCounter = 0;
+    Line64* theLine     = iPlainLineListHead;
+    UInt32  theCode;
+    UInt32  progCounter = 0;
 
     // Loop thru lines.
     while (theLine)
@@ -1750,16 +2004,16 @@ extern BOOL gCancel;
             else if (PO(theCode) == 0x10)   // bc
                 branchTarget    = theLine->info.address + BD(theCode);
 
-            // Retrieve current FunctionInfo.
-            FunctionInfo*   funcInfo    =
+            // Retrieve current Function64Info.
+            Function64Info* funcInfo    =
                 &iFuncInfos[iCurrentFuncInfoIndex];
 
             // 'currentBlock' will point to either an existing block which
             // we will update, or a newly allocated block.
-            BlockInfo*  currentBlock    = nil;
-            Line*       endLine         = NULL;
-            BOOL        isEpilog        = NO;
-            UInt32      i;
+            Block64Info*    currentBlock    = nil;
+            Line64*         endLine         = NULL;
+            BOOL            isEpilog        = NO;
+            UInt32          i;
 
             if (funcInfo->blocks)
             {   // Blocks exist, find 1st one matching this address.
@@ -1780,16 +2034,16 @@ extern BOOL gCancel;
                         iOpts.returnStatements)
                     {
                         // Find the first line of the target block.
-                        Line    searchKey = {NULL, 0, NULL, NULL, NULL, {branchTarget, {0}, YES, NO}};
-                        Line*   searchKeyPtr = &searchKey;
-                        Line**  beginLine = bsearch(&searchKeyPtr, iLineArray, iNumCodeLines, sizeof(Line*),
+                        Line64      searchKey = {NULL, 0, NULL, NULL, NULL, {branchTarget, {0}, YES, NO}};
+                        Line64*     searchKeyPtr = &searchKey;
+                        Line64**    beginLine = bsearch(&searchKeyPtr, iLineArray, iNumCodeLines, sizeof(Line64*),
                             (COMPARISON_FUNC_TYPE)Line_Address_Compare);
 
                         if (beginLine != NULL)
                         {
                             // Walk through the block. It's an epilog if it ends
                             // with 'blr' and contains no 'bl's.
-                            Line*   nextLine    = *beginLine;
+                            Line64* nextLine    = *beginLine;
                             BOOL    canBeEpliog = YES;
                             UInt32  tempCode;
 
@@ -1821,16 +2075,16 @@ extern BOOL gCancel;
                 {   // No matching blocks found, so allocate a new one.
                     funcInfo->numBlocks++;
                     funcInfo->blocks = realloc(funcInfo->blocks,
-                        sizeof(BlockInfo) * funcInfo->numBlocks);
+                        sizeof(Block64Info) * funcInfo->numBlocks);
                     currentBlock =
                         &funcInfo->blocks[funcInfo->numBlocks - 1];
-                    *currentBlock = (BlockInfo){0};
+                    *currentBlock = (Block64Info){0};
                 }
             }
             else
             {   // No existing blocks, allocate one.
                 funcInfo->numBlocks++;
-                funcInfo->blocks    = calloc(1, sizeof(BlockInfo));
+                funcInfo->blocks    = calloc(1, sizeof(Block64Info));
                 currentBlock        = funcInfo->blocks;
             }
 
@@ -1842,43 +2096,43 @@ extern BOOL gCancel;
                 return;
             }
 
-            // Create a new MachineState.
-            GPRegisterInfo* savedRegs   = malloc(
-                sizeof(GPRegisterInfo) * 34);
+            // Create a new Machine64State.
+            GP64RegisterInfo*   savedRegs   = malloc(
+                sizeof(GP64RegisterInfo) * 34);
 
-            memcpy(savedRegs, iRegInfos, sizeof(GPRegisterInfo) * 32);
+            memcpy(savedRegs, iRegInfos, sizeof(GP64RegisterInfo) * 32);
             savedRegs[LRIndex]  = iLR;
             savedRegs[CTRIndex] = iCTR;
 
-            VarInfo*    savedSelves = nil;
+            Var64Info*  savedSelves = nil;
 
             if (iLocalSelves)
             {
                 savedSelves = malloc(
-                    sizeof(VarInfo) * iNumLocalSelves);
+                    sizeof(Var64Info) * iNumLocalSelves);
                 memcpy(savedSelves, iLocalSelves,
-                    sizeof(VarInfo) * iNumLocalSelves);
+                    sizeof(Var64Info) * iNumLocalSelves);
             }
 
-            VarInfo*    savedVars   = nil;
+            Var64Info*  savedVars   = nil;
 
             if (iLocalVars)
             {
                 savedVars   = malloc(
-                    sizeof(VarInfo) * iNumLocalVars);
+                    sizeof(Var64Info) * iNumLocalVars);
                 memcpy(savedVars, iLocalVars,
-                    sizeof(VarInfo) * iNumLocalVars);
+                    sizeof(Var64Info) * iNumLocalVars);
             }
 
-            MachineState    machState   =
+            Machine64State  machState   =
                 {savedRegs, savedSelves, iNumLocalSelves,
                     savedVars, iNumLocalVars};
 
-            // Store the new BlockInfo.
-            BlockInfo   blockInfo   =
+            // Store the new Block64Info.
+            Block64Info blockInfo   =
                 {branchTarget, endLine, isEpilog, machState};
 
-            memcpy(currentBlock, &blockInfo, sizeof(BlockInfo));
+            memcpy(currentBlock, &blockInfo, sizeof(Block64Info));
         }
 
         theLine = theLine->next;
@@ -1897,7 +2151,7 @@ extern BOOL gCancel;
     if (!iFuncInfos)
         return;
 
-    FunctionInfo*   funcInfo    = &iFuncInfos[inFuncIndex];
+    Function64Info* funcInfo    = &iFuncInfos[inFuncIndex];
 
     if (!funcInfo || !funcInfo->blocks)
         return;

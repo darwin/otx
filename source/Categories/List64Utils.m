@@ -1,16 +1,17 @@
 /*
-    ListUtils.m
+    List64Utils.m
 
-    A category on Exe32Processor for linked list manipulation.
+    A category on Exe64Processor that contains the linked list
+    manipulation methods.
 
     This file is in the public domain.
 */
 
 #import <Cocoa/Cocoa.h>
 
-#import "ListUtils.h"
+#import "List64Utils.h"
 
-@implementation Exe32Processor(ListUtils)
+@implementation Exe64Processor(List64Utils)
 
 // Each text line is stored in an element of a doubly-linked list. These are
 // vanilla textbook funcs for maintaining the list.
@@ -18,9 +19,9 @@
 //  insertLine:before:inList:
 // ----------------------------------------------------------------------------
 
-- (void)insertLine: (Line*)inLine
-            before: (Line*)nextLine
-            inList: (Line**)listHead
+- (void)insertLine: (Line64*)inLine
+            before: (Line64*)nextLine
+            inList: (Line64**)listHead
 {
     if (!nextLine)
         return;
@@ -39,9 +40,9 @@
 //  insertLine:after:inList:
 // ----------------------------------------------------------------------------
 
-- (void)insertLine: (Line*)inLine
-             after: (Line*)prevLine
-            inList: (Line**)listHead
+- (void)insertLine: (Line64*)inLine
+             after: (Line64*)prevLine
+            inList: (Line64**)listHead
 {
     if (!prevLine)
     {
@@ -61,9 +62,9 @@
 // ----------------------------------------------------------------------------
 //  This non-standard method is used for merging the verbose and plain lists.
 
-- (void)replaceLine: (Line*)inLine
-           withLine: (Line*)newLine
-             inList: (Line**)listHead
+- (void)replaceLine: (Line64*)inLine
+           withLine: (Line64*)newLine
+             inList: (Line64**)listHead
 {
     if (!inLine || !newLine)
         return;
@@ -91,7 +92,7 @@
 //  Print our modified lines to a FILE*. The FILE* is a real file in the GUI
 //  target, and stdout in the CLI target.
 
-- (BOOL)printLinesFromList: (Line*)listHead
+- (BOOL)printLinesFromList: (Line64*)listHead
 {
     FILE*   outFile = nil;
 
@@ -110,7 +111,7 @@
         return NO;
     }
 
-    Line*   theLine = listHead;
+    Line64* theLine = listHead;
 
     // Cache the fileno and use SYS_write for maximum speed.
     SInt32  fileNum = fileno(outFile);
@@ -148,9 +149,9 @@
 //  deleteLinesFromList:
 // ----------------------------------------------------------------------------
 
-- (void)deleteLinesFromList: (Line*)listHead
+- (void)deleteLinesFromList: (Line64*)listHead
 {
-    Line*   theLine = listHead;
+    Line64* theLine = listHead;
 
     while (theLine)
     {
@@ -174,10 +175,10 @@
 //  deleteLinesBefore:fromList:
 // ----------------------------------------------------------------------------
 
-- (void)deleteLinesBefore: (Line*)inLine
-                 fromList: (Line**)listHead
+- (void)deleteLinesBefore: (Line64*)inLine
+                 fromList: (Line64**)listHead
 {
-    Line*   theLine = *listHead;
+    Line64* theLine = *listHead;
 
     while (theLine)
     {

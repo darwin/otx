@@ -8,16 +8,34 @@
 
 /* Begin PBXBuildFile section */
 		252DFABB0C9D38A100C712BD /* SysUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 252DFABA0C9D38A100C712BD /* SysUtils.m */; };
+		257832880D4C426900E05A06 /* PPC64Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 257832840D4C426900E05A06 /* PPC64Processor.m */; };
+		257832890D4C426900E05A06 /* X8664Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 257832860D4C426900E05A06 /* X8664Processor.m */; };
+		257832DF0D4C578800E05A06 /* Exe64Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 257832DD0D4C578800E05A06 /* Exe64Processor.m */; };
+		257832F30D4C609300E05A06 /* Objc64Accessors.m in Sources */ = {isa = PBXBuildFile; fileRef = 257832F10D4C609300E05A06 /* Objc64Accessors.m */; };
+		257833340D4C60A000E05A06 /* Object64Loader.m in Sources */ = {isa = PBXBuildFile; fileRef = 257833330D4C60A000E05A06 /* Object64Loader.m */; };
+		2578336F0D4C61EA00E05A06 /* List64Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2578336D0D4C61EA00E05A06 /* List64Utils.m */; };
+		257833770D4C62FD00E05A06 /* Arch64Specifics.m in Sources */ = {isa = PBXBuildFile; fileRef = 257833750D4C62FD00E05A06 /* Arch64Specifics.m */; };
+		257A9C4D0DA9D1D800DC7B8A /* CHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 257A9C4C0DA9D1D800DC7B8A /* CHUD.framework */; };
+		25924A8A0D4D670C0050AA16 /* Exe32Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 25924A880D4D670C0050AA16 /* Exe32Processor.m */; };
+		25924BA10D4D85380050AA16 /* Exe32Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 25924A880D4D670C0050AA16 /* Exe32Processor.m */; };
+		25924BA20D4D85390050AA16 /* Exe64Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 257832DD0D4C578800E05A06 /* Exe64Processor.m */; };
+		25924BA30D4D853A0050AA16 /* PPC64Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 257832840D4C426900E05A06 /* PPC64Processor.m */; };
+		25924BA40D4D853B0050AA16 /* X8664Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 257832860D4C426900E05A06 /* X8664Processor.m */; };
+		25924BAA0D4D85580050AA16 /* Object64Loader.m in Sources */ = {isa = PBXBuildFile; fileRef = 257833330D4C60A000E05A06 /* Object64Loader.m */; };
+		25924BAB0D4D855A0050AA16 /* Objc64Accessors.m in Sources */ = {isa = PBXBuildFile; fileRef = 257832F10D4C609300E05A06 /* Objc64Accessors.m */; };
+		25924BAC0D4D855B0050AA16 /* List64Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2578336D0D4C61EA00E05A06 /* List64Utils.m */; };
+		25924BAD0D4D855E0050AA16 /* Arch64Specifics.m in Sources */ = {isa = PBXBuildFile; fileRef = 257833750D4C62FD00E05A06 /* Arch64Specifics.m */; };
+		25924BB60D4D85A00050AA16 /* SysUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 252DFABA0C9D38A100C712BD /* SysUtils.m */; };
+		25924BFB0D4D88C90050AA16 /* Searchers64.m in Sources */ = {isa = PBXBuildFile; fileRef = 25924BF90D4D88C90050AA16 /* Searchers64.m */; };
+		25924C210D4D89AE0050AA16 /* Searchers64.m in Sources */ = {isa = PBXBuildFile; fileRef = 25924BF90D4D88C90050AA16 /* Searchers64.m */; };
 		25A62EFD0C38A7C500B08D38 /* Prefs Output Icon.tif in Resources */ = {isa = PBXBuildFile; fileRef = 25A62EFA0C38A7C500B08D38 /* Prefs Output Icon.tif */; };
 		25A62EFE0C38A7C500B08D38 /* Prefs General Icon.tif in Resources */ = {isa = PBXBuildFile; fileRef = 25A62EFB0C38A7C500B08D38 /* Prefs General Icon.tif */; };
 		25A62EFF0C38A7C500B08D38 /* Main Window Background.tif in Resources */ = {isa = PBXBuildFile; fileRef = 25A62EFC0C38A7C500B08D38 /* Main Window Background.tif */; };
 		25A62F060C38A86C00B08D38 /* App Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 25A62F050C38A86C00B08D38 /* App Icon.icns */; };
-		25E79C530D4E81690037363C /* SysUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 252DFABA0C9D38A100C712BD /* SysUtils.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E13539830A6817C700CBDDE5 /* ObjcSwap.c in Sources */ = {isa = PBXBuildFile; fileRef = E13539820A6817C700CBDDE5 /* ObjcSwap.c */; };
 		E145F6D30B437F5900615A16 /* SmoothViewAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E145F6D20B437F5900615A16 /* SmoothViewAnimation.m */; };
-		E172D5190A74874100C85E7A /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* Info.plist */; };
 		E182007209AE4CD800584B07 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = E182007009AE4CD800584B07 /* AppController.m */; };
 		E1978C9E0AC603A40096EE62 /* Help in Resources */ = {isa = PBXBuildFile; fileRef = E1978C6A0AC603A40096EE62 /* Help */; };
 		E1AD98A60B57311C00E56D96 /* DropBox.m in Sources */ = {isa = PBXBuildFile; fileRef = E1AD98A50B57311B00E56D96 /* DropBox.m */; };
@@ -45,11 +63,20 @@
 		E1FA33E50B1008290060060A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E1FA33E60B1008290060060A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */; };
 		E1FA33E70B1008290060060A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81B0A0AE1EF2C003D8E2C /* Security.framework */; };
-		E1FA33E80B1008290060060A /* SmartCrashReportsInstall.o in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */; };
 		E1FA34030B100D060060060A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA34020B100D060060060A /* main.m */; };
 		E1FA34500B105E4F0060060A /* CLIController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA344F0B105E4E0060060A /* CLIController.m */; };
 		E1FA36570B12EE0A0060060A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA34020B100D060060060A /* main.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		257FA9F00D84DE1D0085944D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E1FA33D00B1005450060060A;
+			remoteInfo = "otx cli";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -57,6 +84,27 @@
 		252DFA080C9D2E7D00C712BD /* ErrorReporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ErrorReporter.h; path = source/Protocols/ErrorReporter.h; sourceTree = "<group>"; };
 		252DFAB90C9D38A100C712BD /* SysUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SysUtils.h; path = source/Categories/SysUtils.h; sourceTree = "<group>"; };
 		252DFABA0C9D38A100C712BD /* SysUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SysUtils.m; path = source/Categories/SysUtils.m; sourceTree = "<group>"; };
+		257832840D4C426900E05A06 /* PPC64Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PPC64Processor.m; path = source/Processors/PPC64Processor.m; sourceTree = "<group>"; };
+		257832850D4C426900E05A06 /* PPC64Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPC64Processor.h; path = source/Processors/PPC64Processor.h; sourceTree = "<group>"; };
+		257832860D4C426900E05A06 /* X8664Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = X8664Processor.m; path = source/Processors/X8664Processor.m; sourceTree = "<group>"; };
+		257832870D4C426900E05A06 /* X8664Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = X8664Processor.h; path = source/Processors/X8664Processor.h; sourceTree = "<group>"; };
+		257832DD0D4C578800E05A06 /* Exe64Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Exe64Processor.m; path = source/Processors/Exe64Processor.m; sourceTree = "<group>"; };
+		257832DE0D4C578800E05A06 /* Exe64Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exe64Processor.h; path = source/Processors/Exe64Processor.h; sourceTree = "<group>"; };
+		257832F10D4C609300E05A06 /* Objc64Accessors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Objc64Accessors.m; path = source/Categories/Objc64Accessors.m; sourceTree = "<group>"; };
+		257832F20D4C609300E05A06 /* Objc64Accessors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Objc64Accessors.h; path = source/Categories/Objc64Accessors.h; sourceTree = "<group>"; };
+		257833320D4C60A000E05A06 /* Object64Loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Object64Loader.h; path = source/Categories/Object64Loader.h; sourceTree = "<group>"; };
+		257833330D4C60A000E05A06 /* Object64Loader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Object64Loader.m; path = source/Categories/Object64Loader.m; sourceTree = "<group>"; };
+		2578336D0D4C61EA00E05A06 /* List64Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = List64Utils.m; path = source/Categories/List64Utils.m; sourceTree = "<group>"; };
+		2578336E0D4C61EA00E05A06 /* List64Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = List64Utils.h; path = source/Categories/List64Utils.h; sourceTree = "<group>"; };
+		257833750D4C62FD00E05A06 /* Arch64Specifics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Arch64Specifics.m; path = source/Categories/Arch64Specifics.m; sourceTree = "<group>"; };
+		257833760D4C62FD00E05A06 /* Arch64Specifics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Arch64Specifics.h; path = source/Categories/Arch64Specifics.h; sourceTree = "<group>"; };
+		2578337C0D4C649500E05A06 /* Optimizations64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Optimizations64.h; path = source/Optimizations64.h; sourceTree = "<group>"; };
+		257A9C4C0DA9D1D800DC7B8A /* CHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHUD.framework; path = /System/Library/PrivateFrameworks/CHUD.framework; sourceTree = "<absolute>"; };
+		25924A880D4D670C0050AA16 /* Exe32Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Exe32Processor.m; path = source/Processors/Exe32Processor.m; sourceTree = "<group>"; };
+		25924A890D4D670C0050AA16 /* Exe32Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exe32Processor.h; path = source/Processors/Exe32Processor.h; sourceTree = "<group>"; };
+		25924B380D4D71620050AA16 /* Optimizations32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Optimizations32.h; path = source/Optimizations32.h; sourceTree = "<group>"; };
+		25924BF90D4D88C90050AA16 /* Searchers64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Searchers64.m; path = source/Categories/Searchers64.m; sourceTree = "<group>"; };
+		25924BFA0D4D88C90050AA16 /* Searchers64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Searchers64.h; path = source/Categories/Searchers64.h; sourceTree = "<group>"; };
 		25A62EFA0C38A7C500B08D38 /* Prefs Output Icon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = "Prefs Output Icon.tif"; path = "images/Prefs Output Icon.tif"; sourceTree = "<group>"; };
 		25A62EFB0C38A7C500B08D38 /* Prefs General Icon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = "Prefs General Icon.tif"; path = "images/Prefs General Icon.tif"; sourceTree = "<group>"; };
 		25A62EFC0C38A7C500B08D38 /* Main Window Background.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = "Main Window Background.tif"; path = "images/Main Window Background.tif"; sourceTree = "<group>"; };
@@ -99,8 +147,6 @@
 		E1B136210B192ABE002EB674 /* ArchSpecifics.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ArchSpecifics.h; path = source/Categories/ArchSpecifics.h; sourceTree = "<group>"; };
 		E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserDefaultKeys.h; path = source/UserDefaultKeys.h; sourceTree = "<group>"; };
 		E1F483530B38DB4200CECE18 /* SharedDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharedDefs.h; path = source/SharedDefs.h; sourceTree = "<group>"; };
-		E1F81AC20AE1EDC0003D8E2C /* SmartCrashReportsInstall.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SmartCrashReportsInstall.h; path = "source/Smart Crash Reports/SmartCrashReportsInstall.h"; sourceTree = "<group>"; };
-		E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = SmartCrashReportsInstall.o; path = "source/Smart Crash Reports/SmartCrashReportsInstall.o"; sourceTree = "<group>"; };
 		E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		E1F81B0A0AE1EF2C003D8E2C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
@@ -119,6 +165,7 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				E1F81B090AE1EF07003D8E2C /* CoreFoundation.framework in Frameworks */,
 				E1F81B3F0AE1EF2D003D8E2C /* Security.framework in Frameworks */,
+				257A9C4D0DA9D1D800DC7B8A /* CHUD.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +177,6 @@
 				E1FA33E50B1008290060060A /* Cocoa.framework in Frameworks */,
 				E1FA33E60B1008290060060A /* CoreFoundation.framework in Frameworks */,
 				E1FA33E70B1008290060060A /* Security.framework in Frameworks */,
-				E1FA33E80B1008290060060A /* SmartCrashReportsInstall.o in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,6 +202,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				257A9C4C0DA9D1D800DC7B8A /* CHUD.framework */,
 				E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */,
@@ -204,12 +251,13 @@
 			children = (
 				E13539820A6817C700CBDDE5 /* ObjcSwap.c */,
 				E16222240A4F80F4007ECB26 /* Optimizations.h */,
+				25924B380D4D71620050AA16 /* Optimizations32.h */,
+				2578337C0D4C649500E05A06 /* Optimizations64.h */,
 				E1F483530B38DB4200CECE18 /* SharedDefs.h */,
 				E1167F1C09C8086900E7398D /* StolenDefs.h */,
 				E13539810A68178D00CBDDE5 /* SyscallStrings.h */,
 				E1B1316E0B17EF84002EB674 /* SystemIncludes.h */,
 				E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */,
-				E1F81ABB0AE1ED62003D8E2C /* Smart Crash Reports */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -242,10 +290,18 @@
 			children = (
 				E1B132610B180B2F002EB674 /* ExeProcessor.h */,
 				E1B1325E0B180B25002EB674 /* ExeProcessor.m */,
+				25924A890D4D670C0050AA16 /* Exe32Processor.h */,
+				25924A880D4D670C0050AA16 /* Exe32Processor.m */,
+				257832DE0D4C578800E05A06 /* Exe64Processor.h */,
+				257832DD0D4C578800E05A06 /* Exe64Processor.m */,
 				E1B132650B180B70002EB674 /* PPCProcessor.h */,
 				E1B132620B180B66002EB674 /* PPCProcessor.m */,
+				257832850D4C426900E05A06 /* PPC64Processor.h */,
+				257832840D4C426900E05A06 /* PPC64Processor.m */,
 				E1B132690B180BB4002EB674 /* X86Processor.h */,
 				E1B132660B180BAC002EB674 /* X86Processor.m */,
+				257832870D4C426900E05A06 /* X8664Processor.h */,
+				257832860D4C426900E05A06 /* X8664Processor.m */,
 			);
 			name = Processors;
 			sourceTree = "<group>";
@@ -255,14 +311,24 @@
 			children = (
 				E1B136210B192ABE002EB674 /* ArchSpecifics.h */,
 				E1B1361E0B192AAC002EB674 /* ArchSpecifics.m */,
+				257833760D4C62FD00E05A06 /* Arch64Specifics.h */,
+				257833750D4C62FD00E05A06 /* Arch64Specifics.m */,
 				E1B132E80B1824D7002EB674 /* ListUtils.h */,
 				E1B132EB0B1824D7002EB674 /* ListUtils.m */,
+				2578336E0D4C61EA00E05A06 /* List64Utils.h */,
+				2578336D0D4C61EA00E05A06 /* List64Utils.m */,
 				E1B135E60B18512C002EB674 /* ObjcAccessors.h */,
 				E1B135E30B185122002EB674 /* ObjcAccessors.m */,
+				257832F20D4C609300E05A06 /* Objc64Accessors.h */,
+				257832F10D4C609300E05A06 /* Objc64Accessors.m */,
 				E1B132E90B1824D7002EB674 /* ObjectLoader.h */,
 				E1B132EA0B1824D7002EB674 /* ObjectLoader.m */,
+				257833320D4C60A000E05A06 /* Object64Loader.h */,
+				257833330D4C60A000E05A06 /* Object64Loader.m */,
 				E1B133950B182788002EB674 /* Searchers.h */,
 				E1B133940B182788002EB674 /* Searchers.m */,
+				25924BFA0D4D88C90050AA16 /* Searchers64.h */,
+				25924BF90D4D88C90050AA16 /* Searchers64.m */,
 				252DFAB90C9D38A100C712BD /* SysUtils.h */,
 				252DFABA0C9D38A100C712BD /* SysUtils.m */,
 			);
@@ -279,15 +345,6 @@
 			name = Protocols;
 			sourceTree = "<group>";
 		};
-		E1F81ABB0AE1ED62003D8E2C /* Smart Crash Reports */ = {
-			isa = PBXGroup;
-			children = (
-				E1F81AC20AE1EDC0003D8E2C /* SmartCrashReportsInstall.h */,
-				E1F81AC40AE1EE02003D8E2C /* SmartCrashReportsInstall.o */,
-			);
-			name = "Smart Crash Reports";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -302,6 +359,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				257FA9F10D84DE1D0085944D /* PBXTargetDependency */,
 			);
 			name = "otx gui";
 			productInstallPath = "$(HOME)/Applications";
@@ -349,7 +407,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
-				E172D5190A74874100C85E7A /* Info.plist in Resources */,
 				25A62F060C38A86C00B08D38 /* App Icon.icns in Resources */,
 				25A62EFF0C38A7C500B08D38 /* Main Window Background.tif in Resources */,
 				25A62EFE0C38A7C500B08D38 /* Prefs General Icon.tif in Resources */,
@@ -379,6 +436,15 @@
 				E145F6D30B437F5900615A16 /* SmoothViewAnimation.m in Sources */,
 				E1AD98A60B57311C00E56D96 /* DropBox.m in Sources */,
 				252DFABB0C9D38A100C712BD /* SysUtils.m in Sources */,
+				257832880D4C426900E05A06 /* PPC64Processor.m in Sources */,
+				257832890D4C426900E05A06 /* X8664Processor.m in Sources */,
+				257832DF0D4C578800E05A06 /* Exe64Processor.m in Sources */,
+				257832F30D4C609300E05A06 /* Objc64Accessors.m in Sources */,
+				257833340D4C60A000E05A06 /* Object64Loader.m in Sources */,
+				2578336F0D4C61EA00E05A06 /* List64Utils.m in Sources */,
+				257833770D4C62FD00E05A06 /* Arch64Specifics.m in Sources */,
+				25924A8A0D4D670C0050AA16 /* Exe32Processor.m in Sources */,
+				25924BFB0D4D88C90050AA16 /* Searchers64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,11 +463,28 @@
 				E1B133960B182788002EB674 /* Searchers.m in Sources */,
 				E1B135E40B185123002EB674 /* ObjcAccessors.m in Sources */,
 				E1B1361F0B192AAC002EB674 /* ArchSpecifics.m in Sources */,
-				25E79C530D4E81690037363C /* SysUtils.m in Sources */,
+				25924BA10D4D85380050AA16 /* Exe32Processor.m in Sources */,
+				25924BA20D4D85390050AA16 /* Exe64Processor.m in Sources */,
+				25924BA30D4D853A0050AA16 /* PPC64Processor.m in Sources */,
+				25924BA40D4D853B0050AA16 /* X8664Processor.m in Sources */,
+				25924BAA0D4D85580050AA16 /* Object64Loader.m in Sources */,
+				25924BAB0D4D855A0050AA16 /* Objc64Accessors.m in Sources */,
+				25924BAC0D4D855B0050AA16 /* List64Utils.m in Sources */,
+				25924BAD0D4D855E0050AA16 /* Arch64Specifics.m in Sources */,
+				25924BB60D4D85A00050AA16 /* SysUtils.m in Sources */,
+				25924C210D4D89AE0050AA16 /* Searchers64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		257FA9F10D84DE1D0085944D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E1FA33D00B1005450060060A /* otx cli */;
+			targetProxy = 257FA9F00D84DE1D0085944D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
@@ -427,24 +510,28 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PREFIX_HEADER = otx_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = otx;
 				WRAPPER_EXTENSION = app;
-				ZERO_LINK = YES;
+				ZERO_LINK = NO;
 			};
 			name = Debug;
 		};
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
 				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
@@ -479,7 +566,6 @@
 					"-falign-loops=16",
 					"-DOTX_DEBUG",
 				);
-				OTHER_LDFLAGS = "-lz";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 				USER_HEADER_SEARCH_PATHS = "source/binutils-2.17/include/ source/binutils-2.17/libiberty/";
@@ -509,7 +595,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "-falign-loops=16";
-				OTHER_LDFLAGS = "-lz";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 				USER_HEADER_SEARCH_PATHS = "source/binutils-2.17/include/ source/binutils-2.17/libiberty/";

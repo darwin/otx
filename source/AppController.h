@@ -1,108 +1,118 @@
 /*
-	AppController.h
+    AppController.h
 
-	This file is in the public domain.
+    This file is in the public domain.
 */
+
+#import <Cocoa/Cocoa.h>
 
 #import "DropBox.h"
 #import "ErrorReporter.h"
 #import "ProgressReporter.h"
 
-#define kOutputTextTag		100
-#define kOutputFileBaseTag	200
-#define kOutputFileExtTag	201
+#define kOutputTextTag      100
+#define kOutputFileBaseTag  200
+#define kOutputFileExtTag   201
 
-#define	kPrefsAnimationTime	0.10
-#define	kMainAnimationTime	0.15
+#define kPrefsAnimationTime 0.2
+#define kMainAnimationTime  0.15
 
-#define NSXViewAnimationCustomEffectsKey	@"NSXViewAnimationCustomEffectsKey"
+#define NSXViewAnimationCustomEffectsKey    @"NSXViewAnimationCustomEffectsKey"
 
-#define NSXViewAnimationSwapAtBeginningEffect				(1 << 0)
-#define NSXViewAnimationSwapAtEndEffect						(1 << 1)
-#define NSXViewAnimationSwapAtBeginningAndEndEffect			(1 << 2)
-#define NSXViewAnimationSwapOldKey							\
-	@"NSXViewAnimationSwapOldKey"							// NSView*
-#define NSXViewAnimationSwapNewKey							\
-	@"NSXViewAnimationSwapNewKey"							// NSView*
+#define NSXViewAnimationSwapAtBeginningEffect               (1 << 0)
+#define NSXViewAnimationSwapAtEndEffect                     (1 << 1)
+#define NSXViewAnimationSwapAtBeginningAndEndEffect         (1 << 2)
+#define NSXViewAnimationUpdateResizeMasksAtEndEffect        (1 << 10)
+#define NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect  (1 << 11)
+#define NSXViewAnimationPerformSelectorAtEndEffect          (1 << 12)
+#define NSXViewAnimationOpenFileWithAppAtEndEffect          (1 << 13)
 
-#define NSXViewAnimationUpdateResizeMasksAtEndEffect		(1 << 3)
-#define NSXViewAnimationResizeMasksArrayKey					\
-	@"NSXViewAnimationResizeMasksArrayKey"					// NSArray*(UInt32)
-#define NSXViewAnimationResizeViewsArrayKey					\
-	@"NSXViewAnimationResizeViewsArrayKey"					// NSArray*(UInt32)
+#define NSXViewAnimationSwapOldKey              \
+      @"NSXViewAnimationSwapOldKey"             // NSView*
+#define NSXViewAnimationSwapNewKey              \
+      @"NSXViewAnimationSwapNewKey"             // NSView*
 
-#define NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect	(1 << 4)
-#define NSXViewAnimationWindowMinSizeKey					\
-	@"NSXViewAnimationWindowMinSizeKey"						// NSValue*(NSSize*)
-#define NSXViewAnimationWindowMaxSizeKey					\
-	@"NSXViewAnimationWindowMaxSizeKey"						// NSValue*(NSSize*)
+#define NSXViewAnimationResizeMasksArrayKey     \
+      @"NSXViewAnimationResizeMasksArrayKey"    // NSArray* (UInt32)
+#define NSXViewAnimationResizeViewsArrayKey     \
+      @"NSXViewAnimationResizeViewsArrayKey"    // NSArray* (UInt32)
 
-#define NSXViewAnimationPerformSelectorAtEndEffect			(1 << 5)
-#define NSXViewAnimationSelectorKey							\
-	@"NSXViewAnimationSelectorKey"							// NSValue*(SEL)
-#define NSXViewAnimationPerformInNewThreadKey				\
-	@"NSXViewAnimationPerformInNewThreadKey"				// NSNumber*(BOOL)
+#define NSXViewAnimationWindowMinSizeKey        \
+      @"NSXViewAnimationWindowMinSizeKey"       // NSValue* (NSSize*)
+#define NSXViewAnimationWindowMaxSizeKey        \
+      @"NSXViewAnimationWindowMaxSizeKey"       // NSValue* (NSSize*)
 
-#define NSXViewAnimationOpenFileWithAppAtEndEffect			(1 << 6)
-#define NSXViewAnimationFilePathKey							\
-	@"NSXViewAnimationFilePathKey"							// NSString*
-#define NSXViewAnimationAppNameKey							\
-	@"NSXViewAnimationAppNameKey"							// NSString*
+#define NSXViewAnimationSelectorKey             \
+      @"NSXViewAnimationSelectorKey"            // NSValue* (SEL)
+#define NSXViewAnimationPerformInNewThreadKey   \
+      @"NSXViewAnimationPerformInNewThreadKey"  // NSNumber* (BOOL)
 
-#define OTXPrefsToolbarID			@"OTX Preferences Window Toolbar"
-#define PrefsGeneralToolbarItemID	@"General Toolbar Item"
-#define PrefsOutputToolbarItemID	@"Output Toolbar Item"
+#define NSXViewAnimationFilePathKey             \
+      @"NSXViewAnimationFilePathKey"            // NSString*
+#define NSXViewAnimationAppNameKey              \
+      @"NSXViewAnimationAppNameKey"             // NSString*
 
-#define PrefsToolbarItemsArray									\
-	[NSArray arrayWithObjects: PrefsGeneralToolbarItemID,		\
-	PrefsOutputToolbarItemID, nil]
+#define OTXPrefsToolbarID           @"OTX Preferences Window Toolbar"
+#define PrefsGeneralToolbarItemID   @"General Toolbar Item"
+#define PrefsOutputToolbarItemID    @"Output Toolbar Item"
+
+#define PrefsToolbarItemsArray                                  \
+    [NSArray arrayWithObjects: PrefsGeneralToolbarItemID,       \
+    PrefsOutputToolbarItemID, nil]
+
+typedef struct
+{
+    cpu_type_t      type;
+    cpu_subtype_t   subtype;
+}
+CPUID;
 
 // ============================================================================
 
 @interface AppController : NSObject<ProgressReporter, ErrorReporter>
 {
+@private
 // main window
-	IBOutlet NSWindow*				mMainWindow;
-	IBOutlet NSPopUpButton*			mArchPopup;
-	IBOutlet NSButton*				mThinButton;
-	IBOutlet NSButton*				mVerifyButton;
-	IBOutlet NSTextField*			mOutputText;
-	IBOutlet NSTextField*			mOutputLabelText;
-	IBOutlet NSTextField*			mPathText;
-	IBOutlet NSTextField*			mPathLabelText;
-	IBOutlet NSTextField*			mProgText;
-	IBOutlet NSTextField*			mTypeText;
-	IBOutlet NSTextField*			mTypeLabelText;
-	IBOutlet NSProgressIndicator*	mProgBar;
-	IBOutlet NSButton*				mSaveButton;
-	IBOutlet DropBox*				mDropBox;
-	IBOutlet NSView*				mMainView;
-	IBOutlet NSView*				mProgView;
+    IBOutlet NSWindow*              iMainWindow;
+    IBOutlet NSPopUpButton*         iArchPopup;
+    IBOutlet NSButton*              iThinButton;
+    IBOutlet NSButton*              iVerifyButton;
+    IBOutlet NSTextField*           iOutputText;
+    IBOutlet NSTextField*           iOutputLabelText;
+    IBOutlet NSTextField*           iPathText;
+    IBOutlet NSTextField*           iPathLabelText;
+    IBOutlet NSTextField*           iProgText;
+    IBOutlet NSTextField*           iTypeText;
+    IBOutlet NSTextField*           iTypeLabelText;
+    IBOutlet NSProgressIndicator*   iProgBar;
+    IBOutlet NSButton*              iSaveButton;
+    IBOutlet DropBox*               iDropBox;
+    IBOutlet NSView*                iMainView;
+    IBOutlet NSView*                iProgView;
 
 // prefs window
-	IBOutlet NSWindow*				mPrefsWindow;
-	IBOutlet NSView*				mPrefsGeneralView;
-	IBOutlet NSView*				mPrefsOutputView;
+    IBOutlet NSWindow*  iPrefsWindow;
+    IBOutlet NSView*    iPrefsGeneralView;
+    IBOutlet NSView*    iPrefsOutputView;
 
-@private
-	NSURL*						mOFile;
-	char*						mRAMFile;
-	cpu_type_t					mArchSelector;
-	UInt32						mArchMagic;
-	BOOL						mFileIsValid;
-	BOOL						mIgnoreArch;
-	BOOL						mExeIsFat;
-	BOOL						mProcessing;
-	NSString*					mExeName;
-	NSString*					mOutputFileLabel;
-	NSString*					mOutputFileName;
-	NSString*					mOutputFilePath;
-	NSView**					mPrefsViews;
-	UInt32						mPrefsCurrentViewIndex;
-	host_basic_info_data_t		mHostInfo;
-	NSColor*					mPolishedLightColor;
-	NSColor*					mPolishedDarkColor;
-	NSShadow*					mTextShadow;
+    NSURL*                  iObjectFile;
+    cpu_type_t              iSelectedArchCPUType;
+    cpu_subtype_t           iSelectedArchCPUSubType;
+    CPUID                   iCPUIDs[4];     // refcons for iArchPopup
+    UInt32                  iFileArchMagic;
+    BOOL                    iFileIsValid;
+    BOOL                    iIgnoreArch;
+    BOOL                    iExeIsFat;
+    BOOL                    iProcessing;
+    NSString*               iExeName;
+    NSString*               iOutputFileLabel;
+    NSString*               iOutputFileName;
+    NSString*               iOutputFilePath;
+    NSView**                iPrefsViews;
+    UInt32                  iPrefsCurrentViewIndex;
+    host_basic_info_data_t  iHostInfo;
+    NSShadow*               iTextShadow;
+    NSTimer*                iIndeterminateProgBarMainThreadTimer;
 }
 
 // main window
@@ -113,28 +123,33 @@
 - (IBAction)openExe: (id)sender;
 - (IBAction)syncOutputText: (id)sender;
 - (IBAction)attemptToProcessFile: (id)sender;
+- (IBAction)cancel: (id)sender;
 - (void)processFile;
 - (void)continueProcessingFile;
 - (void)adjustInterfaceForMultiThread;
 - (void)adjustInterfaceForSingleThread;
-- (void)processingThreadDidFinish: (NSNumber*)successfully;
+- (void)processingThreadDidFinish: (NSString*)result;
+- (void)nudgeIndeterminateProgBar: (NSTimer*)timer;
+
 - (IBAction)thinFile: (id)sender;
 - (IBAction)verifyNops: (id)sender;
+
+- (void)refreshMainWindow;
 - (void)syncSaveButton;
-- (void)syncDescriptionText;
+
 - (void)newPackageFile: (NSURL*)inPackageFile;
 - (void)newOFile: (NSURL*)inOFile
-	   needsPath: (BOOL)inNeedsPath;
+       needsPath: (BOOL)inNeedsPath;
 - (void)nopAlertDidEnd: (NSAlert*)alert
-			returnCode: (int)returnCode
-		   contextInfo: (void*)contextInfo;
+            returnCode: (int)returnCode
+           contextInfo: (void*)contextInfo;
 - (void)showProgView;
 - (void)hideProgView: (BOOL)inAnimate
-			openFile: (BOOL)inOpenFile;
+            openFile: (BOOL)inOpenFile;
 
 - (void)dupeFileAlertDidEnd: (NSAlert*)alert
-				 returnCode: (int)returnCode
-				contextInfo: (void*)contextInfo;
+                 returnCode: (int)returnCode
+                contextInfo: (void*)contextInfo;
 
 // prefs window
 - (void)setupPrefsWindow;

@@ -1,23 +1,25 @@
 /*
-	Searchers.h
+    Searchers.h
 
-	A category on ExeProcessor that contains the various binary search
-	methods.
+    A category on Exe32Processor that contains the various binary search
+    methods.
 
-	This file is in the public domain.
+    This file is in the public domain.
 */
 
-#import "ExeProcessor.h"
+#import <Cocoa/Cocoa.h>
 
-@interface ExeProcessor(Searchers)
+#import "Exe32Processor.h"
+
+@interface Exe32Processor(Searchers)
 
 - (BOOL)findSymbolByAddress: (UInt32)inAddress;
 - (BOOL)findClassMethod: (MethodInfo**)outMI
-			  byAddress: (UInt32)inAddress;
+              byAddress: (UInt32)inAddress;
 - (BOOL)findCatMethod: (MethodInfo**)outMI
-			byAddress: (UInt32)inAddress;
+            byAddress: (UInt32)inAddress;
 - (BOOL)findIvar: (objc_ivar*)outIvar
-		 inClass: (objc_class*)inClass
-	  withOffset: (UInt32)inOffset;
+         inClass: (objc_class*)inClass
+      withOffset: (UInt32)inOffset;
 
 @end

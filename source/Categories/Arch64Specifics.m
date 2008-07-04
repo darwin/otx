@@ -1,7 +1,7 @@
 /*
-    ArchSpecifics.m
+    Arch64Specifics.m
 
-    A category on Exe32Processor that contains most of the
+    A category on Exe64Processor that contains most of the
     architecture-specific methods.
 
     This file is in the public domain.
@@ -9,9 +9,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "ArchSpecifics.h"
+#import "Arch64Specifics.h"
 
-@implementation Exe32Processor(ArchSpecifics)
+@implementation Exe64Processor(Arch64Specifics)
 
 //  gatherFuncInfos
 // ----------------------------------------------------------------------------
@@ -22,13 +22,13 @@
 //  postProcessCodeLine:
 // ----------------------------------------------------------------------------
 
-- (void)postProcessCodeLine: (Line**)ioLine
+- (void)postProcessCodeLine: (Line64**)ioLine
 {}
 
 //  lineIsFunction:
 // ----------------------------------------------------------------------------
 
-- (BOOL)lineIsFunction: (Line*)inLine
+- (BOOL)lineIsFunction: (Line64*)inLine
 {
     return NO;
 }
@@ -44,20 +44,20 @@
 //  codeFromLine:
 // ----------------------------------------------------------------------------
 
-- (void)codeFromLine: (Line*)inLine
+- (void)codeFromLine: (Line64*)inLine
 {}
 
 //  checkThunk:
 // ----------------------------------------------------------------------------
 
-- (void)checkThunk:(Line*)inLine
+- (void)checkThunk:(Line64*)inLine
 {}
 
 //  getThunkInfo:forLine:
 // ----------------------------------------------------------------------------
 
 - (BOOL)getThunkInfo: (ThunkInfo*)outInfo
-             forLine: (Line*)inLine
+             forLine: (Line64*)inLine
 {
     return NO;
 }
@@ -66,7 +66,7 @@
 //  commentForLine:
 // ----------------------------------------------------------------------------
 
-- (void)commentForLine: (Line*)inLine
+- (void)commentForLine: (Line64*)inLine
 {}
 
 //  commentForSystemCall
@@ -79,26 +79,26 @@
 // ----------------------------------------------------------------------------
 
 - (void)commentForMsgSend: (char*)ioComment
-                 fromLine: (Line*)inLine
+                 fromLine: (Line64*)inLine
 {}
 
 #pragma mark -
 //  resetRegisters:
 // ----------------------------------------------------------------------------
 
-- (void)resetRegisters: (Line*)inLine
+- (void)resetRegisters: (Line64*)inLine
 {}
 
 //  updateRegisters:
 // ----------------------------------------------------------------------------
 
-- (void)updateRegisters: (Line*)inLine
+- (void)updateRegisters: (Line64*)inLine
 {}
 
 //  restoreRegisters:
 // ----------------------------------------------------------------------------
 
-- (BOOL)restoreRegisters: (Line*)ioLine
+- (BOOL)restoreRegisters: (Line64*)ioLine
 {
     return NO;
 }

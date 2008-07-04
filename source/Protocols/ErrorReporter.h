@@ -1,12 +1,14 @@
 /*
-	ErrorReporter.h
+    ErrorReporter.h
 
-	This file is in the public domain.
+    This file is in the public domain.
 */
+
+#import <Cocoa/Cocoa.h>
 
 @protocol ErrorReporter
 
 - (void)reportError: (NSString*)inMessageText
-		 suggestion: (NSString*)inInformativeText;
+         suggestion: (NSString*)inInformativeText;
 
 @end

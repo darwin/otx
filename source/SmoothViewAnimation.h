@@ -1,17 +1,15 @@
 /*
-	SmoothViewAnimation.h
+    SmoothViewAnimation.h
 
-	This file is in the public domain.
+    This file is in the public domain.
 */
 
 #import <Cocoa/Cocoa.h>
 
-// ============================================================================
-
 @interface SmoothViewAnimation : NSViewAnimation
 {
 @private
-	NSWindow*	mWindow;
+    NSWindow*   iWindow;
 }
 
 @end
