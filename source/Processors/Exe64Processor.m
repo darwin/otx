@@ -1166,7 +1166,7 @@
         strncpy((*ioLine)->chars, theFinalCString, (*ioLine)->length + 1);
     }
 
-    // The test above can fail even if mEnteringNewBlock was true, so we
+    // The test above can fail even if mEnteringNewBlock was YES, so we
     // should reset it here instead.
     iEnteringNewBlock = NO;
 

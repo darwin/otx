@@ -111,14 +111,14 @@
 {
     NSOpenPanel*    thePanel    = [NSOpenPanel openPanel];
 
-    [thePanel setTreatsFilePackagesAsDirectories: true];
+    [thePanel setTreatsFilePackagesAsDirectories: YES];
 
     if ([thePanel runModalForTypes: nil] != NSFileHandlingPanelOKButton)
         return;
 
     NSString*   theName = [[thePanel filenames] objectAtIndex: 0];
 
-    [self newOFile: [NSURL fileURLWithPath: theName] needsPath: true];
+    [self newOFile: [NSURL fileURLWithPath: theName] needsPath: YES];
 }
 
 //  newPackageFile:
@@ -153,7 +153,7 @@
         return;
     }
 
-    [self newOFile: [NSURL fileURLWithPath: theExePath] needsPath: false];
+    [self newOFile: [NSURL fileURLWithPath: theExePath] needsPath: NO];
 }
 
 //  newOFile:needsPath:
@@ -218,7 +218,7 @@
 
         [iMainWindow setContentMinSize: minSize];
         [iMainWindow setFrame: curFrame
-                      display: true];
+                      display: YES];
         [iMainWindow setContentMaxSize: maxSize];
 
         // Grow the prog view for the gradient.
@@ -227,15 +227,15 @@
 
         curFrame.size.height += CONTENT_BORDER_MARGIN_BOTTOM;
         [iMainWindow setFrame: curFrame
-                      display: true];
+                      display: YES];
 
         [iMainView setAutoresizingMask: origMainViewMask];
         [iProgView setAutoresizingMask: origProgViewMask];
 
         // Set up smaller gradients.
-        [iMainWindow setAutorecalculatesContentBorderThickness: false
+        [iMainWindow setAutorecalculatesContentBorderThickness: NO
                                                        forEdge: NSMaxYEdge];
-        [iMainWindow setAutorecalculatesContentBorderThickness: false
+        [iMainWindow setAutorecalculatesContentBorderThickness: NO
                                                        forEdge: NSMinYEdge];
         [iMainWindow setContentBorderThickness: CONTENT_BORDER_SIZE_TOP
                                        forEdge: NSMaxYEdge];
@@ -266,7 +266,7 @@
     // At this point, the window is still brushed metal. We can get away with
     // not setting the background image here because hiding the prog view
     // resizes the window, which results in our delegate saving the day.
-    [self hideProgView: false openFile: false];
+    [self hideProgView: NO openFile: NO];
 
     [iMainWindow setFrameAutosaveName: [iMainWindow title]];
 //    [iArchPopup selectItemWithTag: iSelectedArchCPUType];
@@ -328,16 +328,16 @@
     switch (iSelectedArchCPUType)
     {
         case CPU_TYPE_POWERPC:
-            [iVerifyButton setEnabled: false];
+            [iVerifyButton setEnabled: NO];
             break;
         case CPU_TYPE_I386:
-            [iVerifyButton setEnabled: true];
+            [iVerifyButton setEnabled: YES];
             break;
         case CPU_TYPE_POWERPC64:
-            [iVerifyButton setEnabled: false];
+            [iVerifyButton setEnabled: NO];
             break;
         case CPU_TYPE_X86_64:
-            [iVerifyButton setEnabled: true];
+            [iVerifyButton setEnabled: YES];
             break;
 
         default:
@@ -386,7 +386,7 @@
     {
         NSSavePanel*    thePanel    = [NSSavePanel savePanel];
 
-        [thePanel setTreatsFilePackagesAsDirectories: true];
+        [thePanel setTreatsFilePackagesAsDirectories: YES];
 
         if ([thePanel runModalForDirectory: nil
             file: iOutputFileName]  != NSFileHandlingPanelOKButton)
@@ -441,7 +441,7 @@
 - (void)processFile
 {
     NSDictionary*   progDict    = [[NSDictionary alloc] initWithObjectsAndKeys:
-        [NSNumber numberWithBool: true], PRIndeterminateKey,
+        [NSNumber numberWithBool: YES], PRIndeterminateKey,
         @"Loading executable", PRDescriptionKey,
         nil];
 
@@ -455,7 +455,7 @@
         return;
     }
 
-    iProcessing = true;
+    iProcessing = YES;
     [self adjustInterfaceForMultiThread];
     [self showProgView];
 }
@@ -530,7 +530,7 @@
     {
         [self performSelectorOnMainThread: @selector(processingThreadDidFinish:)
                                withObject: @"Unable to create processor."
-                            waitUntilDone: false];
+                            waitUntilDone: NO];
         [pool release];
         return;
     }
@@ -542,7 +542,7 @@
 
         [self performSelectorOnMainThread: @selector(processingThreadDidFinish:)
                                withObject: resultString
-                            waitUntilDone: false];
+                            waitUntilDone: NO];
         [theProcessor release];
         [pool release];
         return;
@@ -550,7 +550,7 @@
 
     [self performSelectorOnMainThread: @selector(processingThreadDidFinish:)
                            withObject: PROCESS_SUCCESS
-                        waitUntilDone: false];
+                        waitUntilDone: NO];
     [theProcessor release];
     [pool release];
 }
@@ -560,20 +560,20 @@
 
 - (void)processingThreadDidFinish: (NSString*)result
 {
-    iProcessing = false;
+    iProcessing = NO;
     [iIndeterminateProgBarMainThreadTimer invalidate];
     [iIndeterminateProgBarMainThreadTimer release];
     iIndeterminateProgBarMainThreadTimer = nil;
 
     if ([result isEqualTo: PROCESS_SUCCESS])
     {
-        [self hideProgView: true openFile: (gCancel == YES) ? NO :
+        [self hideProgView: YES openFile: (gCancel == YES) ? NO :
             [[NSUserDefaults standardUserDefaults]
             boolForKey: OpenOutputFileKey]];
     }
     else
     {
-        [self hideProgView: true openFile: false];
+        [self hideProgView: YES openFile: NO];
         [self reportError: @"Error processing file."
                suggestion: result];
     }
@@ -590,12 +590,12 @@
 {
     [self syncSaveButton];
 
-    [iArchPopup setEnabled: false];
-    [iThinButton setEnabled: false];
-    [iVerifyButton setEnabled: false];
-    [iOutputText setEnabled: false];
+    [iArchPopup setEnabled: NO];
+    [iThinButton setEnabled: NO];
+    [iVerifyButton setEnabled: NO];
+    [iOutputText setEnabled: NO];
     [[iMainWindow standardWindowButton: NSWindowCloseButton]
-        setEnabled: false];
+        setEnabled: NO];
 
     [iMainWindow display];
 }
@@ -611,9 +611,9 @@
     [iThinButton setEnabled: iExeIsFat];
     [iVerifyButton setEnabled: (iSelectedArchCPUType == CPU_TYPE_I386) ||
                                (iSelectedArchCPUType == CPU_TYPE_X86_64)];
-    [iOutputText setEnabled: true];
+    [iOutputText setEnabled: YES];
     [[iMainWindow standardWindowButton: NSWindowCloseButton]
-        setEnabled: true];
+        setEnabled: YES];
 
     [iMainWindow display];
 }
@@ -688,7 +688,7 @@
     [newWindowItem setObject:
         [NSValue value: &continueSel withObjCType: @encode(SEL)]
         forKey: NSXViewAnimationSelectorKey];
-    [newWindowItem setObject: [NSNumber numberWithBool: true]
+    [newWindowItem setObject: [NSNumber numberWithBool: YES]
         forKey: NSXViewAnimationPerformInNewThreadKey];
 
     SmoothViewAnimation*    theAnim = [[SmoothViewAnimation alloc]
@@ -796,7 +796,7 @@
     }
     else
     {
-        [iMainWindow setFrame: targetWindowFrame display: false];
+        [iMainWindow setFrame: targetWindowFrame display: NO];
         [iMainWindow setContentMaxSize: maxSize];
         [iMainView setAutoresizingMask: origMainViewMask];
         [iProgView setAutoresizingMask: origProgViewMask];
@@ -838,7 +838,7 @@
         NSString*       theFileName =
             [iExeName stringByAppendingString: archExt];
 
-        [thePanel setTreatsFilePackagesAsDirectories: true];
+        [thePanel setTreatsFilePackagesAsDirectories: YES];
 
         if ([thePanel runModalForDirectory: nil
             file: theFileName]  != NSFileHandlingPanelOKButton)
@@ -989,8 +989,8 @@
 
             if (fixedFile)
             {
-                iIgnoreArch = true;
-                [self newOFile: fixedFile needsPath: true];
+                iIgnoreArch = YES;
+                [self newOFile: fixedFile needsPath: YES];
             }
             else
                 fprintf(stderr, "otx: unable to fix nops\n");
@@ -1024,7 +1024,7 @@
         return iFileIsValid;
     }
 
-    return true;
+    return YES;
 }
 
 //  dupeFileAlertDidEnd:returnCode:contextInfo:
@@ -1093,7 +1093,7 @@
             return;
     }
 
-    iFileIsValid = true;
+    iFileIsValid = YES;
     [iPathText setStringValue: [iObjectFile path]];
     [self applyShadowToText: iPathText];
 
@@ -1162,7 +1162,7 @@
         iSelectedArchCPUSubType = mh.cpusubtype;
     }
 
-    BOOL shouldEnableArch = false;
+    BOOL shouldEnableArch = NO;
 
     if (!theFileH)
     {
@@ -1174,7 +1174,7 @@
     // If we just loaded a deobfuscated copy, skip the rest.
     if (iIgnoreArch)
     {
-        iIgnoreArch = false;
+        iIgnoreArch = NO;
         return;
     }
 
@@ -1187,7 +1187,7 @@
     NSString*   tempString;
     NSString*   menuItemTitleToSelect   = NULL;
 
-    iExeIsFat   = false;
+    iExeIsFat   = NO;
 
     switch (mh.magic)
     {
@@ -1214,9 +1214,9 @@
     {
         case MH_MAGIC:
             if (iHostInfo.cpu_type == CPU_TYPE_POWERPC)
-                [iVerifyButton setEnabled: false];
+                [iVerifyButton setEnabled: NO];
             else if (iHostInfo.cpu_type == CPU_TYPE_I386)
-                [iVerifyButton setEnabled: true];
+                [iVerifyButton setEnabled: YES];
 
             menuItemTitleToSelect = tempString;
 
@@ -1224,9 +1224,9 @@
 
         case MH_CIGAM:
             if (iHostInfo.cpu_type == CPU_TYPE_POWERPC)
-                [iVerifyButton setEnabled: true];
+                [iVerifyButton setEnabled: YES];
             else if (iHostInfo.cpu_type == CPU_TYPE_I386)
-                [iVerifyButton setEnabled: false];
+                [iVerifyButton setEnabled: NO];
 
             menuItemTitleToSelect = tempString;
 
@@ -1234,9 +1234,9 @@
 
         case MH_MAGIC_64:
             if (iHostInfo.cpu_type == CPU_TYPE_POWERPC)
-                [iVerifyButton setEnabled: false];
+                [iVerifyButton setEnabled: NO];
             else if (iHostInfo.cpu_type == CPU_TYPE_I386)
-                [iVerifyButton setEnabled: true];
+                [iVerifyButton setEnabled: YES];
 
             menuItemTitleToSelect = tempString;
 
@@ -1244,9 +1244,9 @@
 
         case MH_CIGAM_64:
             if (iHostInfo.cpu_type == CPU_TYPE_POWERPC)
-                [iVerifyButton setEnabled: true];
+                [iVerifyButton setEnabled: YES];
             else if (iHostInfo.cpu_type == CPU_TYPE_I386)
-                [iVerifyButton setEnabled: false];
+                [iVerifyButton setEnabled: NO];
 
             menuItemTitleToSelect = tempString;
 
@@ -1281,18 +1281,18 @@
             iOutputFileLabel = [NSString stringWithFormat: @"_%@", faName];
             [iVerifyButton setEnabled: (iHostInfo.cpu_type == CPU_TYPE_I386)];
             menuItemTitleToSelect   = faName;
-            iExeIsFat               = true;
-            shouldEnableArch        = true;
+            iExeIsFat               = YES;
+            shouldEnableArch        = YES;
             tempString              = @"Fat";
 
             break;
         }
 
         default:
-            iFileIsValid    = false;
+            iFileIsValid    = NO;
             iSelectedArchCPUType    = 0;
             tempString      = @"Not a Mach-O file";
-            [iVerifyButton setEnabled: false];
+            [iVerifyButton setEnabled: NO];
             break;
     }
 
@@ -1368,7 +1368,7 @@
     [toolbar setDelegate: self];
 
     [iPrefsWindow setToolbar: toolbar];
-    [iPrefsWindow setShowsToolbarButton: false];
+    [iPrefsWindow setShowsToolbarButton: NO];
 
     // Load views.
     UInt32  numViews    = [[toolbar items] count];
@@ -1386,7 +1386,7 @@
     // first asking the object something, I always think there's an instance
     // method missing.
     [iPrefsWindow setFrame: [iPrefsWindow frameRectForContentRect:
-        [iPrefsViews[iPrefsCurrentViewIndex] frame]] display: false];
+        [iPrefsViews[iPrefsCurrentViewIndex] frame]] display: NO];
 
     for (i = 0; i < numViews; i++)
         [[iPrefsWindow contentView] addSubview: iPrefsViews[i]];
@@ -1472,7 +1472,7 @@
     gCancel = YES;
 
     NSDictionary*   progDict    = [[NSDictionary alloc] initWithObjectsAndKeys:
-        [NSNumber numberWithBool: true], PRIndeterminateKey,
+        [NSNumber numberWithBool: YES], PRIndeterminateKey,
         @"Cancelling", PRDescriptionKey,
         nil];
 
@@ -1545,7 +1545,7 @@
         location: NSMakePoint(0, 0) modifierFlags: 0 timestamp: 0
         windowNumber: 0 context: nil subtype: 0 data1: 0 data2: 0];
 
-    [[NSApplication sharedApplication] postEvent: pingUI atStart: false];
+    [[NSApplication sharedApplication] postEvent: pingUI atStart: NO];
 }
 
 #pragma mark -
@@ -1557,7 +1557,7 @@
               dragDidEnter: (id <NSDraggingInfo>)inItem
 {
     if (inDropBox != iDropBox || iProcessing)
-        return false;
+        return NSDragOperationNone;
 
     NSPasteboard*   pasteBoard  = [inItem draggingPasteboard];
 
@@ -1648,19 +1648,19 @@
  didReceiveItem: (id<NSDraggingInfo>)inItem
 {
     if (inDropBox != iDropBox || iProcessing)
-        return false;
+        return NO;
 
     NSURL*  theURL  = [NSURL URLFromPasteboard: [inItem draggingPasteboard]];
 
     if (!theURL)
-        return false;
+        return NO;
 
     if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: [theURL path]])
         [self newPackageFile: theURL];
     else
-        [self newOFile: theURL needsPath: true];
+        [self newOFile: theURL needsPath: YES];
 
-    return true;
+    return YES;
 }
 
 #pragma mark -
@@ -1669,24 +1669,24 @@
 // ----------------------------------------------------------------------------
 //  We're only hooking this to perform custom effects with NSViewAnimations,
 //  not to determine whether to start the animation. For this reason, we
-//  always return true, even if a sanity check fails.
+//  always return YES, even if a sanity check fails.
 
 - (BOOL)animationShouldStart: (NSAnimation*)animation
 {
     if (![animation isKindOfClass: [NSViewAnimation class]])
-        return true;
+        return YES;
 
     NSArray*    animatedViews   = [(NSViewAnimation*)animation viewAnimations];
 
     if (!animatedViews)
-        return true;
+        return YES;
 
     NSWindow*   animatingWindow = [[animatedViews objectAtIndex: 0]
         objectForKey: NSViewAnimationTargetKey];
 
     if (animatingWindow != iMainWindow  &&
         animatingWindow != iPrefsWindow)
-        return true;
+        return YES;
 
     UInt32  i;
     UInt32  numAnimations   = [animatedViews count];
@@ -1715,10 +1715,10 @@
                 objectForKey: NSXViewAnimationSwapNewKey];
 
             if (oldView)
-                [oldView setHidden: true];
+                [oldView setHidden: YES];
 
             if (newView)
-                [newView setHidden: false];
+                [newView setHidden: NO];
         }
         else if (effects & NSXViewAnimationSwapAtBeginningAndEndEffect)
         {   // Hide a view.
@@ -1726,11 +1726,11 @@
                 objectForKey: NSXViewAnimationSwapOldKey];
 
             if (oldView)
-                [oldView setHidden: true];
+                [oldView setHidden: YES];
         }
     }
 
-    return true;
+    return YES;
 }
 
 //  animationDidEnd:
@@ -1780,10 +1780,10 @@
                 objectForKey: NSXViewAnimationSwapNewKey];
 
             if (oldView)
-                [oldView setHidden: true];
+                [oldView setHidden: YES];
 
             if (newView)
-                [newView setHidden: false];
+                [newView setHidden: NO];
         }
         else if (effects & NSXViewAnimationSwapAtBeginningAndEndEffect)
         {   // Show a view.
@@ -1791,7 +1791,7 @@
                 objectForKey: NSXViewAnimationSwapNewKey];
 
             if (newView)
-                [newView setHidden: false];
+                [newView setHidden: NO];
         }
 
         // Adjust multiple views' resize masks.
@@ -1932,9 +1932,9 @@
     if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: filename])
         [self newPackageFile: [NSURL fileURLWithPath: filename]];
     else
-        [self newOFile: [NSURL fileURLWithPath: filename] needsPath: true];
+        [self newOFile: [NSURL fileURLWithPath: filename] needsPath: YES];
 
-    return true;
+    return YES;
 }
 
 //  applicationShouldTerminateAfterLastWindowClosed:
@@ -1942,7 +1942,7 @@
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed: (NSApplication*)inApp
 {
-    return true;
+    return YES;
 }
 
 #pragma mark -
@@ -2031,7 +2031,7 @@ willBeInsertedIntoToolbar: (BOOL)willBeInserted
 
 - (BOOL)validateToolbarItem: (NSToolbarItem*)toolbarItem
 {
-    return true;
+    return YES;
 }
 
 #pragma mark -
