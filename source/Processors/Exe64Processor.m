@@ -204,7 +204,7 @@
         nil];
 
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: YES];
+        withObject: progDict waitUntilDone: NO];
     [progDict release];
 
     [self populateLineLists];
@@ -218,7 +218,7 @@
         nil];
 
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: YES];
+        withObject: progDict waitUntilDone: NO];
     [progDict release];
 
     // Gather info about lines while they're virgin.
@@ -256,7 +256,7 @@
         nil];
 
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: YES];
+        withObject: progDict waitUntilDone: NO];
     [progDict release];
 
     Line64* theLine = iPlainLineListHead;
@@ -275,7 +275,7 @@
                 nil];
 
             [iController performSelectorOnMainThread: @selector(reportProgress:)
-                withObject: progDict waitUntilDone: YES];
+                withObject: progDict waitUntilDone: NO];
             [progDict release];
         }
 
@@ -303,7 +303,7 @@
         nil];
 
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: YES];
+        withObject: progDict waitUntilDone: NO];
     [progDict release];
 
     // Create output file.
@@ -324,7 +324,7 @@
         [NSNumber numberWithBool: YES], PRCompleteKey,
         nil];
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: YES];
+        withObject: progDict waitUntilDone: NO];
     [progDict release];
 
     return YES;
@@ -467,12 +467,12 @@
 
     while (theLine)
     {
-        if (!(progCounter % (PROGRESS_FREQ * 3)))
+        if (!(progCounter % (PROGRESS_FREQ * 5)))
         {
             if (gCancel == YES)
                 return;
 
-            [NSThread sleepForTimeInterval: 0.0];
+//            [NSThread sleepForTimeInterval: 0.0];
         }
 
         if (LineIsCode(theLine->chars))

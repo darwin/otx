@@ -133,7 +133,7 @@ enum {
 #define ANON_FUNC_BASE_LENGTH   4
 
 // Refresh progress bar after processing this many lines.
-#define PROGRESS_FREQ           2500
+#define PROGRESS_FREQ           4000
 //#define CLI_PROGRESS_FREQ     5000    i predict we will want this
 
 // Toggle these to print symbol descriptions and blocks to standard out.

@@ -1717,7 +1717,7 @@ extern BOOL gCancel;
             if (gCancel == YES)
                 return;
 
-            [NSThread sleepForTimeInterval: 0.0];
+//            [NSThread sleepForTimeInterval: 0.0];
         }
 
         if (!theLine->info.isCode)
