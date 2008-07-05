@@ -10,7 +10,7 @@
 // Shared argument types
 #define GetDescriptionArgTypes          (id, SEL, char*, const char*)
 #define LineIsCodeArgTypes              (id, SEL, const char*)
-#define CodeIsBlockJumpArgTypes         (id, SEL, char*)
+#define CodeIsBlockJumpArgTypes         (id, SEL, UInt8*)
 #define AddressFromLineArgTypes         (id, SEL, const char*)
 #define CommentForSystemCallArgTypes    (id, SEL)
 

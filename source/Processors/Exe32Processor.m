@@ -497,10 +497,11 @@
 
             if (theLine->alt)
             {
-                theLine->alt->info.isCode   = theLine->info.isCode;
-                theLine->alt->info.address  = theLine->info.address;
-                strncpy(theLine->alt->info.code, theLine->info.code,
-                    strlen(theLine->info.code) + 1);
+                theLine->alt->info.isCode = theLine->info.isCode;
+                theLine->alt->info.address = theLine->info.address;
+                theLine->alt->info.codeLength = theLine->info.codeLength;
+                memcpy(theLine->alt->info.code, theLine->info.code,
+                    sizeof(theLine->info.code));
             }
 
             CheckThunk(theLine);
@@ -709,16 +710,28 @@
         theOrigCommentCString[origCommentLength - 1]    = 0;
     }
 
-    char*   theCodeCString  = (*ioLine)->info.code;
-    SInt16  i               =
-        iFieldWidths.instruction - strlen(theCodeCString);
+    char theCodeCString[32] = {0};
+    UInt8* inBuffer = (*ioLine)->info.code;
+    char codeFormatString[MAX_FORMAT_LENGTH] = {0};
+    SInt16 i;
 
-    mnemSpaces[i - 1]   = 0;
+    for (i = 0; i < (*ioLine)->info.codeLength; i++ )
+        strncat(codeFormatString, "%02x", 4);
+
+    snprintf(theCodeCString, 31, codeFormatString,
+        inBuffer[0], inBuffer[1], inBuffer[2], inBuffer[3],
+        inBuffer[4], inBuffer[5], inBuffer[6], inBuffer[7],
+        inBuffer[8], inBuffer[9], inBuffer[10], inBuffer[11],
+        inBuffer[12], inBuffer[13], inBuffer[14]);
+
+    i = iFieldWidths.instruction - strlen(theCodeCString);
+
+    mnemSpaces[i - 1] = 0;
 
     for (; i > 1; i--)
-        mnemSpaces[i - 2]   = 0x20;
+        mnemSpaces[i - 2] = 0x20;
 
-    i   = iFieldWidths.mnemonic - strlen(theMnemonicCString);
+    i = iFieldWidths.mnemonic - strlen(theMnemonicCString);
 
     opSpaces[i - 1] = 0;
 

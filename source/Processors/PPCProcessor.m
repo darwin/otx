@@ -85,8 +85,11 @@ extern BOOL gCancel;
         *(UInt32*)((char*)iMachHeaderPtr + (inLine->info.address + iTextOffset)) :
         *(UInt32*)((char*)iMachHeaderPtr + (inLine->info.address - iTextOffset));
 
-    theInstruction  = OSSwapBigToHostInt32(theInstruction);
-    snprintf(inLine->info.code, 10, "%08x", theInstruction);
+    inLine->info.codeLength = 4;
+
+    UInt32* intPtr = (UInt32*)&inLine->info.code[0];
+
+    *intPtr = theInstruction;
 }
 
 #pragma mark -
@@ -95,7 +98,10 @@ extern BOOL gCancel;
 
 - (void)commentForLine: (Line*)inLine;
 {
-    UInt32  theCode     = strtoul(inLine->info.code, nil, 16);
+    UInt32 theCode = *(UInt32*)inLine->info.code;
+
+    theCode = OSSwapBigToHostInt32(theCode);
+
     char*   theDummyPtr = nil;
     char*   theSymPtr   = nil;
     UInt8   opcode      = PO(theCode);
@@ -723,8 +729,10 @@ extern BOOL gCancel;
 - (char*)selectorForMsgSend: (char*)outComment
                    fromLine: (Line*)inLine
 {
-    char*   selString   = nil;
-    UInt32  theCode     = strtoul(inLine->info.code, nil, 16);
+    char* selString = nil;
+    UInt32 theCode = *(UInt32*)inLine->info.code;
+
+    theCode = OSSwapBigToHostInt32(theCode);
 
     // Bail if this is not an eligible branch.
     if (PO(theCode) != 0x12)    // b, bl, ba, bla
@@ -955,12 +963,13 @@ extern BOOL gCancel;
         !(*ioLine)->alt || !(*ioLine)->alt->chars)
         return;
 
-    UInt32  theCode = strtoul(
-        (const char*)(*ioLine)->info.code, nil, 16);
+    UInt32 theCode = *(UInt32*)(*ioLine)->info.code;
+
+    theCode = OSSwapBigToHostInt32(theCode);
 
     if (PO(theCode) == 18)  // b, ba, bl, bla
     {
-        Line*   theNewLine  = malloc(sizeof(Line));
+        Line* theNewLine  = malloc(sizeof(Line));
 
         memcpy(theNewLine, (*ioLine)->alt, sizeof(Line));
         theNewLine->chars   = malloc(theNewLine->length + 1);
@@ -1060,9 +1069,10 @@ extern BOOL gCancel;
         return;
     }
 
-    UInt32  theNewValue;
-    UInt32  theCode     = strtoul(
-        (const char*)inLine->info.code, nil, 16);
+    UInt32 theNewValue;
+    UInt32 theCode = *(UInt32*)inLine->info.code;
+
+    theCode = OSSwapBigToHostInt32(theCode);
 
     if (IS_BRANCH_LINK(theCode))
     {
@@ -1600,9 +1610,10 @@ extern BOOL gCancel;
     if (inLine->prev && !inLine->prev->info.isCode)
         return YES;
 
-    BOOL    isFunction  = NO;
-    UInt32  theCode     = strtoul(
-        (const char*)&inLine->info.code, nil, 16);
+    BOOL isFunction = NO;
+    UInt32 theCode = *(UInt32*)inLine->info.code;
+
+    theCode = OSSwapBigToHostInt32(theCode);
 
     if ((theCode & 0xfc1fffff) == 0x7c0802a6)   // mflr to any reg
     {   // Allow for late mflr
@@ -1617,8 +1628,8 @@ extern BOOL gCancel;
             if (thePrevLine->info.isFunction)
                 return NO;
 
-            theCode = strtoul(
-                (const char*)&thePrevLine->info.code, nil, 16);
+            theCode = *(UInt32*)thePrevLine->info.code;
+            theCode = OSSwapBigToHostInt32(theCode);
 
             if ((theCode & 0xfc0007ff) == 0x7c000008)   // trap
             {
@@ -1661,8 +1672,8 @@ extern BOOL gCancel;
                     continue;   // not code, keep looking
                 else if (!thePrevLine->info.isFunction)
                 {               // not yet recognized, try it
-                    theCode = strtoul(
-                        (const char*)&thePrevLine->info.code, nil, 16);
+                    theCode = *(UInt32*)thePrevLine->info.code;
+                    theCode = OSSwapBigToHostInt32(theCode);
 
                     if (theCode == 0x7fe00008   ||  // ignore traps
                         theCode == 0x60000000   ||  // ignore nops
@@ -1693,9 +1704,9 @@ extern BOOL gCancel;
 //  codeIsBlockJump:
 // ----------------------------------------------------------------------------
 
-- (BOOL)codeIsBlockJump: (char*)inCode
+- (BOOL)codeIsBlockJump: (UInt8*)inCode
 {
-    UInt32  theCode = strtoul(inCode, nil, 16);
+    UInt32 theCode = *(UInt32*)inCode;
 
     return IS_BLOCK_BRANCH(theCode);
 }
@@ -1726,7 +1737,8 @@ extern BOOL gCancel;
             continue;
         }
 
-        theCode = strtoul(theLine->info.code, nil, 16);
+        theCode = *(UInt32*)theLine->info.code;
+        theCode = OSSwapBigToHostInt32(theCode);
 
         if (theLine->info.isFunction)
         {
@@ -1795,7 +1807,8 @@ extern BOOL gCancel;
 
                             while (nextLine)
                             {
-                                tempCode = strtoul(nextLine->info.code, nil, 16);
+                                tempCode = *(UInt32*)nextLine->info.code;
+                                tempCode = OSSwapBigToHostInt32(tempCode);
 
                                 if (IS_BRANCH_LINK(tempCode))
                                     canBeEpliog = NO;

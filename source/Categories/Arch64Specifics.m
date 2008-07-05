@@ -36,7 +36,7 @@
 //  codeIsBlockJump:
 // ----------------------------------------------------------------------------
 
-- (BOOL)codeIsBlockJump: (char*)inCode
+- (BOOL)codeIsBlockJump: (UInt8*)inCode
 {
     return NO;
 }

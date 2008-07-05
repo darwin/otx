@@ -84,8 +84,11 @@
         *(UInt32*)((char*)iMachHeaderPtr + (inLine->info.address + iTextOffset)) :
         *(UInt32*)((char*)iMachHeaderPtr + (inLine->info.address - iTextOffset));
 
-    theInstruction  = OSSwapBigToHostInt32(theInstruction);
-    snprintf(inLine->info.code, 10, "%08x", theInstruction);
+    inLine->info.codeLength = 4;
+
+    UInt32* intPtr = (UInt32*)&inLine->info.code[0];
+
+    *intPtr = theInstruction;
 }
 
 #pragma mark -
@@ -94,7 +97,10 @@
 
 - (void)commentForLine: (Line64*)inLine;
 {
-    UInt32  theCode     = strtoul(inLine->info.code, nil, 16);
+    UInt32 theCode = *(UInt32*)inLine->info.code;
+
+    theCode = OSSwapBigToHostInt32(theCode);
+
     char*   theDummyPtr = nil;
     char*   theSymPtr   = nil;
     UInt8   opcode      = PO(theCode);
@@ -773,8 +779,10 @@
 - (char*)selectorForMsgSend: (char*)outComment
                    fromLine: (Line64*)inLine
 {
-    char*   selString   = nil;
-    UInt32  theCode     = strtoul(inLine->info.code, nil, 16);
+    char* selString = nil;
+    UInt32 theCode = *(UInt32*)inLine->info.code;
+
+    theCode = OSSwapBigToHostInt32(theCode);
 
     // Bail if this is not an eligible branch.
     if (PO(theCode) != 0x12)    // b, bl, ba, bla
@@ -1048,8 +1056,9 @@
         !(*ioLine)->alt || !(*ioLine)->alt->chars)
         return;
 
-    UInt32  theCode = strtoul(
-        (const char*)(*ioLine)->info.code, nil, 16);
+    UInt32 theCode = *(UInt32*)(*ioLine)->info.code;
+
+    theCode = OSSwapBigToHostInt32(theCode);
 
     if (PO(theCode) == 18)  // b, ba, bl, bla
     {
@@ -1154,7 +1163,9 @@
     }
 
     UInt64 theNewValue;
-    UInt32 theCode = strtoul((const char*)inLine->info.code, nil, 16);
+    UInt32 theCode = *(UInt32*)inLine->info.code;
+
+    theCode = OSSwapBigToHostInt32(theCode);
 
     if (IS_BRANCH_LINK(theCode))
     {
@@ -1854,9 +1865,10 @@
     if (inLine->prev && !inLine->prev->info.isCode)
         return YES;
 
-    BOOL    isFunction  = NO;
-    UInt32  theCode     = strtoul(
-        (const char*)&inLine->info.code, nil, 16);
+    BOOL isFunction = NO;
+    UInt32 theCode = *(UInt32*)inLine->info.code;
+
+    theCode = OSSwapBigToHostInt32(theCode);
 
     if ((theCode & 0xfc1fffff) == 0x7c0802a6)   // mflr to any reg
     {   // Allow for late mflr
@@ -1871,8 +1883,8 @@
             if (thePrevLine->info.isFunction)
                 return NO;
 
-            theCode = strtoul(
-                (const char*)&thePrevLine->info.code, nil, 16);
+            theCode = *(UInt32*)thePrevLine->info.code;
+            theCode = OSSwapBigToHostInt32(theCode);
 
             if ((theCode & 0xfc0007ff) == 0x7c000008)   // trap
             {
@@ -1915,8 +1927,8 @@
                     continue;   // not code, keep looking
                 else if (!thePrevLine->info.isFunction)
                 {               // not yet recognized, try it
-                    theCode = strtoul(
-                        (const char*)&thePrevLine->info.code, nil, 16);
+                    theCode = *(UInt32*)thePrevLine->info.code;
+                    theCode = OSSwapBigToHostInt32(theCode);
 
                     if (theCode == 0x7fe00008   ||  // ignore traps
                         theCode == 0x60000000   ||  // ignore nops
@@ -1947,9 +1959,9 @@
 //  codeIsBlockJump:
 // ----------------------------------------------------------------------------
 
-- (BOOL)codeIsBlockJump: (char*)inCode
+- (BOOL)codeIsBlockJump: (UInt8*)inCode
 {
-    UInt32  theCode = strtoul(inCode, nil, 16);
+    UInt32 theCode = *(UInt32*)inCode;
 
     return IS_BLOCK_BRANCH(theCode);
 }
@@ -1980,7 +1992,8 @@
             continue;
         }
 
-        theCode = strtoul(theLine->info.code, nil, 16);
+        theCode = *(UInt32*)theLine->info.code;
+        theCode = OSSwapBigToHostInt32(theCode);
 
         if (theLine->info.isFunction)
         {
@@ -2049,7 +2062,8 @@
 
                             while (nextLine)
                             {
-                                tempCode = strtoul(nextLine->info.code, nil, 16);
+                                tempCode = *(UInt32*)nextLine->info.code;
+                                tempCode = OSSwapBigToHostInt32(tempCode);
 
                                 if (IS_BRANCH_LINK(tempCode))
                                     canBeEpliog = NO;

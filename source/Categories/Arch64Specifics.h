@@ -16,7 +16,7 @@
 - (void)gatherFuncInfos;
 - (void)postProcessCodeLine: (Line64**)ioLine;
 - (BOOL)lineIsFunction: (Line64*)inLine;
-- (BOOL)codeIsBlockJump: (char*)inCode;
+- (BOOL)codeIsBlockJump: (UInt8*)inCode;
 - (void)codeFromLine: (Line64*)inLine;
 - (void)checkThunk: (Line64*)inLine;
 - (BOOL)getThunkInfo: (ThunkInfo*)outInfo

@@ -100,41 +100,27 @@
 
     if (nextLine)
     {
-        UInt32  newNextAddy = AddressFromLine(nextLine->chars);
+        UInt32 newNextAddy = AddressFromLine(nextLine->chars);
 
-        // I've never seen a valid instruction longer than 12 bytes, but
-        // encrypted code can contain invalid instructions up to 14 bytes long.
-        if (newNextAddy > thisAddy && newNextAddy <= thisAddy + 14)
-            nextAddy    = newNextAddy;
+        if (newNextAddy > thisAddy && newNextAddy <= thisAddy + 15)
+            nextAddy = newNextAddy;
     }
 
-    theInstLength   = nextAddy - thisAddy;
+    theInstLength = nextAddy - thisAddy;
+    inLine->info.codeLength = theInstLength;
 
     // Fetch the instruction.
-    unsigned char   charData[14]        = {0};
-    char            formatString[50];
-    char*           theMachPtr          = (char*)iMachHeaderPtr;
-    char*           byteFormat          = "%02x";
-    UInt8           byteFormatLength    = 4;    // hardcoded for speed
-    UInt8           formatMarker        = 0;
-    UInt8           i;
+    unsigned char* theMachPtr = (unsigned char*)iMachHeaderPtr;
+    unsigned char* codePtr = NULL;
+    UInt8 i;
 
     for (i = 0; i < theInstLength; i++)
     {
-        charData[i] = (iMachHeader.filetype == MH_OBJECT) ?
-            *(unsigned char*)(theMachPtr + (thisAddy + iTextOffset) + i) :
-            *(unsigned char*)(theMachPtr + (thisAddy - iTextOffset) + i);
-        memcpy(&formatString[formatMarker], byteFormat, byteFormatLength);
-        formatMarker    += byteFormatLength;
+        codePtr = (iMachHeader.filetype == MH_OBJECT) ?
+            (theMachPtr + (thisAddy + iTextOffset) + i) :
+            (theMachPtr + (thisAddy - iTextOffset) + i);
+        inLine->info.code[i] = *(UInt8*)codePtr;
     }
-
-    // Add the null terminator.
-    formatString[formatMarker]  = 0;
-
-    snprintf(inLine->info.code, 25, formatString,
-        charData[0], charData[1], charData[2], charData[3], charData[4],
-        charData[5], charData[6], charData[7], charData[8], charData[9],
-        charData[10], charData[11], charData[12], charData[13]);
 }
 
 //  checkThunk:
@@ -142,15 +128,14 @@
 
 - (void)checkThunk: (Line*)inLine
 {
-    if (!inLine || !inLine->prev || inLine->info.code[2])
+    if (!inLine || !inLine->prev || inLine->info.code[1])
         return;
 
-    if (inLine->info.code[0] != 'c' ||
-        inLine->info.code[1] != '3')
+    if (inLine->info.code[0] != 0xc3)
         return;
 
-    UInt32      theInstruction  = strtoul(inLine->prev->info.code, nil, 16);
-    ThunkInfo   theThunk        = {inLine->prev->info.address, NO_REG};
+    UInt32 theInstruction = *(UInt32*)inLine->prev->info.code;
+    ThunkInfo theThunk = {inLine->prev->info.address, NO_REG};
 
     switch (theInstruction)
     {
@@ -176,8 +161,7 @@
 
     // Store a thunk.
     iNumThunks++;
-    iThunks = realloc(iThunks,
-        iNumThunks * sizeof(ThunkInfo));
+    iThunks = realloc(iThunks, iNumThunks * sizeof(ThunkInfo));
     iThunks[iNumThunks - 1] = theThunk;
 
     // Recognize it as a function.
@@ -215,17 +199,15 @@
     if (!iThunks)
         return NO;
 
-    UInt8       opcode;
-
-    sscanf(inLine->info.code, "%02hhx", &opcode);
+    UInt8 opcode = inLine->info.code[0];
 
     if (opcode != 0xe8) // calll
         return NO;
 
-    BOOL    isThunk = NO;
-    UInt32  imm, target, i;
+    BOOL isThunk = NO;
+    UInt32 imm = *(UInt32*)&inLine->info.code[1];
+    UInt32 target, i;
 
-    sscanf(&inLine->info.code[2], "%08x", &imm);
     imm = OSSwapInt32(imm);
     target  = imm + inLine->next->info.address;
 
@@ -249,27 +231,22 @@
 - (void)commentForLine: (Line*)inLine;
 {
     char*   theDummyPtr = nil;
-    char*   theSymPtr   = nil;
-    UInt32  localAddy   = 0;
-    UInt32  targetAddy  = 0;
-    UInt8   modRM       = 0;
-    UInt8   opcode;
+    char*   theSymPtr = nil;
+    UInt32  localAddy = 0;
+    UInt32  targetAddy = 0;
+    UInt8   modRM = 0;
+    UInt8   opcode = inLine->info.code[0];
 
-    sscanf(inLine->info.code, "%02hhx", &opcode);
     iLineCommentCString[0]  = 0;
 
     switch (opcode)
     {
         case 0x0f:  // 2-byte and SSE opcodes   **add sysenter support here
         {
-            if (inLine->info.code[2] == '2' &&
-                inLine->info.code[3] == 'e')    // ucomiss
+            if (inLine->info.code[1] == 0x2e)    // ucomiss
             {
-                // sscanf interprets source values as big-endian, regardless of
-                // host architecture. If source value is little-endian, as in x86
-                // instructions, we must always swap.
-                sscanf(&inLine->info.code[6], "%08x", &localAddy);
-                localAddy   = OSSwapInt32(localAddy);
+                localAddy = *(UInt32*)&inLine->info.code[3];
+                localAddy = OSSwapLittleToHostInt32(localAddy);
 
                 theDummyPtr = GetPointer(localAddy, nil);
 
@@ -281,26 +258,23 @@
                     snprintf(iLineCommentCString, 30, "%G", *(float*)&theInt32);
                 }
             }
-            else if (inLine->info.code[2] == '8' &&
-                     inLine->info.code[3] == '4')   // jcc
+            else if (inLine->info.code[1] == 0x84)   // jcc
             {
                 if (!inLine->next)
                     break;
 
-                SInt32  targetOffset;
+                SInt32 targetOffset = *(SInt32*)&inLine->info.code[2];
 
-                sscanf(&inLine->info.code[4], "%08x", &targetOffset);
-                targetOffset    = OSSwapInt32(targetOffset);
-                targetAddy  = inLine->next->info.address + targetOffset;
+                targetOffset = OSSwapLittleToHostInt32(targetOffset);
+                targetAddy = inLine->next->info.address + targetOffset;
 
                 // Search current FunctionInfo for blocks that start at this address.
-                FunctionInfo*   funcInfo    =
-                    &iFuncInfos[iCurrentFuncInfoIndex];
+                FunctionInfo*   funcInfo    = &iFuncInfos[iCurrentFuncInfoIndex];
 
                 if (!funcInfo->blocks)
                     break;
 
-                UInt32  i;
+                UInt32 i;
 
                 for (i = 0; i < funcInfo->numBlocks; i++)
                 {
@@ -319,9 +293,7 @@
 
         case 0x3c:  // cmpb imm8,al
         {
-            UInt8   imm;
-
-            sscanf(&inLine->info.code[2], "%02hhx", &imm);
+            UInt8 imm = inLine->info.code[1];
 
             // Check for a single printable 7-bit char.
             if (imm >= 0x20 && imm < 0x7f)
@@ -331,22 +303,19 @@
         }
 
         case 0x66:
-            if (inLine->info.code[2] != '0' ||
-                inLine->info.code[3] != 'f' ||
-                inLine->info.code[4] != '2' ||
-                inLine->info.code[5] != 'e')    // ucomisd
+            if (inLine->info.code[1] != 0x0f ||
+                inLine->info.code[2] != 0x2e)    // ucomisd
                 break;
 
-            sscanf(&inLine->info.code[8], "%08x", &localAddy);
-            localAddy   = OSSwapInt32(localAddy);
-
+            localAddy = *(UInt32*)&inLine->info.code[4];
+            localAddy = OSSwapLittleToHostInt32(localAddy);
             theDummyPtr = GetPointer(localAddy, nil);
 
             if (theDummyPtr)
             {
-                UInt64  theInt64    = *(UInt64*)theDummyPtr;
+                UInt64 theInt64 = *(UInt64*)theDummyPtr;
 
-                theInt64    = OSSwapLittleToHostInt64(theInt64);
+                theInt64 = OSSwapLittleToHostInt64(theInt64);
                 snprintf(iLineCommentCString, 30, "%lG", *(double*)&theInt64);
             }
 
@@ -360,14 +329,12 @@
             if (!inLine->next)
                 break;
 
-            SInt8   simm;
+            SInt8 simm = inLine->info.code[1];
 
-            sscanf(&inLine->info.code[2], "%02hhx", &simm);
-            targetAddy  = inLine->next->info.address + simm;
+            targetAddy = inLine->next->info.address + simm;
 
             // Search current FunctionInfo for blocks that start at this address.
-            FunctionInfo*   funcInfo    =
-                &iFuncInfos[iCurrentFuncInfoIndex];
+            FunctionInfo* funcInfo = &iFuncInfos[iCurrentFuncInfoIndex];
 
             if (!funcInfo->blocks)
                 break;
@@ -392,19 +359,19 @@
         case 0x80:  // imm8,r8
         case 0x83:  // imm8,r32
         {
-            sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+            modRM = inLine->info.code[1];
 
             // In immediate group 1 we only want cmpb
             if (OPEXT(modRM) != 7)
                 break;
 
-            UInt8   imm;
-            UInt8   immOffset   = 4;
+            UInt8 imm;
+            UInt8 immOffset = 2;
 
             if (HAS_DISP8(modRM))
-                immOffset   +=  2;
+                immOffset +=  1;
 
-            sscanf(&inLine->info.code[immOffset], "%02hhx", &imm);
+            imm = inLine->info.code[immOffset];
 
             if (iRegInfos[REG2(modRM)].classPtr)    // address relative to class
             {
@@ -434,7 +401,7 @@
                     #endif
                 }
 
-                sscanf(&inLine->info.code[4], "%02hhx", &immOffset);
+                immOffset = inLine->info.code[2];
 
                 if (!FindIvar(&theIvar, &swappedClass, immOffset))
                     break;
@@ -477,7 +444,7 @@
         case 0x89:  // movl r32,r/m32
         case 0x8b:  // movl r/m32,r32
         case 0xc6:  // movb imm8,r/m32
-            sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+            modRM = inLine->info.code[1];
 
             // In immediate group 1 we only want cmpl
             if (opcode == 0x81 && OPEXT(modRM) != 7)
@@ -487,8 +454,8 @@
             {
                 if (RM(modRM) == DISP32)
                 {
-                    sscanf(&inLine->info.code[4], "%08x", &localAddy);
-                    localAddy   = OSSwapInt32(localAddy);
+                    localAddy = *(UInt32*)&inLine->info.code[2];
+                    localAddy = OSSwapLittleToHostInt32(localAddy);
                 }
             }
             else
@@ -523,34 +490,29 @@
 
                     if (MOD(modRM) == MOD8)
                     {
-                        UInt8   theSymOffset;
-
-                        sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
+                        UInt8 theSymOffset = inLine->info.code[2];
 
                         if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
                             break;
                     }
                     else if (MOD(modRM) == MOD32)
                     {
-                        UInt32  theSymOffset;
-
-                        sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
-                        theSymOffset    = OSSwapInt32(theSymOffset);
+                        UInt32 theSymOffset = *(UInt32*)&inLine->info.code[2];
+                        theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
                         if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
                             break;
                     }
 
-                    theSymPtr   = GetPointer(
-                        (UInt32)theIvar.ivar_name, nil);
+                    theSymPtr = GetPointer((UInt32)theIvar.ivar_name, nil);
 
                     if (theSymPtr)
                     {
                         if (iOpts.variableTypes)
                         {
-                            char    theTypeCString[MAX_TYPE_STRING_LENGTH];
+                            char theTypeCString[MAX_TYPE_STRING_LENGTH];
 
-                            theTypeCString[0]   = 0;
+                            theTypeCString[0] = 0;
 
                             GetDescription(theTypeCString,
                                 GetPointer((UInt32)theIvar.ivar_type, nil));
@@ -572,18 +534,14 @@
                     if (REG2(modRM) == iCurrentThunk &&
                         iRegInfos[iCurrentThunk].isValid)
                     {
-                        UInt32  imm;
-
-                        sscanf(&inLine->info.code[4], "%08x", &imm);
-                        imm = OSSwapInt32(imm);
-
-                        localAddy   =
-                            iRegInfos[iCurrentThunk].value + imm;
+                        UInt32 imm = *(UInt32*)&inLine->info.code[2];
+                        imm = OSSwapLittleToHostInt32(imm);
+                        localAddy = iRegInfos[iCurrentThunk].value + imm;
                     }
                     else
                     {
-                        sscanf(&inLine->info.code[4], "%08x", &localAddy);
-                        localAddy   = OSSwapInt32(localAddy);
+                        localAddy = *(UInt32*)&inLine->info.code[2];
+                        localAddy = OSSwapLittleToHostInt32(localAddy);
                     }
                 }
             }
@@ -591,7 +549,7 @@
             break;
 
         case 0x8d:  // leal
-            sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+            modRM = inLine->info.code[1];
 
             if (iRegInfos[REG2(modRM)].classPtr)    // address relative to class
             {
@@ -623,19 +581,16 @@
 
                 if (MOD(modRM) == MOD8)
                 {
-                    UInt8   theSymOffset;
-
-                    sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
+                    UInt8 theSymOffset = inLine->info.code[2];
 
                     if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
                         break;
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    UInt32  theSymOffset;
+                    UInt32 theSymOffset = *(UInt32*)&inLine->info.code[2];
 
-                    sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
-                    theSymOffset    = OSSwapInt32(theSymOffset);
+                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
                     if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
                         break;
@@ -666,26 +621,23 @@
             }
             else if (REG2(modRM) == iCurrentThunk)
             {
-                UInt32  imm;
+                UInt32 imm = *(UInt32*)&inLine->info.code[2];
 
-                sscanf(&inLine->info.code[4], "%08x", &imm);
-                imm = OSSwapInt32(imm);
-
-                localAddy   = iRegInfos[iCurrentThunk].value + imm;
+                imm = OSSwapLittleToHostInt32(imm);
+                localAddy = iRegInfos[iCurrentThunk].value + imm;
             }
             else
             {
-                sscanf(&inLine->info.code[4], "%08x", &localAddy);
-                localAddy   = OSSwapInt32(localAddy);
+                localAddy = *(UInt32*)&inLine->info.code[2];
+                localAddy = OSSwapLittleToHostInt32(localAddy);
             }
 
             break;
 
         case 0xa1:  // movl moffs32,r32
         case 0xa3:  // movl r32,moffs32
-            sscanf(&inLine->info.code[2], "%08x", &localAddy);
-            localAddy   = OSSwapInt32(localAddy);
-
+            localAddy = *(UInt32*)&inLine->info.code[1];
+            localAddy = OSSwapLittleToHostInt32(localAddy);
             break;
 
         case 0xb0:  // movb imm8,%al
@@ -697,9 +649,7 @@
         case 0xb6:  // movb imm8,%dh
         case 0xb7:  // movb imm8,%bh
         {
-            UInt8   imm;
-
-            sscanf(&inLine->info.code[2], "%02hhx", &imm);
+            UInt8 imm = inLine->info.code[1];
 
             // Check for a single printable 7-bit char.
             if (imm >= 0x20 && imm < 0x7f)
@@ -716,8 +666,8 @@
         case 0xbd:  // movl imm32,%ebp
         case 0xbe:  // movl imm32,%esi
         case 0xbf:  // movl imm32,%edi
-            sscanf(&inLine->info.code[2], "%08x", &localAddy);
-            localAddy   = OSSwapInt32(localAddy);
+            localAddy = *(UInt32*)&inLine->info.code[1];
+            localAddy = OSSwapLittleToHostInt32(localAddy);
 
             // Check for a four char code.
             if (localAddy >= 0x20202020 && localAddy < 0x7f7f7f7f)
@@ -747,7 +697,7 @@
 
         case 0xc7:  // movl imm32,r/m32
         {
-            sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+            modRM = inLine->info.code[1];
 
             if (iRegInfos[REG2(modRM)].classPtr)    // address relative to class
             {
@@ -758,20 +708,19 @@
                 if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                     break;
 
-                UInt8   immOffset                       = 4;
-                char    fcc[7]                          = {0};
+                UInt8 immOffset = 2;
+                char fcc[7] = {0};
 
                 if (HAS_DISP8(modRM))
-                    immOffset   += 2;
+                    immOffset += 1;
                 else if (HAS_REL_DISP32(modRM))
-                    immOffset   += 8;
+                    immOffset += 4;
 
                 if (HAS_SIB(modRM))
-                    immOffset   += 2;
+                    immOffset += 1;
 
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[REG2(modRM)].classPtr;
+                objc_ivar theIvar = {0};
+                objc_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
 
                 #if __BIG_ENDIAN__
                     swap_objc_class(&swappedClass);
@@ -790,27 +739,22 @@
 
                 if (MOD(modRM) == MOD8)
                 {
-                    UInt8   theSymOffset;
-
-                    // offset precedes immediate value, subtract
-                    // sizeof(UInt8) * 2
-                    sscanf(&inLine->info.code[immOffset - 2], "%02hhx", &theSymOffset);
+                    // offset precedes immediate value
+                    UInt8 theSymOffset = inLine->info.code[immOffset - 1];
 
                     if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
                         break;
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    UInt32  imm;
-                    UInt32  theSymOffset;
+                    UInt32 imm = *(UInt32*)&inLine->info.code[immOffset];
+                    UInt32 theSymOffset;
 
-                    sscanf(&inLine->info.code[immOffset], "%08x", &imm);
-                    imm = OSSwapInt32(imm);
+                    imm = OSSwapLittleToHostInt32(imm);
 
-                    // offset precedes immediate value, subtract
-                    // sizeof(UInt32) * 2
-                    sscanf(&inLine->info.code[immOffset - 8], "%08x", &theSymOffset);
-                    theSymOffset    = OSSwapInt32(theSymOffset);
+                    // offset precedes immediate value
+                    theSymOffset = *(UInt32*)&inLine->info.code[immOffset - 4];
+                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
                     // Check for a four char code.
                     if (imm >= 0x20202020 && imm < 0x7f7f7f7f)
@@ -879,16 +823,16 @@
             }
             else    // absolute address
             {
-                UInt8   immOffset = 4;
+                UInt8 immOffset = 2;
 
                 if (HAS_DISP8(modRM))
-                    immOffset   += 2;
+                    immOffset += 1;
 
                 if (HAS_SIB(modRM))
-                    immOffset   += 2;
+                    immOffset += 1;
 
-                sscanf(&inLine->info.code[immOffset], "%08x", &localAddy);
-                localAddy   = OSSwapInt32(localAddy);
+                localAddy = *(UInt32*)&inLine->info.code[immOffset];
+                localAddy = OSSwapLittleToHostInt32(localAddy);
 
                 // Check for a four char code.
                 if (localAddy >= 0x20202020 && localAddy < 0x7f7f7f7f)
@@ -917,7 +861,7 @@
         }
 
         case 0xcd:  // int
-            sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+            modRM = inLine->info.code[1];
 
             if (modRM == 0x80)
                 CommentForSystemCall();
@@ -925,8 +869,8 @@
             break;
 
         case 0xd9:  // fldsl    r/m32
-        case 0xdd:  // fldll    
-            sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+        case 0xdd:  // fldll
+            modRM = inLine->info.code[1];
 
             if (iRegInfos[REG2(modRM)].classPtr)    // address relative to class
             {
@@ -958,19 +902,16 @@
 
                 if (MOD(modRM) == MOD8)
                 {
-                    UInt8   theSymOffset;
-
-                    sscanf(&inLine->info.code[4], "%02hhx", &theSymOffset);
+                    UInt8 theSymOffset = inLine->info.code[2];
 
                     if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
                         break;
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    UInt32  theSymOffset;
+                    UInt32 theSymOffset = *(UInt32*)&inLine->info.code[2];
 
-                    sscanf(&inLine->info.code[4], "%08x", &theSymOffset);
-                    theSymOffset    = OSSwapInt32(theSymOffset);
+                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
                     if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
                         break;
@@ -1001,17 +942,16 @@
             }
             else    // absolute address
             {
-                UInt8   immOffset = 4;
+                UInt8 immOffset = 2;
 
                 if (HAS_DISP8(modRM))
-                    immOffset   += 2;
+                    immOffset += 1;
 
                 if (HAS_SIB(modRM))
-                    immOffset   += 2;
+                    immOffset += 1;
 
-                sscanf(&inLine->info.code[immOffset], "%08x", &localAddy);
-                localAddy   = OSSwapInt32(localAddy);
-
+                localAddy = *(UInt32*)&inLine->info.code[immOffset];
+                localAddy = OSSwapLittleToHostInt32(localAddy);
                 theDummyPtr = GetPointer(localAddy, nil);
 
                 if (!theDummyPtr)
@@ -1048,11 +988,10 @@
             if (iLineCommentCString[0])
                 break;
 
-            sscanf(&inLine->info.code[2], "%08x", &localAddy);
-            localAddy   = OSSwapInt32(localAddy);
+            localAddy = *(UInt32*)&inLine->info.code[1];
+            localAddy = OSSwapLittleToHostInt32(localAddy);
 
-            UInt32  absoluteAddy    =
-                inLine->info.address + 5 + (SInt32)localAddy;
+            UInt32 absoluteAddy = inLine->info.address + 5 + (SInt32)localAddy;
 
 // FIXME: can we use mCurrentFuncInfoIndex here?
             FunctionInfo    searchKey   = {absoluteAddy, NULL, 0, 0};
@@ -1071,14 +1010,12 @@
         case 0xf2:  // repne/repnz or movsd, mulsd etc
         case 0xf3:  // rep/repe or movss, mulss etc
         {
-            UInt8   byte2;
-
-            sscanf(&inLine->info.code[2], "%02hhx", &byte2);
+            UInt8 byte2 = inLine->info.code[1];
 
             if (byte2 != 0x0f)  // movsd/s, divsd/s, addsd/s etc
                 break;
 
-            sscanf(&inLine->info.code[6], "%02hhx", &modRM);
+            modRM = inLine->info.code[3];
 
             if (iRegInfos[REG2(modRM)].classPtr)    // address relative to self
             {
@@ -1110,19 +1047,16 @@
 
                 if (MOD(modRM) == MOD8)
                 {
-                    UInt8   theSymOffset;
-
-                    sscanf(&inLine->info.code[8], "%02hhx", &theSymOffset);
+                    UInt8 theSymOffset = inLine->info.code[4];
 
                     if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
                         break;
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    UInt32  theSymOffset;
+                    UInt32 theSymOffset = *(UInt32*)&inLine->info.code[4];
 
-                    sscanf(&inLine->info.code[8], "%08x", &theSymOffset);
-                    theSymOffset    = OSSwapInt32(theSymOffset);
+                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
                     if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
                         break;
@@ -1153,9 +1087,8 @@
             }
             else    // absolute address
             {
-                sscanf(&inLine->info.code[8], "%08x", &localAddy);
-                localAddy   = OSSwapInt32(localAddy);
-
+                localAddy = *(UInt32*)&inLine->info.code[4];
+                localAddy = OSSwapLittleToHostInt32(localAddy);
                 theDummyPtr = GetPointer(localAddy, nil);
 
                 if (theDummyPtr)
@@ -1379,11 +1312,8 @@
 - (char*)selectorForMsgSend: (char*)outComment
                    fromLine: (Line*)inLine
 {
-    char*   selString   = nil;
-
-    UInt8   opcode;
-
-    sscanf(inLine->info.code, "%02hhx", &opcode);
+    char* selString = nil;
+    UInt8 opcode = inLine->info.code[0];
 
     // Bail if this is not an eligible jump.
     if (opcode != 0xe8  &&  // calll
@@ -1650,9 +1580,7 @@
         !(*ioLine)->alt || !(*ioLine)->alt->chars)
         return;
 
-    UInt8   theCode;
-
-    sscanf((*ioLine)->info.code, "%02hhx", &theCode);
+    UInt8 theCode = (*ioLine)->info.code[0];
 
     if (theCode == 0xe8 || theCode == 0xff || theCode == 0x9a)
     {
@@ -1675,9 +1603,7 @@
 
 - (void)postProcessCodeLine: (Line**)ioLine
 {
-    if ((*ioLine)->info.code[0] != 'e'  ||  // calll
-        (*ioLine)->info.code[1] != '8'  ||
-        !(*ioLine)->next)
+    if ((*ioLine)->info.code[0] != 0xe8  || !(*ioLine)->next)
         return;
 
     // Check for thunks.
@@ -1794,12 +1720,8 @@
 
 - (void)updateRegisters: (Line*)inLine;
 {
-    UInt8   opcode;
-    UInt8   opcode2;
-    UInt8   modRM;
-
-    sscanf(inLine->info.code, "%02hhx", &opcode);
-    sscanf(&inLine->info.code[2], "%02hhx", &opcode2);
+    UInt8 opcode = inLine->info.code[0];
+    UInt8 modRM;
 
     switch (opcode)
     {
@@ -1811,13 +1733,12 @@
             iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
 
             if (inLine->prev &&
-                (inLine->prev->info.code[0] == 'e') &&
-                (inLine->prev->info.code[1] == '8') &&
-                (strtoul(&inLine->prev->info.code[2], nil, 16) == 0))
+                (inLine->prev->info.code[0] == 0xe8) &&
+                (*(UInt32*)&inLine->prev->info.code[2] == 0))
             {
-                iRegInfos[REG2(opcode)].value   = inLine->info.address;
+                iRegInfos[REG2(opcode)].value = inLine->info.address;
                 iRegInfos[REG2(opcode)].isValid = YES;
-                iCurrentThunk                   = REG2(opcode);
+                iCurrentThunk = REG2(opcode);
             }
 
             break;
@@ -1835,14 +1756,12 @@
         // add, or, adc, sbb, and, sub, xor, cmp
         case 0x83:  // EXTS(imm8),r32
         {
-            sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+            modRM = inLine->info.code[1];
 
             if (!iRegInfos[REG1(modRM)].isValid)
                 break;
 
-            UInt8   imm;
-
-            sscanf(&inLine->info.code[4], "%02hhx", &imm);
+            UInt8 imm = inLine->info.code[2];
 
             switch (OPEXT(modRM))
             {
@@ -1890,7 +1809,7 @@
 
         case 0x89:  // mov reg to r/m
         {
-            sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+            modRM = inLine->info.code[1];
 
             if (MOD(modRM) == MODx) // reg to reg
             {
@@ -1906,12 +1825,12 @@
             if ((REG2(modRM) != EBP && !HAS_SIB(modRM)))
                 break;
 
-            SInt8   offset  = 0;
+            SInt8 offset  = 0;
 
             if (HAS_SIB(modRM)) // pushing an arg onto stack
             {
                 if (HAS_DISP8(modRM))
-                    sscanf(&inLine->info.code[6], "%02hhx", &offset);
+                    offset = (SInt8)inLine->info.code[3];
 
                 if (offset >= 0)
                 {
@@ -1935,7 +1854,7 @@
             {
                 if (iRegInfos[REG1(modRM)].classPtr && MOD(modRM) == MOD8)
                 {
-                    sscanf(&inLine->info.code[4], "%02hhx", &offset);
+                    offset = (SInt8)inLine->info.code[2];
 
                     iNumLocalSelves++;
                     iLocalSelves = realloc(iLocalSelves,
@@ -1945,10 +1864,9 @@
                 }
                 else if (iRegInfos[REG1(modRM)].isValid && MOD(modRM) == MOD32)
                 {
-                    SInt32  varOffset;
+                    SInt32 varOffset = *(SInt32*)&inLine->info.code[2];
 
-                    sscanf(&inLine->info.code[4], "%08x", &varOffset);
-                    varOffset   = OSSwapInt32(varOffset);
+                    varOffset = OSSwapLittleToHostInt32(varOffset);
 
                     iNumLocalVars++;
                     iLocalVars  = realloc(iLocalVars,
@@ -1963,16 +1881,14 @@
 
         case 0x8b:  // mov mem to reg
         case 0x8d:  // lea mem to reg
-            sscanf(&inLine->info.code[2], "%02hhx", &modRM);
-
-            iRegInfos[REG1(modRM)]  = (GPRegisterInfo){0};
+            modRM = inLine->info.code[1];
+            iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
 
             if (MOD(modRM) == MODimm)
             {
-                UInt32 offset;
+                UInt32 offset = *(UInt32*)&inLine->info.code[2];
 
-                sscanf(&inLine->info.code[4], "%08x", &offset);
-                offset = OSSwapInt32(offset);
+                offset = OSSwapLittleToHostInt32(offset);
 
                 iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
                 iRegInfos[REG1(modRM)].value = offset;
@@ -1981,9 +1897,7 @@
             }
             else if (MOD(modRM) == MOD8)
             {
-                SInt8 offset;
-
-                sscanf(&inLine->info.code[4], "%02hhx", &offset);
+                SInt8 offset = (SInt8)inLine->info.code[2];
 
                 if (REG2(modRM) == EBP && offset == 0x8)
                 {   // Copying self from 1st arg to a register.
@@ -2020,10 +1934,9 @@
             {
                 if (iLocalVars)
                 {
-                    SInt32  offset;
+                    SInt32 offset = *(SInt32*)&inLine->info.code[2];
 
-                    sscanf(&inLine->info.code[4], "%08x", &offset);
-                    offset  = OSSwapInt32(offset);
+                    offset = OSSwapLittleToHostInt32(offset);
 
                     if (offset < 0)
                     {
@@ -2043,23 +1956,21 @@
             }
             else if (HAS_ABS_DISP32(modRM))
             {
-                sscanf(&inLine->info.code[4], "%08x",
-                    &iRegInfos[REG1(modRM)].value);
-                iRegInfos[REG1(modRM)].value    =
-                    OSSwapInt32(iRegInfos[REG1(modRM)].value);
-                iRegInfos[REG1(modRM)].isValid  = YES;
+                UInt32 newValue = *(UInt32*)&inLine->info.code[2];
+
+                iRegInfos[REG1(modRM)].value = OSSwapLittleToHostInt32(newValue);
+                iRegInfos[REG1(modRM)].isValid = YES;
             }
             else if (HAS_REL_DISP32(modRM))
             {
                 if (!iRegInfos[REG2(modRM)].isValid)
                     break;
 
-                sscanf(&inLine->info.code[4], "%08x",
-                    &iRegInfos[REG1(modRM)].value);
-                iRegInfos[REG1(modRM)].value    =
-                    OSSwapInt32(iRegInfos[REG1(modRM)].value);
-                iRegInfos[REG1(modRM)].value    += iRegInfos[REG2(modRM)].value;
-                iRegInfos[REG1(modRM)].isValid  = YES;
+                UInt32 newValue = *(UInt32*)&inLine->info.code[2];
+
+                iRegInfos[REG1(modRM)].value = OSSwapLittleToHostInt32(newValue);
+                iRegInfos[REG1(modRM)].value += iRegInfos[REG2(modRM)].value;
+                iRegInfos[REG1(modRM)].isValid = YES;
             }
 
             break;
@@ -2073,11 +1984,10 @@
         case 0xb6:  // movb imm8,%dh
         case 0xb7:  // movb imm8,%bh
         {
-            UInt8   imm;
-
             iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
 
-            sscanf(&inLine->info.code[2], "%02hhx", &imm);
+            UInt8 imm = inLine->info.code[1];
+
             iRegInfos[REG2(opcode)].value = imm;
             iRegInfos[REG2(opcode)].isValid = YES;
 
@@ -2085,13 +1995,16 @@
         }
 
         case 0xa1:  // movl moffs32,%eax
+        {
             iRegInfos[EAX]  = (GPRegisterInfo){0};
 
-            sscanf(&inLine->info.code[2], "%08x", &iRegInfos[EAX].value);
-            iRegInfos[EAX].value = OSSwapInt32(iRegInfos[EAX].value);
+            UInt32 newValue = *(UInt32*)&inLine->info.code[1];
+
+            iRegInfos[EAX].value = OSSwapLittleToHostInt32(newValue);
             iRegInfos[EAX].isValid = YES;
 
             break;
+        }
 
         case 0xb8:  // movl imm32,%eax
         case 0xb9:  // movl imm32,%ecx
@@ -2101,31 +2014,32 @@
         case 0xbd:  // movl imm32,%ebp
         case 0xbe:  // movl imm32,%esi
         case 0xbf:  // movl imm32,%edi
+        {
             iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
 
-            sscanf(&inLine->info.code[2], "%08x",
-                &iRegInfos[REG2(opcode)].value);
-            iRegInfos[REG2(opcode)].value   =
-                OSSwapInt32(iRegInfos[REG2(opcode)].value);
+            UInt32 newValue = *(UInt32*)&inLine->info.code[1];
+
+            iRegInfos[REG2(opcode)].value = OSSwapInt32(newValue);
             iRegInfos[REG2(opcode)].isValid = YES;
 
             break;
+        }
 
         case 0xc7:  // movl imm32,r/m32
         {
-            sscanf(&inLine->info.code[2], "%02hhx", &modRM);
+            modRM = inLine->info.code[1];
 
             if (!HAS_SIB(modRM))
                 break;
 
-            SInt8   offset  = 0;
-            SInt32  value   = 0;
+            SInt8 offset = 0;
+            SInt32 value = 0;
 
             if (HAS_DISP8(modRM))
             {
-                sscanf(&inLine->info.code[6], "%02hhx", &offset);
-                sscanf(&inLine->info.code[8], "%08x", &value);
-                value   = OSSwapInt32(value);
+                offset = (SInt8)inLine->info.code[3];
+                value = *(SInt32*)&inLine->info.code[4];
+                value = OSSwapLittleToHostInt32(value);
             }
 
             if (offset >= 0)
@@ -2276,11 +2190,9 @@
     }
 
     // Obvious avenues expended, brute force check now.
-    BOOL    isFunction  = NO;
-    UInt8   opcode;
-    Line*   thePrevLine = inLine->prev;
-
-    sscanf(inLine->info.code, "%02hhx", &opcode);
+    BOOL isFunction  = NO;
+    UInt8 opcode = inLine->info.code[0];
+    Line* thePrevLine = inLine->prev;
 
     if (opcode == 0x55) // pushl %ebp
     {
@@ -2295,17 +2207,32 @@
             {
                 if (foundNops)
                 {
-                    isFunction  = NO;
+                    isFunction = NO;
                     break;
                 }
                 else
                     break;
             }
 
-            sscanf(thePrevLine->info.code, "%02hhx", &opcode);
+            opcode = thePrevLine->info.code[0];
 
             if (opcode == 0x90)
-                foundNops   = YES;
+                foundNops = YES;
+            else if (opcode >= 0x58 && opcode <= 0x5b)
+            {
+                /*  fast thunk
+                    +0  0000286f  e800000000    calll   0x00002874  <- thePrevLine->prev
+                    +5  00002874  59            popl    %ecx        <- thePrevLine
+                    +6  00002875  55            pushl   %ebp
+                    +7  00002876  89e5          movl    %esp,%ebp
+                */
+                if (thePrevLine->prev->info.code[0] == 0xe8 &&
+                    *(UInt32*)&thePrevLine->prev->info.code[1] == 0)
+                {
+                    isFunction = NO;
+                    break;
+                }
+            }
             else
                 break;
 
@@ -2332,12 +2259,10 @@
 //  codeIsBlockJump:
 // ----------------------------------------------------------------------------
 
-- (BOOL)codeIsBlockJump: (char*)inCode
+- (BOOL)codeIsBlockJump: (UInt8*)inCode
 {
-    UInt8   opcode, opcode2;
-
-    sscanf(inCode, "%02hhx", &opcode);
-    sscanf(&inCode[2], "%02hhx", &opcode2);
+    UInt8 opcode = inCode[0];
+    UInt8 opcode2 = inCode[1];
 
     return IS_JUMP(opcode, opcode2);
 }
@@ -2358,8 +2283,6 @@
         {
             if (gCancel == YES)
                 return;
-
-//            [NSThread sleepForTimeInterval: 0.0];
         }
 
         if (!theLine->info.isCode)
@@ -2368,8 +2291,8 @@
             continue;
         }
 
-        sscanf(theLine->info.code, "%02hhx", &opcode);
-        sscanf(&theLine->info.code[2], "%02hhx", &opcode2);
+        opcode = theLine->info.code[0];
+        opcode2 = theLine->info.code[1];
 
         if (theLine->info.isFunction)
         {
@@ -2410,12 +2333,10 @@
             else if (opcode == 0xe9 ||
                 (opcode == 0x0f && opcode2 >= 0x81 && opcode2 <= 0x8f))
             {
-                SInt32  rel32;
+                SInt32 rel32 = *(SInt32*)&theLine->info.code[1];
 
-                sscanf(&theLine->info.code[2], "%08x", &rel32);
-                rel32       = OSSwapInt32(rel32);
-                jumpTarget  = theLine->info.address + 5 + rel32;
-
+                rel32 = OSSwapLittleToHostInt32(rel32);
+                jumpTarget = theLine->info.address + 5 + rel32;
                 validTarget = YES;
             }
 
@@ -2464,17 +2385,15 @@
                         {
                             // Walk through the block. It's an epilog if it ends
                             // with 'ret' and contains no 'call's.
-                            Line*   nextLine    = *beginLine;
-                            BOOL    canBeEpliog = YES;
-                            UInt8   tempOpcode = 0;
-                            UInt8   tempOpcode2 = 0;
+                            Line* nextLine    = *beginLine;
+                            BOOL canBeEpliog = YES;
+                            UInt8 tempOpcode = 0;
+                            UInt8 tempOpcode2 = 0;
 
                             while (nextLine)
                             {
-                                if (sscanf(nextLine->info.code, "%02hhx", &tempOpcode) != 1)
-                                    break;
-
-                                sscanf(&nextLine->info.code[2], "%02hhx", &tempOpcode2);
+                                tempOpcode = nextLine->info.code[0];
+                                tempOpcode2 = nextLine->info.code[1];
 
                                 if (IS_CALL(tempOpcode))
                                     canBeEpliog = NO;

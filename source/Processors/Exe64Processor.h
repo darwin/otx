@@ -68,9 +68,10 @@ Var64Info;
 typedef struct
 {
     UInt64  address;
-    char    code[25];   // machine code as ASCII text
-    BOOL    isCode;     // NO for function and section names etc.
-    BOOL    isFunction; // YES if this is the first instruction in a function.
+    UInt8   code[16];       // machine code as int bytes
+    UInt8   codeLength;
+    BOOL    isCode;         // NO for function and section names etc.
+    BOOL    isFunction;     // YES if this is the first instruction in a function.
 }
 Line64Info;
 
@@ -216,7 +217,7 @@ Function64Info;
     void    (*GetDescription)               (id, SEL, char*, const char*);
     BOOL    (*LineIsCode)                   (id, SEL, const char*);
     BOOL    (*LineIsFunction)               (id, SEL, Line64*);
-    BOOL    (*CodeIsBlockJump)              (id, SEL, char*);
+    BOOL    (*CodeIsBlockJump)              (id, SEL, UInt8*);
     UInt64  (*AddressFromLine)              (id, SEL, const char*);
     void    (*CodeFromLine)                 (id, SEL, Line64*);
     void    (*CheckThunk)                   (id, SEL, Line64*);
