@@ -562,7 +562,6 @@
 {
     iProcessing = NO;
     [iIndeterminateProgBarMainThreadTimer invalidate];
-    [iIndeterminateProgBarMainThreadTimer release];
     iIndeterminateProgBarMainThreadTimer = nil;
 
     if ([result isEqualTo: PROCESS_SUCCESS])
