@@ -50,13 +50,13 @@
     if (iLocalSelves)
     {
         free(iLocalSelves);
-        iLocalSelves    = nil;
+        iLocalSelves    = NULL;
     }
 
     if (iLocalVars)
     {
         free(iLocalVars);
-        iLocalVars  = nil;
+        iLocalVars  = NULL;
     }
 
     [super dealloc];
@@ -101,8 +101,8 @@
 
     theCode = OSSwapBigToHostInt32(theCode);
 
-    char*   theDummyPtr = nil;
-    char*   theSymPtr   = nil;
+    char*   theDummyPtr = NULL;
+    char*   theSymPtr   = NULL;
     UInt8   opcode      = PO(theCode);
     UInt32  localAddy;
 
@@ -201,7 +201,7 @@
                                 break;
                             }
 
-                            theSymPtr = GetPointer(theIvar->name, nil);
+                            theSymPtr = GetPointer(theIvar->name, NULL);
 
                             if (!theSymPtr)
                             {
@@ -215,7 +215,7 @@
 
                                 theTypeCString[0]   = 0;
 
-                                GetDescription(theTypeCString, GetPointer(theIvar->type, nil));
+                                GetDescription(theTypeCString, GetPointer(theIvar->type, NULL));
                                 snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s (%s)%s",
                                     tempComment, theTypeCString, theSymPtr);
                             }
@@ -353,7 +353,7 @@
                 if (!FindIvar(&theIvar, &swappedClass, UIMM(theCode)))
                     break;
 
-                theSymPtr = GetPointer(theIvar->name, nil);
+                theSymPtr = GetPointer(theIvar->name, NULL);
 
                 if (theSymPtr)
                 {
@@ -363,7 +363,7 @@
 
                         theTypeCString[0] = 0;
 
-                        GetDescription(theTypeCString, GetPointer(theIvar->type, nil));
+                        GetDescription(theTypeCString, GetPointer(theIvar->type, NULL));
                         snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
                     }
@@ -374,7 +374,7 @@
             else
             {
                 localAddy   = iRegInfos[RA(theCode)].value + SIMM(theCode);
-                theDummyPtr = GetPointer(localAddy, nil);
+                theDummyPtr = GetPointer(localAddy, NULL);
 
                 if (!theDummyPtr)
                     break;
@@ -424,7 +424,7 @@
                 if (!FindIvar(&theIvar, &swappedClass, UIMM(theCode)))
                     break;
 
-                theSymPtr = GetPointer(theIvar->name, nil);
+                theSymPtr = GetPointer(theIvar->name, NULL);
 
                 if (theSymPtr)
                 {
@@ -434,7 +434,7 @@
 
                         theTypeCString[0] = 0;
 
-                        GetDescription(theTypeCString, GetPointer(theIvar->type, nil));
+                        GetDescription(theTypeCString, GetPointer(theIvar->type, NULL));
                         snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
                     }
@@ -470,21 +470,21 @@
                                     break;
 
                                 default:
-                                    theSymPtr   = nil;
+                                    theSymPtr   = NULL;
                                     break;
                             }
 
                             break;
 
                         case DataConstType:
-                            theSymPtr   = nil;
+                            theSymPtr   = NULL;
                             break;
 
 // See http://www.opensource.apple.com/darwinsource/10.4.7.ppc/Csu-58/dyld.s
 // They hardcoded the values, we may as well...
                         case DYLDType:
                         {
-                            char*   dyldComment = nil;
+                            char*   dyldComment = NULL;
 
                             theValue    = *(UInt32*)theSymPtr;
                             theValue    = OSSwapBigToHostInt32(theValue);
@@ -518,13 +518,13 @@
 
                             if (theCFString.oc_string.length == 0)
                             {
-                                theSymPtr   = nil;
+                                theSymPtr   = NULL;
                                 break;
                             }
 
                             theCFString.oc_string.chars =
                                 OSSwapBigToHostInt64(theCFString.oc_string.chars);
-                            theSymPtr   = GetPointer(theCFString.oc_string.chars, nil);
+                            theSymPtr   = GetPointer(theCFString.oc_string.chars, NULL);
 
                             break;
                         }
@@ -534,11 +534,11 @@
                         {
                             theValue    = *(UInt32*)theSymPtr;
                             theValue    = OSSwapBigToHostInt32(theValue);
-                            theDummyPtr = GetPointer(theValue, nil);
+                            theDummyPtr = GetPointer(theValue, NULL);
 
                             if (!theDummyPtr)
                             {
-                                theSymPtr   = nil;
+                                theSymPtr   = NULL;
                                 break;
                             }
 
@@ -549,11 +549,11 @@
                             {
                                 theValue    = *(UInt32*)theDummyPtr;
                                 theValue    = OSSwapBigToHostInt32(theValue);
-                                theDummyPtr = GetPointer(theValue, nil);
+                                theDummyPtr = GetPointer(theValue, NULL);
 
                                 if (!theDummyPtr)
                                 {
-                                    theSymPtr   = nil;
+                                    theSymPtr   = NULL;
                                     break;
                                 }
                             }
@@ -563,13 +563,13 @@
 
                             if (theCFString.oc_string.length == 0)
                             {
-                                theSymPtr   = nil;
+                                theSymPtr   = NULL;
                                 break;
                             }
 
                             theCFString.oc_string.chars =
                                 OSSwapBigToHostInt64(theCFString.oc_string.chars);
-                            theSymPtr = GetPointer(theCFString.oc_string.chars, nil);
+                            theSymPtr = GetPointer(theCFString.oc_string.chars, NULL);
 
                             break;
                         }
@@ -684,7 +684,7 @@
 
                         if (FindIvar(&foundIvar, iCurrentClass, offset))
                         {
-                            theSymPtr = GetPointer(foundIvar->name, nil);
+                            theSymPtr = GetPointer(foundIvar->name, NULL);
 
                             if (theSymPtr)
                             {
@@ -694,7 +694,7 @@
 
                                     theTypeCString[0] = 0;
 
-                                    GetDescription(theTypeCString, GetPointer(foundIvar->type, nil));
+                                    GetDescription(theTypeCString, GetPointer(foundIvar->type, NULL));
                                     snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
                                         theTypeCString, theSymPtr);
                                 }
@@ -779,18 +779,18 @@
 - (char*)selectorForMsgSend: (char*)outComment
                    fromLine: (Line64*)inLine
 {
-    char* selString = nil;
+    char* selString = NULL;
     UInt32 theCode = *(UInt32*)inLine->info.code;
 
     theCode = OSSwapBigToHostInt32(theCode);
 
     // Bail if this is not an eligible branch.
     if (PO(theCode) != 0x12)    // b, bl, ba, bla
-        return nil;
+        return NULL;
 
     // Bail if this is not an objc_msgSend variant.
     if (memcmp(outComment, "_objc_msgSend", 13))
-        return nil;
+        return NULL;
 
     UInt8   sendType        = SendTypeFromMsgSend(outComment);
     UInt32  selectorRegNum  =
@@ -798,7 +798,7 @@
 
     if (!iRegInfos[selectorRegNum].isValid ||
         !iRegInfos[selectorRegNum].value)
-        return nil;
+        return NULL;
 
     // Get at the selector.
     UInt8   selType     = PointerType;
@@ -818,7 +818,7 @@
                 UInt32  selPtrValue = *(UInt32*)selPtr;
 
                 selPtrValue = OSSwapBigToHostInt32(selPtrValue);
-                selString   = GetPointer(selPtrValue, nil);
+                selString   = GetPointer(selPtrValue, NULL);
             }
 
             break;
@@ -857,7 +857,7 @@
     // Get the address of the class name string, if this a class method.
     UInt32  classNameAddy   = 0;
 
-    // If *.classPtr is non-nil, it's not a name string.
+    // If *.classPtr is non-NULL, it's not a name string.
     if (sendType == sendSuper_stret || sendType == send_stret)
     {
         if (iRegInfos[4].isValid && !iRegInfos[4].classPtr)
@@ -869,7 +869,7 @@
             classNameAddy   = iRegInfos[3].value;
     }
 
-    char*   className           = nil;
+    char*   className           = NULL;
     char*   returnTypeString    =
         (sendType == sendSuper_stret || sendType == send_stret) ?
         "(struct)" : "";
@@ -913,7 +913,7 @@
 
                                 namePtrValue	= classNameCFString.oc_string.chars;
                                 namePtrValue	= OSSwapBigToHostInt64(namePtrValue);
-                                classNamePtr    = GetPointer(namePtrValue, nil);
+                                classNamePtr    = GetPointer(namePtrValue, NULL);
                                 className       = classNamePtr;
                             }
 
@@ -942,7 +942,7 @@
                     UInt32  namePtrValue    = *(UInt32*)classNamePtr;
 
                     namePtrValue    = OSSwapBigToHostInt32(namePtrValue);
-                    className       = GetPointer(namePtrValue, nil);
+                    className       = GetPointer(namePtrValue, NULL);
                 }
 
                 break;
@@ -971,7 +971,7 @@
     }
     else
     {
-        char*   formatString    = nil;
+        char*   formatString    = NULL;
 
         switch (sendType)
         {
@@ -1006,7 +1006,7 @@
     {
         if (iCurrentClass && iRegInfos[5].isValid)
         {
-            char* theSymPtr = nil;
+            char* theSymPtr = NULL;
             objc2_ivar_t* theIvar = NULL;
             objc2_class_t swappedClass = *iCurrentClass;
 
@@ -1023,7 +1023,7 @@
             if (!FindIvar(&theIvar, &swappedClass, iRegInfos[5].value))
                 return;
 
-            theSymPtr = GetPointer(theIvar->name, nil);
+            theSymPtr = GetPointer(theIvar->name, NULL);
 
             if (!theSymPtr)
                 return;
@@ -1034,7 +1034,7 @@
 
                 theTypeCString[0]   = 0;
 
-                GetDescription(theTypeCString, GetPointer(theIvar->type, nil));
+                GetDescription(theTypeCString, GetPointer(theIvar->type, NULL));
                 snprintf(tempComment, MAX_COMMENT_LENGTH - 1, " (%s)%s",
                     theTypeCString, theSymPtr);
             }
@@ -1085,7 +1085,7 @@
     if (!inLine)
     {
         fprintf(stderr, "otx: [PPCProcessor resetRegisters]: "
-            "tried to reset with nil inLine\n");
+            "tried to reset with NULL inLine\n");
         return;
     }
 
@@ -1108,7 +1108,7 @@
         #endif
 
         GetObjcClassPtrFromName(&iCurrentClass,
-            GetPointer(swappedCat.class_name, nil));
+            GetPointer(swappedCat.class_name, NULL));
     }*/
 
     iRegInfos[3].classPtr   = iCurrentClass;
@@ -1120,7 +1120,7 @@
     iCTR                    = (GP64RegisterInfo){0};
 
     // Try to find out whether this is a class or instance method.
-    Method64Info* thisMethod  = nil;
+    Method64Info* thisMethod  = NULL;
 
     if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
         iIsInstanceMethod   = thisMethod->inst;
@@ -1128,14 +1128,14 @@
     if (iLocalSelves)
     {
         free(iLocalSelves);
-        iLocalSelves    = nil;
+        iLocalSelves    = NULL;
         iNumLocalSelves = 0;
     }
 
     if (iLocalVars)
     {
         free(iLocalVars);
-        iLocalVars      = nil;
+        iLocalVars      = NULL;
         iNumLocalVars   = 0;
     }
 
@@ -1158,7 +1158,7 @@
     if (!inLine)
     {
         fprintf(stderr, "otx: [PPCProcessor updateRegisters]: "
-            "tried to update with nil inLine\n");
+            "tried to update with NULL inLine\n");
         return;
     }
 
@@ -1276,7 +1276,7 @@
                 iRegInfos[RT(theCode)].classPtr = NULL;
                 iRegInfos[RT(theCode)].className = NULL;
                 iRegInfos[RT(theCode)].messageRefSel = NULL;
-//                iRegInfos[RT(theCode)].catPtr   = nil;
+//                iRegInfos[RT(theCode)].catPtr   = NULL;
 
                 theNewValue = iRegInfos[RA(theCode)].value + SIMM(theCode);
 
@@ -1295,8 +1295,8 @@
             break;
 
         case 0x0f:  // addis | lis
-            iRegInfos[RT(theCode)].classPtr = nil;
-//            iRegInfos[RT(theCode)].catPtr   = nil;
+            iRegInfos[RT(theCode)].classPtr = NULL;
+//            iRegInfos[RT(theCode)].catPtr   = NULL;
 
             if (RA(theCode) == 0)   // lis
             {
@@ -1559,7 +1559,7 @@
             else if (iRegInfos[RA(theCode)].isValid)
             {
                 UInt32  tempPtr = (UInt32)GetPointer(
-                    iRegInfos[RA(theCode)].value + SIMM(theCode), nil);
+                    iRegInfos[RA(theCode)].value + SIMM(theCode), NULL);
 
                 if (tempPtr)
                 {
@@ -1765,7 +1765,7 @@
     if (!inLine)
     {
         fprintf(stderr, "otx: [PPCProcessor restoreRegisters]: "
-            "tried to restore with nil inLine\n");
+            "tried to restore with NULL inLine\n");
         return NO;
     }
 
@@ -1847,7 +1847,7 @@
         theAddy == iAddrDyldFuncLookupPointer)
         return YES;
 
-    Method64Info* theDummyInfo    = nil;
+    Method64Info* theDummyInfo    = NULL;
 
     // In Obj-C apps, the majority of funcs will have Obj-C symbols, so check
     // those first.
@@ -2023,7 +2023,7 @@
 
             // 'currentBlock' will point to either an existing block which
             // we will update, or a newly allocated block.
-            Block64Info*    currentBlock    = nil;
+            Block64Info*    currentBlock    = NULL;
             Line64*         endLine         = NULL;
             BOOL            isEpilog        = NO;
             UInt32          i;
@@ -2106,7 +2106,7 @@
             if (!currentBlock)
             {
                 fprintf(stderr, "otx: [PPCProcessor gatherFuncInfos] "
-                    "currentBlock is nil. Flame the dev.\n");
+                    "currentBlock is NULL. Flame the dev.\n");
                 return;
             }
 
@@ -2118,7 +2118,7 @@
             savedRegs[LRIndex]  = iLR;
             savedRegs[CTRIndex] = iCTR;
 
-            Var64Info*  savedSelves = nil;
+            Var64Info*  savedSelves = NULL;
 
             if (iLocalSelves)
             {
@@ -2128,7 +2128,7 @@
                     sizeof(Var64Info) * iNumLocalSelves);
             }
 
-            Var64Info*  savedVars   = nil;
+            Var64Info*  savedVars   = NULL;
 
             if (iLocalVars)
             {

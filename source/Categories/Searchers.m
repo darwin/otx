@@ -24,7 +24,7 @@
     nlist searchKey = {{0}, 0, 0, 0, inAddress};
     BOOL symbolExists = (bsearch(&searchKey,
         iFuncSyms, iNumFuncSyms, sizeof(nlist),
-        (COMPARISON_FUNC_TYPE)Sym_Compare) != nil);
+        (COMPARISON_FUNC_TYPE)Sym_Compare) != NULL);
 
     return symbolExists;
 }
@@ -40,7 +40,7 @@
 
     if (!iClassMethodInfos)
     {
-        *outMI  = nil;
+        *outMI  = NULL;
         return NO;
     }
 
@@ -49,14 +49,14 @@
     if (iSwapped)
         swappedAddress  = OSSwapInt32(swappedAddress);
 
-    MethodInfo  searchKey   = {{nil, nil, (IMP)swappedAddress}, {0}, {0}, NO};
+    MethodInfo  searchKey   = {{NULL, NULL, (IMP)swappedAddress}, {0}, {0}, NO};
 
     *outMI  = bsearch(&searchKey,
         iClassMethodInfos, iNumClassMethodInfos, sizeof(MethodInfo),
             (COMPARISON_FUNC_TYPE)
             (iSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
 
-    return (*outMI != nil);
+    return (*outMI != NULL);
 }
 
 //  findCatMethod:byAddress:
@@ -70,7 +70,7 @@
 
     if (!iCatMethodInfos)
     {
-        *outMI  = nil;
+        *outMI  = NULL;
         return NO;
     }
 
@@ -79,14 +79,14 @@
     if (iSwapped)
         swappedAddress  = OSSwapInt32(swappedAddress);
 
-    MethodInfo  searchKey   = {{nil, nil, (IMP)swappedAddress}, {0}, {0}, NO};
+    MethodInfo  searchKey   = {{NULL, NULL, (IMP)swappedAddress}, {0}, {0}, NO};
 
     *outMI  = bsearch(&searchKey,
         iCatMethodInfos, iNumCatMethodInfos, sizeof(MethodInfo),
             (COMPARISON_FUNC_TYPE)
             (iSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
 
-    return (*outMI != nil);
+    return (*outMI != NULL);
 }
 
 //  findIvar:inClass:withOffset:
@@ -103,7 +103,7 @@
     objc_class*         theClassPtr     = inClass;
     objc_class          theSwappedClass = *theClassPtr;
     objc_class          theDummyClass   = {0};
-    char*               theSuperName    = nil;
+    char*               theSuperName    = NULL;
     objc_ivar_list*     theIvars;
 
     while (theClassPtr)
@@ -112,12 +112,12 @@
 //          swap_objc_class(&theSwappedClass);
 
         theIvars    = (objc_ivar_list*)GetPointer(
-            (UInt32)theSwappedClass.ivars, nil);
+            (UInt32)theSwappedClass.ivars, NULL);
 
         if (!theIvars)
         {   // Try again with the superclass.
             theSuperName    = GetPointer(
-                (UInt32)theClassPtr->super_class, nil);
+                (UInt32)theClassPtr->super_class, NULL);
 
             if (!theSuperName)
                 break;
@@ -168,7 +168,7 @@
         }
 
         // Try again with the superclass.
-        theSuperName    = GetPointer((UInt32)theClassPtr->super_class, nil);
+        theSuperName    = GetPointer((UInt32)theClassPtr->super_class, NULL);
 
         if (!theSuperName)
             break;

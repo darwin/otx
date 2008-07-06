@@ -16,21 +16,21 @@
 // ----------------------------------------------------------------------------
 //  Given a method imp address, return the class to which it belongs. This func
 //  is called each time a new function is detected. If that function is known
-//  to be an Obj-C method, it's class is returned. Otherwise this returns nil.
+//  to be an Obj-C method, it's class is returned. Otherwise this returns NULL.
 
 - (BOOL)getObjcClassPtr: (objc2_class_t**)outClass
              fromMethod: (UInt64)inAddress;
 {
-    *outClass   = nil;
+    *outClass   = NULL;
 
-    Method64Info* theInfo = nil;
+    Method64Info* theInfo = NULL;
 
     FindClassMethodByAddress(&theInfo, inAddress);
 
     if (theInfo)
         *outClass   = &theInfo->oc_class;
 
-    return (*outClass != nil);
+    return (*outClass != NULL);
 }
 
 //  getObjcMethod:fromAddress:
@@ -40,7 +40,7 @@
 - (BOOL)getObjcMethod: (Method64Info**)outMI
           fromAddress: (UInt64)inAddress;
 {
-    *outMI  = nil;
+    *outMI  = NULL;
 
     FindClassMethodByAddress(outMI, inAddress);
 
@@ -49,7 +49,7 @@
 
     FindCatMethodByAddress(outMI, inAddress);*/
 
-    return (*outMI != nil);
+    return (*outMI != NULL);
 }
 
 //  getObjcMethodList:methods:fromAddress: (was get_method_list)
@@ -91,7 +91,7 @@
                 memcpy(outList, iObjcSects[i].contents +
                     (inAddress - iObjcSects[i].s.addr), left);
                 left = 0;
-                *outMethods = nil;
+                *outMethods = NULL;
             }
 
             return YES;
@@ -111,7 +111,7 @@
                 fromObject: (const char*)inObject
                       type: (UInt8)inType
 {
-    *outDescription = nil;
+    *outDescription = NULL;
 
     UInt64  theValue    = 0;
 
@@ -154,9 +154,9 @@
     if (iSwapped)
         theValue = OSSwapInt64(theValue);
 
-    *outDescription = GetPointer(theValue, nil);
+    *outDescription = GetPointer(theValue, NULL);
 
-    return (*outDescription != nil);
+    return (*outDescription != NULL);
 }
 
 //  getObjcClass:fromName:
@@ -181,7 +181,7 @@
         if (iSwapped)
             namePtr = OSSwapInt64(namePtr);
 
-        if (GetPointer(namePtr, nil) == inName)
+        if (GetPointer(namePtr, NULL) == inName)
         {
             *outClass   = iClassMethodInfos[i].oc_class;
             return YES;
@@ -212,14 +212,14 @@
         if (iSwapped)
             namePtr = OSSwapInt64(namePtr);
 
-        if (GetPointer(namePtr, nil) == inName)
+        if (GetPointer(namePtr, NULL) == inName)
         {
-            *outClassPtr    = &iClassMethodInfos[i].oc_class;
+            *outClassPtr = &iClassMethodInfos[i].oc_class;
             return YES;
         }
     }
 
-    *outClassPtr    = nil;
+    *outClassPtr = NULL;
     return NO;
 }
 

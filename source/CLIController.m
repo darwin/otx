@@ -469,7 +469,7 @@
                 return;
             }
 
-            unsigned char** foundList   = nil;
+            unsigned char** foundList   = NULL;
             UInt32          foundCount  = 0;
 
             if ([theProcessor verifyNops: &foundList

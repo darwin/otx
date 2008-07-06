@@ -51,13 +51,13 @@
     if (iRAMFile)
     {
         free(iRAMFile);
-        iRAMFile    = nil;
+        iRAMFile = NULL;
     }
 
     if (iThunks)
     {
         free(iThunks);
-        iThunks = nil;
+        iThunks = NULL;
     }
 
     if (iCPFiltPipe)

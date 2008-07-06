@@ -16,21 +16,21 @@
 // ----------------------------------------------------------------------------
 //  Given a method imp address, return the class to which it belongs. This func
 //  is called each time a new function is detected. If that function is known
-//  to be an Obj-C method, it's class is returned. Otherwise this returns nil.
+//  to be an Obj-C method, it's class is returned. Otherwise this returns NULL.
 
 - (BOOL)getObjcClassPtr: (objc_class**)outClass
              fromMethod: (UInt32)inAddress;
 {
-    *outClass   = nil;
+    *outClass = NULL;
 
-    MethodInfo* theInfo = nil;
+    MethodInfo* theInfo = NULL;
 
     FindClassMethodByAddress(&theInfo, inAddress);
 
     if (theInfo)
-        *outClass   = &theInfo->oc_class;
+        *outClass = &theInfo->oc_class;
 
-    return (*outClass != nil);
+    return (*outClass != NULL);
 }
 
 //  getObjcCatPtr:fromMethod:
@@ -40,16 +40,16 @@
 - (BOOL)getObjcCatPtr: (objc_category**)outCat
            fromMethod: (UInt32)inAddress;
 {
-    *outCat = nil;
+    *outCat = NULL;
 
-    MethodInfo* theInfo = nil;
+    MethodInfo* theInfo = NULL;
 
     FindCatMethodByAddress(&theInfo, inAddress);
 
     if (theInfo)
         *outCat = &theInfo->oc_cat;
 
-    return (*outCat != nil);
+    return (*outCat != NULL);
 }
 
 //  getObjcMethod:fromAddress:
@@ -59,7 +59,7 @@
 - (BOOL)getObjcMethod: (MethodInfo**)outMI
           fromAddress: (UInt32)inAddress;
 {
-    *outMI  = nil;
+    *outMI  = NULL;
 
     FindClassMethodByAddress(outMI, inAddress);
 
@@ -68,7 +68,7 @@
 
     FindCatMethodByAddress(outMI, inAddress);
 
-    return (*outMI != nil);
+    return (*outMI != NULL);
 }
 
 //  getObjcMethodList:methods:fromAddress: (was get_method_list)
@@ -110,7 +110,7 @@
                 memcpy(outList, iObjcSects[i].contents +
                     (inAddress - iObjcSects[i].s.addr), left);
                 left = 0;
-                *outMethods = nil;
+                *outMethods = NULL;
             }
 
             return YES;
@@ -128,7 +128,7 @@
                 fromObject: (const char*)inObject
                       type: (UInt8)inType
 {
-    *outDescription = nil;
+    *outDescription = NULL;
 
     UInt32  theValue    = 0;
 
@@ -175,9 +175,9 @@
     if (iSwapped)
         theValue    = OSSwapInt32(theValue);
 
-    *outDescription = GetPointer(theValue, nil);
+    *outDescription = GetPointer(theValue, NULL);
 
-    return (*outDescription != nil);
+    return (*outDescription != NULL);
 }
 
 //  getObjcSymtab:defs:fromModule: (was get_symtab)
@@ -218,7 +218,7 @@
             {
                 memcpy(outSymTab, iObjcSects[i].contents +
                     (addr - iObjcSects[i].s.addr), left);
-                *outDefs    = nil;
+                *outDefs    = NULL;
             }
 
             return YES;
@@ -292,7 +292,7 @@
         if (iSwapped)
             namePtr = OSSwapInt32(namePtr);
 
-        if (GetPointer(namePtr, nil) == inName)
+        if (GetPointer(namePtr, NULL) == inName)
         {
             *outClass   = iClassMethodInfos[i].oc_class;
             return YES;
@@ -320,14 +320,14 @@
         if (iSwapped)
             namePtr = OSSwapInt32(namePtr);
 
-        if (GetPointer(namePtr, nil) == inName)
+        if (GetPointer(namePtr, NULL) == inName)
         {
-            *outClassPtr    = &iClassMethodInfos[i].oc_class;
+            *outClassPtr = &iClassMethodInfos[i].oc_class;
             return YES;
         }
     }
 
-    *outClassPtr    = nil;
+    *outClassPtr = NULL;
 
     return NO;
 }

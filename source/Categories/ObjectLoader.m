@@ -471,7 +471,7 @@
                 // Categories are linked to classes by name only. Try to 
                 // find the class for this category. May be nil.
                 GetObjcClassFromName(&theClass,
-                    GetPointer((UInt32)theSwappedCat.class_name, nil));
+                    GetPointer((UInt32)theSwappedCat.class_name, NULL));
 
                 theSwappedClass = theClass;
 

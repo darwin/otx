@@ -94,13 +94,13 @@
 
 - (BOOL)printLinesFromList: (Line64*)listHead
 {
-    FILE*   outFile = nil;
+    FILE* outFile = NULL;
 
     // In the CLI target, mOutputFilePath is nil.
     if (iOutputFilePath)
     {
-        const char* outPath     = UTF8STRING(iOutputFilePath);
-        outFile                 = fopen(outPath, "w");
+        const char* outPath = UTF8STRING(iOutputFilePath);
+        outFile = fopen(outPath, "w");
     }
     else
         outFile = stdout;
@@ -167,7 +167,7 @@
         {                               // This is the last one, delete it.
             free(theLine->chars);
             free(theLine);
-            theLine = nil;
+            theLine = NULL;
         }
     }
 }
@@ -194,13 +194,13 @@
         {                               // This is the last one, delete it.
             free(theLine->chars);
             free(theLine);
-            theLine = nil;
+            theLine = NULL;
         }
     }
 
     // Update the head.
     *listHead           = inLine;
-    (*listHead)->prev   = nil;
+    (*listHead)->prev   = NULL;
 }
 
 @end

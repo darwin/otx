@@ -106,13 +106,13 @@
     if (iFuncSyms)
     {
         free(iFuncSyms);
-        iFuncSyms   = nil;
+        iFuncSyms   = NULL;
     }
 
     if (iClassMethodInfos)
     {
         free(iClassMethodInfos);
-        iClassMethodInfos   = nil;
+        iClassMethodInfos   = NULL;
     }
 
     if (iLineArray)
@@ -154,23 +154,23 @@
                 if (blockInfo->state.regInfos)
                 {
                     free(blockInfo->state.regInfos);
-                    blockInfo->state.regInfos   = nil;
+                    blockInfo->state.regInfos   = NULL;
                 }
 
                 if (blockInfo->state.localSelves)
                 {
                     free(blockInfo->state.localSelves);
-                    blockInfo->state.localSelves    = nil;
+                    blockInfo->state.localSelves    = NULL;
                 }
             }
 
             free(funcInfo->blocks);
-            funcInfo->blocks    = nil;
+            funcInfo->blocks    = NULL;
         }
     }
 
     free(iFuncInfos);
-    iFuncInfos  = nil;
+    iFuncInfos  = NULL;
 }
 
 #pragma mark -
@@ -187,7 +187,7 @@
     }
 
     iOutputFilePath = inOutputFilePath;
-    iMachHeaderPtr  = nil;
+    iMachHeaderPtr  = NULL;
 
     if (![self loadMachHeader])
     {
@@ -335,8 +335,8 @@
 
 - (BOOL)populateLineLists
 {
-    Line64* thePrevVerboseLine  = nil;
-    Line64* thePrevPlainLine    = nil;
+    Line64* thePrevVerboseLine  = NULL;
+    Line64* thePrevPlainLine    = NULL;
 
     // Read __text lines.
     [self populateLineList: &iVerboseLineListHead verbosely: YES
@@ -545,7 +545,7 @@
                 genericFuncNum  = ++iCurrentGenericFuncNum;
 
             iFuncInfos[iNumFuncInfos - 1]   = (Function64Info)
-                {theLine->info.address, nil, 0, genericFuncNum};
+                {theLine->info.address, NULL, 0, genericFuncNum};
         }
 
         if (theLine->info.isCode)
@@ -646,7 +646,7 @@
 {
     if (!ioLine || !(*ioLine) || !((*ioLine)->chars))
     {
-        fprintf(stderr, "otx: tried to process nil code line\n");
+        fprintf(stderr, "otx: tried to process NULL code line\n");
         return;
     }
 
@@ -777,14 +777,14 @@
         iCurrentFuncPtr = (*ioLine)->info.address;
 
         // Try to build the method name.
-        Method64Info* methodInfoPtr   = nil;
+        Method64Info* methodInfoPtr   = NULL;
         Method64Info  methodInfo;
 
         if (GetObjcMethodFromAddress(&methodInfoPtr, iCurrentFuncPtr))
         {
             methodInfo  = *methodInfoPtr;
 
-            char*   className   = nil;
+            char*   className   = NULL;
 
             if (methodInfo.oc_class.data)
             {
@@ -796,27 +796,27 @@
                 if (iSwapped)
                     name = OSSwapInt64(name);
 
-                className = GetPointer(name, nil);
+                className = GetPointer(name, NULL);
             }
 
-//            char*   catName     = nil;
+//            char*   catName     = NULL;
 
             /*if (theSwappedInfo.oc_cat.category_name)
             {
                 className   = GetPointer(
-                    theSwappedInfo.oc_cat.class_name, nil);
+                    theSwappedInfo.oc_cat.class_name, NULL);
                 catName     = GetPointer(
-                    theSwappedInfo.oc_cat.category_name, nil);
+                    theSwappedInfo.oc_cat.category_name, NULL);
             }
             else if (theSwappedInfo.oc_class.data.name)
             {
                 className   = GetPointer(
-                    theSwappedInfo.oc_class.name, nil);
+                    theSwappedInfo.oc_class.name, NULL);
             }*/
 
             if (className)
             {
-                char*   selName = GetPointer(methodInfo.m.name, nil);
+                char*   selName = GetPointer(methodInfo.m.name, NULL);
 
                 if (selName)
                 {
@@ -824,7 +824,7 @@
                         return;
 
                     char*   methTypes   =
-                        GetPointer(methodInfo.m.types, nil);
+                        GetPointer(methodInfo.m.types, NULL);
 
                     if (methTypes)
                     {
@@ -1242,7 +1242,7 @@
 
 - (BOOL)printDataSections
 {
-    FILE*   outFile = nil;
+    FILE*   outFile = NULL;
 
     if (iOutputFilePath)
         outFile = fopen(UTF8STRING(iOutputFilePath), "a");
@@ -1397,7 +1397,7 @@
 - (char*)selectorForMsgSend: (char*)outComment
                    fromLine: (Line64*)inLine
 {
-    return nil;
+    return NULL;
 }
 
 #pragma mark -
@@ -1441,7 +1441,7 @@
     }
 
     // Restore the signal mask to it's former glory.
-    if (sigprocmask(SIG_SETMASK, &oldSigs, nil) == -1)
+    if (sigprocmask(SIG_SETMASK, &oldSigs, NULL) == -1)
     {
         perror("otx: unable to restore signals");
         return;
@@ -1453,7 +1453,7 @@
         return;
     }
 
-    char*   format      = nil;
+    char*   format      = NULL;
     char*   prefix      = "\nmd5: ";
     UInt32  finalLength = strlen(md5Line) + strlen(prefix);
 
@@ -1842,12 +1842,12 @@
                type: (UInt8*)outType
 {
     if (inAddr == 0)
-        return nil;
+        return NULL;
 
     if (outType)
         *outType    = PointerType;
 
-    char*   thePtr  = nil;
+    char*   thePtr  = NULL;
 
             // (__TEXT,__cstring) (char*)
     if (inAddr >= iCStringSect.s.addr &&
@@ -1858,7 +1858,7 @@
         // Make sure we're pointing to the beginning of a string,
         // not somewhere in the middle.
         if (*(thePtr - 1) != 0 && inAddr != iCStringSect.s.addr)
-            thePtr  = nil;
+            thePtr  = NULL;
         // Check if this may be a Pascal string. Thanks, Metrowerks.
         else if (outType && strlen(thePtr) == thePtr[0] + 1)
             *outType    = PStringType;
@@ -1872,7 +1872,7 @@
         if (outType && strlen(thePtr) == thePtr[0] + 1)
             *outType    = PStringType;
         else
-            thePtr  = nil;
+            thePtr  = NULL;
     }
     else    // (__TEXT,__literal4) (float)
     if (inAddr >= iLit4Sect.s.addr &&
