@@ -245,11 +245,27 @@
 #endif
             break;
 
+        case MH_MAGIC_64:
+#if TARGET_RT_LITTLE_ENDIAN
+            iArchSelector   = CPU_TYPE_X86_64;
+#else
+            iArchSelector   = CPU_TYPE_POWERPC64;
+#endif
+            break;
+
         case MH_CIGAM:
 #if TARGET_RT_LITTLE_ENDIAN
             iArchSelector   = CPU_TYPE_POWERPC;
 #else
             iArchSelector   = CPU_TYPE_I386;
+#endif
+            break;
+
+        case MH_CIGAM_64:
+#if TARGET_RT_LITTLE_ENDIAN
+            iArchSelector   = CPU_TYPE_POWERPC64;
+#else
+            iArchSelector   = CPU_TYPE_X86_64;
 #endif
             break;
 
