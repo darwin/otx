@@ -132,16 +132,20 @@ enum {
 #define ANON_FUNC_BASE          "Anon"
 #define ANON_FUNC_BASE_LENGTH   4
 
-// Refresh progress bar after processing this many lines.
-#define PROGRESS_FREQ           3500
-//#define CLI_PROGRESS_FREQ     5000    i predict we will want this
-
 // Toggle these to print symbol descriptions and blocks to standard out.
 #define _OTX_DEBUG_SYMBOLS_     0
 #define _OTX_DEBUG_DYSYMBOLS_   0
 #define _OTX_DEBUG_BLOCKS_      0   // too numerous, add it yourself.
 
 #define COMPARISON_FUNC_TYPE    int (*)(const void*, const void*)
+
+#ifdef OTX_CLI
+#define PROG_DISPLAY_SHOULD_BLOCK   YES
+#define PROGRESS_FREQ               10000   // Refresh progress bar after processing this many lines.
+#else
+#define PROG_DISPLAY_SHOULD_BLOCK   NO
+#define PROGRESS_FREQ               3500
+#endif
 
 // ============================================================================
 

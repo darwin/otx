@@ -218,7 +218,7 @@
         nil];
 
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: NO];
+        withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
     [progDict release];
 
     [self populateLineLists];
@@ -232,7 +232,7 @@
         nil];
 
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: NO];
+        withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
     [progDict release];
 
     // Gather info about lines while they're virgin.
@@ -270,7 +270,7 @@
         nil];
 
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: NO];
+        withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
     [progDict release];
 
     Line*   theLine = iPlainLineListHead;
@@ -289,7 +289,7 @@
                 nil];
 
             [iController performSelectorOnMainThread: @selector(reportProgress:)
-                withObject: progDict waitUntilDone: NO];
+                withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
             [progDict release];
         }
 
@@ -317,7 +317,7 @@
         nil];
 
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: NO];
+        withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
     [progDict release];
 
     // Create output file.
@@ -338,7 +338,7 @@
         [NSNumber numberWithBool: YES], PRCompleteKey,
         nil];
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: NO];
+        withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
     [progDict release];
 
     return YES;
