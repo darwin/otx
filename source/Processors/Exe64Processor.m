@@ -203,8 +203,13 @@
         @"Calling otool", PRDescriptionKey,
         nil];
 
+#ifdef OTX_CLI
+    [iController reportProgress: progDict];
+#else
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
+        withObject: progDict waitUntilDone: NO];
+#endif
+
     [progDict release];
 
     [self populateLineLists];
@@ -217,8 +222,13 @@
         @"Gathering info", PRDescriptionKey,
         nil];
 
+#ifdef OTX_CLI
+    [iController reportProgress: progDict];
+#else
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
+        withObject: progDict waitUntilDone: NO];
+#endif
+
     [progDict release];
 
     // Gather info about lines while they're virgin.
@@ -255,8 +265,13 @@
         @"Generating file", PRDescriptionKey,
         nil];
 
+#ifdef OTX_CLI
+    [iController reportProgress: progDict];
+#else
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
+        withObject: progDict waitUntilDone: NO];
+#endif
+
     [progDict release];
 
     Line64* theLine = iPlainLineListHead;
@@ -274,8 +289,13 @@
                 [NSNumber numberWithDouble: progValue], PRValueKey,
                 nil];
 
+#ifdef OTX_CLI
+            [iController reportProgress: progDict];
+#else
             [iController performSelectorOnMainThread: @selector(reportProgress:)
-                withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
+                withObject: progDict waitUntilDone: NO];
+#endif
+
             [progDict release];
         }
 
@@ -302,8 +322,13 @@
         @"Writing file", PRDescriptionKey,
         nil];
 
+#ifdef OTX_CLI
+    [iController reportProgress: progDict];
+#else
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
+        withObject: progDict waitUntilDone: NO];
+#endif
+
     [progDict release];
 
     // Create output file.
@@ -323,8 +348,14 @@
     progDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
         [NSNumber numberWithBool: YES], PRCompleteKey,
         nil];
+
+#ifdef OTX_CLI
+    [iController reportProgress: progDict];
+#else
     [iController performSelectorOnMainThread: @selector(reportProgress:)
-        withObject: progDict waitUntilDone: PROG_DISPLAY_SHOULD_BLOCK];
+        withObject: progDict waitUntilDone: NO];
+#endif
+
     [progDict release];
 
     return YES;
