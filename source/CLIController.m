@@ -289,20 +289,22 @@
 - (void)usage
 {
     fprintf(stderr,
-        "Usage: otx [-ledcmbnrvpo] [-arch <arch type>] <object file>\n"
-        "\t-l    don't show local offsets\n"
-        "\t-e    don't entab output\n"
-        "\t-d    show data sections\n"
-        "\t-c    don't show md5 checksum\n"
-        "\t-m    don't show verbose objc_msgSend\n"
-        "\t-b    separate logical blocks\n"
-        "\t-n    don't demangle C++ symbol names\n"
-        "\t-r    don't show Obj-C method return types\n"
-        "\t-v    don't show Obj-C member variable types\n"
-        "\t-p    display progress\n"
-        "\t-o    only check the executable for obfuscation\n"
-        "\t-arch specify which architecture to process in a \n"
-        "\t\tuniversal binary(ppc or i386)\n");
+        "Usage: otx [-bcdelmnoprv] [-arch <arch type>] <object file>\n"
+        "\t-b             separate logical blocks\n"
+        "\t-c             don't show md5 checksum\n"
+        "\t-d             show data sections\n"
+        "\t-e             don't entab output\n"
+        "\t-l             don't show local offsets\n"
+        "\t-m             don't show verbose objc_msgSend\n"
+        "\t-n             don't demangle C++ symbol names\n"
+        "\t-o             only check the executable for obfuscation\n"
+        "\t-p             display progress\n"
+        "\t-r             don't show Obj-C method return types\n"
+        "\t-v             don't show Obj-C member variable types\n"
+        "\t-arch archVal  specify a single architecture in a universal binary\n"
+        "\t               if not specified, the host architecture is used\n"
+        "\t               allowed values: ppc, ppc64, i386, x86_64\n"
+    );
 }
 
 //  dealloc
