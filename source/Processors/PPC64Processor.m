@@ -1403,6 +1403,20 @@
         case 0x1f:  // multiple instructions
             switch (SO(theCode))
             {
+                case 21:    // ldx
+/*                    if ((RA(theCode) != 0 && !iRegInfos[RA(theCode)].isValid) ||
+                        !iRegInfos[RB(theCode)].isValid)
+                    {
+                        iRegInfos[RT(theCode)] = (GP64RegisterInfo){0};
+                        break;
+                    }
+
+                    theNewValue = (RA(theCode) == 0) ? 0 :
+                        iRegInfos[RA(theCode)].value + iRegInfos[RB(theCode)].value;*/
+
+                    iRegInfos[RT(theCode)] = (GP64RegisterInfo){0};
+
+                    break;
                 case 23:    // lwzx
                     iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
                     break;
@@ -1543,6 +1557,7 @@
                     break;
 
                 default:
+                    // Ideally, we would zero the destination register here. Sadly, because SO values can vary in their formats, we don't know which register is the destination.
                     break;
             }
 
