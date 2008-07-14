@@ -1963,6 +1963,7 @@
 {
     UInt32 theCode = *(UInt32*)inCode;
 
+    theCode = OSSwapBigToHostInt32(theCode);
     return IS_BLOCK_BRANCH(theCode);
 }
 
@@ -2055,9 +2056,8 @@
                         if (beginLine != NULL)
                         {
                             // Walk through the block. It's an epilog if it ends
-                            // with 'blr' and contains no 'bl's.
+                            // with 'blr'.
                             Line64* nextLine    = *beginLine;
-                            BOOL    canBeEpliog = YES;
                             UInt32  tempCode;
 
                             while (nextLine)
@@ -2065,14 +2065,11 @@
                                 tempCode = *(UInt32*)nextLine->info.code;
                                 tempCode = OSSwapBigToHostInt32(tempCode);
 
-                                if (IS_BRANCH_LINK(tempCode))
-                                    canBeEpliog = NO;
-
                                 if (IS_BLOCK_BRANCH(tempCode))
                                 {
                                     endLine = nextLine;
 
-                                    if (canBeEpliog && IS_BLR(tempCode))
+                                    if (IS_BLR(tempCode))
                                         isEpilog = YES;
 
                                     break;

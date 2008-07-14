@@ -60,7 +60,8 @@
     (!AA(i) && !LK(i)))
 
 #define IS_BRANCH_LINK(i)                                           \
-    ((PO(i) == 0x10 && (i & 0x1))   ||                              \
+    ((PO(i) == 0x10 && LK(i)) ||                                    \
+     (PO(i) == 0x12 && LK(i)) ||                                    \
      (PO(i) == 0x13 && (i & 0x7ff) == 0x421))
 
 #define IS_BRANCH_CONDITIONAL(i)                                    \

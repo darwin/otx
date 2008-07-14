@@ -1708,6 +1708,7 @@ extern BOOL gCancel;
 {
     UInt32 theCode = *(UInt32*)inCode;
 
+    theCode = OSSwapBigToHostInt32(theCode);
     return IS_BLOCK_BRANCH(theCode);
 }
 
