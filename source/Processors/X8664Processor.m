@@ -2319,13 +2319,20 @@
                 jumpTarget  = theLine->info.address + 2 + (SInt8)opcode2;
                 validTarget = YES;
             }
-            else if (opcode == 0xe9 ||
-                (opcode == 0x0f && opcode2 >= 0x81 && opcode2 <= 0x8f))
+            else if (opcode == 0xe9)
             {
                 SInt32 rel32 = *(SInt32*)&theLine->info.code[1];
 
                 rel32 = OSSwapLittleToHostInt32(rel32);
                 jumpTarget = theLine->info.address + 5 + rel32;
+                validTarget = YES;
+            }
+            else if ((opcode == 0x0f && opcode2 >= 0x81 && opcode2 <= 0x8f))
+            {
+                SInt32 rel32 = *(SInt32*)&theLine->info.code[2];
+
+                rel32 = OSSwapLittleToHostInt32(rel32);
+                jumpTarget = theLine->info.address + 6 + rel32;
                 validTarget = YES;
             }
 
@@ -2373,9 +2380,8 @@
                         if (beginLine != NULL)
                         {
                             // Walk through the block. It's an epilog if it ends
-                            // with 'ret' and contains no 'call's.
+                            // with 'ret'.
                             Line64* nextLine    = *beginLine;
-                            BOOL    canBeEpliog = YES;
                             UInt8   tempOpcode = 0;
                             UInt8   tempOpcode2 = 0;
 
@@ -2384,14 +2390,11 @@
                                 tempOpcode = nextLine->info.code[0];
                                 tempOpcode2 = nextLine->info.code[1];
 
-                                if (IS_CALL(tempOpcode))
-                                    canBeEpliog = NO;
-
                                 if (IS_JUMP(tempOpcode, tempOpcode2))
                                 {
                                     endLine = nextLine;
 
-                                    if (canBeEpliog && IS_RET(tempOpcode))
+                                    if (IS_RET(tempOpcode))
                                         isEpilog = YES;
 
                                     break;
