@@ -494,6 +494,9 @@
 
     if (!procClass)
     {
+        [self performSelectorOnMainThread: @selector(processingThreadDidFinish:)
+                               withObject: @"Unsupported architecture."
+                            waitUntilDone: NO];
         [pool release];
         return;
     }
@@ -1150,15 +1153,19 @@
         // Get the arch name for the popup.
         const NXArchInfo* archInfo = NXGetArchInfoFromCpuType(
             mh.cputype, mh.cpusubtype);
-        NSString* archName = [NSString stringWithUTF8String: archInfo->name];
+        NSString* archName = nil;
 
-        // Add the menu item with refcon.
-        menuItem = [[NSMenuItem alloc] initWithTitle: archName
-            action: NULL keyEquivalent: @""];
-        [archMenu addItem: menuItem];
+        if (archInfo != NULL)
+            archName = [NSString stringWithUTF8String: archInfo->name];
 
-        iSelectedArchCPUType    = mh.cputype;
-        iSelectedArchCPUSubType = mh.cpusubtype;
+        if (archName)
+        {   // Add the menu item with refcon.
+            menuItem = [[NSMenuItem alloc] initWithTitle: archName
+                action: NULL keyEquivalent: @""];
+            [archMenu addItem: menuItem];
+            iSelectedArchCPUType = mh.cputype;
+            iSelectedArchCPUSubType = mh.cpusubtype;
+        }
     }
 
     BOOL shouldEnableArch = NO;
@@ -1201,7 +1208,9 @@
             if (iSelectedArchCPUType == mh.cputype)
                 iSelectedArchCPUSubType = mh.cpusubtype;
 
-            tempString = [NSString stringWithUTF8String: archInfo->name];
+            if (archInfo != NULL)
+                tempString = [NSString stringWithUTF8String: archInfo->name];
+
             break;
         }
 
@@ -1275,11 +1284,18 @@
                 fa = archArray;
 
             const NXArchInfo* bestArchInfo = NXGetArchInfoFromCpuType(fa->cputype, fa->cpusubtype);
-            NSString* faName = [NSString stringWithFormat: @"%s", bestArchInfo->name];
+            NSString* faName = nil;
 
-            iOutputFileLabel = [NSString stringWithFormat: @"_%@", faName];
-            [iVerifyButton setEnabled: (iHostInfo.cpu_type == CPU_TYPE_I386)];
-            menuItemTitleToSelect   = faName;
+            if (bestArchInfo != NULL)
+                faName = [NSString stringWithFormat: @"%s", bestArchInfo->name];
+
+            if (faName != nil)
+            {
+                iOutputFileLabel = [NSString stringWithFormat: @"_%@", faName];
+                [iVerifyButton setEnabled: (iHostInfo.cpu_type == CPU_TYPE_I386)];
+                menuItemTitleToSelect = faName;
+            }
+
             iExeIsFat               = YES;
             shouldEnableArch        = YES;
             tempString              = @"Fat";
@@ -1288,9 +1304,9 @@
         }
 
         default:
-            iFileIsValid    = NO;
-            iSelectedArchCPUType    = 0;
-            tempString      = @"Not a Mach-O file";
+            iFileIsValid = NO;
+            iSelectedArchCPUType = 0;
+            tempString = @"Not a Mach-O file";
             [iVerifyButton setEnabled: NO];
             break;
     }
