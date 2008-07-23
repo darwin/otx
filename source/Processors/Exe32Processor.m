@@ -697,9 +697,6 @@
 
     ChooseLine(ioLine);
 
-    // Much thanx to Blake C. for the implicit memcpy info.
-    // http://yamacdev.blogspot.com/2006/12/implicit-memcpy3-calls.html
-
     UInt32  theOrigLength           = (*ioLine)->length;
     char    localOffsetString[9]    = {0};
     char    theAddressCString[9]    = {0};

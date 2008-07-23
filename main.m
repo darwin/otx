@@ -26,8 +26,6 @@ int main(
 
     int result  = 1;
 
-// OTX_CLI is defined in the CLI target settings. Much thanx to Slava Karpenko
-// and Mike Solomon for telling me about the -D flag.
 #ifdef OTX_CLI
     NSAutoreleasePool*  pool        = [[NSAutoreleasePool alloc] init];
     CLIController*      controller  =
