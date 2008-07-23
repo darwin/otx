@@ -10,9 +10,6 @@
 #import "SystemIncludes.h"  // for UTF8STRING()
 #import "SysUtils.h"
 
-#define LEOPARD_PATH_TO(a)      \"\`xcode-select --print-path\`/usr/bin/#a\"
-#define PRELEOPARD_PATH_TO(a)   \"#a\"
-
 @implementation NSObject(SysUtils)
 
 //  checkOtool:inputFile:
