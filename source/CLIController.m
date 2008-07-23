@@ -390,7 +390,7 @@
         return;
     }
 
-    if ([self checkOtool: [iOFile path]] != noErr)
+    if ([self checkOtool: [iOFile path]] == NO)
     {
         fprintf(stderr,
             "otx: otool was not found. Please install otool and try again.\n");

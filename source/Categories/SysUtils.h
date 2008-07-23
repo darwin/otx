@@ -8,7 +8,7 @@
 
 @interface NSObject(SysUtils)
 
-- (SInt32)checkOtool: (NSString*)filePath;
+- (BOOL)checkOtool: (NSString*)filePath;
 - (NSString*)pathForTool: (NSString*)toolName;
 
 @end

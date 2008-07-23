@@ -12,16 +12,24 @@
 
 @implementation NSObject(SysUtils)
 
-//  checkOtool:inputFile:
+//  checkOtool:
 // ----------------------------------------------------------------------------
 
-- (SInt32)checkOtool: (NSString*)filePath
+- (BOOL)checkOtool: (NSString*)filePath
 {
-    NSString*   otoolPath = [self pathForTool: @"otool"];
-    NSString*   otoolString = [NSString stringWithFormat:
-        @"%@ -h \"%@\" > /dev/null", otoolPath, filePath];
+    NSString* otoolPath = [self pathForTool: @"otool"];
+    NSTask* otoolTask = [[[NSTask alloc] init] autorelease];
+    NSPipe* otoolPipe = [NSPipe pipe];
+    NSArray* args = [NSArray arrayWithObjects: @"-h",
+        [NSString stringWithFormat: @"\"%@\"", filePath], nil];
 
-    return system(UTF8STRING(otoolString));
+    [otoolTask setLaunchPath: otoolPath];
+    [otoolTask setArguments: args];
+    [otoolTask setStandardOutput: otoolPipe];
+    [otoolTask launch];
+    [otoolTask waitUntilExit];
+
+    return ([otoolTask terminationStatus] == 1);
 }
 
 //  pathForTool:

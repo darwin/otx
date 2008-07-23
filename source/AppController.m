@@ -448,7 +448,7 @@
     [self reportProgress: progDict];
     [progDict release];
 
-    if ([self checkOtool: [iObjectFile path]] != noErr)
+    if ([self checkOtool: [iObjectFile path]] == NO)
     {
         [self reportError: @"otool was not found."
                suggestion: @"Please install otool and try again."];
