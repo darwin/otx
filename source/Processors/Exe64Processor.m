@@ -2018,6 +2018,11 @@
             }
         }
     }
+/*    else    // (__DATA,__objc_classlist)
+    if (inAddr >= iObjcClassListSect.s.addr &&
+        inAddr < iObjcClassListSect.s.addr + iObjcClassListSect.size)
+    {
+    }*/
     else    // (__DATA,__objc_classrefs)
     if (inAddr >= iObjcClassRefsSect.s.addr &&
         inAddr < iObjcClassRefsSect.s.addr + iObjcClassRefsSect.size)
