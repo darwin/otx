@@ -104,7 +104,7 @@
     char*   theDummyPtr = NULL;
     char*   theSymPtr   = NULL;
     UInt8   opcode      = PO(theCode);
-    UInt32  localAddy;
+    UInt64  localAddy;
 
     iLineCommentCString[0]  = 0;
 
@@ -249,7 +249,7 @@
                 if (iLineCommentCString[0])
                     break;
 
-                UInt32  absoluteAddy;
+                UInt64  absoluteAddy;
 
                 if (opcode == 0x12)
                     absoluteAddy =
@@ -618,7 +618,7 @@
                     if ((opcode == 0x0e || opcode == 0x18) &&   // li | addi | ori
                         localAddy >= 0x20202020 && localAddy < 0x7f7f7f7f)
                     {
-                        localAddy   = OSSwapBigToHostInt32(localAddy);
+                        localAddy   = OSSwapBigToHostInt64(localAddy);
 
                         char*   fcc = (char*)&localAddy;
 
@@ -852,21 +852,21 @@
     if (!selString)
         return;
 
-    UInt8   sendType    = SendTypeFromMsgSend(ioComment);
+    UInt8 sendType = SendTypeFromMsgSend(ioComment);
 
     // Get the address of the class name string, if this a class method.
-    UInt32  classNameAddy   = 0;
+    UInt64 classNameAddy = 0;
 
     // If *.classPtr is non-NULL, it's not a name string.
     if (sendType == sendSuper_stret || sendType == send_stret)
     {
         if (iRegInfos[4].isValid && !iRegInfos[4].classPtr)
-            classNameAddy   = iRegInfos[4].value;
+            classNameAddy = iRegInfos[4].value;
     }
     else
     {
         if (iRegInfos[3].isValid && !iRegInfos[3].classPtr)
-            classNameAddy   = iRegInfos[3].value;
+            classNameAddy = iRegInfos[3].value;
     }
 
     char*   className           = NULL;
@@ -898,9 +898,9 @@
             case NLSymType:
 				if (classNamePtr)
 				{
-					UInt64	namePtrValue	= *(UInt32*)classNamePtr;
+					UInt64	namePtrValue	= *(UInt64*)classNamePtr;
 
-					namePtrValue	= OSSwapBigToHostInt32(namePtrValue);
+					namePtrValue	= OSSwapBigToHostInt64(namePtrValue);
 					classNamePtr    = GetPointer(namePtrValue, &classNameType);
 
                     switch (classNameType)
@@ -1344,7 +1344,7 @@
                 break;
             }
 
-            UInt32  rotatedRT   =
+            UInt64  rotatedRT   =
                 rotl(iRegInfos[RT(theCode)].value, RB(theCode));
             UInt32  theMask     = 0x0;
             UInt8   i;
@@ -1581,7 +1581,7 @@
                     iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
                     iRegInfos[RT(theCode)].value    = *(UInt32*)tempPtr;
                     iRegInfos[RT(theCode)].value    =
-                        OSSwapBigToHostInt32(iRegInfos[RT(theCode)].value);
+                        OSSwapBigToHostInt64(iRegInfos[RT(theCode)].value);
                     iRegInfos[RT(theCode)].isValid  = YES;
                 }
                 else
@@ -1756,13 +1756,13 @@
             {
                 iNumLocalSelves++;
                 iLocalSelves = realloc(iLocalSelves, iNumLocalSelves * sizeof(Var64Info));
-                iLocalSelves[iNumLocalSelves - 1] = (Var64Info){iRegInfos[RT(theCode)], DS(theCode)};
+                iLocalSelves[iNumLocalSelves - 1] = (Var64Info){iRegInfos[RT(theCode)], (UInt32)DS(theCode)};
             }
             else
             {
                 iNumLocalVars++;
                 iLocalVars = realloc(iLocalVars, iNumLocalVars * sizeof(Var64Info));
-                iLocalVars[iNumLocalVars - 1] = (Var64Info) {iRegInfos[RT(theCode)], DS(theCode)};
+                iLocalVars[iNumLocalVars - 1] = (Var64Info) {iRegInfos[RT(theCode)], (UInt32)DS(theCode)};
             }
 
             break;
@@ -1856,7 +1856,7 @@
     if (!inLine)
         return NO;
 
-    UInt32  theAddy = inLine->info.address;
+    UInt64 theAddy = inLine->info.address;
 
     if (theAddy == iAddrDyldStubBindingHelper   ||
         theAddy == iAddrDyldFuncLookupPointer)
@@ -2025,13 +2025,13 @@
         if (IS_BLOCK_BRANCH(theCode) && iCurrentFuncInfoIndex >= 0 &&
             PO(theCode) != 0x13)    // no new blocks for blr, bctr
         {
-            UInt32  branchTarget;
+            UInt64  branchTarget;
 
             // Retrieve the branch target.
             if (PO(theCode) == 0x12)    // b
-                branchTarget    = theLine->info.address + LI(theCode);
+                branchTarget = theLine->info.address + LI(theCode);
             else if (PO(theCode) == 0x10)   // bc
-                branchTarget    = theLine->info.address + BD(theCode);
+                branchTarget = theLine->info.address + BD(theCode);
 
             // Retrieve current Function64Info.
             Function64Info* funcInfo    =

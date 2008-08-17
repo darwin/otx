@@ -146,7 +146,7 @@
     if (iObjcClassListSect.size == 0)
         return;
 
-    uint32_t numClasses = iObjcClassListSect.size / 8;  // sizeof(uint64_t)
+    uint32_t numClasses = (UInt32)(iObjcClassListSect.size / 8);  // sizeof(uint64_t)
     uint64_t* classList = (uint64_t*)iObjcClassListSect.contents;
     uint64_t fileClassPtr;
     uint32_t i;

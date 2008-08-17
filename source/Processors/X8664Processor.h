@@ -41,7 +41,7 @@ enum {
 
 // ============================================================================
 
-@interface X8664Processor : Exe64Processor<Deobfuscator>
+@interface X8664Processor : Exe64Processor
 {
     GP64RegisterInfo    iStack[MAX_STACK_SIZE];
     GP64RegisterInfo    iRegInfos[16];

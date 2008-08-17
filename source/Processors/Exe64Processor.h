@@ -211,7 +211,7 @@ Function64Info;
     section_info_64     iNLSymSect;
     section_info_64     iImpPtrSect;
     UInt64              iTextOffset;
-    UInt32              iEndOfText;
+    UInt64              iEndOfText;
 
     // C function pointers- see Optimizations.h and speedyDelivery
     void    (*GetDescription)               (id, SEL, char*, const char*);
@@ -252,7 +252,7 @@ Function64Info;
     BOOL    (*FindSymbolByAddress)      (id, SEL, UInt64);
     BOOL    (*FindClassMethodByAddress) (id, SEL, Method64Info**, UInt64);
     BOOL    (*FindCatMethodByAddress)   (id, SEL, Method64Info**, UInt64);
-    BOOL    (*FindIvar)                 (id, SEL, objc2_ivar_t**, objc2_class_t*, UInt32);
+    BOOL    (*FindIvar)                 (id, SEL, objc2_ivar_t**, objc2_class_t*, UInt64);
 }
 
 - (id)initWithURL: (NSURL*)inURL

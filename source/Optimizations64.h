@@ -45,7 +45,7 @@
 #define FindSymbolByAddress64FuncType           (BOOL   (*)(id, SEL, UInt64))
 #define FindClassMethodByAddress64FuncType      (BOOL   (*)(id, SEL, Method64Info**, UInt64))
 #define FindCatMethodByAddress64FuncType        (BOOL   (*)(id, SEL, Method64Info**, UInt64))
-#define FindIvar64FuncType                      (BOOL   (*)(id, SEL, objc2_ivar_t**, objc2_class_t*, UInt32))
+#define FindIvar64FuncType                      (BOOL   (*)(id, SEL, objc2_ivar_t**, objc2_class_t*, UInt64))
 
 // These are not really necessary, but all that "self" crap gets old.
 #define GetDescription(a, b)                                                    \

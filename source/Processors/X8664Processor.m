@@ -129,7 +129,7 @@
 
 - (void)checkThunk: (Line64*)inLine
 {
-    if (!inLine || !inLine->prev || inLine->info.code[1])
+/*    if (!inLine || !inLine->prev || inLine->info.code[1])
         return;
 
     if (inLine->info.code[0] != 0xc3)
@@ -169,7 +169,7 @@
     inLine->prev->info.isFunction = YES;
 
     if (inLine->prev->alt)
-        inLine->prev->alt->info.isFunction  = YES;
+        inLine->prev->alt->info.isFunction  = YES;*/
 }
 
 //  getThunkInfo:forLine:
@@ -180,7 +180,9 @@
 - (BOOL)getThunkInfo: (ThunkInfo*)outInfo
              forLine: (Line64*)inLine
 {
-    if (!inLine)
+    return NO;
+
+/*    if (!inLine)
     {
         fprintf(stderr, "otx: [X86Processor getThunkInfo:forLine:] "
             "NULL inLine\n");
@@ -222,7 +224,7 @@
         break;
     }
 
-    return isThunk;
+    return isThunk;*/
 }
 
 #pragma mark -
@@ -237,8 +239,8 @@
     UInt8   rexByte = 0;
     char*   theDummyPtr = NULL;
     char*   theSymPtr = NULL;
-    UInt32  localAddy = 0;
-    UInt32  targetAddy = 0;
+    UInt64  localAddy = 0;
+    UInt64  targetAddy = 0;
 
     iLineCommentCString[0]  = 0;
 
@@ -630,7 +632,7 @@
                         fcc[3] >= 0x20 && fcc[3] < 0x7f)
                     {
                         #if __LITTLE_ENDIAN__   // reversed on purpose
-                            localAddy   = OSSwapInt32(localAddy);
+                            localAddy   = OSSwapInt64(localAddy);
                         #endif
 
                         snprintf(iLineCommentCString,
@@ -791,7 +793,7 @@
                             fcc[3] >= 0x20 && fcc[3] < 0x7f)
                         {
                             #if __LITTLE_ENDIAN__   // reversed on purpose
-                                localAddy   = OSSwapInt32(localAddy);
+                                localAddy   = OSSwapInt64(localAddy);
                             #endif
 
                             snprintf(iLineCommentCString,
@@ -929,10 +931,11 @@
                 if (iLineCommentCString[0])
                     break;
 
-                localAddy = *(UInt32*)&inLine->info.code[opcodeIndex + 1];
-                localAddy = OSSwapLittleToHostInt32(localAddy);
+                UInt32 immAddy = *(UInt32*)&inLine->info.code[opcodeIndex + 1];
 
-                UInt32 absoluteAddy = inLine->info.address + 5 + (SInt32)localAddy;
+                immAddy = OSSwapLittleToHostInt32(immAddy);
+
+                UInt64 absoluteAddy = (inLine->info.address + 5) + (SInt32)immAddy;
 
     // FIXME: can we use mCurrentFuncInfoIndex here?
                 Function64Info searchKey = {absoluteAddy, NULL, 0, 0};
@@ -1251,9 +1254,9 @@
 
     if (isIndirect && iStack[0].isValid &&
         iStack[0].value <= SYS_MAXSYSCALL)
-        syscallNum  = iStack[0].value;
+        syscallNum  = (UInt32)iStack[0].value;
     else
-        syscallNum  = iRegInfos[EAX].value;
+        syscallNum  = (UInt32)iRegInfos[EAX].value;
 
     theSysString    = gSysCalls[syscallNum];
 
@@ -1309,8 +1312,8 @@
 
     // Store the variant type locally to reduce string comparisons.
     UInt32  sendType    = SendTypeFromMsgSend(outComment);
-    UInt32  receiverAddy;
-    UInt32  selectorAddy;
+    UInt64  receiverAddy;
+    UInt64  selectorAddy;
 
     // Make sure we know what the selector is.
     if (sendType == sendSuper_stret || sendType == send_stret)
@@ -1394,7 +1397,7 @@
         UInt8   sendType    = SendTypeFromMsgSend(ioComment);
 
         // Get the address of the class name string, if this a class method.
-        UInt32  classNameAddy   = 0;
+        UInt64  classNameAddy   = 0;
 
         // If *.classPtr is non-NULL, it's not a name string.
         if (sendType == sendSuper_stret || sendType == send_stret)
@@ -2167,7 +2170,7 @@
     if (!inLine)
         return NO;
 
-    UInt32  theAddy = inLine->info.address;
+    UInt64  theAddy = inLine->info.address;
 
     if (theAddy == iAddrDyldStubBindingHelper   ||
         theAddy == iAddrDyldFuncLookupPointer)
@@ -2215,9 +2218,9 @@
         isFunction = YES;
 
         while (thePrevLine)
-        {
+        {   // Search the previous lines in this function...
             if (thePrevLine->info.isCode)
-            {
+            {   // Maybe we already know which line starts the function
                 if (thePrevLine->info.isFunction || CodeIsBlockJump(thePrevLine->info.code))
                 {
                     isFunction = NO;
@@ -2306,7 +2309,7 @@
         // Check if we need to save the machine state.
         if (IS_JUMP(opcode, opcode2) && iCurrentFuncInfoIndex >= 0)
         {
-            UInt32  jumpTarget;
+            UInt64  jumpTarget;
             BOOL    validTarget = NO;
 
             // Retrieve the jump target.
@@ -2518,7 +2521,7 @@
     iCurrentFuncInfoIndex   = -1;
 }
 
-#pragma mark -
+/*#pragma mark -
 #pragma mark Deobfuscator protocol
 //  verifyNops:numFound:
 // ----------------------------------------------------------------------------
@@ -2535,7 +2538,8 @@
     [self loadLCommands];
 
     *outList    = [self searchForNopsIn: (unsigned char*)iTextSect.contents
-        ofLength: iTextSect.size numFound: outFound];
+                               ofLength: iTextSect.size
+                               numFound: outFound];
 
     return (*outFound != 0);
 }
@@ -2756,6 +2760,6 @@
 
     // Return fixed file.
     return newURL;
-}
+}*/
 
 @end

@@ -1094,7 +1094,7 @@ extern BOOL gCancel;
                 (SInt32)iRegInfos[RA(theCode)].value * SIMM(theCode);
 
             iRegInfos[RT(theCode)]          = (GPRegisterInfo){0};
-            iRegInfos[RT(theCode)].value    = theProduct & 0xffffffff;
+            iRegInfos[RT(theCode)].value    = (UInt32)(theProduct & 0xffffffff);
             iRegInfos[RT(theCode)].isValid  = YES;
 
             break;

@@ -121,21 +121,21 @@
 
     for (i = 0; i < borderWidth; i++)
     {
-        color   = [baseColor colorWithAlphaComponent: (isTextured) ?
+        color = [baseColor colorWithAlphaComponent: (isTextured) ?
             ((OS_IS_POST_TIGER) ? gLeopardTexturedAlphas[borderType][i] :
             gTexturedAlphas[borderType][i]) : gAlphas[borderType][i]];
         [color set];
         NSFrameRectWithWidthUsingOperation(
-            innerRect, 1.0, NSCompositeSourceOver);
-        innerRect   = NSInsetRect(innerRect, 1.0, 1.0);
+            innerRect, 1.0f, NSCompositeSourceOver);
+        innerRect = NSInsetRect(innerRect, 1.0f, 1.0f);
     }
 
     if (iFillRect)
     {
         if (borderType == NSNoBorder || borderType == NSLineBorder)
-            innerRect   = NSInsetRect(innerRect, -1.0, -1.0);
+            innerRect = NSInsetRect(innerRect, -1.0f, -1.0f);
 
-        color   = [baseColor colorWithAlphaComponent: kFillAlpha];
+        color = [baseColor colorWithAlphaComponent: kFillAlpha];
         [color set];
         NSRectFillUsingOperation(innerRect, NSCompositeSourceOver);
     }

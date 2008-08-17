@@ -13,29 +13,29 @@
 #define kBorderWidth            6
 #define kTexturedBorderWidth    7
 
-#define kFillAlpha              0.06
+#define kFillAlpha              0.06f
 
 // Alpha values for each one-pixel frame, from outer to inner. The
 // outermost frame(s) overlay NSBox's border.
-static const float  gAlphas[4][kBorderWidth]    =
-    {{0.9, 0.7, 0.5, 0.3, 0.2, 0.0},    // NSNoBorder
-     {0.4, 0.9, 0.6, 0.3, 0.2, 0.0},    // NSLineBorder
-     {0.4, 0.4, 0.8, 0.6, 0.4, 0.2},    // NSBezelBorder
-     {0.4, 0.4, 0.8, 0.6, 0.4, 0.2}};   // NSGrooveBorder
+static const float gAlphas[4][kBorderWidth] =
+    {{0.9f, 0.7f, 0.5f, 0.3f, 0.2f, 0.0f},    // NSNoBorder
+     {0.4f, 0.9f, 0.6f, 0.3f, 0.2f, 0.0f},    // NSLineBorder
+     {0.4f, 0.4f, 0.8f, 0.6f, 0.4f, 0.2f},    // NSBezelBorder
+     {0.4f, 0.4f, 0.8f, 0.6f, 0.4f, 0.2f}};   // NSGrooveBorder
 
 // Textured windows require a bit more.
-static const float  gTexturedAlphas[4][kTexturedBorderWidth]    =
-    {{1.0, 0.9, 0.8, 0.6, 0.4, 0.2, 0.0},   // NSNoBorder
-     {0.4, 1.0, 0.8, 0.6, 0.4, 0.2, 0.0},   // NSLineBorder
-     {0.4, 0.4, 1.0, 0.8, 0.6, 0.4, 0.2},   // NSBezelBorder
-     {0.4, 0.4, 1.0, 0.8, 0.6, 0.4, 0.2}};  // NSGrooveBorder
+static const float gTexturedAlphas[4][kTexturedBorderWidth] =
+    {{1.0f, 0.9f, 0.8f, 0.6f, 0.4f, 0.2f, 0.0f},   // NSNoBorder
+     {0.4f, 1.0f, 0.8f, 0.6f, 0.4f, 0.2f, 0.0f},   // NSLineBorder
+     {0.4f, 0.4f, 1.0f, 0.8f, 0.6f, 0.4f, 0.2f},   // NSBezelBorder
+     {0.4f, 0.4f, 1.0f, 0.8f, 0.6f, 0.4f, 0.2f}};  // NSGrooveBorder
 
 // Leopard textured windows require a bit less.
-static const float  gLeopardTexturedAlphas[4][kTexturedBorderWidth] =
-   {{1.0, 0.8, 0.6, 0.4, 0.2, 0.0, 0.0},    // NSNoBorder
-    {0.4, 0.8, 0.6, 0.4, 0.2, 0.0, 0.0},    // NSLineBorder
-    {0.4, 0.4, 0.8, 0.6, 0.4, 0.2, 0.0},    // NSBezelBorder
-    {0.4, 0.4, 0.8, 0.6, 0.4, 0.2, 0.0}};   // NSGrooveBorder
+static const float gLeopardTexturedAlphas[4][kTexturedBorderWidth] =
+   {{1.0f, 0.8f, 0.6f, 0.4f, 0.2f, 0.0f, 0.0f},    // NSNoBorder
+    {0.4f, 0.8f, 0.6f, 0.4f, 0.2f, 0.0f, 0.0f},    // NSLineBorder
+    {0.4f, 0.4f, 0.8f, 0.6f, 0.4f, 0.2f, 0.0f},    // NSBezelBorder
+    {0.4f, 0.4f, 0.8f, 0.6f, 0.4f, 0.2f, 0.0f}};   // NSGrooveBorder
 
 // ============================================================================
 

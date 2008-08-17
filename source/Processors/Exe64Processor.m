@@ -1334,10 +1334,11 @@
 - (void)printDataSection: (section_info_64*)inSect
                   toFile: (FILE*)outFile;
 {
-    UInt32  i, j, k, bytesLeft;
-    UInt32  theDataSize         = inSect->size;
-    char    theLineCString[70];
-    char*   theMachPtr          = (char*)iMachHeaderPtr;
+    UInt32 bytesLeft;
+    UInt32 i, j, k;
+    UInt32 theDataSize = (UInt32)inSect->size;
+    char theLineCString[70];
+    char* theMachPtr = (char*)iMachHeaderPtr;
 
     theLineCString[0]   = 0;
 

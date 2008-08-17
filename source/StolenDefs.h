@@ -17,7 +17,7 @@ typedef struct
 {
     section         s;
     char*           contents;
-    unsigned long   size;
+    uint32_t        size;
 }
 section_info;
 
@@ -25,7 +25,7 @@ typedef struct
 {
     section_64      s;
     char*           contents;
-    unsigned long   size;
+    uint64_t        size;
 }
 section_info_64;
 
@@ -257,6 +257,6 @@ swap_objc2_ivar(
     i->offset       = OSSwapInt64(i->offset);
     i->name         = OSSwapInt64(i->name);
     i->type         = OSSwapInt64(i->type);
-    i->alignment    = OSSwapInt64(i->alignment);
-    i->size         = OSSwapInt64(i->size);
+    i->alignment    = OSSwapInt32(i->alignment);
+    i->size         = OSSwapInt32(i->size);
 }

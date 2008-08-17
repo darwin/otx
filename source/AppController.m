@@ -1924,9 +1924,9 @@
     iTextShadow = [[NSShadow alloc] init];
 
     [iTextShadow setShadowColor: [NSColor
-        colorWithCalibratedRed: 1.0 green: 1.0 blue: 1.0 alpha: 0.5]];
-    [iTextShadow setShadowOffset: NSMakeSize(0.0, -1.0)];
-    [iTextShadow setShadowBlurRadius: 0.0];
+        colorWithCalibratedRed: 1.0f green: 1.0f blue: 1.0f alpha: 0.5f]];
+    [iTextShadow setShadowOffset: NSMakeSize(0.0f, -1.0f)];
+    [iTextShadow setShadowBlurRadius: 0.0f];
 
     // Setup the windows.
     [self setupPrefsWindow];
