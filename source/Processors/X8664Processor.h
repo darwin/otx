@@ -50,6 +50,7 @@ enum {
     UInt32      iNumLocalSelves;
     Var64Info*  iLocalVars;
     UInt32      iNumLocalVars;
+    UInt64      iHighestJumpTarget;
 }
 
 @end

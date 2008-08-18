@@ -36,7 +36,7 @@
         iArchSelector               = CPU_TYPE_X86_64;
         iFieldWidths.offset         = 8;
         iFieldWidths.address        = 18;
-        iFieldWidths.instruction    = 24;   // 15 bytes is the real max, but this works
+        iFieldWidths.instruction    = 26;   // 15 bytes is the real max, but this works
         iFieldWidths.mnemonic       = 12;   // repnz/scasb
         iFieldWidths.operands       = 30;   // 0x00000000(%eax,%eax,4),%xmm0
     }
@@ -1694,6 +1694,8 @@
 
     if (iCurrentFuncInfoIndex >= iNumFuncInfos)
         iCurrentFuncInfoIndex   = -1;
+
+    iHighestJumpTarget = 0;
 }
 
 //  updateRegisters:
@@ -1762,31 +1764,31 @@
                 switch (OPEXT(modRM))
                 {
                     case 0: // add
-                        iRegInfos[XREG1(modRM, rexByte)].value    += (SInt32)imm;
+                        iRegInfos[XREG1(modRM, rexByte)].value += (SInt32)imm;
                         iRegInfos[XREG1(modRM, rexByte)].classPtr = NULL;
 
                         break;
 
                     case 1: // or
-                        iRegInfos[XREG1(modRM, rexByte)].value    |= (SInt32)imm;
+                        iRegInfos[XREG1(modRM, rexByte)].value |= (SInt32)imm;
                         iRegInfos[XREG1(modRM, rexByte)].classPtr = NULL;
 
                         break;
 
                     case 4: // and
-                        iRegInfos[XREG1(modRM, rexByte)].value    &= (SInt32)imm;
+                        iRegInfos[XREG1(modRM, rexByte)].value &= (SInt32)imm;
                         iRegInfos[XREG1(modRM, rexByte)].classPtr = NULL;
 
                         break;
 
                     case 5: // sub
-                        iRegInfos[XREG1(modRM, rexByte)].value    -= (SInt32)imm;
+                        iRegInfos[XREG1(modRM, rexByte)].value -= (SInt32)imm;
                         iRegInfos[XREG1(modRM, rexByte)].classPtr = NULL;
 
                         break;
 
                     case 6: // xor
-                        iRegInfos[XREG1(modRM, rexByte)].value    ^= (SInt32)imm;
+                        iRegInfos[XREG1(modRM, rexByte)].value ^= (SInt32)imm;
                         iRegInfos[XREG1(modRM, rexByte)].classPtr = NULL;
 
                         break;
@@ -2076,8 +2078,10 @@
                 break;
             }
 
-            case 0xe8:  // calll
-            case 0xff:  // calll
+            case 0xe8:  // callq
+            case 0xff:  // callq
+                    
+
                     memset(iStack, 0, sizeof(GP64RegisterInfo) * MAX_STACK_SIZE);
                     iRegInfos[EAX]  = (GP64RegisterInfo){0};
 
@@ -2170,7 +2174,10 @@
     if (!inLine)
         return NO;
 
-    UInt64  theAddy = inLine->info.address;
+    if (inLine->info.isFunction)
+        return YES;
+
+    UInt64 theAddy = inLine->info.address;
 
     if (theAddy == iAddrDyldStubBindingHelper   ||
         theAddy == iAddrDyldFuncLookupPointer)
@@ -2194,55 +2201,161 @@
     if (inLine->prev && !inLine->prev->info.isCode)
         return YES;
 
-    // Check for saved thunks.
-    if (iThunks)
-    {
-        UInt32  i;
-
-        for (i = 0; i < iNumThunks; i++)
-        {
-            if (iThunks[i].address == theAddy)
-                return YES;
-        }
-    }
-
     // Obvious avenues expended, brute force check now.
     BOOL isFunction = NO;
-    UInt8 opcode;
+    UInt8 opcode = inLine->info.code[0];
+    UInt8 opcode2 = inLine->info.code[1];
+    UInt8 modRM;
     Line64* thePrevLine = inLine->prev;
 
-    opcode = inLine->info.code[0];
-
-    if (opcode == 0x55) // pushq %rbp
+    switch (opcode)
     {
-        isFunction = YES;
+        case 0x55:
+        {
+            isFunction = YES;
 
-        while (thePrevLine)
-        {   // Search the previous lines in this function...
-            if (thePrevLine->info.isCode)
-            {   // Maybe we already know which line starts the function
-                if (thePrevLine->info.isFunction || CodeIsBlockJump(thePrevLine->info.code))
-                {
-                    isFunction = NO;
-                    break;
+            if (thePrevLine->info.isCode == YES)
+            {
+                while (thePrevLine)
+                {   // Search the previous lines in this function...
+                    if (thePrevLine->info.isCode)
+                    {
+                        if (thePrevLine->info.isFunction)
+                        {
+                            isFunction = NO;
+                            break;
+                        }
+
+                        if (thePrevLine->info.isFunctionEnd)
+                            break;
+                    }
+                    else
+                    {
+                        isFunction = NO;
+                        break;
+                    }
+
+                    thePrevLine = thePrevLine->prev;
                 }
             }
 
-            thePrevLine = thePrevLine->prev;
-        }
-    }
-    else
-    {   // Check for the first instruction in this section.
-        while (thePrevLine)
-        {
-            if (thePrevLine->info.isCode)
-                break;
-            else
-                thePrevLine = thePrevLine->prev;
+            break;
         }
 
-        if (!thePrevLine)
-            isFunction = YES;
+        case 0x0f:
+        {
+            switch (opcode2)
+            {
+                case 0x84:
+                case 0x85:
+                {
+                    SInt32 offset = *(SInt32*)&inLine->info.code[2];
+                    UInt64 jumpTarget = inLine->next->info.address + offset;
+
+                    if (jumpTarget >= iHighestJumpTarget)
+                        iHighestJumpTarget = jumpTarget;
+
+                    break;
+                }
+
+                default:
+                    break;
+            }
+
+            break;
+        }
+
+        case 0xff:
+        {
+            if (REG1(opcode2) == 4)
+            {
+                if (inLine->info.address >= iHighestJumpTarget)
+                    inLine->info.isFunctionEnd = YES;
+            }
+
+            break;
+        }
+
+        case 0x70: case 0x71: case 0x73: case 0x74: // jcc's
+        case 0x75: case 0x76: case 0x77: case 0x78:
+        case 0x79: case 0x7a: case 0x7b: case 0x7c:
+        case 0x7d: case 0x7e: case 0x7f: case 0xe3:
+        case 0xeb:  // jmp
+        {
+            UInt64 jumpTarget = inLine->next->info.address + (SInt8)opcode2;
+
+            if (jumpTarget >= iHighestJumpTarget)
+                iHighestJumpTarget = jumpTarget;
+
+            break;
+        }
+
+        case 0xc3:  // ret
+        case 0xe9:  // jmpq
+        case 0xf4:  // hlt
+        {
+            if (inLine->next && inLine->next->info.code[0] != 0xf4) // special case hlt
+            {
+                if (inLine->info.address >= iHighestJumpTarget)
+                    inLine->info.isFunctionEnd = YES;
+            }
+
+            break;
+        }
+
+        default:
+            break;
+    }
+
+    // If we just found the end of a function, mark the next non-nop as the beginning of a func.
+    if (inLine->info.isFunctionEnd == YES)
+    {
+        Line64* nextLine = inLine->next;
+
+        while (nextLine != NULL)
+        {
+            opcode = nextLine->info.code[0];
+
+            switch (opcode)
+            {
+                case 0x90:
+                    break;
+
+                case 0x66:
+                    opcode = nextLine->info.code[1];
+                    opcode2 = nextLine->info.code[2];
+                    modRM = nextLine->info.code[3];
+
+                    if (opcode != 0x0f || opcode2 != 0x1f || REG1(modRM) != 0)
+                    {
+                        nextLine->info.isFunction = YES;
+                        break;
+                    }
+
+                    break;
+
+                case 0x0f:
+                    opcode2 = nextLine->info.code[1];
+                    modRM = nextLine->info.code[2];
+
+                    if (opcode != 0x0f || opcode2 != 0x1f || REG1(modRM) != 0)
+                    {
+                        nextLine->info.isFunction = YES;
+                        break;
+                    }
+
+                    break;
+
+                default:
+                    nextLine->info.isFunction = YES;
+                    break;
+            }
+
+            if (nextLine->info.isFunction == YES)
+                break;
+
+            nextLine = nextLine->next;
+        }
     }
 
     return isFunction;

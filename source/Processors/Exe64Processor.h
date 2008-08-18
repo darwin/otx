@@ -70,8 +70,9 @@ typedef struct
     UInt64  address;
     UInt8   code[16];       // machine code as int bytes
     UInt8   codeLength;
-    BOOL    isCode;         // NO for function and section names etc.
+    BOOL    isCode;         // NO for function names, section names etc.
     BOOL    isFunction;     // YES if this is the first instruction in a function.
+    BOOL    isFunctionEnd;  // YES if this is the last instruction in a function.
 }
 Line64Info;
 
