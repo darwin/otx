@@ -15,7 +15,6 @@
 		257833340D4C60A000E05A06 /* Object64Loader.m in Sources */ = {isa = PBXBuildFile; fileRef = 257833330D4C60A000E05A06 /* Object64Loader.m */; };
 		2578336F0D4C61EA00E05A06 /* List64Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2578336D0D4C61EA00E05A06 /* List64Utils.m */; };
 		257833770D4C62FD00E05A06 /* Arch64Specifics.m in Sources */ = {isa = PBXBuildFile; fileRef = 257833750D4C62FD00E05A06 /* Arch64Specifics.m */; };
-		257A9C4D0DA9D1D800DC7B8A /* CHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 257A9C4C0DA9D1D800DC7B8A /* CHUD.framework */; };
 		25924A8A0D4D670C0050AA16 /* Exe32Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 25924A880D4D670C0050AA16 /* Exe32Processor.m */; };
 		25924BA10D4D85380050AA16 /* Exe32Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 25924A880D4D670C0050AA16 /* Exe32Processor.m */; };
 		25924BA20D4D85390050AA16 /* Exe64Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 257832DD0D4C578800E05A06 /* Exe64Processor.m */; };
@@ -99,7 +98,6 @@
 		257833750D4C62FD00E05A06 /* Arch64Specifics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Arch64Specifics.m; path = source/Categories/Arch64Specifics.m; sourceTree = "<group>"; };
 		257833760D4C62FD00E05A06 /* Arch64Specifics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Arch64Specifics.h; path = source/Categories/Arch64Specifics.h; sourceTree = "<group>"; };
 		2578337C0D4C649500E05A06 /* Optimizations64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Optimizations64.h; path = source/Optimizations64.h; sourceTree = "<group>"; };
-		257A9C4C0DA9D1D800DC7B8A /* CHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CHUD.framework; path = /System/Library/PrivateFrameworks/CHUD.framework; sourceTree = "<absolute>"; };
 		25924A880D4D670C0050AA16 /* Exe32Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Exe32Processor.m; path = source/Processors/Exe32Processor.m; sourceTree = "<group>"; };
 		25924A890D4D670C0050AA16 /* Exe32Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exe32Processor.h; path = source/Processors/Exe32Processor.h; sourceTree = "<group>"; };
 		25924B380D4D71620050AA16 /* Optimizations32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Optimizations32.h; path = source/Optimizations32.h; sourceTree = "<group>"; };
@@ -165,7 +163,6 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				E1F81B090AE1EF07003D8E2C /* CoreFoundation.framework in Frameworks */,
 				E1F81B3F0AE1EF2D003D8E2C /* Security.framework in Frameworks */,
-				257A9C4D0DA9D1D800DC7B8A /* CHUD.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,7 +199,6 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				257A9C4C0DA9D1D800DC7B8A /* CHUD.framework */,
 				E1F81AC80AE1EEEB003D8E2C /* Carbon.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				E1F81ADE0AE1EF07003D8E2C /* CoreFoundation.framework */,
