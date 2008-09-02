@@ -119,15 +119,16 @@ enum {
     OCProtoRefType,     // objc2_protocol_t* in (__DATA,__objc_protorefs)
 };
 
-#define MAX_FIELD_SPACING       100     // spaces between fields
-#define MAX_FORMAT_LENGTH       50      // snprintf() format string
-#define MAX_OPERANDS_LENGTH     1000
-#define MAX_COMMENT_LENGTH      2000
-#define MAX_LINE_LENGTH         10000
-#define MAX_TYPE_STRING_LENGTH  200     // for encoded ObjC data types
-#define MAX_MD5_LINE            40      // for the md5 pipe
-#define MAX_ARCH_STRING_LENGTH  20      // "ppc", "i386" etc.
-#define MAX_STACK_SIZE          40      // maximum number of stack variables
+#define MAX_FIELD_SPACING           100     // spaces between fields
+#define MAX_FORMAT_LENGTH           50      // snprintf() format string
+#define MAX_OPERANDS_LENGTH         1000
+#define MAX_COMMENT_LENGTH          2000
+#define MAX_LINE_LENGTH             10000
+#define MAX_TYPE_STRING_LENGTH      200     // for encoded ObjC data types
+#define MAX_MD5_LINE                40      // for the md5 pipe
+#define MAX_ARCH_STRING_LENGTH      20      // "ppc", "i386" etc.
+#define MAX_UNIBIN_OTOOL_CMD_SIZE   MAXPATHLEN + MAX_ARCH_STRING_LENGTH + 7 // strlen(" -arch ")
+#define MAX_STACK_SIZE              40      // maximum number of stack variables
 
 #define ANON_FUNC_BASE          "Anon"
 #define ANON_FUNC_BASE_LENGTH   4

@@ -21,6 +21,7 @@
 #import <mach-o/nlist.h>
 #import <mach-o/swap.h>
 #import <objc/objc-runtime.h>
+#import <sys/param.h>
 #import <sys/ptrace.h>
 #import <sys/syscall.h>
 #import <sys/types.h>
