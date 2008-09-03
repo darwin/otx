@@ -431,22 +431,36 @@
                afterLine: (Line64**)inLine
            includingPath: (BOOL)inIncludePath
 {
-    char cmdString[1000] = "";
+    char cmdString[MAX_UNIBIN_OTOOL_CMD_SIZE] = "";
     NSString* otoolPath = [self pathForTool: @"otool"];
+    NSUInteger otoolPathLength = [otoolPath length];
+    size_t archStringLength = strlen(iArchString);
 
     // otool freaks out when somebody says -arch and it's not a unibin.
     if (iExeIsFat)
+    {
+        // Bail if it won't fit.
+        if ((otoolPathLength + archStringLength + 7 /* strlen(" -arch ") */) >= MAX_UNIBIN_OTOOL_CMD_SIZE)
+            return NO;
+
         snprintf(cmdString, MAX_ARCH_STRING_LENGTH + [otoolPath length],
             "%s -arch %s", [otoolPath UTF8String], iArchString);
+    }
     else
-        strncpy(cmdString, [otoolPath UTF8String], [otoolPath length]);
+    {
+        // Bail if it won't fit.
+        if (otoolPathLength >= MAX_UNIBIN_OTOOL_CMD_SIZE)
+            return NO;
 
-    NSString*   oPath       = [iOFile path];
-    NSString*   otoolString = [NSString stringWithFormat:
+        strncpy(cmdString, [otoolPath UTF8String], [otoolPath length]);
+    }
+
+    NSString* oPath = [iOFile path];
+    NSString* otoolString = [NSString stringWithFormat:
         @"%s %s -s __TEXT %s \"%@\"%s", cmdString,
         (inVerbose) ? "-V" : "-v", inSectionName, oPath,
         (inIncludePath) ? "" : " | sed '1 d'"];
-    FILE*       otoolPipe   = popen(UTF8STRING(otoolString), "r");
+    FILE* otoolPipe = popen(UTF8STRING(otoolString), "r");
 
     if (!otoolPipe)
     {
@@ -1874,9 +1888,9 @@
         return NULL;
 
     if (outType)
-        *outType    = PointerType;
+        *outType = PointerType;
 
-    char*   thePtr  = NULL;
+    char* thePtr = NULL;
 
             // (__TEXT,__cstring) (char*)
     if (inAddr >= iCStringSect.s.addr &&
