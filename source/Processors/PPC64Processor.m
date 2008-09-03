@@ -1169,7 +1169,7 @@
 
     if (IS_BRANCH_LINK(theCode))
     {
-        iLR.value   = inLine->info.address + 4;
+        iLR.value = inLine->info.address + 4;
         iLR.isValid = YES;
     }
 
@@ -1179,12 +1179,11 @@
         {
             if (!iRegInfos[RA(theCode)].isValid)
             {
-                iRegInfos[RT(theCode)]  = (GP64RegisterInfo){0};
+                iRegInfos[RT(theCode)] = (GP64RegisterInfo){0};
                 break;
             }
 
-            UInt64  theProduct  =
-                (SInt32)iRegInfos[RA(theCode)].value * SIMM(theCode);
+            UInt64 theProduct = (SInt32)iRegInfos[RA(theCode)].value * SIMM(theCode);
 
             iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
             iRegInfos[RT(theCode)].value    = theProduct & 0xffffffff;
@@ -1720,9 +1719,14 @@
                             continue;
 
                         iRegInfos[RT(theCode)] = iLocalVars[i].regInfo;
+                        found = YES;
                         break;
                     }
                 }
+
+                // We don't know what's being loaded, just zero the receiver.
+                if (found == NO)
+                    iRegInfos[RT(theCode)] = (GP64RegisterInfo){0};
             }
             else
                 iRegInfos[RT(theCode)] = (GP64RegisterInfo){0};
