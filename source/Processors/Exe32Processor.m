@@ -1435,11 +1435,114 @@
 }
 
 #pragma mark -
+#define OTX_USE_NSTASK 1
 //  insertMD5
 // ----------------------------------------------------------------------------
 
 - (void)insertMD5
 {
+#if OTX_USE_NSTASK
+
+    NSString* md5Path = [NSString pathWithComponents: [NSArray arrayWithObjects:
+        @"/", @"sbin", @"md5", nil]];
+    NSTask* md5Task = [[[NSTask alloc] init] autorelease];
+    NSPipe* md5Pipe = [NSPipe pipe];
+    NSPipe* errorPipe = [NSPipe pipe];
+
+/*  Before, we used popen(3), which allowed us to handle paths that contained
+    spaces by surrounding the path with double quotes. Calling md5 with an
+    NSTask doesn't work with those quotes, so we have to replace all " " with "\ ".
+
+    NSString* escapedPath = [[iOFile path] stringByReplacingOccurrencesOfString: @" "
+                                                                     withString: @"\ "];
+
+    Sadly, this causes gcc to warn us-
+
+    warning: unknown escape sequence: '\040'
+
+    And the following doesn't work any better-
+
+    const char escapedSpaceChars[3] = {
+        0x5c, 0x20, 0x00
+    };
+
+    NSString* escapedSpaceString = [NSString stringWithUTF8String: escapedSpaceChars];
+    NSString* escapedPath = [[iOFile path] stringByReplacingOccurrencesOfString: @" "
+                                                                     withString: escapedSpaceChars];
+
+    So, we live with the warning for now. Radar # pending.
+*/
+
+    NSString* escapedPath = [[iOFile path] stringByReplacingOccurrencesOfString: @" "
+                                                                     withString: @"\ "];
+    NSArray* args = [NSArray arrayWithObjects: @"-q", escapedPath, nil];
+
+    [md5Task setLaunchPath: md5Path];
+    [md5Task setArguments: args];
+    [md5Task setStandardOutput: md5Pipe];
+    [md5Task setStandardError: errorPipe];
+
+    @try
+    {
+        [md5Task launch];
+    }
+    @catch (NSException* e)
+    {
+        NSLog(@"otx: unable to launch md5: ", [e reason]);
+        return;
+    }
+
+    [md5Task waitUntilExit];
+
+    int md5Status = [md5Task terminationStatus];
+
+    if (md5Status != 0) // md5Task failed, log and bail
+    {
+        NSData* errorData = [[errorPipe fileHandleForReading] availableData];
+        NSString* stringFromError = [[NSString alloc] initWithBytes: [errorData bytes]
+                                                             length: [errorData length]
+                                                           encoding: NSUTF8StringEncoding];
+
+        NSLog(@"otx: unable to generate md5 checksum for \"%@\": %@", escapedPath, stringFromError);
+        return;
+    }
+
+    NSData* md5Data = nil;
+
+    @try
+    {
+        md5Data = [[md5Pipe fileHandleForReading] availableData];
+    }
+    @catch (NSException* e)
+    {
+        NSLog(@"otx: unable to read from md5 data for \"%@\": %@", escapedPath, [e reason]);
+        return;
+    }
+
+    if (md5Data == nil || [md5Data length] == 0) // md5Task produced no data, log and bail
+    {
+        NSLog(@"otx: unexpected failure while generating md5 checksum of \"%@\"", escapedPath);
+        return;
+    }
+
+    NSMutableString* md5String = [NSMutableString string];
+    NSString* stringFromData = [[NSString alloc] initWithBytes: [md5Data bytes]
+                                                        length: [md5Data length]
+                                                      encoding: NSUTF8StringEncoding];
+
+    [md5String appendFormat: @"\nmd5: %@\n", [stringFromData stringByTrimmingCharactersInSet:
+        [NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+
+    Line* newLine = calloc(1, sizeof(Line));
+    const char* utf8String = [md5String UTF8String];
+
+    newLine->length = [md5String length];
+    newLine->chars = malloc(newLine->length + 1);
+    strncpy(newLine->chars, utf8String, newLine->length + 1);
+
+    InsertLineAfter(newLine, iPlainLineListHead, &iPlainLineListHead);
+
+#else
     char        md5Line[MAX_MD5_LINE];
     char        finalLine[MAX_MD5_LINE];
     NSString*   md5CommandString    = [NSString stringWithFormat:
@@ -1510,6 +1613,7 @@
     strncpy(newLine->chars, finalLine, newLine->length + 1);
 
     InsertLineAfter(newLine, iPlainLineListHead, &iPlainLineListHead);
+#endif
 }
 
 #pragma mark -
