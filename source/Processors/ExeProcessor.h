@@ -201,6 +201,9 @@ enum {
 - (void)decodeMethodReturnType: (const char*)inTypeCode
                         output: (char*)outCString;
 
+- (void)getDescription: (char*)ioCString
+               forType: (const char*)inTypeCode;
+
 - (void)speedyDelivery;
 
 #ifdef OTX_DEBUG

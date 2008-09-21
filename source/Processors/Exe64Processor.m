@@ -41,8 +41,6 @@
         options: inOptions]) == nil)
         return nil;
 
-    [self speedyDelivery];
-
     return self;
 }
 
@@ -1887,6 +1885,8 @@
 
 - (void)speedyDelivery
 {
+    [super speedyDelivery];
+
     LineIsCode                      = LineIsCode64FuncType
         [self methodForSelector: LineIsCodeSel];
     LineIsFunction                  = LineIsFunction64FuncType

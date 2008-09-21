@@ -1882,17 +1882,26 @@
         case 0x8b:  // mov mem to reg
         case 0x8d:  // lea mem to reg
             modRM = inLine->info.code[1];
-            iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
 
             if (MOD(modRM) == MODimm)
             {
-                UInt32 offset = *(UInt32*)&inLine->info.code[2];
+                if (REG2(modRM) == EBP) // disp32
+                {
+                    UInt32 offset = *(UInt32*)&inLine->info.code[2];
 
-                offset = OSSwapLittleToHostInt32(offset);
+                    offset = OSSwapLittleToHostInt32(offset);
 
-                iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
-                iRegInfos[REG1(modRM)].value = offset;
-                iRegInfos[REG1(modRM)].isValid = YES;
+                    iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
+                    iRegInfos[REG1(modRM)].value = offset;
+                    iRegInfos[REG1(modRM)].isValid = YES;
+                }
+                else
+                    iRegInfos[REG1(modRM)] = iRegInfos[REG2(modRM)];
+
+/*                iRegInfos[REG1(modRM)].isValid = YES;
+                iRegInfos[REG1(modRM)].value = iRegInfos[REG2(modRM)].value;
+                iRegInfos[REG1(modRM)].classPtr = NULL;
+                iRegInfos[REG1(modRM)].catPtr = NULL;*/
                 // FIXME should we update .classPtr here?
             }
             else if (MOD(modRM) == MOD8)
@@ -1901,20 +1910,19 @@
 
                 if (REG2(modRM) == EBP && offset == 0x8)
                 {   // Copying self from 1st arg to a register.
+                    iRegInfos[REG1(modRM)].isValid = YES;
+                    iRegInfos[REG1(modRM)].value = 0;
                     iRegInfos[REG1(modRM)].classPtr = iCurrentClass;
-                    iRegInfos[REG1(modRM)].catPtr   = iCurrentCat;
-                    iRegInfos[REG1(modRM)].isValid  = YES;
+                    iRegInfos[REG1(modRM)].catPtr = iCurrentCat;
                 }
                 else
                 {   // Check for copied self pointer.
-                    if (iLocalSelves        &&
-                        REG2(modRM) == EBP  &&
-                        offset < 0)
+                    if (iLocalSelves && REG2(modRM) == EBP && offset < 0)
                     {
-                        UInt32  i;
+                        UInt32 i;
 
                         // Zero the destination regardless.
-                        iRegInfos[REG1(modRM)]  = (GPRegisterInfo){0};
+                        iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
 
                         // If we're accessing a local var copy of self,
                         // copy that info back to the reg in question.
@@ -1923,7 +1931,7 @@
                             if (iLocalSelves[i].offset != offset)
                                 continue;
 
-                            iRegInfos[REG1(modRM)]  = iLocalSelves[i].regInfo;
+                            iRegInfos[REG1(modRM)] = iLocalSelves[i].regInfo;
 
                             break;
                         }
@@ -1940,7 +1948,10 @@
 
                     if (offset < 0)
                     {
-                        UInt32  i;
+                        UInt32 i;
+
+                        // Zero the destination regardless.
+                        iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
 
                         for (i = 0; i < iNumLocalVars; i++)
                         {
@@ -1958,8 +1969,10 @@
             {
                 UInt32 newValue = *(UInt32*)&inLine->info.code[2];
 
-                iRegInfos[REG1(modRM)].value = OSSwapLittleToHostInt32(newValue);
                 iRegInfos[REG1(modRM)].isValid = YES;
+                iRegInfos[REG1(modRM)].value = OSSwapLittleToHostInt32(newValue);
+                iRegInfos[REG1(modRM)].classPtr = NULL;
+                iRegInfos[REG1(modRM)].catPtr = NULL;
             }
             else if (HAS_REL_DISP32(modRM))
             {
@@ -1968,9 +1981,13 @@
 
                 UInt32 newValue = *(UInt32*)&inLine->info.code[2];
 
-                iRegInfos[REG1(modRM)].value = OSSwapLittleToHostInt32(newValue);
-                iRegInfos[REG1(modRM)].value += iRegInfos[REG2(modRM)].value;
+                newValue = OSSwapLittleToHostInt32(newValue);
+                newValue += iRegInfos[REG2(modRM)].value;
+
                 iRegInfos[REG1(modRM)].isValid = YES;
+                iRegInfos[REG1(modRM)].value = newValue;
+                iRegInfos[REG1(modRM)].classPtr = NULL;
+                iRegInfos[REG1(modRM)].catPtr = NULL;
             }
 
             break;
