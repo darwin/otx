@@ -179,11 +179,14 @@ enum {
     UInt32      iAddrDyldFuncLookupPointer;
 
     BOOL        iEnteringNewBlock;
+    SInt64      iCurrentFuncInfoIndex;
 
     // saved strings
     char        iArchString[MAX_ARCH_STRING_LENGTH];    // "ppc", "i386" etc.
     char        iLineCommentCString[MAX_COMMENT_LENGTH];
     char        iLineOperandsCString[MAX_OPERANDS_LENGTH];
+
+    void        (*GetDescription)(id, SEL, char*, const char*);
 }
 
 - (id)initWithURL: (NSURL*)inURL
@@ -193,6 +196,12 @@ enum {
 - (void)printDataSection: (section_info*)inSect
                   toFile: (FILE*)outFile;
 - (UInt8)sendTypeFromMsgSend: (char*)inString;
+
+- (NSString*)generateMD5String;
+- (void)decodeMethodReturnType: (const char*)inTypeCode
+                        output: (char*)outCString;
+
+- (void)speedyDelivery;
 
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;

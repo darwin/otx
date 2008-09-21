@@ -37,63 +37,11 @@
     if (!inURL || !inController || !inOptions)
         return nil;
 
-    if (self = [super initWithURL: inURL controller: inController
-        options: inOptions])
-    {
-        iOFile                  = inURL;
-        iController             = inController;
-        iOpts                   = *inOptions;
-        iCurrentFuncInfoIndex   = -1;
+    if ((self = [super initWithURL: inURL controller: inController
+        options: inOptions]) == nil)
+        return nil;
 
-        // Load exe into RAM.
-        NSError*    theError    = nil;
-        NSData*     theData     = [NSData dataWithContentsOfURL: iOFile
-            options: 0 error: &theError];
-
-        if (!theData)
-        {
-            fprintf(stderr, "otx: error loading executable from disk: %s\n",
-                UTF8STRING([theError localizedFailureReason]));
-            [self release];
-            return nil;
-        }
-
-        iRAMFileSize    = [theData length];
-
-        if (iRAMFileSize < sizeof(iFileArchMagic))
-        {
-            fprintf(stderr, "otx: truncated executable file\n");
-            [theData release];
-            [self release];
-            return nil;
-        }
-
-        iRAMFile    = malloc(iRAMFileSize);
-
-        if (!iRAMFile)
-        {
-            fprintf(stderr, "otx: not enough memory to allocate mRAMFile\n");
-            [theData release];
-            [self release];
-            return nil;
-        }
-
-        [theData getBytes: iRAMFile];
-
-        iFileArchMagic  = *(UInt32*)iRAMFile;
-        iExeIsFat   = (iFileArchMagic == FAT_MAGIC || iFileArchMagic == FAT_CIGAM);
-
-        // Setup the C++ name demangler.
-        if (iOpts.demangleCppNames)
-        {
-            iCPFiltPipe = popen("c++filt -_", "r+");
-
-            if (!iCPFiltPipe)
-                fprintf(stderr, "otx: unable to open c++filt pipe.\n");
-        }
-
-        [self speedyDelivery];
-    }
+    [self speedyDelivery];
 
     return self;
 }
@@ -443,7 +391,7 @@
         if ((otoolPathLength + archStringLength + 7 /* strlen(" -arch ") */) >= MAX_UNIBIN_OTOOL_CMD_SIZE)
             return NO;
 
-        snprintf(cmdString, MAX_ARCH_STRING_LENGTH + [otoolPath length],
+        snprintf(cmdString, MAX_UNIBIN_OTOOL_CMD_SIZE,
             "%s -arch %s", [otoolPath UTF8String], iArchString);
     }
     else
@@ -452,7 +400,7 @@
         if (otoolPathLength >= MAX_UNIBIN_OTOOL_CMD_SIZE)
             return NO;
 
-        strncpy(cmdString, [otoolPath UTF8String], [otoolPath length]);
+        strncpy(cmdString, [otoolPath UTF8String], otoolPathLength);
     }
 
     NSString* oPath = [iOFile path];
@@ -1449,317 +1397,16 @@
 
 - (void)insertMD5
 {
-    char        md5Line[MAX_MD5_LINE];
-    char        finalLine[MAX_MD5_LINE];
-    NSString*   md5CommandString    = [NSString stringWithFormat:
-        @"md5 -q \"%@\"", [iOFile path]];
-    FILE*       md5Pipe             = popen(UTF8STRING(md5CommandString), "r");
-
-    if (!md5Pipe)
-    {
-        fprintf(stderr, "otx: unable to open md5 pipe\n");
-        return;
-    }
-
-    // In CLI mode, fgets(3) fails with EINTR "Interrupted system call". The
-    // fix is to temporarily block the offending signal. Since we don't know
-    // which signal is offensive, block them all.
-
-    // Block all signals.
-    sigset_t    oldSigs, newSigs;
-
-    sigemptyset(&oldSigs);
-    sigfillset(&newSigs);
-
-    if (sigprocmask(SIG_BLOCK, &newSigs, &oldSigs) == -1)
-    {
-        perror("otx: unable to block signals");
-        return;
-    }
-
-    if (!fgets(md5Line, MAX_MD5_LINE, md5Pipe))
-    {
-        perror("otx: unable to read from md5 pipe");
-        return;
-    }
-
-    // Restore the signal mask to it's former glory.
-    if (sigprocmask(SIG_SETMASK, &oldSigs, NULL) == -1)
-    {
-        perror("otx: unable to restore signals");
-        return;
-    }
-
-    if (pclose(md5Pipe) == -1)
-    {
-        fprintf(stderr, "otx: error closing md5 pipe\n");
-        return;
-    }
-
-    char*   format      = NULL;
-    char*   prefix      = "\nmd5: ";
-    UInt32  finalLength = strlen(md5Line) + strlen(prefix);
-
-    if (strchr(md5Line, '\n'))
-    {
-        format  = "%s%s";
-    }
-    else
-    {
-        format  = "%s%s\n";
-        finalLength++;
-    }
-
-    snprintf(finalLine, finalLength + 1, format, prefix, md5Line);
+    NSString* md5String = [self generateMD5String];
 
     Line64* newLine = calloc(1, sizeof(Line64));
+    const char* utf8String = [md5String UTF8String];
 
-    newLine->length = strlen(finalLine);
+    newLine->length = [md5String length];
     newLine->chars  = malloc(newLine->length + 1);
-    strncpy(newLine->chars, finalLine, newLine->length + 1);
+    strncpy(newLine->chars, utf8String, newLine->length + 1);
 
     InsertLineAfter(newLine, iPlainLineListHead, &iPlainLineListHead);
-}
-
-#pragma mark -
-//  decodeMethodReturnType:output:
-// ----------------------------------------------------------------------------
-
-- (void)decodeMethodReturnType: (const char*)inTypeCode
-                        output: (char*)outCString
-{
-    UInt32  theNextChar = 0;
-
-    // Check for type specifiers.
-    // r* <-> const char* ... VI <-> oneway unsigned int
-    switch (inTypeCode[theNextChar++])
-    {
-        case 'r':
-            strncpy(outCString, "const ", 7);
-            break;
-        case 'n':
-            strncpy(outCString, "in ", 4);
-            break;
-        case 'N':
-            strncpy(outCString, "inout ", 7);
-            break;
-        case 'o':
-            strncpy(outCString, "out ", 5);
-            break;
-        case 'O':
-            strncpy(outCString, "bycopy ", 8);
-            break;
-        case 'V':
-            strncpy(outCString, "oneway ", 8);
-            break;
-
-        // No specifier found, roll back the marker.
-        default:
-            theNextChar--;
-            break;
-    }
-
-    GetDescription(outCString, &inTypeCode[theNextChar]);
-}
-
-//  getDescription:forType:
-// ----------------------------------------------------------------------------
-//  "filer types" defined in objc/objc-class.h, NSCoder.h, and
-// http://developer.apple.com/documentation/DeveloperTools/gcc-3.3/gcc/Type-encoding.html
-
-- (void)getDescription: (char*)ioCString
-               forType: (const char*)inTypeCode
-{
-    if (!inTypeCode || !ioCString)
-        return;
-
-    char    theSuffixCString[50];
-    UInt32  theNextChar = 0;
-    UInt16  i           = 0;
-
-/*
-    char vs. BOOL
-
-    data type       encoding
-    —————————       ————————
-    char            c
-    BOOL            c
-    char[100]       [100c]
-    BOOL[100]       [100c]
-
-    from <objc/objc.h>:
-        typedef signed char     BOOL; 
-        // BOOL is explicitly signed so @encode(BOOL) == "c" rather than "C" 
-        // even if -funsigned-char is used.
-
-    Ok, so BOOL is just a synonym for signed char, and the @encode directive
-    can't be expected to desynonize that. Fair enough, but for our purposes,
-    it would be nicer if BOOL was synonized to unsigned char instead.
-
-    So, any occurence of 'c' may be a char or a BOOL. The best option I can
-    see is to treat arrays as char arrays and atomic values as BOOL, and maybe
-    let the user disagree via preferences. Since the data type of an array is
-    decoded with a recursive call, we can use the following static variable
-    for this purpose.
-
-    As of otx 0.14b, letting the user override this behavior with a pref is
-    left as an exercise for the reader.
-*/
-    static BOOL isArray = NO;
-
-    // Convert '^^' prefix to '**' suffix.
-    while (inTypeCode[theNextChar] == '^')
-    {
-        theSuffixCString[i++]   = '*';
-        theNextChar++;
-    }
-
-    // Add the null terminator.
-    theSuffixCString[i] = 0;
-    i   = 0;
-
-    char    theTypeCString[MAX_TYPE_STRING_LENGTH];
-
-    theTypeCString[0]   = 0;
-
-    // Now we can get at the basic type.
-    switch (inTypeCode[theNextChar])
-    {
-        case '@':
-        {
-            if (inTypeCode[theNextChar + 1] == '"')
-            {
-                UInt32  classNameLength =
-                    strlen(&inTypeCode[theNextChar + 2]);
-
-                memcpy(theTypeCString, &inTypeCode[theNextChar + 2],
-                    classNameLength - 1);
-
-                // Add the null terminator.
-                theTypeCString[classNameLength - 1] = 0;
-            }
-            else
-                strncpy(theTypeCString, "id", 3);
-
-            break;
-        }
-
-        case '#':
-            strncpy(theTypeCString, "Class", 6);
-            break;
-        case ':':
-            strncpy(theTypeCString, "SEL", 4);
-            break;
-        case '*':
-            strncpy(theTypeCString, "char*", 6);
-            break;
-        case '?':
-            strncpy(theTypeCString, "undefined", 10);
-            break;
-        case 'i':
-            strncpy(theTypeCString, "int", 4);
-            break;
-        case 'I':
-            strncpy(theTypeCString, "unsigned int", 13);
-            break;
-        // bitfield according to objc-class.h, C++ bool according to NSCoder.h.
-        // The above URL expands on obj-class.h's definition of 'b' when used
-        // in structs/unions, but NSCoder.h's definition seems to take
-        // priority in return values.
-        case 'B':
-        case 'b':
-            strncpy(theTypeCString, "bool", 5);
-            break;
-        case 'c':
-            strncpy(theTypeCString, (isArray) ? "char" : "BOOL", 5);
-            break;
-        case 'C':
-            strncpy(theTypeCString, "unsigned char", 14);
-            break;
-        case 'd':
-            strncpy(theTypeCString, "double", 7);
-            break;
-        case 'f':
-            strncpy(theTypeCString, "float", 6);
-            break;
-        case 'l':
-            strncpy(theTypeCString, "long", 5);
-            break;
-        case 'L':
-            strncpy(theTypeCString, "unsigned long", 14);
-            break;
-        case 'q':   // not in objc-class.h
-            strncpy(theTypeCString, "long long", 10);
-            break;
-        case 'Q':   // not in objc-class.h
-            strncpy(theTypeCString, "unsigned long long", 19);
-            break;
-        case 's':
-            strncpy(theTypeCString, "short", 6);
-            break;
-        case 'S':
-            strncpy(theTypeCString, "unsigned short", 15);
-            break;
-        case 'v':
-            strncpy(theTypeCString, "void", 5);
-            break;
-        case '(':   // union- just copy the name
-            while (inTypeCode[++theNextChar] != '=' &&
-                   inTypeCode[theNextChar]   != ')' &&
-                   inTypeCode[theNextChar]   != '<' &&
-                   theNextChar < MAX_TYPE_STRING_LENGTH)
-                theTypeCString[i++] = inTypeCode[theNextChar];
-
-                // Add the null terminator.
-                theTypeCString[i]   = 0;
-
-            break;
-
-        case '{':   // struct- just copy the name
-            while (inTypeCode[++theNextChar] != '=' &&
-                   inTypeCode[theNextChar]   != '}' &&
-                   inTypeCode[theNextChar]   != '<' &&
-                   theNextChar < MAX_TYPE_STRING_LENGTH)
-                theTypeCString[i++] = inTypeCode[theNextChar];
-
-                // Add the null terminator.
-                theTypeCString[i]   = 0;
-
-            break;
-
-        case '[':   // array…   [12^f] <-> float*[12]
-        {
-            char    theArrayCCount[10]  = {0};
-
-            while (inTypeCode[++theNextChar] >= '0' &&
-                   inTypeCode[theNextChar]   <= '9')
-                theArrayCCount[i++] = inTypeCode[theNextChar];
-
-            // Recursive madness. See 'char vs. BOOL' note above.
-            char    theCType[MAX_TYPE_STRING_LENGTH];
-
-            theCType[0] = 0;
-
-            isArray = YES;
-            GetDescription(theCType, &inTypeCode[theNextChar]);
-            isArray = NO;
-
-            snprintf(theTypeCString, MAX_TYPE_STRING_LENGTH + 1, "%s[%s]",
-                theCType, theArrayCCount);
-
-            break;
-        }
-
-        default:
-            strncpy(theTypeCString, "?", 2);
-
-            break;
-    }
-
-    strncat(ioCString, theTypeCString, strlen(theTypeCString));
-
-    if (theSuffixCString[0])
-        strncat(ioCString, theSuffixCString, strlen(theSuffixCString));
 }
 
 #pragma mark -
@@ -2240,8 +1887,6 @@
 
 - (void)speedyDelivery
 {
-    GetDescription                  = GetDescription64FuncType
-        [self methodForSelector: GetDescriptionSel];
     LineIsCode                      = LineIsCode64FuncType
         [self methodForSelector: LineIsCodeSel];
     LineIsFunction                  = LineIsFunction64FuncType

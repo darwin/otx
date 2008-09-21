@@ -176,7 +176,6 @@ Function64Info;
     // FunctionInfo array
     Function64Info*     iFuncInfos;
     UInt32              iNumFuncInfos;
-    SInt64              iCurrentFuncInfoIndex;
 
     // Obj-C stuff
     Method64Info*       iClassMethodInfos;
@@ -215,7 +214,6 @@ Function64Info;
     UInt64              iEndOfText;
 
     // C function pointers- see Optimizations.h and speedyDelivery
-    void    (*GetDescription)               (id, SEL, char*, const char*);
     BOOL    (*LineIsCode)                   (id, SEL, const char*);
     BOOL    (*LineIsFunction)               (id, SEL, Line64*);
     BOOL    (*CodeIsBlockJump)              (id, SEL, UInt8*);
@@ -277,10 +275,6 @@ Function64Info;
 // customizers
 - (void)gatherLineInfos;
 - (void)findFunctions;
-- (void)decodeMethodReturnType: (const char*)inTypeCode
-                        output: (char*)outCString;
-- (void)getDescription: (char*)ioCString
-               forType: (const char*)inTypeCode;
 - (UInt64)addressFromLine: (const char*)inLine;
 - (void)processLine: (Line64*)ioLine;
 - (void)processCodeLine: (Line64**)ioLine;
