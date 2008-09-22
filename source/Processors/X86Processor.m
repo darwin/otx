@@ -1894,15 +1894,11 @@
                     iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
                     iRegInfos[REG1(modRM)].value = offset;
                     iRegInfos[REG1(modRM)].isValid = YES;
+                    iRegInfos[REG1(modRM)].classPtr = NULL;
+                    iRegInfos[REG1(modRM)].catPtr = NULL;
                 }
                 else
                     iRegInfos[REG1(modRM)] = iRegInfos[REG2(modRM)];
-
-/*                iRegInfos[REG1(modRM)].isValid = YES;
-                iRegInfos[REG1(modRM)].value = iRegInfos[REG2(modRM)].value;
-                iRegInfos[REG1(modRM)].classPtr = NULL;
-                iRegInfos[REG1(modRM)].catPtr = NULL;*/
-                // FIXME should we update .classPtr here?
             }
             else if (MOD(modRM) == MOD8)
             {

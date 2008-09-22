@@ -1881,12 +1881,12 @@
 
                 if (MOD(modRM) == MODimm)
                 {
-                    UInt32 offset = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
-
-                    offset = OSSwapLittleToHostInt32(offset);
-
                     if (XREG2(modRM, rexByte) == EBP) // RIP-relative addressing
                     {
+                        UInt32 offset = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+
+                        offset = OSSwapLittleToHostInt32(offset);
+
                         UInt64 baseAddress = inLine->next->info.address;
                         UInt8 type = PointerType;
 
@@ -1901,15 +1901,9 @@
                             else if (type == OCMsgRefType)
                                 iRegInfos[XREG1(modRM, rexByte)].messageRefSel = name;
                         }
-                    }
-                    else
-                    {
-                        iRegInfos[XREG1(modRM, rexByte)].value = offset;
-                    }
 
-                    iRegInfos[XREG1(modRM, rexByte)].isValid = YES;
-                    // FIXME should we update .classPtr here?
-
+                        iRegInfos[XREG1(modRM, rexByte)].isValid = YES;
+                    }
                 }
                 else if (MOD(modRM) == MOD8)
                 {
