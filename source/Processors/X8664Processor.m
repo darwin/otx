@@ -1312,7 +1312,7 @@
 
     // Store the variant type locally to reduce string comparisons.
     UInt32  sendType    = SendTypeFromMsgSend(outComment);
-    UInt64  receiverAddy;
+//    UInt64  receiverAddy;
     UInt64  selectorAddy;
 
     // Make sure we know what the selector is.
@@ -1321,8 +1321,8 @@
         if (iStack[2].isValid)
         {
             selectorAddy    = iStack[2].value;
-            receiverAddy    = (iStack[1].isValid) ?
-                iStack[1].value : 0;
+//            receiverAddy    = (iStack[1].isValid) ?
+//                iStack[1].value : 0;
         }
         else
             return NULL;
@@ -1332,8 +1332,8 @@
         if (iStack[1].isValid)
         {
             selectorAddy    = iStack[1].value;
-            receiverAddy    = (iStack[0].isValid) ?
-                iStack[0].value : 0;
+//            receiverAddy    = (iStack[0].isValid) ?
+//                iStack[0].value : 0;
         }
         else
             return NULL;
@@ -1366,7 +1366,7 @@
             break;
 
         default:
-            fprintf(stderr, "otx: [X86Processor selectorForMsgSend:fromLine:]: "
+            fprintf(stderr, "otx: [X8664Processor selectorForMsgSend:fromLine:]: "
                 "unsupported selector type: %d at address: 0x%x\n",
                 selType, inLine->info.address);
 
@@ -1456,7 +1456,7 @@
                     break;
 
                 default:
-                    fprintf(stderr, "otx: [X86Processor commentForMsgSend]: "
+                    fprintf(stderr, "otx: [X8664Processor commentForMsgSend]: "
                         "unsupported class name type: %d at address: 0x%x\n",
                         classNameType, inLine->info.address);
 
@@ -1467,8 +1467,8 @@
         if (className)
         {
             snprintf(ioComment, MAX_COMMENT_LENGTH - 1,
-                (sendType == sendSuper || sendType == sendSuper_stret) ?
-                "+%s[[%s super] %s]" : "+%s[%s %s]",
+                ((sendType == sendSuper || sendType == sendSuper_stret) ?
+                "+%s[[%s super] %s]" : "+%s[%s %s]"),
                 returnTypeString, className, selString);
         }
         else
@@ -1643,7 +1643,7 @@
 {
     if (!inLine)
     {
-        fprintf(stderr, "otx: [X86Processor resetRegisters]: "
+        fprintf(stderr, "otx: [X8664Processor resetRegisters]: "
             "tried to reset with NULL ioLine\n");
         return;
     }
@@ -2096,7 +2096,7 @@
 {
     if (!inLine)
     {
-        fprintf(stderr, "otx: [X86Processor restoreRegisters]: "
+        fprintf(stderr, "otx: [X8664Processor restoreRegisters]: "
             "tried to restore with NULL inLine\n");
         return NO;
     }
@@ -2537,7 +2537,7 @@
             // sanity check
             if (!currentBlock)
             {
-                fprintf(stderr, "otx: [X86Processor gatherFuncInfos] "
+                fprintf(stderr, "otx: [X8664Processor gatherFuncInfos] "
                     "currentBlock is NULL. Flame the dev.\n");
                 return;
             }

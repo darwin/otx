@@ -414,7 +414,7 @@
         NSString*   folderName  =
             [[iOutputFilePath stringByDeletingLastPathComponent]
             lastPathComponent];
-        NSAlert*    alert       = [[NSAlert alloc] init];
+        NSAlert*    alert       = [[[NSAlert alloc] init] autorelease];
 
         [alert addButtonWithTitle: @"Replace"];
         [alert addButtonWithTitle: @"Cancel"];
@@ -986,8 +986,9 @@
                 return;
             }
 
-            NSURL*  fixedFile   = 
-                [theProcessor fixNops: theNops toPath: iOutputFilePath];
+            NSURL* fixedFile = [theProcessor fixNops: theNops toPath: iOutputFilePath];
+
+            [theProcessor release];
 
             if (fixedFile)
             {
@@ -1484,14 +1485,14 @@
 
 - (IBAction)cancel: (id)sender
 {
-    gCancel = YES;
-
-    NSDictionary*   progDict    = [[NSDictionary alloc] initWithObjectsAndKeys:
+    NSDictionary*   progDict    = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSNumber numberWithBool: YES], PRIndeterminateKey,
         @"Cancelling", PRDescriptionKey,
         nil];
 
     [self reportProgress: progDict];
+
+    gCancel = YES;
 }
 
 #pragma mark -

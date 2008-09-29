@@ -1327,7 +1327,7 @@
 
     // Store the variant type locally to reduce string comparisons.
     UInt32  sendType    = SendTypeFromMsgSend(outComment);
-    UInt32  receiverAddy;
+//    UInt32  receiverAddy;
     UInt32  selectorAddy;
 
     // Make sure we know what the selector is.
@@ -1336,8 +1336,8 @@
         if (iStack[2].isValid)
         {
             selectorAddy    = iStack[2].value;
-            receiverAddy    = (iStack[1].isValid) ?
-                iStack[1].value : 0;
+//            receiverAddy    = (iStack[1].isValid) ?
+//                iStack[1].value : 0;
         }
         else
             return NULL;
@@ -1347,8 +1347,8 @@
         if (iStack[1].isValid)
         {
             selectorAddy    = iStack[1].value;
-            receiverAddy    = (iStack[0].isValid) ?
-                iStack[0].value : 0;
+//            receiverAddy    = (iStack[0].isValid) ?
+//                iStack[0].value : 0;
         }
         else
             return NULL;
@@ -1482,8 +1482,8 @@
         if (className)
         {
             snprintf(ioComment, MAX_COMMENT_LENGTH - 1,
-                (sendType == sendSuper || sendType == sendSuper_stret) ?
-                "+%s[[%s super] %s]" : "+%s[%s %s]",
+                ((sendType == sendSuper || sendType == sendSuper_stret) ?
+                "+%s[[%s super] %s]" : "+%s[%s %s]"),
                 returnTypeString, className, selString);
         }
         else

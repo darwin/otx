@@ -824,7 +824,7 @@
             break;
 
         default:
-            fprintf(stderr, "otx: [PPCProcessor selectorForMsgSend:fromLine:]: "
+            fprintf(stderr, "otx: [PPC64Processor selectorForMsgSend:fromLine:]: "
                 "unsupported selector type: %d at address: 0x%x\n",
                 selType, inLine->info.address);
 
@@ -924,7 +924,7 @@
                             break;
 
                         default:
-                            printf("otx: [PPCProcessor commentForMsgSend:fromLine:]: "
+                            printf("otx: [PPC64Processor commentForMsgSend:fromLine:]: "
                                 "non-lazy symbol pointer points to unrecognized section: %d\n", classNameType);
                             break;
                     }
@@ -954,7 +954,7 @@
                 break;
 
             default:
-                fprintf(stderr, "otx: [PPCProcessor commentForMsgSend]: "
+                fprintf(stderr, "otx: [PPC64Processor commentForMsgSend]: "
                     "unsupported class name type: %d at address: 0x%x\n",
                     classNameType, inLine->info.address);
 
@@ -965,8 +965,8 @@
     if (className)
     {
         snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
-            (sendType == sendSuper || sendType == sendSuper_stret) ?
-            "+%s[[%s super] %s]" : "+%s[%s %s]",
+            ((sendType == sendSuper || sendType == sendSuper_stret) ?
+            "+%s[[%s super] %s]" : "+%s[%s %s]"),
             returnTypeString, className, selString);
     }
     else
@@ -1084,7 +1084,7 @@
 {
     if (!inLine)
     {
-        fprintf(stderr, "otx: [PPCProcessor resetRegisters]: "
+        fprintf(stderr, "otx: [PPC64Processor resetRegisters]: "
             "tried to reset with NULL inLine\n");
         return;
     }
@@ -1157,7 +1157,7 @@
 {
     if (!inLine)
     {
-        fprintf(stderr, "otx: [PPCProcessor updateRegisters]: "
+        fprintf(stderr, "otx: [PPC64Processor updateRegisters]: "
             "tried to update with NULL inLine\n");
         return;
     }
@@ -1783,7 +1783,7 @@
 {
     if (!inLine)
     {
-        fprintf(stderr, "otx: [PPCProcessor restoreRegisters]: "
+        fprintf(stderr, "otx: [PPC64Processor restoreRegisters]: "
             "tried to restore with NULL inLine\n");
         return NO;
     }
@@ -2029,7 +2029,7 @@
         if (IS_BLOCK_BRANCH(theCode) && iCurrentFuncInfoIndex >= 0 &&
             PO(theCode) != 0x13)    // no new blocks for blr, bctr
         {
-            UInt64  branchTarget;
+            UInt64 branchTarget = 0;
 
             // Retrieve the branch target.
             if (PO(theCode) == 0x12)    // b
@@ -2121,7 +2121,7 @@
             // sanity check
             if (!currentBlock)
             {
-                fprintf(stderr, "otx: [PPCProcessor gatherFuncInfos] "
+                fprintf(stderr, "otx: [PPC64Processor gatherFuncInfos] "
                     "currentBlock is NULL. Flame the dev.\n");
                 return;
             }

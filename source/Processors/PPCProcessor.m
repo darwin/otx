@@ -913,8 +913,8 @@ extern BOOL gCancel;
     if (className)
     {
         snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
-            (sendType == sendSuper || sendType == sendSuper_stret) ?
-            "+%s[[%s super] %s]" : "+%s[%s %s]",
+            ((sendType == sendSuper || sendType == sendSuper_stret) ?
+            "+%s[[%s super] %s]" : "+%s[%s %s]"),
             returnTypeString, className, selString);
     }
     else
@@ -1755,7 +1755,7 @@ extern BOOL gCancel;
         if (IS_BLOCK_BRANCH(theCode) && iCurrentFuncInfoIndex >= 0 &&
             PO(theCode) != 0x13)    // no new blocks for blr, bctr
         {
-            UInt32  branchTarget;
+            UInt32 branchTarget = 0;
 
             // Retrieve the branch target.
             if (PO(theCode) == 0x12)    // b

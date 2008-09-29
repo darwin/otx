@@ -99,8 +99,6 @@
                 memcpy(outList, iObjcSects[i].contents +
                     (inAddress - iObjcSects[i].s.addr),
                     sizeof(objc_method_list) - sizeof(objc_method));
-                left -= sizeof(objc_method_list) -
-                    sizeof(objc_method);
                 *outMethods = (objc_method*)(iObjcSects[i].contents +
                     (inAddress - iObjcSects[i].s.addr) +
                     sizeof(objc_method_list) - sizeof(objc_method));
@@ -109,7 +107,6 @@
             {
                 memcpy(outList, iObjcSects[i].contents +
                     (inAddress - iObjcSects[i].s.addr), left);
-                left = 0;
                 *outMethods = NULL;
             }
 
@@ -209,7 +206,6 @@
                 memcpy(outSymTab, iObjcSects[i].contents +
                     (addr - iObjcSects[i].s.addr),
                     sizeof(objc_symtab) - sizeof(void*));
-                left        -= sizeof(objc_symtab) - sizeof(void*);
                 *outDefs    = (void**)(iObjcSects[i].contents +
                     (addr - iObjcSects[i].s.addr) +
                     sizeof(objc_symtab) - sizeof(void*));
