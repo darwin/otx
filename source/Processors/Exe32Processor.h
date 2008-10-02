@@ -7,6 +7,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "ExeProcessor.h"
+#import "ObjcSwap.h"
 #import "Optimizations32.h"
 
 /*  MethodInfo
@@ -30,7 +31,7 @@ MethodInfo;
 */
 typedef struct
 {
-    UInt32          value;
+    uint32_t          value;
     BOOL            isValid;        // value can be trusted
     objc_class*     classPtr;
     objc_category*  catPtr;
@@ -67,7 +68,7 @@ VarInfo;
 */
 typedef struct
 {
-    UInt32  address;
+    uint32_t  address;
     UInt8   code[16];       // machine code as int bytes
     UInt8   codeLength;
     BOOL    isCode;         // NO for function and section names etc.
@@ -95,7 +96,7 @@ LineInfo;
 struct Line
 {
     char*           chars;      // C string
-    UInt32          length;     // C string length
+    uint32_t          length;     // C string length
     struct Line*    next;       // next line in this list
     struct Line*    prev;       // previous line in this list
     struct Line*    alt;        // "this" line in the other list
@@ -115,9 +116,9 @@ typedef struct
 {
     GPRegisterInfo* regInfos;
     VarInfo*        localSelves;
-    UInt32          numLocalSelves;
+    uint32_t          numLocalSelves;
     VarInfo*        localVars;
-    UInt32          numLocalVars;
+    uint32_t          numLocalVars;
 }
 MachineState;
 
@@ -128,7 +129,7 @@ MachineState;
 */
 typedef struct
 {
-    UInt32          beginAddress;
+    uint32_t          beginAddress;
     Line*           endLine;
     BOOL            isEpilog;
     MachineState    state;
@@ -142,10 +143,10 @@ BlockInfo;
 */
 typedef struct
 {
-    UInt32      address;
+    uint32_t    address;
     BlockInfo*  blocks;
-    UInt32      numBlocks;
-    UInt32      genericFuncNum; // 'AnonX' if > 0
+    uint32_t    numBlocks;
+    uint32_t    genericFuncNum; // 'AnonX' if > 0
 }
 FunctionInfo;
 
@@ -160,29 +161,29 @@ FunctionInfo;
     Line*               iVerboseLineListHead;   // linked list the first
     Line*               iPlainLineListHead;     // linked list the second
     Line**              iLineArray;
-    UInt32              iNumLines;
-    UInt32              iNumCodeLines;
+    uint32_t              iNumLines;
+    uint32_t              iNumCodeLines;
     cpu_type_t          iArchSelector;
 
     // base pointers for indirect addressing
     SInt8               iCurrentThunk;      // x86 register identifier
-    UInt32              iCurrentFuncPtr;    // PPC function address
+    uint32_t              iCurrentFuncPtr;    // PPC function address
 
     // symbols that point to functions
     nlist*              iFuncSyms;
-    UInt32              iNumFuncSyms;
+    uint32_t              iNumFuncSyms;
 
     // FunctionInfo array
     FunctionInfo*       iFuncInfos;
-    UInt32              iNumFuncInfos;
+    uint32_t              iNumFuncInfos;
 
     // Obj-C stuff
     section_info*       iObjcSects;
-    UInt32              iNumObjcSects;
+    uint32_t              iNumObjcSects;
     MethodInfo*         iClassMethodInfos;
-    UInt32              iNumClassMethodInfos;
+    uint32_t              iNumClassMethodInfos;
     MethodInfo*         iCatMethodInfos;
-    UInt32              iNumCatMethodInfos;
+    uint32_t              iNumCatMethodInfos;
     objc_class*         iCurrentClass;
     objc_category*      iCurrentCat;
     BOOL                iIsInstanceMethod;
@@ -209,14 +210,14 @@ FunctionInfo;
     section_info        iCFStringSect;
     section_info        iNLSymSect;
     section_info        iImpPtrSect;
-    UInt32              iTextOffset;
-    UInt32              iEndOfText;
+    uint32_t              iTextOffset;
+    uint32_t              iEndOfText;
 
     // C function pointers- see Optimizations.h and speedyDelivery
     BOOL    (*LineIsCode)                   (id, SEL, const char*);
     BOOL    (*LineIsFunction)               (id, SEL, Line*);
     BOOL    (*CodeIsBlockJump)              (id, SEL, UInt8*);
-    UInt32  (*AddressFromLine)              (id, SEL, const char*);
+    uint32_t  (*AddressFromLine)              (id, SEL, const char*);
     void    (*CodeFromLine)                 (id, SEL, Line*);
     void    (*CheckThunk)                   (id, SEL, Line*);
     void    (*ProcessLine)                  (id, SEL, Line*);
@@ -224,7 +225,7 @@ FunctionInfo;
     void    (*PostProcessCodeLine)          (id, SEL, Line**);
     void    (*ChooseLine)                   (id, SEL, Line**);
     void    (*EntabLine)                    (id, SEL, Line*);
-    char*   (*GetPointer)                   (id, SEL, UInt32, UInt8*);
+    char*   (*GetPointer)                   (id, SEL, uint32_t, UInt8*);
     void    (*CommentForLine)               (id, SEL, Line*);
     void    (*CommentForSystemCall)         (id, SEL);
     void    (*CommentForMsgSendFromLine)    (id, SEL, char*, Line*);
@@ -235,9 +236,9 @@ FunctionInfo;
     UInt8   (*SendTypeFromMsgSend)          (id, SEL, char*);
     char*   (*PrepareNameForDemangling)     (id, SEL, char*);
 
-    BOOL    (*GetObjcClassPtrFromMethod)    (id, SEL, objc_class**, UInt32);
-    BOOL    (*GetObjcCatPtrFromMethod)      (id, SEL, objc_category**, UInt32);
-    BOOL    (*GetObjcMethodFromAddress)     (id, SEL, MethodInfo**, UInt32);
+    BOOL    (*GetObjcClassPtrFromMethod)    (id, SEL, objc_class**, uint32_t);
+    BOOL    (*GetObjcCatPtrFromMethod)      (id, SEL, objc_category**, uint32_t);
+    BOOL    (*GetObjcMethodFromAddress)     (id, SEL, MethodInfo**, uint32_t);
     BOOL    (*GetObjcClassFromName)         (id, SEL, objc_class*, const char*);
     BOOL    (*GetObjcClassPtrFromName)      (id, SEL, objc_class**, const char*);
     BOOL    (*GetObjcDescriptionFromObject) (id, SEL, char**, const char*, UInt8);
@@ -248,10 +249,10 @@ FunctionInfo;
     void    (*ReplaceLine)          (id, SEL, Line*, Line*, Line**);
     void    (*DeleteLinesBefore)    (id, SEL, Line*, Line**);
 
-    BOOL    (*FindSymbolByAddress)      (id, SEL, UInt32);
-    BOOL    (*FindClassMethodByAddress) (id, SEL, MethodInfo**, UInt32);
-    BOOL    (*FindCatMethodByAddress)   (id, SEL, MethodInfo**, UInt32);
-    BOOL    (*FindIvar)                 (id, SEL, objc_ivar*, objc_class*, UInt32);
+    BOOL    (*FindSymbolByAddress)      (id, SEL, uint32_t);
+    BOOL    (*FindClassMethodByAddress) (id, SEL, MethodInfo**, uint32_t);
+    BOOL    (*FindCatMethodByAddress)   (id, SEL, MethodInfo**, uint32_t);
+    BOOL    (*FindIvar)                 (id, SEL, objc_ivar*, objc_class*, uint32_t);
 }
 
 - (id)initWithURL: (NSURL*)inURL
@@ -275,12 +276,12 @@ FunctionInfo;
 // customizers
 - (void)gatherLineInfos;
 - (void)findFunctions;
-- (UInt32)addressFromLine: (const char*)inLine;
+- (uint32_t)addressFromLine: (const char*)inLine;
 - (void)processLine: (Line*)ioLine;
 - (void)processCodeLine: (Line**)ioLine;
 - (void)chooseLine: (Line**)ioLine;
 - (void)entabLine: (Line*)ioLine;
-- (char*)getPointer: (UInt32)inAddr
+- (char*)getPointer: (uint32_t)inAddr
                type: (UInt8*)outType;
 
 - (char*)selectorForMsgSend: (char*)outComment
@@ -292,7 +293,7 @@ FunctionInfo;
 
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;
-- (void)printBlocks: (UInt32)inFuncIndex;
+- (void)printBlocks: (uint32_t)inFuncIndex;
 #endif
 
 @end
@@ -327,10 +328,10 @@ MethodInfo_Compare(
     MethodInfo* mi1,
     MethodInfo* mi2)
 {
-    if ((UInt32)mi1->m.method_imp < (UInt32)mi2->m.method_imp)
+    if ((uint32_t)mi1->m.method_imp < (uint32_t)mi2->m.method_imp)
         return -1;
 
-    return ((UInt32)mi1->m.method_imp > (UInt32)mi2->m.method_imp);
+    return ((uint32_t)mi1->m.method_imp > (uint32_t)mi2->m.method_imp);
 }
 
 static int
@@ -338,8 +339,8 @@ MethodInfo_Compare_Swapped(
     MethodInfo* mi1,
     MethodInfo* mi2)
 {
-    UInt32  imp1    = (UInt32)mi1->m.method_imp;
-    UInt32  imp2    = (UInt32)mi2->m.method_imp;
+    uint32_t  imp1    = (uint32_t)mi1->m.method_imp;
+    uint32_t  imp2    = (uint32_t)mi2->m.method_imp;
 
     imp1    = OSSwapInt32(imp1);
     imp2    = OSSwapInt32(imp2);

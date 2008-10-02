@@ -29,7 +29,7 @@
 @private
     NSURL*              iOFile;
     cpu_type_t          iArchSelector;
-    UInt32              iFileArchMagic;
+    uint32_t              iFileArchMagic;
     NSString*           iExeName;
     BOOL                iVerify;
     BOOL                iShowProgress;

@@ -16,7 +16,7 @@
 //  findSymbolByAddress:
 // ----------------------------------------------------------------------------
 
-- (BOOL)findSymbolByAddress: (UInt32)inAddress
+- (BOOL)findSymbolByAddress: (uint32_t)inAddress
 {
     if (!iFuncSyms)
         return NO;
@@ -33,7 +33,7 @@
 // ----------------------------------------------------------------------------
 
 - (BOOL)findClassMethod: (MethodInfo**)outMI
-              byAddress: (UInt32)inAddress;
+              byAddress: (uint32_t)inAddress;
 {
     if (!outMI)
         return NO;
@@ -44,7 +44,7 @@
         return NO;
     }
 
-    UInt32  swappedAddress  = inAddress;
+    uint32_t  swappedAddress  = inAddress;
 
     if (iSwapped)
         swappedAddress  = OSSwapInt32(swappedAddress);
@@ -63,7 +63,7 @@
 // ----------------------------------------------------------------------------
 
 - (BOOL)findCatMethod: (MethodInfo**)outMI
-            byAddress: (UInt32)inAddress;
+            byAddress: (uint32_t)inAddress;
 {
     if (!outMI)
         return NO;
@@ -74,7 +74,7 @@
         return NO;
     }
 
-    UInt32  swappedAddress  = inAddress;
+    uint32_t  swappedAddress  = inAddress;
 
     if (iSwapped)
         swappedAddress  = OSSwapInt32(swappedAddress);
@@ -94,7 +94,7 @@
 
 - (BOOL)findIvar: (objc_ivar*)outIvar
          inClass: (objc_class*)inClass
-      withOffset: (UInt32)inOffset
+      withOffset: (uint32_t)inOffset
 {
     if (!inClass || !outIvar)
         return NO;
@@ -112,12 +112,12 @@
 //          swap_objc_class(&theSwappedClass);
 
         theIvars    = (objc_ivar_list*)GetPointer(
-            (UInt32)theSwappedClass.ivars, NULL);
+            (uint32_t)theSwappedClass.ivars, NULL);
 
         if (!theIvars)
         {   // Try again with the superclass.
             theSuperName    = GetPointer(
-                (UInt32)theClassPtr->super_class, NULL);
+                (uint32_t)theClassPtr->super_class, NULL);
 
             if (!theSuperName)
                 break;
@@ -130,7 +130,7 @@
             continue;
         }
 
-        UInt32  numIvars    = theIvars->ivar_count;
+        uint32_t  numIvars    = theIvars->ivar_count;
 
         if (iSwapped)
             numIvars    = OSSwapInt32(numIvars);
@@ -140,7 +140,7 @@
         SInt64  begin   = 0;
         SInt64  end     = numIvars - 1;
         SInt64  split   = numIvars / 2;
-        UInt32  offset;
+        uint32_t  offset;
 
         while (end >= begin)
         {
@@ -168,7 +168,7 @@
         }
 
         // Try again with the superclass.
-        theSuperName    = GetPointer((UInt32)theClassPtr->super_class, NULL);
+        theSuperName    = GetPointer((uint32_t)theClassPtr->super_class, NULL);
 
         if (!theSuperName)
             break;

@@ -96,7 +96,7 @@ Line64Info;
 struct Line64
 {
     char*           chars;      // C string
-    UInt32          length;     // C string length
+    uint32_t          length;     // C string length
     struct Line64*  next;       // next line in this list
     struct Line64*  prev;       // previous line in this list
     struct Line64*  alt;        // "this" line in the other list
@@ -116,9 +116,9 @@ typedef struct
 {
     GP64RegisterInfo*   regInfos;
     Var64Info*          localSelves;
-    UInt32              numLocalSelves;
+    uint32_t              numLocalSelves;
     Var64Info*          localVars;
-    UInt32              numLocalVars;
+    uint32_t              numLocalVars;
 }
 Machine64State;
 
@@ -145,8 +145,8 @@ typedef struct
 {
     UInt64          address;
     Block64Info*    blocks;
-    UInt32          numBlocks;
-    UInt32          genericFuncNum; // 'AnonX' if > 0
+    uint32_t          numBlocks;
+    uint32_t          genericFuncNum; // 'AnonX' if > 0
 }
 Function64Info;
 
@@ -161,8 +161,8 @@ Function64Info;
     Line64*             iVerboseLineListHead;   // linked list the first
     Line64*             iPlainLineListHead;     // linked list the second
     Line64**            iLineArray;
-    UInt32              iNumLines;
-    UInt32              iNumCodeLines;
+    uint32_t              iNumLines;
+    uint32_t              iNumCodeLines;
     cpu_type_t          iArchSelector;
 
     // base pointers for indirect addressing
@@ -171,17 +171,17 @@ Function64Info;
 
     // symbols that point to functions
     nlist*              iFuncSyms;
-    UInt32              iNumFuncSyms;
+    uint32_t              iNumFuncSyms;
 
     // FunctionInfo array
     Function64Info*     iFuncInfos;
-    UInt32              iNumFuncInfos;
+    uint32_t              iNumFuncInfos;
 
     // Obj-C stuff
     Method64Info*       iClassMethodInfos;
-    UInt32              iNumClassMethodInfos;
+    uint32_t              iNumClassMethodInfos;
     objc2_ivar_t*       iClassIvars;
-    UInt32              iNumClassIvars;
+    uint32_t              iNumClassIvars;
     objc2_class_t*      iCurrentClass;
     BOOL                iIsInstanceMethod;
 
@@ -292,7 +292,7 @@ Function64Info;
 
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;
-- (void)printBlocks: (UInt32)inFuncIndex;
+- (void)printBlocks: (uint32_t)inFuncIndex;
 #endif
 
 @end

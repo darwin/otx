@@ -28,7 +28,7 @@
         fat_header  fh      = *(fat_header*)iRAMFile;
         fat_arch*   faPtr   = (fat_arch*)((char*)iRAMFile + sizeof(fat_header));
         fat_arch    fa;
-        UInt32      i;
+        uint32_t      i;
 
         // fat_header and fat_arch are always big-endian. Swap if necessary.
 #if TARGET_RT_LITTLE_ENDIAN
@@ -47,9 +47,9 @@
             if (fa.cputype == iArchSelector)
             {
                 iMachHeaderPtr  = (mach_header_64*)(iRAMFile + fa.offset);
-//                iFileArchMagic      = *(UInt32*)iMachHeaderPtr;
+//                iFileArchMagic      = *(uint32_t*)iMachHeaderPtr;
 //                iSwapped        = iFileArchMagic == MH_CIGAM || iFileArchMagic == MH_CIGAM_64;
-                UInt32  targetArchMagic = *(UInt32*)iMachHeaderPtr;
+                uint32_t  targetArchMagic = *(uint32_t*)iMachHeaderPtr;
 
                 iSwapped = targetArchMagic == MH_CIGAM || targetArchMagic == MH_CIGAM_64;
                 break;
@@ -146,7 +146,7 @@
     if (iObjcClassListSect.size == 0)
         return;
 
-    uint32_t numClasses = (UInt32)(iObjcClassListSect.size / 8);  // sizeof(uint64_t)
+    uint32_t numClasses = (uint32_t)(iObjcClassListSect.size / 8);  // sizeof(uint64_t)
     uint64_t* classList = (uint64_t*)iObjcClassListSect.contents;
     uint64_t fileClassPtr;
     uint32_t i;
@@ -395,7 +395,7 @@
 
     nlist*  theSymPtr   = (nlist*)((char*)iMachHeaderPtr + swappedSymTab.symoff);
     nlist   theSym      = {0};
-    UInt32  i;
+    uint32_t  i;
 
     // loop thru symbols
     for (i = 0; i < swappedSymTab.nsyms; i++)
@@ -619,7 +619,7 @@
 
     dyld_data_section*  data    = (dyld_data_section*)iDyldSect.contents;
 
-    iAddrDyldStubBindingHelper  = (UInt32)(data->dyld_stub_binding_helper);
+    iAddrDyldStubBindingHelper  = (uint32_t)(data->dyld_stub_binding_helper);
 
     if (iSwapped)
         iAddrDyldStubBindingHelper  = OSSwapInt32(iAddrDyldStubBindingHelper);

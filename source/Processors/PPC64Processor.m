@@ -80,13 +80,13 @@
 
 - (void)codeFromLine: (Line64*)inLine
 {
-    UInt32  theInstruction  = (iMachHeader.filetype == MH_OBJECT) ?
-        *(UInt32*)((char*)iMachHeaderPtr + (inLine->info.address + iTextOffset)) :
-        *(UInt32*)((char*)iMachHeaderPtr + (inLine->info.address - iTextOffset));
+    uint32_t  theInstruction  = (iMachHeader.filetype == MH_OBJECT) ?
+        *(uint32_t*)((char*)iMachHeaderPtr + (inLine->info.address + iTextOffset)) :
+        *(uint32_t*)((char*)iMachHeaderPtr + (inLine->info.address - iTextOffset));
 
     inLine->info.codeLength = 4;
 
-    UInt32* intPtr = (UInt32*)&inLine->info.code[0];
+    uint32_t* intPtr = (uint32_t*)&inLine->info.code[0];
 
     *intPtr = theInstruction;
 }
@@ -97,7 +97,7 @@
 
 - (void)commentForLine: (Line64*)inLine;
 {
-    UInt32 theCode = *(UInt32*)inLine->info.code;
+    uint32_t theCode = *(uint32_t*)inLine->info.code;
 
     theCode = OSSwapBigToHostInt32(theCode);
 
@@ -141,7 +141,7 @@
             // Deal with absolute branches.
             if (AA(theCode))
             {
-                UInt32  target  = LI(theCode);
+                uint32_t  target  = LI(theCode);
 
                 switch (target)
                 {
@@ -277,7 +277,7 @@
                 if (!funcInfo->blocks)
                     break;
 
-                UInt32  i;
+                uint32_t  i;
 
                 for (i = 0; i < funcInfo->numBlocks; i++)
                 {
@@ -391,7 +391,7 @@
                 }
                 else    // lfs | stfs
                 {
-                    UInt32  theInt32    = *(UInt32*)theDummyPtr;
+                    uint32_t  theInt32    = *(uint32_t*)theDummyPtr;
 
                     theInt32    = OSSwapBigToHostInt32(theInt32);
 
@@ -450,7 +450,7 @@
                     localAddy   = iRegInfos[RA(theCode)].value + SIMM(theCode);
 
                 UInt8   theType = PointerType;
-                UInt32  theValue;
+                uint32_t  theValue;
 
                 theSymPtr   = GetPointer(localAddy, &theType);
 
@@ -459,7 +459,7 @@
                     switch (theType)
                     {
                         case DataGenericType:
-                            theValue    = *(UInt32*)theSymPtr;
+                            theValue    = *(uint32_t*)theSymPtr;
                             theValue    = OSSwapBigToHostInt32(theValue);
                             theDummyPtr = GetPointer(theValue, &theType);
 
@@ -486,7 +486,7 @@
                         {
                             char*   dyldComment = NULL;
 
-                            theValue    = *(UInt32*)theSymPtr;
+                            theValue    = *(uint32_t*)theSymPtr;
                             theValue    = OSSwapBigToHostInt32(theValue);
 
                             switch(theValue)
@@ -532,7 +532,7 @@
                         case ImpPtrType:
                         case NLSymType:
                         {
-                            theValue    = *(UInt32*)theSymPtr;
+                            theValue    = *(uint32_t*)theSymPtr;
                             theValue    = OSSwapBigToHostInt32(theValue);
                             theDummyPtr = GetPointer(theValue, NULL);
 
@@ -542,12 +542,12 @@
                                 break;
                             }
 
-                            theValue    = *(UInt32*)(theDummyPtr + 4);
+                            theValue    = *(uint32_t*)(theDummyPtr + 4);
                             theValue    = OSSwapBigToHostInt32(theValue);
 
                             if (theValue != typeid_NSString)
                             {
-                                theValue    = *(UInt32*)theDummyPtr;
+                                theValue    = *(uint32_t*)theDummyPtr;
                                 theValue    = OSSwapBigToHostInt32(theValue);
                                 theDummyPtr = GetPointer(theValue, NULL);
 
@@ -731,8 +731,8 @@
     }
 
     BOOL    isIndirect      = (iRegInfos[0].value == SYS_syscall);
-    UInt32  syscallNumReg   = isIndirect ? 3 : 0;
-    UInt32  syscallArg1Reg  = isIndirect ? 4 : 3;
+    uint32_t  syscallNumReg   = isIndirect ? 3 : 0;
+    uint32_t  syscallArg1Reg  = isIndirect ? 4 : 3;
 
     if (!iRegInfos[syscallNumReg].isValid   ||
         iRegInfos[syscallNumReg].value > SYS_MAXSYSCALL)
@@ -780,7 +780,7 @@
                    fromLine: (Line64*)inLine
 {
     char* selString = NULL;
-    UInt32 theCode = *(UInt32*)inLine->info.code;
+    uint32_t theCode = *(uint32_t*)inLine->info.code;
 
     theCode = OSSwapBigToHostInt32(theCode);
 
@@ -793,7 +793,7 @@
         return NULL;
 
     UInt8   sendType        = SendTypeFromMsgSend(outComment);
-    UInt32  selectorRegNum  =
+    uint32_t  selectorRegNum  =
         (sendType == sendSuper_stret || sendType == send_stret) ? 5 : 4;
 
     if (!iRegInfos[selectorRegNum].isValid ||
@@ -815,7 +815,7 @@
         case OCGenericType:
             if (selPtr)
             {
-                UInt32  selPtrValue = *(UInt32*)selPtr;
+                uint32_t  selPtrValue = *(uint32_t*)selPtr;
 
                 selPtrValue = OSSwapBigToHostInt32(selPtrValue);
                 selString   = GetPointer(selPtrValue, NULL);
@@ -939,7 +939,7 @@
             case OCGenericType:
                 if (classNamePtr)
                 {
-                    UInt32  namePtrValue    = *(UInt32*)classNamePtr;
+                    uint32_t  namePtrValue    = *(uint32_t*)classNamePtr;
 
                     namePtrValue    = OSSwapBigToHostInt32(namePtrValue);
                     className       = GetPointer(namePtrValue, NULL);
@@ -1056,7 +1056,7 @@
         !(*ioLine)->alt || !(*ioLine)->alt->chars)
         return;
 
-    UInt32 theCode = *(UInt32*)(*ioLine)->info.code;
+    uint32_t theCode = *(uint32_t*)(*ioLine)->info.code;
 
     theCode = OSSwapBigToHostInt32(theCode);
 
@@ -1163,7 +1163,7 @@
     }
 
     UInt64 theNewValue;
-    UInt32 theCode = *(UInt32*)inLine->info.code;
+    uint32_t theCode = *(uint32_t*)inLine->info.code;
 
     theCode = OSSwapBigToHostInt32(theCode);
 
@@ -1214,7 +1214,7 @@
                 SIMM(theCode) >= 0)     // we're accessing local vars, not args
             {
                 BOOL    found = NO;
-                UInt32  i;
+                uint32_t  i;
 
                 // Check for copied self pointer. This happens mostly in "init"
                 // methods, as in: "self = [super init]"
@@ -1345,7 +1345,7 @@
 
             UInt64  rotatedRT   =
                 rotl(iRegInfos[RT(theCode)].value, RB(theCode));
-            UInt32  theMask     = 0x0;
+            uint32_t  theMask     = 0x0;
             UInt8   i;
 
             for (i = MB(theCode); i <= ME(theCode); i++)
@@ -1368,7 +1368,7 @@
             }
 
             theNewValue =
-                iRegInfos[RT(theCode)].value | (UInt32)UIMM(theCode);
+                iRegInfos[RT(theCode)].value | (uint32_t)UIMM(theCode);
 
             iRegInfos[RA(theCode)]          = (GP64RegisterInfo){0};
             iRegInfos[RA(theCode)].value    = theNewValue;
@@ -1572,13 +1572,13 @@
             }
             else if (iRegInfos[RA(theCode)].isValid)
             {
-                UInt32  tempPtr = (UInt32)GetPointer(
+                uint32_t  tempPtr = (uint32_t)GetPointer(
                     iRegInfos[RA(theCode)].value + SIMM(theCode), NULL);
 
                 if (tempPtr)
                 {
                     iRegInfos[RT(theCode)]          = (GP64RegisterInfo){0};
-                    iRegInfos[RT(theCode)].value    = *(UInt32*)tempPtr;
+                    iRegInfos[RT(theCode)].value    = *(uint32_t*)tempPtr;
                     iRegInfos[RT(theCode)].value    =
                         OSSwapBigToHostInt64(iRegInfos[RT(theCode)].value);
                     iRegInfos[RT(theCode)].isValid  = YES;
@@ -1588,7 +1588,7 @@
             }
             else if (iLocalVars)
             {
-                UInt32  i;
+                uint32_t  i;
 
                 for (i = 0; i < iNumLocalVars; i++)
                 {
@@ -1688,7 +1688,7 @@
             else if (RA(theCode) == 1 && DS(theCode) >= 0)
             {
                 BOOL    found = NO;
-                UInt32  i;
+                uint32_t  i;
 
                 // Check for copied self pointer. This happens mostly in "init"
                 // methods, as in: "self = [super init]"
@@ -1760,13 +1760,13 @@
             {
                 iNumLocalSelves++;
                 iLocalSelves = realloc(iLocalSelves, iNumLocalSelves * sizeof(Var64Info));
-                iLocalSelves[iNumLocalSelves - 1] = (Var64Info){iRegInfos[RT(theCode)], (UInt32)DS(theCode)};
+                iLocalSelves[iNumLocalSelves - 1] = (Var64Info){iRegInfos[RT(theCode)], (uint32_t)DS(theCode)};
             }
             else
             {
                 iNumLocalVars++;
                 iLocalVars = realloc(iLocalVars, iNumLocalVars * sizeof(Var64Info));
-                iLocalVars[iNumLocalVars - 1] = (Var64Info) {iRegInfos[RT(theCode)], (UInt32)DS(theCode)};
+                iLocalVars[iNumLocalVars - 1] = (Var64Info) {iRegInfos[RT(theCode)], (uint32_t)DS(theCode)};
             }
 
             break;
@@ -1800,7 +1800,7 @@
     if (!funcInfo->blocks)
         return NO;
 
-    UInt32  i;
+    uint32_t  i;
 
     for (i = 0; i < funcInfo->numBlocks; i++)
     {
@@ -1885,7 +1885,7 @@
         return YES;
 
     BOOL isFunction = NO;
-    UInt32 theCode = *(UInt32*)inLine->info.code;
+    uint32_t theCode = *(uint32_t*)inLine->info.code;
 
     theCode = OSSwapBigToHostInt32(theCode);
 
@@ -1902,7 +1902,7 @@
             if (thePrevLine->info.isFunction)
                 return NO;
 
-            theCode = *(UInt32*)thePrevLine->info.code;
+            theCode = *(uint32_t*)thePrevLine->info.code;
             theCode = OSSwapBigToHostInt32(theCode);
 
             if ((theCode & 0xfc0007ff) == 0x7c000008)   // trap
@@ -1946,7 +1946,7 @@
                     continue;   // not code, keep looking
                 else if (!thePrevLine->info.isFunction)
                 {               // not yet recognized, try it
-                    theCode = *(UInt32*)thePrevLine->info.code;
+                    theCode = *(uint32_t*)thePrevLine->info.code;
                     theCode = OSSwapBigToHostInt32(theCode);
 
                     if (theCode == 0x7fe00008   ||  // ignore traps
@@ -1980,7 +1980,7 @@
 
 - (BOOL)codeIsBlockJump: (UInt8*)inCode
 {
-    UInt32 theCode = *(UInt32*)inCode;
+    uint32_t theCode = *(uint32_t*)inCode;
 
     theCode = OSSwapBigToHostInt32(theCode);
     return IS_BLOCK_BRANCH(theCode);
@@ -1992,8 +1992,8 @@
 - (void)gatherFuncInfos
 {
     Line64* theLine     = iPlainLineListHead;
-    UInt32  theCode;
-    UInt32  progCounter = 0;
+    uint32_t  theCode;
+    uint32_t  progCounter = 0;
 
     // Loop thru lines.
     while (theLine)
@@ -2012,7 +2012,7 @@
             continue;
         }
 
-        theCode = *(UInt32*)theLine->info.code;
+        theCode = *(uint32_t*)theLine->info.code;
         theCode = OSSwapBigToHostInt32(theCode);
 
         if (theLine->info.isFunction)
@@ -2046,7 +2046,7 @@
             Block64Info*    currentBlock    = NULL;
             Line64*         endLine         = NULL;
             BOOL            isEpilog        = NO;
-            UInt32          i;
+            uint32_t          i;
 
             if (funcInfo->blocks)
             {   // Blocks exist, find 1st one matching this address.
@@ -2077,11 +2077,11 @@
                             // Walk through the block. It's an epilog if it ends
                             // with 'blr'.
                             Line64* nextLine    = *beginLine;
-                            UInt32  tempCode;
+                            uint32_t  tempCode;
 
                             while (nextLine)
                             {
-                                tempCode = *(UInt32*)nextLine->info.code;
+                                tempCode = *(uint32_t*)nextLine->info.code;
                                 tempCode = OSSwapBigToHostInt32(tempCode);
 
                                 if (IS_BLOCK_BRANCH(tempCode))
@@ -2176,7 +2176,7 @@
 //  printBlocks:
 // ----------------------------------------------------------------------------
 
-- (void)printBlocks: (UInt32)inFuncIndex;
+- (void)printBlocks: (uint32_t)inFuncIndex;
 {
     if (!iFuncInfos)
         return;
@@ -2186,7 +2186,7 @@
     if (!funcInfo || !funcInfo->blocks)
         return;
 
-    UInt32  i, j;
+    uint32_t  i, j;
 
     fprintf(stderr, "\nfunction at 0x%x:\n\n", funcInfo->address);
     fprintf(stderr, "%d blocks\n", funcInfo->numBlocks);

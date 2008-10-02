@@ -96,8 +96,8 @@
     if (!iFuncInfos)
         return;
 
-    UInt32          i;
-    UInt32          j;
+    uint32_t          i;
+    uint32_t          j;
     FunctionInfo* funcInfo;
     BlockInfo*    blockInfo;
 
@@ -215,7 +215,7 @@
     if (gCancel == YES)
         return NO;
 
-    UInt32  progCounter = 0;
+    uint32_t  progCounter = 0;
     double  progValue   = 0.0;
 
     progDict    = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
@@ -468,7 +468,7 @@
 - (void)gatherLineInfos
 {
     Line*   theLine     = iPlainLineListHead;
-    UInt32  progCounter = 0;
+    uint32_t  progCounter = 0;
 
     while (theLine)
     {
@@ -544,7 +544,7 @@
             iFuncInfos  = realloc(iFuncInfos,
                 sizeof(FunctionInfo) * iNumFuncInfos);
 
-            UInt32  genericFuncNum  = 0;
+            uint32_t  genericFuncNum  = 0;
 
             if (theLine->prev && theLine->prev->info.isCode)
                 genericFuncNum  = ++iCurrentGenericFuncNum;
@@ -657,7 +657,7 @@
 
     ChooseLine(ioLine);
 
-    UInt32  theOrigLength           = (*ioLine)->length;
+    uint32_t  theOrigLength           = (*ioLine)->length;
     char    localOffsetString[9]    = {0};
     char    theAddressCString[9]    = {0};
     char    theMnemonicCString[20]  = {0};
@@ -679,7 +679,7 @@
     iLineOperandsCString[0] = 0;
 
     char*   origFormatString    = "%s\t%s\t%s%n";
-    UInt32  consumedAfterOp     = 0;
+    uint32_t  consumedAfterOp     = 0;
 
     // The address and mnemonic always exist, separated by a tab.
     sscanf((*ioLine)->chars, origFormatString, theAddressCString,
@@ -689,7 +689,7 @@
     // remaining. Copy it, starting after the preceding tab.
     if (consumedAfterOp && consumedAfterOp < theOrigLength - 1)
     {
-        UInt32  origCommentLength   = theOrigLength - consumedAfterOp - 1;
+        uint32_t  origCommentLength   = theOrigLength - consumedAfterOp - 1;
 
         strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
             origCommentLength);
@@ -783,20 +783,20 @@
             if (theSwappedInfo.oc_cat.category_name)
             {
                 className   = GetPointer(
-                    (UInt32)theSwappedInfo.oc_cat.class_name, NULL);
+                    (uint32_t)theSwappedInfo.oc_cat.class_name, NULL);
                 catName     = GetPointer(
-                    (UInt32)theSwappedInfo.oc_cat.category_name, NULL);
+                    (uint32_t)theSwappedInfo.oc_cat.category_name, NULL);
             }
             else if (theSwappedInfo.oc_class.name)
             {
                 className   = GetPointer(
-                    (UInt32)theSwappedInfo.oc_class.name, NULL);
+                    (uint32_t)theSwappedInfo.oc_class.name, NULL);
             }
 
             if (className)
             {
                 char*   selName = GetPointer(
-                    (UInt32)theSwappedInfo.m.method_name, NULL);
+                    (uint32_t)theSwappedInfo.m.method_name, NULL);
 
                 if (selName)
                 {
@@ -804,7 +804,7 @@
                         return;
 
                     char*   methTypes   =
-                        GetPointer((UInt32)theSwappedInfo.m.method_types, NULL);
+                        GetPointer((uint32_t)theSwappedInfo.m.method_types, NULL);
 
                     if (methTypes)
                     {
@@ -924,12 +924,12 @@
     {
         CommentForLine(*ioLine);
 
-        UInt32  origCommentLength   = strlen(iLineCommentCString);
+        uint32_t  origCommentLength   = strlen(iLineCommentCString);
 
         if (origCommentLength)
         {
             char    tempComment[MAX_COMMENT_LENGTH];
-            UInt32  i, j = 0;
+            uint32_t  i, j = 0;
 
             // Escape newlines, carriage returns and tabs.
             for (i = 0; i < origCommentLength; i++)
@@ -996,7 +996,7 @@
             if (colonPos)
                 *colonPos   = 0;
 
-            UInt32  demangledLength = strlen(demangledName);
+            uint32_t  demangledLength = strlen(demangledName);
 
             if (demangledLength < MAX_OPERANDS_LENGTH - 1)
                 strncpy(iLineOperandsCString, demangledName, demangledLength + 1);
@@ -1020,7 +1020,7 @@
             if (colonPos)
                 *colonPos   = 0;
 
-            UInt32  demangledLength = strlen(demangledName);
+            uint32_t  demangledLength = strlen(demangledName);
 
             if (demangledLength < MAX_OPERANDS_LENGTH - 1)
                 strncpy(theCommentCString, demangledName, demangledLength + 1);
@@ -1032,7 +1032,7 @@
     {
         // Build a right-aligned string  with a '+' in it.
         snprintf((char*)&localOffsetString, iFieldWidths.offset,
-            "%6lu", iLocalOffset);
+            "%6u", iLocalOffset);
 
         // Find the space that's followed by a nonspace.
         // *Reverse count to optimize for short functions.
@@ -1096,7 +1096,7 @@
 
     // Finally, assemble the new string.
     char    finalFormatCString[MAX_FORMAT_LENGTH];
-    UInt32  formatMarker    = 0;
+    uint32_t  formatMarker    = 0;
 
     if (needNewLine)
     {
@@ -1174,14 +1174,14 @@
 //  addressFromLine:
 // ----------------------------------------------------------------------------
 
-- (UInt32)addressFromLine: (const char*)inLine
+- (uint32_t)addressFromLine: (const char*)inLine
 {
     // sanity check
     if ((inLine[0] < '0' || inLine[0] > '9') &&
         (inLine[0] < 'a' || inLine[0] > 'f'))
         return 0;
 
-    UInt32  theAddress  = 0;
+    uint32_t  theAddress  = 0;
 
     sscanf(inLine, "%08x", &theAddress);
     return theAddress;
@@ -1286,8 +1286,8 @@
 - (void)printDataSection: (section_info*)inSect
                   toFile: (FILE*)outFile;
 {
-    UInt32  i, j, k, bytesLeft;
-    UInt32  theDataSize         = inSect->size;
+    uint32_t  i, j, k, bytesLeft;
+    uint32_t  theDataSize         = inSect->size;
     char    theLineCString[70];
     char*   theMachPtr          = (char*)iMachHeaderPtr;
 
@@ -1334,7 +1334,7 @@
         }
         else    // first lines
         {           
-            UInt32*         theHexPtr           = (UInt32*)
+            uint32_t*         theHexPtr           = (uint32_t*)
                 (theMachPtr + inSect->s.offset + i);
             unsigned char   theASCIIData[17]    = {0};
             UInt8           j;
@@ -1413,7 +1413,7 @@
         return;
 
     // only need to do this math once...
-    static UInt32   startOfComment  = 0;
+    static uint32_t   startOfComment  = 0;
 
     if (startOfComment == 0)
     {
@@ -1425,12 +1425,12 @@
     }
 
     char    entabbedLine[MAX_LINE_LENGTH];
-    UInt32  theOrigLength   = ioLine->length;
+    uint32_t  theOrigLength   = ioLine->length;
 
     // If 1st char is '\n', skip it.
-    UInt32  firstChar   = (ioLine->chars[0] == '\n');
-    UInt32  i;          // old line marker
-    UInt32  j   = 0;    // new line marker
+    uint32_t  firstChar   = (ioLine->chars[0] == '\n');
+    uint32_t  i;          // old line marker
+    uint32_t  j   = 0;    // new line marker
 
     if (firstChar)
     {
@@ -1517,7 +1517,7 @@
 //  Convert a relative ptr to an absolute ptr. Return which data type is being
 //  referenced in outType.
 
-- (char*)getPointer: (UInt32)inAddr
+- (char*)getPointer: (uint32_t)inAddr
                type: (UInt8*)outType
 {
     if (inAddr == 0)
@@ -1527,7 +1527,7 @@
         *outType    = PointerType;
 
     char*   thePtr  = NULL;
-    UInt32  i;
+    uint32_t  i;
 
             // (__TEXT,__cstring) (char*)
     if (inAddr >= iCStringSect.s.addr &&
@@ -1558,7 +1558,7 @@
     if (inAddr >= iLit4Sect.s.addr &&
         inAddr < iLit4Sect.s.addr + iLit4Sect.size)
     {
-        thePtr  = (char*)((UInt32)iLit4Sect.contents +
+        thePtr  = (char*)((uint32_t)iLit4Sect.contents +
             (inAddr - iLit4Sect.s.addr));
 
         if (outType)
@@ -1568,7 +1568,7 @@
     if (inAddr >= iLit8Sect.s.addr &&
         inAddr < iLit8Sect.s.addr + iLit8Sect.size)
     {
-        thePtr  = (char*)((UInt32)iLit8Sect.contents +
+        thePtr  = (char*)((uint32_t)iLit8Sect.contents +
             (inAddr - iLit8Sect.s.addr));
 
         if (outType)
@@ -1582,7 +1582,7 @@
     if (inAddr >= iNSStringSect.s.addr &&
         inAddr < iNSStringSect.s.addr + iNSStringSect.size)
     {
-        thePtr  = (char*)((UInt32)iNSStringSect.contents +
+        thePtr  = (char*)((uint32_t)iNSStringSect.contents +
             (inAddr - iNSStringSect.s.addr));
 
         if (outType)
@@ -1592,7 +1592,7 @@
     if (inAddr >= iClassSect.s.addr &&
         inAddr < iClassSect.s.addr + iClassSect.size)
     {
-        thePtr  = (char*)((UInt32)iClassSect.contents +
+        thePtr  = (char*)((uint32_t)iClassSect.contents +
             (inAddr - iClassSect.s.addr));
 
         if (outType)
@@ -1602,7 +1602,7 @@
     if (inAddr >= iMetaClassSect.s.addr &&
         inAddr < iMetaClassSect.s.addr + iMetaClassSect.size)
     {
-        thePtr  = (char*)((UInt32)iMetaClassSect.contents +
+        thePtr  = (char*)((uint32_t)iMetaClassSect.contents +
             (inAddr - iMetaClassSect.s.addr));
 
         if (outType)
@@ -1612,7 +1612,7 @@
     if (inAddr >= iObjcModSect.s.addr &&
         inAddr < iObjcModSect.s.addr + iObjcModSect.size)
     {
-        thePtr  = (char*)((UInt32)iObjcModSect.contents +
+        thePtr  = (char*)((uint32_t)iObjcModSect.contents +
             (inAddr - iObjcModSect.s.addr));
 
         if (outType)
@@ -1641,7 +1641,7 @@
     if (inAddr >= iImpPtrSect.s.addr &&
         inAddr < iImpPtrSect.s.addr + iImpPtrSect.size)
     {
-        thePtr  = (char*)((UInt32)iImpPtrSect.contents +
+        thePtr  = (char*)((uint32_t)iImpPtrSect.contents +
             (inAddr - iImpPtrSect.s.addr));
 
         if (outType)
@@ -1658,7 +1658,7 @@
         thePtr  = (char*)(iDataSect.contents + (inAddr - iDataSect.s.addr));
 
         UInt8   theType     = DataGenericType;
-        UInt32  theValue    = *(UInt32*)thePtr;
+        uint32_t  theValue    = *(uint32_t*)thePtr;
 
         if (iSwapped)
             theValue    = OSSwapInt32(theValue);
@@ -1667,7 +1667,7 @@
         {
             theType = PointerType;
 
-            static  UInt32  recurseCount    = 0;
+            static  uint32_t  recurseCount    = 0;
 
             while (theType == PointerType)
             {
@@ -1687,7 +1687,7 @@
                     break;
                 }
 
-                theValue    = *(UInt32*)thePtr;
+                theValue    = *(uint32_t*)thePtr;
             }
 
             recurseCount    = 0;
@@ -1700,12 +1700,12 @@
     if (inAddr >= iConstDataSect.s.addr &&
         inAddr < iConstDataSect.s.addr + iConstDataSect.size)
     {
-        thePtr  = (char*)((UInt32)iConstDataSect.contents +
+        thePtr  = (char*)((uint32_t)iConstDataSect.contents +
             (inAddr - iConstDataSect.s.addr));
 
         if (outType)
         {
-            UInt32  theID   = *(UInt32*)thePtr;
+            uint32_t  theID   = *(uint32_t*)thePtr;
 
             if (iSwapped)
                 theID   = OSSwapInt32(theID);
@@ -1714,7 +1714,7 @@
                 *outType    = OCStrObjectType;
             else
             {
-                theID   = *(UInt32*)(thePtr + 4);
+                theID   = *(uint32_t*)(thePtr + 4);
 
                 if (iSwapped)
                     theID   = OSSwapInt32(theID);
@@ -1730,7 +1730,7 @@
     if (inAddr >= iCFStringSect.s.addr &&
         inAddr < iCFStringSect.s.addr + iCFStringSect.size)
     {
-        thePtr  = (char*)((UInt32)iCFStringSect.contents +
+        thePtr  = (char*)((uint32_t)iCFStringSect.contents +
             (inAddr - iCFStringSect.s.addr));
 
         if (outType)
@@ -1740,7 +1740,7 @@
     if (inAddr >= iNLSymSect.s.addr &&
         inAddr < iNLSymSect.s.addr + iNLSymSect.size)
     {
-        thePtr  = (char*)((UInt32)iNLSymSect.contents +
+        thePtr  = (char*)((uint32_t)iNLSymSect.contents +
             (inAddr - iNLSymSect.s.addr));
 
         if (outType)
@@ -1750,7 +1750,7 @@
     if (inAddr >= iDyldSect.s.addr &&
         inAddr < iDyldSect.s.addr + iDyldSect.size)
     {
-        thePtr  = (char*)((UInt32)iDyldSect.contents +
+        thePtr  = (char*)((uint32_t)iDyldSect.contents +
             (inAddr - iDyldSect.s.addr));
 
         if (outType)
@@ -1931,7 +1931,7 @@
 // ----------------------------------------------------------------------------
 //  Used for block debugging. Sublclasses may override.
 
-- (void)printBlocks: (UInt32)inFuncIndex;
+- (void)printBlocks: (uint32_t)inFuncIndex;
 {}
 #endif  // OTX_DEBUG
 

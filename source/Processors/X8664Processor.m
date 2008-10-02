@@ -135,7 +135,7 @@
     if (inLine->info.code[0] != 0xc3)
         return;
 
-    UInt32 theInstruction = *(UInt32*)inLine->prev->info.code;
+    uint32_t theInstruction = *(uint32_t*)inLine->prev->info.code;
     ThunkInfo theThunk = {inLine->prev->info.address, NO_REG};
 
     switch (theInstruction)
@@ -208,9 +208,9 @@
         return NO;
 
     BOOL isThunk = NO;
-    UInt32 imm, target, i;
+    uint32_t imm, target, i;
 
-    imm = *(UInt32*)&inLine->info.code[1];
+    imm = *(uint32_t*)&inLine->info.code[1];
     imm = OSSwapLittleToHostInt32(imm);
     target  = imm + inLine->next->info.address;
 
@@ -262,13 +262,13 @@
             {
                 if (inLine->info.code[opcodeIndex + 1] == 0x2e)    // ucomiss
                 {
-                    localAddy = *(UInt32*)&inLine->info.code[opcodeIndex + 3];
+                    localAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 3];
                     localAddy = OSSwapLittleToHostInt32(localAddy);
                     theDummyPtr = GetPointer(localAddy, NULL);
 
                     if (theDummyPtr)
                     {
-                        UInt32  theInt32    = *(UInt32*)theDummyPtr;
+                        uint32_t  theInt32    = *(uint32_t*)theDummyPtr;
 
                         theInt32    = OSSwapLittleToHostInt32(theInt32);
                         snprintf(iLineCommentCString, 30, "%G", *(float*)&theInt32);
@@ -291,7 +291,7 @@
                     if (!funcInfo->blocks)
                         break;
 
-                    UInt32  i;
+                    uint32_t  i;
 
                     for (i = 0; i < funcInfo->numBlocks; i++)
                     {
@@ -324,7 +324,7 @@
                     inLine->info.code[opcodeIndex + 2] != 0x2e)    // ucomisd
                     break;
 
-                localAddy = *(UInt32*)&inLine->info.code[opcodeIndex + 4];
+                localAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 4];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
                 theDummyPtr = GetPointer(localAddy, NULL);
 
@@ -356,7 +356,7 @@
                 if (!funcInfo->blocks)
                     break;
 
-                UInt32  i;
+                uint32_t  i;
 
                 for (i = 0; i < funcInfo->numBlocks; i++)
                 {
@@ -412,7 +412,7 @@
                 if (MOD(modRM) == MODimm && REG2(modRM) == EBP) // RIP-relative addressing
                 {
                     UInt64 baseAddress = inLine->next->info.address;
-                    UInt32 offset = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+                    uint32_t offset = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
 
                     offset = OSSwapLittleToHostInt32(offset);
                     theSymPtr = GetPointer(baseAddress + offset, NULL);
@@ -424,7 +424,7 @@
                 {
                     if (RM(modRM) == DISP32)
                     {
-                        localAddy = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+                        localAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
                         localAddy = OSSwapLittleToHostInt32(localAddy);
                     }
                 }
@@ -466,7 +466,7 @@
                         }
                         else if (MOD(modRM) == MOD32)
                         {
-                            UInt32 theSymOffset = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+                            uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
 
                             theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
@@ -504,14 +504,14 @@
                         if (XREG2(modRM, rexByte) == iCurrentThunk &&
                             iRegInfos[iCurrentThunk].isValid)
                         {
-                            UInt32 imm = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+                            uint32_t imm = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
 
                             imm = OSSwapLittleToHostInt32(imm);
                             localAddy = iRegInfos[iCurrentThunk].value + imm;
                         }
                         else
                         {
-                            localAddy = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+                            localAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
                             localAddy = OSSwapLittleToHostInt32(localAddy);
                         }
                     }
@@ -521,7 +521,7 @@
 
             case 0x8d:  // leal
             {
-                UInt32 offset = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+                uint32_t offset = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
 
                 modRM = inLine->info.code[opcodeIndex + 1];
                 offset = OSSwapLittleToHostInt32(offset);
@@ -588,7 +588,7 @@
 
             case 0xa1:  // movl moffs32,r32
             case 0xa3:  // movl r32,moffs32
-                localAddy = *(UInt32*)&inLine->info.code[opcodeIndex + 1];
+                localAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 1];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
                 break;
 
@@ -618,7 +618,7 @@
             case 0xbd:  // movl imm32,%ebp
             case 0xbe:  // movl imm32,%esi
             case 0xbf:  // movl imm32,%edi
-                localAddy = *(UInt32*)&inLine->info.code[opcodeIndex + 1];
+                localAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 1];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
 
                 // Check for a four char code.
@@ -700,8 +700,8 @@
                     }
                     else if (MOD(modRM) == MOD32)
                     {
-                        UInt32 imm = *(UInt32*)&inLine->info.code[immOffset];
-                        UInt32 theSymOffset = *(UInt32*)&inLine->info.code[immOffset - 4];
+                        uint32_t imm = *(uint32_t*)&inLine->info.code[immOffset];
+                        uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[immOffset - 4];
 
                         imm = OSSwapLittleToHostInt32(imm);
                         theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
@@ -748,7 +748,7 @@
                         if (fcc[0])
                             strncat(tempComment, " ", 2);
 
-                        UInt32  tempCommentLength   = strlen(tempComment);
+                        uint32_t  tempCommentLength   = strlen(tempComment);
 
                         if (iOpts.variableTypes)
                         {
@@ -779,7 +779,7 @@
                     if (HAS_SIB(modRM))
                         immOffset += 1;
 
-                    localAddy = *(UInt32*)&inLine->info.code[immOffset];
+                    localAddy = *(uint32_t*)&inLine->info.code[immOffset];
                     localAddy = OSSwapLittleToHostInt32(localAddy);
 
                     // Check for a four char code.
@@ -856,7 +856,7 @@
                     }
                     else if (MOD(modRM) == MOD32)
                     {
-                        UInt32 theSymOffset = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+                        uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
 
                         theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
@@ -893,7 +893,7 @@
                     if (HAS_SIB(modRM))
                         immOffset += 1;
 
-                    localAddy = *(UInt32*)&inLine->info.code[immOffset];
+                    localAddy = *(uint32_t*)&inLine->info.code[immOffset];
                     localAddy = OSSwapLittleToHostInt32(localAddy);
                     theDummyPtr = GetPointer(localAddy, NULL);
 
@@ -902,7 +902,7 @@
 
                     if (LO(opcode) == 0x9)  // fldsl
                     {
-                        UInt32  theInt32    = *(UInt32*)theDummyPtr;
+                        uint32_t  theInt32    = *(uint32_t*)theDummyPtr;
 
                         theInt32    = OSSwapLittleToHostInt32(theInt32);
 
@@ -931,7 +931,7 @@
                 if (iLineCommentCString[0])
                     break;
 
-                UInt32 immAddy = *(UInt32*)&inLine->info.code[opcodeIndex + 1];
+                uint32_t immAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 1];
 
                 immAddy = OSSwapLittleToHostInt32(immAddy);
 
@@ -997,7 +997,7 @@
                     }
                     else if (MOD(modRM) == MOD32)
                     {
-                        UInt32 theSymOffset = *(UInt32*)&inLine->info.code[opcodeIndex + 4];
+                        uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[opcodeIndex + 4];
 
                         theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
@@ -1026,7 +1026,7 @@
                 }
                 else    // absolute address
                 {
-                    localAddy = *(UInt32*)&inLine->info.code[opcodeIndex + 4];
+                    localAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 4];
                     localAddy = OSSwapLittleToHostInt32(localAddy);
                     theDummyPtr = GetPointer(localAddy, NULL);
 
@@ -1034,7 +1034,7 @@
                     {
                         if (LO(opcode) == 0x3)
                         {
-                            UInt32  theInt32    = *(UInt32*)theDummyPtr;
+                            uint32_t  theInt32    = *(uint32_t*)theDummyPtr;
 
                             theInt32    = OSSwapLittleToHostInt32(theInt32);
                             snprintf(iLineCommentCString,
@@ -1107,7 +1107,7 @@
     if (!iLineCommentCString[0])
     {
         UInt8   theType     = PointerType;
-        UInt32  theValue;
+        uint32_t  theValue;
 
         theDummyPtr = GetPointer(localAddy, &theType);
 
@@ -1116,7 +1116,7 @@
             switch (theType)
             {
                 case DataGenericType:
-                    theValue    = *(UInt32*)theDummyPtr;
+                    theValue    = *(uint32_t*)theDummyPtr;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theDummyPtr = GetPointer(theValue, &theType);
 
@@ -1155,7 +1155,7 @@
                         break;
                     }
 
-                    theValue    = (UInt32)theCFString.oc_string.chars;
+                    theValue    = (uint32_t)theCFString.oc_string.chars;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theSymPtr   = GetPointer(theValue, NULL);
 
@@ -1164,7 +1164,7 @@
                 case ImpPtrType:
                 case NLSymType:
                 {
-                    theValue    = *(UInt32*)theDummyPtr;
+                    theValue    = *(uint32_t*)theDummyPtr;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theDummyPtr = GetPointer(theValue, NULL);
 
@@ -1174,12 +1174,12 @@
                         break;
                     }
 
-                    theValue    = *(UInt32*)(theDummyPtr + 4);
+                    theValue    = *(uint32_t*)(theDummyPtr + 4);
                     theValue    = OSSwapLittleToHostInt32(theValue);
 
                     if (theValue != typeid_NSString)
                     {
-                        theValue    = *(UInt32*)theDummyPtr;
+                        theValue    = *(uint32_t*)theDummyPtr;
                         theValue    = OSSwapLittleToHostInt32(theValue);
                         theDummyPtr = GetPointer(theValue, NULL);
 
@@ -1199,7 +1199,7 @@
                         break;
                     }
 
-                    theValue    = (UInt32)theCFString.oc_string.chars;
+                    theValue    = (uint32_t)theCFString.oc_string.chars;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theSymPtr   = GetPointer(theValue, NULL);
 
@@ -1248,15 +1248,15 @@
     }
 
     BOOL        isIndirect  = (iRegInfos[EAX].value == SYS_syscall);
-    UInt32      syscallNum;
-    UInt32      syscallArgIndex = (isIndirect) ? 1 : 0;
+    uint32_t      syscallNum;
+    uint32_t      syscallArgIndex = (isIndirect) ? 1 : 0;
     const char* theSysString    = NULL;
 
     if (isIndirect && iStack[0].isValid &&
         iStack[0].value <= SYS_MAXSYSCALL)
-        syscallNum  = (UInt32)iStack[0].value;
+        syscallNum  = (uint32_t)iStack[0].value;
     else
-        syscallNum  = (UInt32)iRegInfos[EAX].value;
+        syscallNum  = (uint32_t)iRegInfos[EAX].value;
 
     theSysString    = gSysCalls[syscallNum];
 
@@ -1311,7 +1311,7 @@
         return NULL;
 
     // Store the variant type locally to reduce string comparisons.
-    UInt32  sendType    = SendTypeFromMsgSend(outComment);
+    uint32_t  sendType    = SendTypeFromMsgSend(outComment);
 //    UInt64  receiverAddy;
     UInt64  selectorAddy;
 
@@ -1357,7 +1357,7 @@
         case OCGenericType:
             if (selPtr)
             {
-                UInt32  selPtrValue = *(UInt32*)selPtr;
+                uint32_t  selPtrValue = *(uint32_t*)selPtr;
 
                 selPtrValue = OSSwapLittleToHostInt32(selPtrValue);
                 selString   = GetPointer(selPtrValue, NULL);
@@ -1440,7 +1440,7 @@
                 case OCGenericType:
                     if (classNamePtr)
                     {
-                        UInt32  namePtrValue    = *(UInt32*)classNamePtr;
+                        uint32_t  namePtrValue    = *(uint32_t*)classNamePtr;
 
                         namePtrValue    = OSSwapLittleToHostInt32(namePtrValue);
                         className   = GetPointer(namePtrValue, NULL);
@@ -1613,7 +1613,7 @@
     }
     else if (iThunks)   // otool didn't spot it, maybe we did earlier...
     {
-        UInt32  i, target;
+        uint32_t  i, target;
         BOOL    found = NO;
 
         for (i = 0; i < iNumThunks && !found; i++)
@@ -1733,7 +1733,7 @@
 
                 if (inLine->prev &&
                     (inLine->prev->info.code[0] == 0xe8) &&
-                    (*(UInt32*)&inLine->prev->info.code[1] == 0))
+                    (*(uint32_t*)&inLine->prev->info.code[1] == 0))
                 {
                     iRegInfos[XREG2(opcode, rexByte)].value   = inLine->info.address;
                     iRegInfos[XREG2(opcode, rexByte)].isValid = YES;
@@ -1883,7 +1883,7 @@
                 {
                     if (XREG2(modRM, rexByte) == EBP) // RIP-relative addressing
                     {
-                        UInt32 offset = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+                        uint32_t offset = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
 
                         offset = OSSwapLittleToHostInt32(offset);
 
@@ -1920,7 +1920,7 @@
                             XREG2(modRM, rexByte) == EBP  &&
                             offset < 0)
                         {
-                            UInt32  i;
+                            uint32_t  i;
 
                             // Zero the destination regardless.
                             iRegInfos[XREG1(modRM, rexByte)]  = (GP64RegisterInfo){0};
@@ -1949,7 +1949,7 @@
 
                         if (offset < 0)
                         {
-                            UInt32  i;
+                            uint32_t  i;
 
                             for (i = 0; i < iNumLocalVars; i++)
                             {
@@ -1966,7 +1966,7 @@
                 else if (HAS_ABS_DISP32(modRM))
                 {
                     // FIXME check this logic
-                    UInt32 newValue = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+                    uint32_t newValue = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
 
                     iRegInfos[XREG1(modRM, rexByte)].value = OSSwapLittleToHostInt32(newValue);
                     iRegInfos[XREG1(modRM, rexByte)].isValid = YES;
@@ -1976,7 +1976,7 @@
                     if (!iRegInfos[XREG2(modRM, rexByte)].isValid)
                         break;
 
-                    UInt32 newValue = *(UInt32*)&inLine->info.code[opcodeIndex + 2];
+                    uint32_t newValue = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
 
                     iRegInfos[XREG1(modRM, rexByte)].value = OSSwapLittleToHostInt32(newValue);
                     iRegInfos[XREG1(modRM, rexByte)].value += iRegInfos[XREG2(modRM, rexByte)].value;
@@ -2008,7 +2008,7 @@
             {
                 iRegInfos[EAX] = (GP64RegisterInfo){0};
 
-                UInt32 newValue = *(UInt32*)&inLine->info.code[opcodeIndex + 1];
+                uint32_t newValue = *(uint32_t*)&inLine->info.code[opcodeIndex + 1];
 
                 iRegInfos[EAX].value = OSSwapLittleToHostInt32(newValue);
                 iRegInfos[EAX].isValid = YES;
@@ -2027,7 +2027,7 @@
             {
                 iRegInfos[XREG2(opcode, rexByte)] = (GP64RegisterInfo){0};
 
-                UInt32 newValue = *(UInt32*)&inLine->info.code[opcodeIndex + 1];
+                uint32_t newValue = *(uint32_t*)&inLine->info.code[opcodeIndex + 1];
 
                 iRegInfos[XREG2(opcode, rexByte)].value = OSSwapLittleToHostInt32(newValue);
                 iRegInfos[XREG2(opcode, rexByte)].isValid = YES;
@@ -2048,7 +2048,7 @@
                 if (HAS_DISP8(modRM))
                 {
                     offset = inLine->info.code[opcodeIndex + 3];
-                    value = *(UInt32*)&inLine->info.code[opcodeIndex + 4];
+                    value = *(uint32_t*)&inLine->info.code[opcodeIndex + 4];
                     value = OSSwapLittleToHostInt32(value);
                 }
 
@@ -2113,7 +2113,7 @@
     if (!funcInfo->blocks)
         return NO;
 
-    UInt32  i;
+    uint32_t  i;
 
     for (i = 0; i < funcInfo->numBlocks; i++)
     {
@@ -2373,7 +2373,7 @@
 {
     Line64*         theLine     = iPlainLineListHead;
     UInt8           opcode, opcode2;
-    UInt32          progCounter = 0;
+    uint32_t          progCounter = 0;
 
     // Loop thru lines.
     while (theLine)
@@ -2461,7 +2461,7 @@
             Block64Info*    currentBlock    = NULL;
             Line64*     endLine         = NULL;
             BOOL        isEpilog        = NO;
-            UInt32      i;
+            uint32_t      i;
 
             if (funcInfo->blocks)
             {   // Blocks exist, find 1st one matching this address.
@@ -2634,7 +2634,7 @@
 // ----------------------------------------------------------------------------
 
 - (BOOL)verifyNops: (unsigned char***)outList
-          numFound: (UInt32*)outFound
+          numFound: (uint32_t*)outFound
 {
     if (![self loadMachHeader])
     {
@@ -2657,8 +2657,8 @@
 //  Caller owns the list.
 
 - (unsigned char**)searchForNopsIn: (unsigned char*)inHaystack
-                          ofLength: (UInt32)inHaystackLength
-                          numFound: (UInt32*)outFound;
+                          ofLength: (uint32_t)inHaystackLength
+                          numFound: (uint32_t*)outFound;
 {
     unsigned char** foundList       = NULL;
     unsigned char*  current;
@@ -2726,7 +2726,7 @@
         return nil;
     }
 
-    UInt32          i   = 0;
+    uint32_t          i   = 0;
     unsigned char*  item;
 
     for (i = 0; i < inList->count; i++)

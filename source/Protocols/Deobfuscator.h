@@ -14,7 +14,7 @@
 typedef struct NopList
 {
     unsigned char** list;
-    UInt32          count;
+    uint32_t          count;
 }
 NopList;
 
@@ -23,10 +23,10 @@ NopList;
 @protocol Deobfuscator
 
 - (BOOL)verifyNops: (unsigned char***)outList
-          numFound: (UInt32*)outFound;
+          numFound: (uint32_t*)outFound;
 - (unsigned char**)searchForNopsIn: (unsigned char*)inHaystack
-                          ofLength: (UInt32)inHaystackLength
-                          numFound: (UInt32*)outFound;
+                          ofLength: (uint32_t)inHaystackLength
+                          numFound: (uint32_t*)outFound;
 - (NSURL*)fixNops: (NopList*)inList
            toPath: (NSString*)inOutputFilePath;
 

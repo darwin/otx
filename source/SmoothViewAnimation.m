@@ -24,8 +24,8 @@
     if ((self = [super initWithViewAnimations: viewAnimations]))
     {
         // Find the first window object in the array.
-        UInt32  numAnimations = [viewAnimations count];
-        UInt32  i;
+        uint32_t  numAnimations = [viewAnimations count];
+        uint32_t  i;
         id      object;
         Class   windowClass = [NSWindow class];
 

@@ -71,7 +71,7 @@ objc_string_object;
 */
 typedef struct
 {
-    UInt32              isa;
+    uint32_t              isa;
     objc_string_object  oc_string;
 }
 cf_string_object;

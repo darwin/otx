@@ -16,7 +16,7 @@
 //  findSymbolByAddress:
 // ----------------------------------------------------------------------------
 
-- (BOOL)findSymbolByAddress: (UInt32)inAddress
+- (BOOL)findSymbolByAddress: (uint32_t)inAddress
 {
     if (!iFuncSyms)
         return NO;

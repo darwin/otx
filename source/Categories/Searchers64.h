@@ -13,7 +13,7 @@
 
 @interface Exe64Processor(Searchers64)
 
-- (BOOL)findSymbolByAddress: (UInt32)inAddress;
+- (BOOL)findSymbolByAddress: (uint32_t)inAddress;
 - (BOOL)findClassMethod: (Method64Info**)outMI
               byAddress: (UInt64)inAddress;
 - (BOOL)findIvar: (objc2_ivar_t**)outIvar

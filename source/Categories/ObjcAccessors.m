@@ -19,7 +19,7 @@
 //  to be an Obj-C method, it's class is returned. Otherwise this returns NULL.
 
 - (BOOL)getObjcClassPtr: (objc_class**)outClass
-             fromMethod: (UInt32)inAddress;
+             fromMethod: (uint32_t)inAddress;
 {
     *outClass = NULL;
 
@@ -38,7 +38,7 @@
 //  Same as above, for categories.
 
 - (BOOL)getObjcCatPtr: (objc_category**)outCat
-           fromMethod: (UInt32)inAddress;
+           fromMethod: (uint32_t)inAddress;
 {
     *outCat = NULL;
 
@@ -57,7 +57,7 @@
 //  Given a method imp address, return the MethodInfo for it.
 
 - (BOOL)getObjcMethod: (MethodInfo**)outMI
-          fromAddress: (UInt32)inAddress;
+          fromAddress: (uint32_t)inAddress;
 {
     *outMI  = NULL;
 
@@ -77,9 +77,9 @@
 
 - (BOOL)getObjcMethodList: (objc_method_list*)outList
                   methods: (objc_method**)outMethods
-              fromAddress: (UInt32)inAddress;
+              fromAddress: (uint32_t)inAddress;
 {
-    UInt32  left, i;
+    uint32_t  left, i;
 
     if (!outList)
         return NO;
@@ -127,7 +127,7 @@
 {
     *outDescription = NULL;
 
-    UInt32  theValue    = 0;
+    uint32_t  theValue    = 0;
 
     switch (inType)
     {
@@ -138,7 +138,7 @@
             if (ocString.length == 0)
                 break;
 
-            theValue    = (UInt32)ocString.chars;
+            theValue    = (uint32_t)ocString.chars;
 
             break;
         }
@@ -147,7 +147,7 @@
             objc_class  ocClass = *(objc_class*)inObject;
 
             theValue    = (ocClass.name != 0) ?
-                (UInt32)ocClass.name : (UInt32)ocClass.isa;
+                (uint32_t)ocClass.name : (uint32_t)ocClass.isa;
 
             break;
         }
@@ -155,12 +155,12 @@
         {
             objc_module ocMod   = *(objc_module*)inObject;
 
-            theValue    = (UInt32)ocMod.name;
+            theValue    = (uint32_t)ocMod.name;
 
             break;
         }
         case OCGenericType:
-            theValue    = *(UInt32*)inObject;
+            theValue    = *(uint32_t*)inObject;
 
             break;
 
@@ -228,9 +228,9 @@
 // ----------------------------------------------------------------------------
 
 - (BOOL)getObjcClass: (objc_class*)outClass
-             fromDef: (UInt32)inDef;
+             fromDef: (uint32_t)inDef;
 {
-    UInt32  i;
+    uint32_t  i;
 
     for (i = 0; i < iNumObjcSects; i++)
     {
@@ -251,9 +251,9 @@
 // ----------------------------------------------------------------------------
 
 - (BOOL)getObjcCategory: (objc_category*)outCat
-                fromDef: (UInt32)inDef;
+                fromDef: (uint32_t)inDef;
 {
-    UInt32  i;
+    uint32_t  i;
 
     for (i = 0; i < iNumObjcSects; i++)
     {
@@ -279,11 +279,11 @@
 - (BOOL)getObjcClass: (objc_class*)outClass
             fromName: (const char*)inName;
 {
-    UInt32  i, namePtr;
+    uint32_t  i, namePtr;
 
     for (i = 0; i < iNumClassMethodInfos; i++)
     {
-        namePtr = (UInt32)iClassMethodInfos[i].oc_class.name;
+        namePtr = (uint32_t)iClassMethodInfos[i].oc_class.name;
 
         if (iSwapped)
             namePtr = OSSwapInt32(namePtr);
@@ -307,11 +307,11 @@
 - (BOOL)getObjcClassPtr: (objc_class**)outClassPtr
                fromName: (const char*)inName;
 {
-    UInt32  i, namePtr;
+    uint32_t  i, namePtr;
 
     for (i = 0; i < iNumClassMethodInfos; i++)
     {
-        namePtr = (UInt32)iClassMethodInfos[i].oc_class.name;
+        namePtr = (uint32_t)iClassMethodInfos[i].oc_class.name;
 
         if (iSwapped)
             namePtr = OSSwapInt32(namePtr);
@@ -334,11 +334,11 @@
 - (BOOL)getObjcMetaClass: (objc_class*)outClass
                fromClass: (objc_class*)inClass;
 {
-    if ((UInt32)inClass->isa >= iMetaClassSect.s.addr &&
-        (UInt32)inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)
+    if ((uint32_t)inClass->isa >= iMetaClassSect.s.addr &&
+        (uint32_t)inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)
     {
         *outClass   = *(objc_class*)(iMetaClassSect.contents +
-            ((UInt32)inClass->isa - iMetaClassSect.s.addr));
+            ((uint32_t)inClass->isa - iMetaClassSect.s.addr));
 
         return YES;
     }

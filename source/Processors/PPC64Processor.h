@@ -23,9 +23,9 @@
     GP64RegisterInfo    iCTR;
 
     Var64Info*  iLocalSelves;           // 'self' copied to local variables
-    UInt32      iNumLocalSelves;
+    uint32_t      iNumLocalSelves;
     Var64Info*  iLocalVars;
-    UInt32      iNumLocalVars;
+    uint32_t      iNumLocalVars;
 }
 
 @end

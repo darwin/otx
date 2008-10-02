@@ -82,7 +82,7 @@
 - (void)codeFromLine: (Line*)inLine
 {
     UInt8   theInstLength   = 0;
-    UInt32  thisAddy        = inLine->info.address;
+    uint32_t  thisAddy        = inLine->info.address;
     Line*   nextLine        = inLine->next;
 
     // Try to find next code line.
@@ -96,11 +96,11 @@
 
     // This instruction size is either the difference of 2 addys or the
     // difference of this addy from the end of the section.
-    UInt32  nextAddy    = iEndOfText;
+    uint32_t  nextAddy    = iEndOfText;
 
     if (nextLine)
     {
-        UInt32 newNextAddy = AddressFromLine(nextLine->chars);
+        uint32_t newNextAddy = AddressFromLine(nextLine->chars);
 
         if (newNextAddy > thisAddy && newNextAddy <= thisAddy + 15)
             nextAddy = newNextAddy;
@@ -134,7 +134,7 @@
     if (inLine->info.code[0] != 0xc3)
         return;
 
-    UInt32 theInstruction = *(UInt32*)inLine->prev->info.code;
+    uint32_t theInstruction = *(uint32_t*)inLine->prev->info.code;
     ThunkInfo theThunk = {inLine->prev->info.address, NO_REG};
 
     switch (theInstruction)
@@ -205,8 +205,8 @@
         return NO;
 
     BOOL isThunk = NO;
-    UInt32 imm = *(UInt32*)&inLine->info.code[1];
-    UInt32 target, i;
+    uint32_t imm = *(uint32_t*)&inLine->info.code[1];
+    uint32_t target, i;
 
     imm = OSSwapInt32(imm);
     target  = imm + inLine->next->info.address;
@@ -232,8 +232,8 @@
 {
     char*   theDummyPtr = NULL;
     char*   theSymPtr = NULL;
-    UInt32  localAddy = 0;
-    UInt32  targetAddy = 0;
+    uint32_t  localAddy = 0;
+    uint32_t  targetAddy = 0;
     UInt8   modRM = 0;
     UInt8   opcode = inLine->info.code[0];
 
@@ -245,14 +245,14 @@
         {
             if (inLine->info.code[1] == 0x2e)    // ucomiss
             {
-                localAddy = *(UInt32*)&inLine->info.code[3];
+                localAddy = *(uint32_t*)&inLine->info.code[3];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
 
                 theDummyPtr = GetPointer(localAddy, NULL);
 
                 if (theDummyPtr)
                 {
-                    UInt32  theInt32    = *(UInt32*)theDummyPtr;
+                    uint32_t  theInt32    = *(uint32_t*)theDummyPtr;
 
                     theInt32    = OSSwapLittleToHostInt32(theInt32);
                     snprintf(iLineCommentCString, 30, "%G", *(float*)&theInt32);
@@ -274,7 +274,7 @@
                 if (!funcInfo->blocks)
                     break;
 
-                UInt32 i;
+                uint32_t i;
 
                 for (i = 0; i < funcInfo->numBlocks; i++)
                 {
@@ -307,7 +307,7 @@
                 inLine->info.code[2] != 0x2e)    // ucomisd
                 break;
 
-            localAddy = *(UInt32*)&inLine->info.code[4];
+            localAddy = *(uint32_t*)&inLine->info.code[4];
             localAddy = OSSwapLittleToHostInt32(localAddy);
             theDummyPtr = GetPointer(localAddy, NULL);
 
@@ -339,7 +339,7 @@
             if (!funcInfo->blocks)
                 break;
 
-            UInt32  i;
+            uint32_t  i;
 
             for (i = 0; i < funcInfo->numBlocks; i++)
             {
@@ -407,7 +407,7 @@
                     break;
 
                 theSymPtr   = GetPointer(
-                    (UInt32)theIvar.ivar_name, NULL);
+                    (uint32_t)theIvar.ivar_name, NULL);
 
                 if (theSymPtr)
                 {
@@ -418,7 +418,7 @@
                         theTypeCString[0]   = 0;
 
                         GetDescription(theTypeCString,
-                            GetPointer((UInt32)theIvar.ivar_type, NULL));
+                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -454,7 +454,7 @@
             {
                 if (RM(modRM) == DISP32)
                 {
-                    localAddy = *(UInt32*)&inLine->info.code[2];
+                    localAddy = *(uint32_t*)&inLine->info.code[2];
                     localAddy = OSSwapLittleToHostInt32(localAddy);
                 }
             }
@@ -497,14 +497,14 @@
                     }
                     else if (MOD(modRM) == MOD32)
                     {
-                        UInt32 theSymOffset = *(UInt32*)&inLine->info.code[2];
+                        uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[2];
                         theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
                         if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
                             break;
                     }
 
-                    theSymPtr = GetPointer((UInt32)theIvar.ivar_name, NULL);
+                    theSymPtr = GetPointer((uint32_t)theIvar.ivar_name, NULL);
 
                     if (theSymPtr)
                     {
@@ -515,7 +515,7 @@
                             theTypeCString[0] = 0;
 
                             GetDescription(theTypeCString,
-                                GetPointer((UInt32)theIvar.ivar_type, NULL));
+                                GetPointer((uint32_t)theIvar.ivar_type, NULL));
                             snprintf(iLineCommentCString,
                                 MAX_COMMENT_LENGTH - 1, "(%s)%s",
                                 theTypeCString, theSymPtr);
@@ -534,13 +534,13 @@
                     if (REG2(modRM) == iCurrentThunk &&
                         iRegInfos[iCurrentThunk].isValid)
                     {
-                        UInt32 imm = *(UInt32*)&inLine->info.code[2];
+                        uint32_t imm = *(uint32_t*)&inLine->info.code[2];
                         imm = OSSwapLittleToHostInt32(imm);
                         localAddy = iRegInfos[iCurrentThunk].value + imm;
                     }
                     else
                     {
-                        localAddy = *(UInt32*)&inLine->info.code[2];
+                        localAddy = *(uint32_t*)&inLine->info.code[2];
                         localAddy = OSSwapLittleToHostInt32(localAddy);
                     }
                 }
@@ -588,7 +588,7 @@
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    UInt32 theSymOffset = *(UInt32*)&inLine->info.code[2];
+                    uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[2];
 
                     theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
@@ -597,7 +597,7 @@
                 }
 
                 theSymPtr   = GetPointer(
-                    (UInt32)theIvar.ivar_name, NULL);
+                    (uint32_t)theIvar.ivar_name, NULL);
 
                 if (theSymPtr)
                 {
@@ -608,7 +608,7 @@
                         theTypeCString[0]   = 0;
 
                         GetDescription(theTypeCString,
-                            GetPointer((UInt32)theIvar.ivar_type, NULL));
+                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -621,14 +621,14 @@
             }
             else if (REG2(modRM) == iCurrentThunk)
             {
-                UInt32 imm = *(UInt32*)&inLine->info.code[2];
+                uint32_t imm = *(uint32_t*)&inLine->info.code[2];
 
                 imm = OSSwapLittleToHostInt32(imm);
                 localAddy = iRegInfos[iCurrentThunk].value + imm;
             }
             else
             {
-                localAddy = *(UInt32*)&inLine->info.code[2];
+                localAddy = *(uint32_t*)&inLine->info.code[2];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
             }
 
@@ -636,7 +636,7 @@
 
         case 0xa1:  // movl moffs32,r32
         case 0xa3:  // movl r32,moffs32
-            localAddy = *(UInt32*)&inLine->info.code[1];
+            localAddy = *(uint32_t*)&inLine->info.code[1];
             localAddy = OSSwapLittleToHostInt32(localAddy);
             break;
 
@@ -666,7 +666,7 @@
         case 0xbd:  // movl imm32,%ebp
         case 0xbe:  // movl imm32,%esi
         case 0xbf:  // movl imm32,%edi
-            localAddy = *(UInt32*)&inLine->info.code[1];
+            localAddy = *(uint32_t*)&inLine->info.code[1];
             localAddy = OSSwapLittleToHostInt32(localAddy);
 
             // Check for a four char code.
@@ -747,13 +747,13 @@
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    UInt32 imm = *(UInt32*)&inLine->info.code[immOffset];
-                    UInt32 theSymOffset;
+                    uint32_t imm = *(uint32_t*)&inLine->info.code[immOffset];
+                    uint32_t theSymOffset;
 
                     imm = OSSwapLittleToHostInt32(imm);
 
                     // offset precedes immediate value
-                    theSymOffset = *(UInt32*)&inLine->info.code[immOffset - 4];
+                    theSymOffset = *(uint32_t*)&inLine->info.code[immOffset - 4];
                     theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
                     // Check for a four char code.
@@ -783,7 +783,7 @@
                 }
 
                 theSymPtr   = GetPointer(
-                    (UInt32)theIvar.ivar_name, NULL);
+                    (uint32_t)theIvar.ivar_name, NULL);
 
                 char    tempComment[MAX_COMMENT_LENGTH];
 
@@ -798,7 +798,7 @@
                     if (fcc[0])
                         strncat(tempComment, " ", 2);
 
-                    UInt32  tempCommentLength   = strlen(tempComment);
+                    uint32_t  tempCommentLength   = strlen(tempComment);
 
                     if (iOpts.variableTypes)
                     {
@@ -807,7 +807,7 @@
                         theTypeCString[0]   = 0;
 
                         GetDescription(theTypeCString,
-                            GetPointer((UInt32)theIvar.ivar_type, NULL));
+                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
                         snprintf(&tempComment[tempCommentLength],
                             MAX_COMMENT_LENGTH - tempCommentLength - 1,
                             "(%s)%s", theTypeCString, theSymPtr);
@@ -831,7 +831,7 @@
                 if (HAS_SIB(modRM))
                     immOffset += 1;
 
-                localAddy = *(UInt32*)&inLine->info.code[immOffset];
+                localAddy = *(uint32_t*)&inLine->info.code[immOffset];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
 
                 // Check for a four char code.
@@ -909,7 +909,7 @@
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    UInt32 theSymOffset = *(UInt32*)&inLine->info.code[2];
+                    uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[2];
 
                     theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
@@ -918,7 +918,7 @@
                 }
 
                 theSymPtr   = GetPointer(
-                    (UInt32)theIvar.ivar_name, NULL);
+                    (uint32_t)theIvar.ivar_name, NULL);
 
                 if (theSymPtr)
                 {
@@ -929,7 +929,7 @@
                         theTypeCString[0]   = 0;
 
                         GetDescription(theTypeCString,
-                            GetPointer((UInt32)theIvar.ivar_type, NULL));
+                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -950,7 +950,7 @@
                 if (HAS_SIB(modRM))
                     immOffset += 1;
 
-                localAddy = *(UInt32*)&inLine->info.code[immOffset];
+                localAddy = *(uint32_t*)&inLine->info.code[immOffset];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
                 theDummyPtr = GetPointer(localAddy, NULL);
 
@@ -959,7 +959,7 @@
 
                 if (LO(opcode) == 0x9)  // fldsl
                 {
-                    UInt32  theInt32    = *(UInt32*)theDummyPtr;
+                    uint32_t  theInt32    = *(uint32_t*)theDummyPtr;
 
                     theInt32    = OSSwapLittleToHostInt32(theInt32);
 
@@ -988,10 +988,10 @@
             if (iLineCommentCString[0])
                 break;
 
-            localAddy = *(UInt32*)&inLine->info.code[1];
+            localAddy = *(uint32_t*)&inLine->info.code[1];
             localAddy = OSSwapLittleToHostInt32(localAddy);
 
-            UInt32 absoluteAddy = inLine->info.address + 5 + (SInt32)localAddy;
+            uint32_t absoluteAddy = inLine->info.address + 5 + (SInt32)localAddy;
 
 // FIXME: can we use mCurrentFuncInfoIndex here?
             FunctionInfo    searchKey   = {absoluteAddy, NULL, 0, 0};
@@ -1054,7 +1054,7 @@
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    UInt32 theSymOffset = *(UInt32*)&inLine->info.code[4];
+                    uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[4];
 
                     theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
@@ -1063,7 +1063,7 @@
                 }
 
                 theSymPtr   = GetPointer(
-                    (UInt32)theIvar.ivar_name, NULL);
+                    (uint32_t)theIvar.ivar_name, NULL);
 
                 if (theSymPtr)
                 {
@@ -1074,7 +1074,7 @@
                         theTypeCString[0]   = 0;
 
                         GetDescription(theTypeCString,
-                            GetPointer((UInt32)theIvar.ivar_type, NULL));
+                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
 
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
@@ -1087,7 +1087,7 @@
             }
             else    // absolute address
             {
-                localAddy = *(UInt32*)&inLine->info.code[4];
+                localAddy = *(uint32_t*)&inLine->info.code[4];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
                 theDummyPtr = GetPointer(localAddy, NULL);
 
@@ -1095,7 +1095,7 @@
                 {
                     if (LO(opcode) == 0x3)
                     {
-                        UInt32  theInt32    = *(UInt32*)theDummyPtr;
+                        uint32_t  theInt32    = *(uint32_t*)theDummyPtr;
 
                         theInt32    = OSSwapLittleToHostInt32(theInt32);
                         snprintf(iLineCommentCString,
@@ -1122,7 +1122,7 @@
     if (!iLineCommentCString[0])
     {
         UInt8   theType     = PointerType;
-        UInt32  theValue;
+        uint32_t  theValue;
 
         theDummyPtr = GetPointer(localAddy, &theType);
 
@@ -1131,7 +1131,7 @@
             switch (theType)
             {
                 case DataGenericType:
-                    theValue    = *(UInt32*)theDummyPtr;
+                    theValue    = *(uint32_t*)theDummyPtr;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theDummyPtr = GetPointer(theValue, &theType);
 
@@ -1170,7 +1170,7 @@
                         break;
                     }
 
-                    theValue    = (UInt32)theCFString.oc_string.chars;
+                    theValue    = (uint32_t)theCFString.oc_string.chars;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theSymPtr   = GetPointer(theValue, NULL);
 
@@ -1179,7 +1179,7 @@
                 case ImpPtrType:
                 case NLSymType:
                 {
-                    theValue    = *(UInt32*)theDummyPtr;
+                    theValue    = *(uint32_t*)theDummyPtr;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theDummyPtr = GetPointer(theValue, NULL);
 
@@ -1189,12 +1189,12 @@
                         break;
                     }
 
-                    theValue    = *(UInt32*)(theDummyPtr + 4);
+                    theValue    = *(uint32_t*)(theDummyPtr + 4);
                     theValue    = OSSwapLittleToHostInt32(theValue);
 
                     if (theValue != typeid_NSString)
                     {
-                        theValue    = *(UInt32*)theDummyPtr;
+                        theValue    = *(uint32_t*)theDummyPtr;
                         theValue    = OSSwapLittleToHostInt32(theValue);
                         theDummyPtr = GetPointer(theValue, NULL);
 
@@ -1214,7 +1214,7 @@
                         break;
                     }
 
-                    theValue    = (UInt32)theCFString.oc_string.chars;
+                    theValue    = (uint32_t)theCFString.oc_string.chars;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theSymPtr   = GetPointer( theValue, NULL);
 
@@ -1263,8 +1263,8 @@
     }
 
     BOOL        isIndirect  = (iRegInfos[EAX].value == SYS_syscall);
-    UInt32      syscallNum;
-    UInt32      syscallArgIndex = (isIndirect) ? 1 : 0;
+    uint32_t      syscallNum;
+    uint32_t      syscallArgIndex = (isIndirect) ? 1 : 0;
     const char* theSysString    = NULL;
 
     if (isIndirect && iStack[0].isValid &&
@@ -1326,9 +1326,9 @@
         return NULL;
 
     // Store the variant type locally to reduce string comparisons.
-    UInt32  sendType    = SendTypeFromMsgSend(outComment);
-//    UInt32  receiverAddy;
-    UInt32  selectorAddy;
+    uint32_t  sendType    = SendTypeFromMsgSend(outComment);
+//    uint32_t  receiverAddy;
+    uint32_t  selectorAddy;
 
     // Make sure we know what the selector is.
     if (sendType == sendSuper_stret || sendType == send_stret)
@@ -1372,7 +1372,7 @@
         case OCGenericType:
             if (selPtr)
             {
-                UInt32  selPtrValue = *(UInt32*)selPtr;
+                uint32_t  selPtrValue = *(uint32_t*)selPtr;
 
                 selPtrValue = OSSwapLittleToHostInt32(selPtrValue);
                 selString   = GetPointer(selPtrValue, NULL);
@@ -1412,7 +1412,7 @@
         UInt8   sendType    = SendTypeFromMsgSend(ioComment);
 
         // Get the address of the class name string, if this a class method.
-        UInt32  classNameAddy   = 0;
+        uint32_t  classNameAddy   = 0;
 
         // If *.classPtr is non-NULL, it's not a name string.
         if (sendType == sendSuper_stret || sendType == send_stret)
@@ -1455,7 +1455,7 @@
                 case OCGenericType:
                     if (classNamePtr)
                     {
-                        UInt32  namePtrValue    = *(UInt32*)classNamePtr;
+                        uint32_t  namePtrValue    = *(uint32_t*)classNamePtr;
 
                         namePtrValue    = OSSwapLittleToHostInt32(namePtrValue);
                         className   = GetPointer(namePtrValue, NULL);
@@ -1545,7 +1545,7 @@
             if (!FindIvar(&theIvar, &swappedClass, iStack[2].value))
                 return;
 
-            theSymPtr   = GetPointer((UInt32)theIvar.ivar_name, NULL);
+            theSymPtr   = GetPointer((uint32_t)theIvar.ivar_name, NULL);
 
             if (!theSymPtr)
                 return;
@@ -1557,7 +1557,7 @@
                 theTypeCString[0]   = 0;
 
                 GetDescription(theTypeCString,
-                    GetPointer((UInt32)theIvar.ivar_type, NULL));
+                    GetPointer((uint32_t)theIvar.ivar_type, NULL));
                 snprintf(tempComment,
                     MAX_COMMENT_LENGTH - 1, " (%s)%s",
                     theTypeCString, theSymPtr);
@@ -1634,7 +1634,7 @@
     }
     else if (iThunks)   // otool didn't spot it, maybe we did earlier...
     {
-        UInt32  i, target;
+        uint32_t  i, target;
         BOOL    found   = NO;
 
         for (i = 0; i < iNumThunks && !found; i++)
@@ -1686,7 +1686,7 @@
         #endif
 
         GetObjcClassPtrFromName(&iCurrentClass,
-            GetPointer((UInt32)swappedCat.class_name, NULL));
+            GetPointer((uint32_t)swappedCat.class_name, NULL));
     }
 
     // Try to find out whether this is a class or instance method.
@@ -1734,7 +1734,7 @@
 
             if (inLine->prev &&
                 (inLine->prev->info.code[0] == 0xe8) &&
-                (*(UInt32*)&inLine->prev->info.code[2] == 0))
+                (*(uint32_t*)&inLine->prev->info.code[2] == 0))
             {
                 iRegInfos[REG2(opcode)].value = inLine->info.address;
                 iRegInfos[REG2(opcode)].isValid = YES;
@@ -1887,7 +1887,7 @@
             {
                 if (REG2(modRM) == EBP) // disp32
                 {
-                    UInt32 offset = *(UInt32*)&inLine->info.code[2];
+                    uint32_t offset = *(uint32_t*)&inLine->info.code[2];
 
                     offset = OSSwapLittleToHostInt32(offset);
 
@@ -1915,7 +1915,7 @@
                 {   // Check for copied self pointer.
                     if (iLocalSelves && REG2(modRM) == EBP && offset < 0)
                     {
-                        UInt32 i;
+                        uint32_t i;
 
                         // Zero the destination regardless.
                         iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
@@ -1944,7 +1944,7 @@
 
                     if (offset < 0)
                     {
-                        UInt32 i;
+                        uint32_t i;
 
                         // Zero the destination regardless.
                         iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
@@ -1963,7 +1963,7 @@
             }
             else if (HAS_ABS_DISP32(modRM))
             {
-                UInt32 newValue = *(UInt32*)&inLine->info.code[2];
+                uint32_t newValue = *(uint32_t*)&inLine->info.code[2];
 
                 iRegInfos[REG1(modRM)].isValid = YES;
                 iRegInfos[REG1(modRM)].value = OSSwapLittleToHostInt32(newValue);
@@ -1975,7 +1975,7 @@
                 if (!iRegInfos[REG2(modRM)].isValid)
                     break;
 
-                UInt32 newValue = *(UInt32*)&inLine->info.code[2];
+                uint32_t newValue = *(uint32_t*)&inLine->info.code[2];
 
                 newValue = OSSwapLittleToHostInt32(newValue);
                 newValue += iRegInfos[REG2(modRM)].value;
@@ -2011,7 +2011,7 @@
         {
             iRegInfos[EAX]  = (GPRegisterInfo){0};
 
-            UInt32 newValue = *(UInt32*)&inLine->info.code[1];
+            uint32_t newValue = *(uint32_t*)&inLine->info.code[1];
 
             iRegInfos[EAX].value = OSSwapLittleToHostInt32(newValue);
             iRegInfos[EAX].isValid = YES;
@@ -2030,7 +2030,7 @@
         {
             iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
 
-            UInt32 newValue = *(UInt32*)&inLine->info.code[1];
+            uint32_t newValue = *(uint32_t*)&inLine->info.code[1];
 
             iRegInfos[REG2(opcode)].value = OSSwapInt32(newValue);
             iRegInfos[REG2(opcode)].isValid = YES;
@@ -2110,7 +2110,7 @@
     if (!funcInfo->blocks)
         return NO;
 
-    UInt32  i;
+    uint32_t  i;
 
     for (i = 0; i < funcInfo->numBlocks; i++)
     {
@@ -2166,7 +2166,7 @@
     if (!inLine)
         return NO;
 
-    UInt32  theAddy = inLine->info.address;
+    uint32_t  theAddy = inLine->info.address;
 
     if (theAddy == iAddrDyldStubBindingHelper   ||
         theAddy == iAddrDyldFuncLookupPointer)
@@ -2193,7 +2193,7 @@
     // Check for saved thunks.
     if (iThunks)
     {
-        UInt32  i;
+        uint32_t  i;
 
         for (i = 0; i < iNumThunks; i++)
         {
@@ -2240,7 +2240,7 @@
                     +7  00002876  89e5          movl    %esp,%ebp
                 */
                 if (thePrevLine->prev->info.code[0] == 0xe8 &&
-                    *(UInt32*)&thePrevLine->prev->info.code[1] == 0)
+                    *(uint32_t*)&thePrevLine->prev->info.code[1] == 0)
                 {
                     isFunction = NO;
                     break;
@@ -2287,7 +2287,7 @@
 {
     Line*           theLine     = iPlainLineListHead;
     UInt8           opcode, opcode2;
-    UInt32          progCounter = 0;
+    uint32_t          progCounter = 0;
 
     // Loop thru lines.
     while (theLine)
@@ -2330,7 +2330,7 @@
         // Check if we need to save the machine state.
         if (IS_JUMP(opcode, opcode2) && iCurrentFuncInfoIndex >= 0)
         {
-            UInt32  jumpTarget;
+            uint32_t  jumpTarget;
             BOOL    validTarget = NO;
 
             // Retrieve the jump target.
@@ -2368,7 +2368,7 @@
             BlockInfo*  currentBlock    = NULL;
             Line*       endLine         = NULL;
             BOOL        isEpilog        = NO;
-            UInt32      i;
+            uint32_t      i;
 
             if (funcInfo->blocks)
             {   // Blocks exist, find 1st one matching this address.
@@ -2545,7 +2545,7 @@
 // ----------------------------------------------------------------------------
 
 - (BOOL)verifyNops: (unsigned char***)outList
-          numFound: (UInt32*)outFound
+          numFound: (uint32_t*)outFound
 {
     if (![self loadMachHeader])
     {
@@ -2567,8 +2567,8 @@
 //  Caller owns the list.
 
 - (unsigned char**)searchForNopsIn: (unsigned char*)inHaystack
-                          ofLength: (UInt32)inHaystackLength
-                          numFound: (UInt32*)outFound;
+                          ofLength: (uint32_t)inHaystackLength
+                          numFound: (uint32_t*)outFound;
 {
     unsigned char** foundList       = NULL;
     unsigned char*  current;
@@ -2636,7 +2636,7 @@
         return nil;
     }
 
-    UInt32          i   = 0;
+    uint32_t          i   = 0;
     unsigned char*  item;
 
     for (i = 0; i < inList->count; i++)

@@ -5,6 +5,7 @@
 */
 
 #import <Cocoa/Cocoa.h>
+#import <mach/mach_host.h>
 
 #import "SystemIncludes.h"
 
@@ -75,7 +76,7 @@
 
     // Parse options.
     NSString*   origFilePath    = nil;
-    UInt32      i, j;
+    uint32_t      i, j;
 
     for (i = 1; i < argc; i++)
     {
@@ -236,7 +237,7 @@
     }
 
     // Override the -arch flag if necessary.
-    switch (*(UInt32*)[fileData bytes])
+    switch (*(uint32_t*)[fileData bytes])
     {
         case MH_MAGIC:
 #if TARGET_RT_LITTLE_ENDIAN
@@ -489,7 +490,7 @@
             }
 
             unsigned char** foundList   = NULL;
-            UInt32          foundCount  = 0;
+            uint32_t foundCount  = 0;
 
             if ([theProcessor verifyNops: &foundList
                 numFound: &foundCount])

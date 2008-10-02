@@ -81,7 +81,7 @@
 
     [theData getBytes: iRAMFile];
 
-    iFileArchMagic  = *(UInt32*)iRAMFile;
+    iFileArchMagic  = *(uint32_t*)iRAMFile;
     iExeIsFat   = (iFileArchMagic == FAT_MAGIC || iFileArchMagic == FAT_CIGAM);
 
     // Setup the C++ name demangler.
@@ -163,7 +163,7 @@
         return;
 
     char    theSuffixCString[50];
-    UInt32  theNextChar = 0;
+    uint32_t  theNextChar = 0;
     UInt16  i           = 0;
 
 /*
@@ -218,7 +218,7 @@
         {
             if (inTypeCode[theNextChar + 1] == '"')
             {
-                UInt32  classNameLength =
+                uint32_t  classNameLength =
                     strlen(&inTypeCode[theNextChar + 2]);
 
                 memcpy(theTypeCString, &inTypeCode[theNextChar + 2],
@@ -453,7 +453,7 @@
 - (void)decodeMethodReturnType: (const char*)inTypeCode
                         output: (char*)outCString
 {
-    UInt32  theNextChar = 0;
+    uint32_t  theNextChar = 0;
 
     // Check for type specifiers.
     // r* <-> const char* ... VI <-> oneway unsigned int
@@ -575,7 +575,7 @@
 // ----------------------------------------------------------------------------
 //  Used for block debugging. Sublclasses may override.
 
-- (void)printBlocks: (UInt32)inFuncIndex;
+- (void)printBlocks: (uint32_t)inFuncIndex;
 {}
 #endif  // OTX_DEBUG
 

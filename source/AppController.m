@@ -5,6 +5,7 @@
 */
 
 #import <Cocoa/Cocoa.h>
+#import <mach/mach_host.h>
 
 #import "SystemIncludes.h"
 
@@ -202,8 +203,8 @@
     if (OS_IS_POST_TIGER)
     {   // Adjust main window for Leopard.
         // Save the resize masks and apply new ones.
-        UInt32  origMainViewMask    = [iMainView autoresizingMask];
-        UInt32  origProgViewMask    = [iProgView autoresizingMask];
+        uint32_t  origMainViewMask    = [iMainView autoresizingMask];
+        uint32_t  origProgViewMask    = [iProgView autoresizingMask];
 
         [iMainView setAutoresizingMask: NSViewMaxYMargin];
         [iProgView setAutoresizingMask: NSViewMaxYMargin];
@@ -634,8 +635,8 @@
     targetWindowFrame.size.height   += progViewFrame.size.height;
 
     // Save the resize masks and apply new ones.
-    UInt32  origMainViewMask    = [iMainView autoresizingMask];
-    UInt32  origProgViewMask    = [iProgView autoresizingMask];
+    uint32_t  origMainViewMask    = [iMainView autoresizingMask];
+    uint32_t  origProgViewMask    = [iProgView autoresizingMask];
 
     [iMainView setAutoresizingMask: NSViewMinYMargin];
     [iProgView setAutoresizingMask: NSViewMinYMargin];
@@ -718,8 +719,8 @@
     targetWindowFrame.origin.y      += progViewFrame.size.height;
     targetWindowFrame.size.height   -= progViewFrame.size.height;
 
-    UInt32  origMainViewMask    = [iMainView autoresizingMask];
-    UInt32  origProgViewMask    = [iProgView autoresizingMask];
+    uint32_t  origMainViewMask    = [iMainView autoresizingMask];
+    uint32_t  origProgViewMask    = [iProgView autoresizingMask];
 
     NSNumber*   origMainMask    = [NSNumber numberWithUnsignedInt:
         origMainViewMask];
@@ -747,7 +748,7 @@
         [newWindowItem setObject: [NSValue valueWithRect: targetWindowFrame]
             forKey: NSViewAnimationEndFrameKey];
 
-        UInt32  effects =
+        uint32_t  effects =
             NSXViewAnimationUpdateResizeMasksAtEndEffect        |
             NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect  |
             NSXViewAnimationPerformSelectorAtEndEffect;
@@ -901,7 +902,7 @@
             }
 
             unsigned char** foundList   = nil;
-            UInt32          foundCount  = 0;
+            uint32_t          foundCount  = 0;
             NSAlert*        theAlert    = [[NSAlert alloc] init];
 
             if ([theProcessor verifyNops: &foundList
@@ -1080,7 +1081,7 @@
 
     const char* fileBytes   = [fileData bytes];
 
-    iFileArchMagic = *(UInt32*)fileBytes;
+    iFileArchMagic = *(uint32_t*)fileBytes;
 
     // Handle non-Mach-O files
     switch (iFileArchMagic)
@@ -1111,7 +1112,7 @@
     {
         fat_header* fhp = (fat_header*)fileBytes;
         fat_arch*   fap = (fat_arch*)(fhp + 1);
-        UInt32      i;
+        uint32_t      i;
 
         fat_header  fatHeader   = *fhp;
         fat_arch    fatArch;
@@ -1387,8 +1388,8 @@
     [iPrefsWindow setShowsToolbarButton: NO];
 
     // Load views.
-    UInt32  numViews    = [[toolbar items] count];
-    UInt32  i;
+    uint32_t  numViews    = [[toolbar items] count];
+    uint32_t  i;
 
     iPrefsViews     = calloc(numViews, sizeof(NSView*));
     iPrefsViews[0]  = iPrefsGeneralView;
@@ -1426,7 +1427,7 @@
 - (IBAction)switchPrefsViews: (id)sender
 {
     NSToolbarItem*  item        = (NSToolbarItem*)sender;
-    UInt32          newIndex    = [item tag];
+    uint32_t          newIndex    = [item tag];
 
     if (newIndex == iPrefsCurrentViewIndex)
         return;
@@ -1704,8 +1705,8 @@
         animatingWindow != iPrefsWindow)
         return YES;
 
-    UInt32  i;
-    UInt32  numAnimations   = [animatedViews count];
+    uint32_t  i;
+    uint32_t  numAnimations   = [animatedViews count];
     id      animObject      = nil;
 
     for (i = 0; i < numAnimations; i++)
@@ -1721,7 +1722,7 @@
         if (!effectsNumber)
             continue;
 
-        UInt32  effects = [effectsNumber unsignedIntValue];
+        uint32_t  effects = [effectsNumber unsignedIntValue];
 
         if (effects & NSXViewAnimationSwapAtBeginningEffect)
         {   // Hide/show 2 views.
@@ -1769,8 +1770,8 @@
         animatingWindow != iPrefsWindow)
         return;
 
-    UInt32  i;
-    UInt32  numAnimations   = [animatedViews count];
+    uint32_t  i;
+    uint32_t  numAnimations   = [animatedViews count];
     id      animObject      = nil;
 
     for (i = 0; i < numAnimations; i++)
@@ -1786,7 +1787,7 @@
         if (!effectsNumber)
             continue;
 
-        UInt32  effects = [effectsNumber unsignedIntValue];
+        uint32_t  effects = [effectsNumber unsignedIntValue];
 
         if (effects & NSXViewAnimationSwapAtEndEffect)
         {   // Hide/show 2 views.
@@ -1823,9 +1824,9 @@
 
             NSView*     view;
             NSNumber*   mask;
-            UInt32      i;
-            UInt32      numMasks    = [masks count];
-            UInt32      numViews    = [views count];
+            uint32_t      i;
+            uint32_t      numMasks    = [masks count];
+            uint32_t      numViews    = [views count];
 
             if (numMasks != numViews)
                 continue;

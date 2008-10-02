@@ -28,7 +28,7 @@
         fat_header  fh      = *(fat_header*)iRAMFile;
         fat_arch*   faPtr   = (fat_arch*)((char*)iRAMFile + sizeof(fat_header));
         fat_arch    fa;
-        UInt32      i;
+        uint32_t      i;
 
         // fat_header and fat_arch are always big-endian. Swap if necessary.
 #if TARGET_RT_LITTLE_ENDIAN
@@ -47,9 +47,9 @@
             if (fa.cputype == iArchSelector)
             {
                 iMachHeaderPtr  = (mach_header*)(iRAMFile + fa.offset);
-//                iFileArchMagic      = *(UInt32*)iMachHeaderPtr;
+//                iFileArchMagic      = *(uint32_t*)iMachHeaderPtr;
 //                iSwapped        = iFileArchMagic == MH_CIGAM || iFileArchMagic == MH_CIGAM_64;
-                UInt32  targetArchMagic = *(UInt32*)iMachHeaderPtr;
+                uint32_t  targetArchMagic = *(uint32_t*)iMachHeaderPtr;
 
                 iSwapped = targetArchMagic == MH_CIGAM || targetArchMagic == MH_CIGAM_64;
                 break;
@@ -229,7 +229,7 @@
 
     nlist*  theSymPtr   = (nlist*)((char*)iMachHeaderPtr + swappedSymTab.symoff);
     nlist   theSym      = {0};
-    UInt32  i;
+    uint32_t  i;
 
     // loop thru symbols
     for (i = 0; i < swappedSymTab.nsyms; i++)
@@ -305,14 +305,14 @@
     char*           theModPtr;
     section_info*   theSectInfo;
     objc_module     theModule;
-    UInt32          theModSize;
+    uint32_t          theModSize;
     objc_symtab     theSymTab;
     objc_class      theClass, theSwappedClass;
     objc_class      theMetaClass, theSwappedMetaClass;
     objc_category   theCat, theSwappedCat;
     void**          theDefs;
-    UInt32          theOffset;
-    UInt32          i, j, k;
+    uint32_t          theOffset;
+    uint32_t          i, j, k;
 
     // Loop thru objc sections.
     for (i = 0; i < iNumObjcSects; i++)
@@ -358,13 +358,13 @@
 // In the objc_symtab struct defined in <objc/objc-runtime.h>, the format of
 // the void* array 'defs' is 'cls_def_cnt' class pointers followed by
 // 'cat_def_cnt' category pointers.
-            UInt32  theDef;
+            uint32_t  theDef;
 
             // Loop thru class definitions in the objc_symtab.
             for (j = 0; j < theSymTab.cls_def_cnt; j++)
             {
                 // Try to locate the objc_class for this def.
-                UInt32  theDef  = (UInt32)theDefs[j];
+                uint32_t  theDef  = (uint32_t)theDefs[j];
 
                 if (iSwapped)
                     theDef  = OSSwapInt32(theDef);
@@ -386,7 +386,7 @@
 
                 if ([self getObjcMethodList: &theMethodList
                     methods: &theMethods
-                    fromAddress: (UInt32)theSwappedClass.methodLists])
+                    fromAddress: (uint32_t)theSwappedClass.methodLists])
                 {
                     theSwappedMethodList    = theMethodList;
 
@@ -422,7 +422,7 @@
 
                     if ([self getObjcMethodList: &theMethodList
                         methods: &theMethods
-                        fromAddress: (UInt32)theSwappedMetaClass.methodLists])
+                        fromAddress: (uint32_t)theSwappedMetaClass.methodLists])
                     {
                         theSwappedMethodList    = theMethodList;
 
@@ -455,7 +455,7 @@
             for (; j < theSymTab.cat_def_cnt + theSymTab.cls_def_cnt; j++)
             {
                 // Try to locate the objc_category for this def.
-                theDef  = (UInt32)theDefs[j];
+                theDef  = (uint32_t)theDefs[j];
 
                 if (iSwapped)
                     theDef  = OSSwapInt32(theDef);
@@ -471,7 +471,7 @@
                 // Categories are linked to classes by name only. Try to 
                 // find the class for this category. May be nil.
                 GetObjcClassFromName(&theClass,
-                    GetPointer((UInt32)theSwappedCat.class_name, NULL));
+                    GetPointer((uint32_t)theSwappedCat.class_name, NULL));
 
                 theSwappedClass = theClass;
 
@@ -487,7 +487,7 @@
 
                 if ([self getObjcMethodList: &theMethodList
                     methods: &theMethods
-                    fromAddress: (UInt32)theSwappedCat.instance_methods])
+                    fromAddress: (uint32_t)theSwappedCat.instance_methods])
                 {
                     theSwappedMethodList    = theMethodList;
 
@@ -515,7 +515,7 @@
                 // Save category class method info.
                 if ([self getObjcMethodList: &theMethodList
                     methods: &theMethods
-                    fromAddress: (UInt32)theSwappedCat.class_methods])
+                    fromAddress: (uint32_t)theSwappedCat.class_methods])
                 {
                     theSwappedMethodList    = theMethodList;
 
@@ -819,7 +819,7 @@
 
     dyld_data_section*  data    = (dyld_data_section*)iDyldSect.contents;
 
-    iAddrDyldStubBindingHelper  = (UInt32)(data->dyld_stub_binding_helper);
+    iAddrDyldStubBindingHelper  = (uint32_t)(data->dyld_stub_binding_helper);
 
     if (iSwapped)
         iAddrDyldStubBindingHelper  = OSSwapInt32(iAddrDyldStubBindingHelper);

@@ -13,13 +13,13 @@
 
 @interface Exe32Processor(Searchers)
 
-- (BOOL)findSymbolByAddress: (UInt32)inAddress;
+- (BOOL)findSymbolByAddress: (uint32_t)inAddress;
 - (BOOL)findClassMethod: (MethodInfo**)outMI
-              byAddress: (UInt32)inAddress;
+              byAddress: (uint32_t)inAddress;
 - (BOOL)findCatMethod: (MethodInfo**)outMI
-            byAddress: (UInt32)inAddress;
+            byAddress: (uint32_t)inAddress;
 - (BOOL)findIvar: (objc_ivar*)outIvar
          inClass: (objc_class*)inClass
-      withOffset: (UInt32)inOffset;
+      withOffset: (uint32_t)inOffset;
 
 @end

@@ -61,7 +61,7 @@ ___i686.get_pc_thunk.bx:
 */
 typedef struct
 {
-    UInt32  address;    // address of the get_pc_thunk routine
+    uint32_t  address;    // address of the get_pc_thunk routine
     SInt8   reg;        // register to which the thunk is being saved
 }
 ThunkInfo;
@@ -160,23 +160,23 @@ enum {
     // guts
     NSURL*              iOFile;                 // exe on disk
     char*               iRAMFile;               // exe in RAM
-    UInt32              iRAMFileSize;
+    uint32_t              iRAMFileSize;
     NSString*           iOutputFilePath;
-    UInt32              iFileArchMagic;         // 0xCAFEBABE etc.
+    uint32_t              iFileArchMagic;         // 0xCAFEBABE etc.
     BOOL                iExeIsFat;
-    UInt32              iLocalOffset;           // +420 etc.
+    uint32_t              iLocalOffset;           // +420 etc.
     ThunkInfo*          iThunks;                // x86 only
-    UInt32              iNumThunks;             // x86 only
+    uint32_t              iNumThunks;             // x86 only
     TextFieldWidths     iFieldWidths;
     ProcOptions         iOpts;
     FILE*               iCPFiltPipe;
 
     // FunctionInfo stuff
-    UInt32              iCurrentGenericFuncNum;
+    uint32_t              iCurrentGenericFuncNum;
 
     // dyld stuff
-    UInt32      iAddrDyldStubBindingHelper;
-    UInt32      iAddrDyldFuncLookupPointer;
+    uint32_t      iAddrDyldStubBindingHelper;
+    uint32_t      iAddrDyldFuncLookupPointer;
 
     BOOL        iEnteringNewBlock;
     SInt64      iCurrentFuncInfoIndex;
@@ -208,7 +208,7 @@ enum {
 
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;
-- (void)printBlocks: (UInt32)inFuncIndex;
+- (void)printBlocks: (uint32_t)inFuncIndex;
 #endif
 
 @end

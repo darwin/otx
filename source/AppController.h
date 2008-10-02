@@ -33,9 +33,9 @@
       @"NSXViewAnimationSwapNewKey"             // NSView*
 
 #define NSXViewAnimationResizeMasksArrayKey     \
-      @"NSXViewAnimationResizeMasksArrayKey"    // NSArray* (UInt32)
+      @"NSXViewAnimationResizeMasksArrayKey"    // NSArray* (uint32_t)
 #define NSXViewAnimationResizeViewsArrayKey     \
-      @"NSXViewAnimationResizeViewsArrayKey"    // NSArray* (UInt32)
+      @"NSXViewAnimationResizeViewsArrayKey"    // NSArray* (uint32_t)
 
 #define NSXViewAnimationWindowMinSizeKey        \
       @"NSXViewAnimationWindowMinSizeKey"       // NSValue* (NSSize*)
@@ -99,7 +99,7 @@ CPUID;
     cpu_type_t              iSelectedArchCPUType;
     cpu_subtype_t           iSelectedArchCPUSubType;
     CPUID                   iCPUIDs[4];     // refcons for iArchPopup
-    UInt32                  iFileArchMagic;
+    uint32_t                  iFileArchMagic;
     BOOL                    iFileIsValid;
     BOOL                    iIgnoreArch;
     BOOL                    iExeIsFat;
@@ -109,7 +109,7 @@ CPUID;
     NSString*               iOutputFileName;
     NSString*               iOutputFilePath;
     NSView**                iPrefsViews;
-    UInt32                  iPrefsCurrentViewIndex;
+    uint32_t                  iPrefsCurrentViewIndex;
     host_basic_info_data_t  iHostInfo;
     NSShadow*               iTextShadow;
     NSTimer*                iIndeterminateProgBarMainThreadTimer;

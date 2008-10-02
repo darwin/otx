@@ -60,7 +60,7 @@
                   methods: (objc2_method_t**)outMethods
               fromAddress: (UInt64)inAddress;
 {
-/*    UInt32  left, i;
+/*    uint32_t  left, i;
 
     if (!outList)
         return NO;
@@ -168,7 +168,7 @@
 - (BOOL)getObjcClass: (objc2_class_t*)outClass
             fromName: (const char*)inName;
 {
-    UInt32  i;
+    uint32_t  i;
     UInt64  namePtr;
 
     for (i = 0; i < iNumClassMethodInfos; i++)
@@ -199,7 +199,7 @@
 - (BOOL)getObjcClassPtr: (objc2_class_t**)outClassPtr
                fromName: (const char*)inName;
 {
-    UInt32  i;
+    uint32_t  i;
     UInt64  namePtr;
 
     for (i = 0; i < iNumClassMethodInfos; i++)
@@ -229,11 +229,11 @@
 - (BOOL)getObjcMetaClass: (objc2_class_t*)outClass
                fromClass: (objc2_class_t*)inClass;
 {
-/*    if ((UInt32)inClass->isa >= iMetaClassSect.s.addr &&
-        (UInt32)inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)
+/*    if ((uint32_t)inClass->isa >= iMetaClassSect.s.addr &&
+        (uint32_t)inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)
     {
         *outClass   = *(objc_class*)(iMetaClassSect.contents +
-            ((UInt32)inClass->isa - iMetaClassSect.s.addr));
+            ((uint32_t)inClass->isa - iMetaClassSect.s.addr));
 
         return YES;
     }*/
