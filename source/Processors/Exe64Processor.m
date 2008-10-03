@@ -82,8 +82,8 @@
     if (!iFuncInfos)
         return;
 
-    UInt32          i;
-    UInt32          j;
+    uint32_t          i;
+    uint32_t          j;
     Function64Info* funcInfo;
     Block64Info*    blockInfo;
 
@@ -201,7 +201,7 @@
     if (gCancel == YES)
         return NO;
 
-    UInt32  progCounter = 0;
+    uint32_t  progCounter = 0;
     double  progValue   = 0.0;
 
     progDict    = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
@@ -454,7 +454,7 @@
 - (void)gatherLineInfos
 {
     Line64*         theLine     = iPlainLineListHead;
-    UInt32          progCounter = 0;
+    uint32_t          progCounter = 0;
 
     while (theLine)
     {
@@ -530,7 +530,7 @@
             iFuncInfos  = realloc(iFuncInfos,
                 sizeof(Function64Info) * iNumFuncInfos);
 
-            UInt32  genericFuncNum  = 0;
+            uint32_t  genericFuncNum  = 0;
 
             if (theLine->prev && theLine->prev->info.isCode)
                 genericFuncNum  = ++iCurrentGenericFuncNum;
@@ -643,7 +643,7 @@
 
     ChooseLine(ioLine);
 
-    UInt32  theOrigLength           = (*ioLine)->length;
+    uint32_t  theOrigLength           = (*ioLine)->length;
     char    localOffsetString[9]    = {0};
     char    theAddressCString[17]    = {0};
     char    theMnemonicCString[20]  = {0};
@@ -665,7 +665,7 @@
     iLineOperandsCString[0] = 0;
 
     char*   origFormatString    = "%s\t%s\t%s%n";
-    UInt32  consumedAfterOp     = 0;
+    uint32_t  consumedAfterOp     = 0;
 
     // The address and mnemonic always exist, separated by a tab.
     sscanf((*ioLine)->chars, origFormatString, theAddressCString,
@@ -686,7 +686,7 @@
         }
         else    // regular comment
         {
-            UInt32  origCommentLength   = theOrigLength - consumedAfterOp - 1;
+            uint32_t  origCommentLength   = theOrigLength - consumedAfterOp - 1;
 
             strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
                 origCommentLength);
@@ -932,12 +932,12 @@
     {
         CommentForLine(*ioLine);
 
-        UInt32  origCommentLength   = strlen(iLineCommentCString);
+        uint32_t  origCommentLength   = strlen(iLineCommentCString);
 
         if (origCommentLength)
         {
             char    tempComment[MAX_COMMENT_LENGTH];
-            UInt32  i, j = 0;
+            uint32_t  i, j = 0;
 
             // Escape newlines, carriage returns and tabs.
             for (i = 0; i < origCommentLength; i++)
@@ -1004,7 +1004,7 @@
             if (colonPos)
                 *colonPos   = 0;
 
-            UInt32  demangledLength = strlen(demangledName);
+            uint32_t  demangledLength = strlen(demangledName);
 
             if (demangledLength < MAX_OPERANDS_LENGTH - 1)
                 strncpy(iLineOperandsCString, demangledName, demangledLength + 1);
@@ -1028,7 +1028,7 @@
             if (colonPos)
                 *colonPos   = 0;
 
-            UInt32  demangledLength = strlen(demangledName);
+            uint32_t  demangledLength = strlen(demangledName);
 
             if (demangledLength < MAX_OPERANDS_LENGTH - 1)
                 strncpy(theCommentCString, demangledName, demangledLength + 1);
@@ -1040,7 +1040,7 @@
     {
         // Build a right-aligned string  with a '+' in it.
         snprintf((char*)&localOffsetString, iFieldWidths.offset,
-            "%6lu", iLocalOffset);
+            "%6u", iLocalOffset);
 
         // Find the space that's followed by a nonspace.
         // *Reverse count to optimize for short functions.
@@ -1104,7 +1104,7 @@
 
     // Finally, assemble the new string.
     char    finalFormatCString[MAX_FORMAT_LENGTH];
-    UInt32  formatMarker    = 0;
+    uint32_t  formatMarker    = 0;
 
     if (needNewLine)
     {
@@ -1288,43 +1288,43 @@
     return YES;
 }
 
+#define _64_BIT_ADDRESS_COLUMN_LENGTH_ 18
+
 //  printDataSection:toFile:
 // ----------------------------------------------------------------------------
 
 - (void)printDataSection: (section_info_64*)inSect
                   toFile: (FILE*)outFile;
 {
-    UInt32 bytesLeft;
-    UInt32 i, j, k;
-    UInt32 theDataSize = (UInt32)inSect->size;
-    char theLineCString[70];
+    uint32_t bytesLeft;
+    uint32_t i, j, k;
+    uint32_t theDataSize = (uint32_t)inSect->size;
+    char theLineCString[80];
     char* theMachPtr = (char*)iMachHeaderPtr;
 
-    theLineCString[0]   = 0;
+    theLineCString[0] = 0;
 
     for (i = 0; i < theDataSize; i += 16)
     {
-        bytesLeft   = theDataSize - i;
+        bytesLeft = theDataSize - i;
+
+        unsigned char theASCIIData[20] = {0};
 
         if (bytesLeft < 16) // last line
         {
-            theLineCString[0]   = 0;
-            snprintf(theLineCString,
-                20 ,"%08x |", inSect->s.addr + i);
+            theLineCString[0] = 0;
+            snprintf(theLineCString, _64_BIT_ADDRESS_COLUMN_LENGTH_ + 1 ,"%016llx |", inSect->s.addr + i);
 
-            unsigned char   theHexData[17]      = {0};
-            unsigned char   theASCIIData[17]    = {0};
+            unsigned char theHexData[17] = {0};
 
-            memcpy(theHexData,
-                (const void*)(theMachPtr + inSect->s.offset + i), bytesLeft);
-            memcpy(theASCIIData,
-                (const void*)(theMachPtr + inSect->s.offset + i), bytesLeft);
+            memcpy(theHexData, (const void*)(theMachPtr + inSect->s.offset + i), bytesLeft);
+            memcpy(theASCIIData, theHexData, bytesLeft);
 
-            j   = 10;
+            j   = _64_BIT_ADDRESS_COLUMN_LENGTH_;
 
             for (k = 0; k < bytesLeft; k++)
             {
-                if (!(k % 4))
+                if ((k % 4) == 0)
                     theLineCString[j++] = 0x20;
 
                 snprintf(&theLineCString[j], 4, "%02x", theHexData[k]);
@@ -1335,35 +1335,32 @@
             }
 
             // Append spaces.
-            for (; j < 48; j++)
-                theLineCString[j]   = 0x20;
+            for (; j < _64_BIT_ADDRESS_COLUMN_LENGTH_ + 38; j++)
+                theLineCString[j] = 0x20;
 
             // Append ASCII chars.
-            snprintf(&theLineCString[j], 70, "%s\n", theASCIIData);
+            snprintf(&theLineCString[j], 80, "%s\n", theASCIIData);
         }
         else    // first lines
         {           
-            UInt32*         theHexPtr           = (UInt32*)
-                (theMachPtr + inSect->s.offset + i);
-            unsigned char   theASCIIData[17]    = {0};
-            UInt8           j;
+            uint32_t* theHexPtr = (uint32_t*)(theMachPtr + inSect->s.offset + i);
+            UInt8 j;
 
-            memcpy(theASCIIData,
-                (const void*)(theMachPtr + inSect->s.offset + i), 16);
+            memcpy(theASCIIData, (const void*)(theMachPtr + inSect->s.offset + i), 16);
 
             for (j = 0; j < 16; j++)
                 if (theASCIIData[j] < 0x20 || theASCIIData[j] == 0x7f)
                     theASCIIData[j] = '.';
 
 #if TARGET_RT_LITTLE_ENDIAN
-            theHexPtr[0]    = OSSwapInt32(theHexPtr[0]);
-            theHexPtr[1]    = OSSwapInt32(theHexPtr[1]);
-            theHexPtr[2]    = OSSwapInt32(theHexPtr[2]);
-            theHexPtr[3]    = OSSwapInt32(theHexPtr[3]);
+            theHexPtr[0] = OSSwapInt32(theHexPtr[0]);
+            theHexPtr[1] = OSSwapInt32(theHexPtr[1]);
+            theHexPtr[2] = OSSwapInt32(theHexPtr[2]);
+            theHexPtr[3] = OSSwapInt32(theHexPtr[3]);
 #endif
 
             snprintf(theLineCString, sizeof(theLineCString),
-                "%08x | %08x %08x %08x %08x  %s\n",
+                "%016llx | %08x %08x %08x %08x  %s\n",
                 inSect->s.addr + i,
                 theHexPtr[0], theHexPtr[1], theHexPtr[2], theHexPtr[3],
                 theASCIIData);
@@ -1371,7 +1368,7 @@
 
         if (fprintf(outFile, "%s", theLineCString) < 0)
         {
-            perror("otx: [ExeProcessor printDataSection:toFile:]: "
+            perror("otx: [Exe64Processor printDataSection:toFile:]: "
                 "unable to write to output file");
             return;
         }
@@ -1422,7 +1419,7 @@
         return;
 
     // only need to do this math once...
-    static UInt32   startOfComment  = 0;
+    static uint32_t   startOfComment  = 0;
 
     if (startOfComment == 0)
     {
@@ -1434,12 +1431,12 @@
     }
 
     char    entabbedLine[MAX_LINE_LENGTH];
-    UInt32  theOrigLength   = ioLine->length;
+    uint32_t  theOrigLength   = ioLine->length;
 
     // If 1st char is '\n', skip it.
-    UInt32  firstChar   = (ioLine->chars[0] == '\n');
-    UInt32  i;          // old line marker
-    UInt32  j   = 0;    // new line marker
+    uint32_t  firstChar   = (ioLine->chars[0] == '\n');
+    uint32_t  i;          // old line marker
+    uint32_t  j   = 0;    // new line marker
 
     if (firstChar)
     {
@@ -1616,7 +1613,7 @@
         {
             theType = PointerType;
 
-            static UInt32 recurseCount = 0;
+            static uint32_t recurseCount = 0;
 
             while (theType == PointerType)
             {
@@ -1654,7 +1651,7 @@
 
         if (outType)
         {
-            UInt32  theID   = *(UInt32*)thePtr;
+            uint32_t  theID   = *(uint32_t*)thePtr;
 
             if (iSwapped)
                 theID   = OSSwapInt32(theID);
@@ -1663,7 +1660,7 @@
                 *outType    = OCStrObjectType;
             else
             {
-                theID   = *(UInt32*)(thePtr + 4);
+                theID   = *(uint32_t*)(thePtr + 4);
 
                 if (iSwapped)
                     theID   = OSSwapInt32(theID);
@@ -2036,7 +2033,7 @@
 // ----------------------------------------------------------------------------
 //  Used for block debugging. Sublclasses may override.
 
-- (void)printBlocks: (UInt32)inFuncIndex;
+- (void)printBlocks: (uint32_t)inFuncIndex;
 {}
 #endif  // OTX_DEBUG
 
