@@ -566,6 +566,7 @@
 				OTHER_CFLAGS = (
 					"-falign-loops=16",
 					"-DOTX_DEBUG",
+					"-wall",
 				);
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";

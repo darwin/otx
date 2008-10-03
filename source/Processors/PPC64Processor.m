@@ -191,7 +191,7 @@
                                     break;
 
                                 #if __LITTLE_ENDIAN__
-                                    swap_objc_class(&swappedClass);
+                                    swap_objc2_class(&swappedClass);
                                 #endif
                             }
 
@@ -346,7 +346,7 @@
                         break;
 
                     #if __LITTLE_ENDIAN__
-                        swap_objc_class(&swappedClass);
+                        swap_objc2_class(&swappedClass);
                     #endif
                 }
 
@@ -825,7 +825,7 @@
 
         default:
             fprintf(stderr, "otx: [PPC64Processor selectorForMsgSend:fromLine:]: "
-                "unsupported selector type: %d at address: 0x%x\n",
+                "unsupported selector type: %d at address: 0x%llx\n",
                 selType, inLine->info.address);
 
             break;
@@ -955,7 +955,7 @@
 
             default:
                 fprintf(stderr, "otx: [PPC64Processor commentForMsgSend]: "
-                    "unsupported class name type: %d at address: 0x%x\n",
+                    "unsupported class name type: %d at address: 0x%llx\n",
                     classNameType, inLine->info.address);
 
                 break;
@@ -1015,8 +1015,8 @@
                 if (!GetObjcMetaClassFromClass(&swappedClass, &swappedClass))
                     return;
 
-                #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
+                #if __LITTLE_ENDIAN__
+                    swap_objc2_class(&swappedClass);
                 #endif
             }
 
@@ -2188,12 +2188,12 @@
 
     uint32_t  i, j;
 
-    fprintf(stderr, "\nfunction at 0x%x:\n\n", funcInfo->address);
+    fprintf(stderr, "\nfunction at 0x%llx:\n\n", funcInfo->address);
     fprintf(stderr, "%d blocks\n", funcInfo->numBlocks);
 
     for (i = 0; i < funcInfo->numBlocks; i++)
     {
-        fprintf(stderr, "\nblock %d at 0x%x:\n\n", i + 1,
+        fprintf(stderr, "\nblock %d at 0x%llx:\n\n", i + 1,
             funcInfo->blocks[i].beginAddress);
 
         for (j = 0; j < 32; j++)
@@ -2201,7 +2201,7 @@
             if (!funcInfo->blocks[i].state.regInfos[j].isValid)
                 continue;
 
-            fprintf(stderr, "\t\tr%d: 0x%x\n", j,
+            fprintf(stderr, "\t\tr%d: 0x%llx\n", j,
                 funcInfo->blocks[i].state.regInfos[j].value);
         }
     }

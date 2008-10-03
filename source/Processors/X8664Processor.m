@@ -642,7 +642,7 @@
                 else    // Check for a single printable 7-bit char.
                 if (localAddy >= 0x20 && localAddy < 0x7f)
                 {
-                    snprintf(iLineCommentCString, 4, "'%c'", localAddy);
+                    snprintf(iLineCommentCString, 4, "'%c'", (char)localAddy);
                 }
 
                 break;
@@ -802,7 +802,7 @@
                     }
                     else    // Check for a single printable 7-bit char.
                     if (localAddy >= 0x20 && localAddy < 0x7f)
-                        snprintf(iLineCommentCString, 4, "'%c'", localAddy);
+                        snprintf(iLineCommentCString, 4, "'%c'", (char)localAddy);
                 }
 
                 break;
@@ -1367,7 +1367,7 @@
 
         default:
             fprintf(stderr, "otx: [X8664Processor selectorForMsgSend:fromLine:]: "
-                "unsupported selector type: %d at address: 0x%x\n",
+                "unsupported selector type: %d at address: 0x%llx\n",
                 selType, inLine->info.address);
 
             break;
@@ -1457,7 +1457,7 @@
 
                 default:
                     fprintf(stderr, "otx: [X8664Processor commentForMsgSend]: "
-                        "unsupported class name type: %d at address: 0x%x\n",
+                        "unsupported class name type: %d at address: 0x%llx\n",
                         classNameType, inLine->info.address);
 
                     break;
