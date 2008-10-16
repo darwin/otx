@@ -14,7 +14,7 @@
 #define kOutputFileBaseTag  200
 #define kOutputFileExtTag   201
 
-#define kPrefsAnimationTime 0.2
+#define kPrefsAnimationTime 0.12
 #define kMainAnimationTime  0.15
 
 #define NSXViewAnimationCustomEffectsKey    @"NSXViewAnimationCustomEffectsKey"

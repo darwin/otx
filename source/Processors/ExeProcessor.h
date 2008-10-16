@@ -141,11 +141,9 @@ enum {
 #define COMPARISON_FUNC_TYPE    int (*)(const void*, const void*)
 
 #ifdef OTX_CLI
-#define PROG_DISPLAY_SHOULD_BLOCK   YES
-#define PROGRESS_FREQ               10000   // Refresh progress bar after processing this many lines.
+#define PROGRESS_FREQ   10000   // Refresh progress bar after processing this many lines.
 #else
-#define PROG_DISPLAY_SHOULD_BLOCK   NO
-#define PROGRESS_FREQ               3500
+#define PROGRESS_FREQ   3500
 #endif
 
 // ============================================================================
@@ -169,7 +167,9 @@ enum {
     uint32_t              iNumThunks;             // x86 only
     TextFieldWidths     iFieldWidths;
     ProcOptions         iOpts;
-    FILE*               iCPFiltPipe;
+    NSTask*             iCPFiltTask;
+    NSPipe*             iCPFiltInputPipe;
+    NSPipe*             iCPFiltOutputPipe;
 
     // FunctionInfo stuff
     uint32_t              iCurrentGenericFuncNum;

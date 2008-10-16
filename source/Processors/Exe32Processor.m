@@ -623,23 +623,62 @@
     {
         if (strstr(ioLine->chars, "__Z") == ioLine->chars)
         {
-            char    demangledName[MAX_COMMENT_LENGTH];
+            char demangledName[MAX_LINE_LENGTH];
 
-            // Replace trailing colon with \0.
-            char*   colonPos    = strchr(ioLine->chars, ':');
+            // Line should end with ":\n". Terminate over the colon if it exists.
+            if (ioLine->chars[ioLine->length - 2] == ':')
+                ioLine->chars[ioLine->length - 2] = 0;
+            else
+                ioLine->chars[ioLine->length - 1] = 0;
 
-            if (colonPos)
-                *colonPos   = 0;
+            NSFileHandle* filtWrite = [iCPFiltInputPipe fileHandleForWriting];
+            NSFileHandle* filtRead = [iCPFiltOutputPipe fileHandleForReading];
+            NSMutableData* dataToWrite = [NSMutableData dataWithBytes: ioLine->chars
+                                                               length: strlen(ioLine->chars)];
 
-            fputs(ioLine->chars, iCPFiltPipe);
-            fputs("\n", iCPFiltPipe);
-            fgets(demangledName, MAX_COMMENT_LENGTH, iCPFiltPipe);
+            [dataToWrite appendBytes: "\n"
+                              length: 1];
 
-            free(ioLine->chars);
-            ioLine->length  = strlen(demangledName);
-            ioLine->chars   = malloc(ioLine->length + 1);
+            @try {
+                [filtWrite writeData: dataToWrite];
+            }
+            @catch (NSException* e) {
+                NSLog(@"otx: [Exe32Processor processLine:] failed to write to c++filt: %@", [e reason]);
+            }
 
-            strncpy(ioLine->chars, demangledName, ioLine->length + 1);
+            NSData* readData = nil;
+
+            @try {
+                readData = [filtRead availableData];
+            }
+            @catch (NSException* e) {
+                NSLog(@"otx: [Exe32Processor processLine:] failed to read from c++filt: %@", [e reason]);
+            }
+
+            if (readData != nil)
+            {
+                NSUInteger demangledDataLength = [readData length];
+                NSUInteger demangledStringLength = MIN(demangledDataLength, MAX_LINE_LENGTH - 1);
+
+                if (demangledStringLength < demangledDataLength)
+                    NSLog(@"otx: demangled C++ name is too large. Increase MAX_LINE_LENGTH to %lu.\n"
+                           "Name demangling will now go off the rails.", demangledDataLength);
+
+                // Get the string and terminate it.
+                [readData getBytes: demangledName
+                            length: demangledStringLength];
+                demangledName[demangledStringLength] = 0;
+
+                free(ioLine->chars);
+                ioLine->length = demangledStringLength;
+                ioLine->chars = malloc(ioLine->length + 1);
+
+                strncpy(ioLine->chars, demangledName, ioLine->length + 1);
+            }
+            else
+            {
+                NSLog(@"otx: [Exe32Processor processLine:] got nil data from c++filt");
+            }
         }
     }
 }
@@ -984,22 +1023,53 @@
     {
         if (strstr(iLineOperandsCString, "__Z") == iLineOperandsCString)
         {
-            char    demangledName[MAX_COMMENT_LENGTH];
+            char demangledName[MAX_OPERANDS_LENGTH];
 
-            fputs(iLineOperandsCString, iCPFiltPipe);
-            fputs("\n", iCPFiltPipe);
-            fgets(demangledName, MAX_COMMENT_LENGTH, iCPFiltPipe);
+            NSFileHandle* filtWrite = [iCPFiltInputPipe fileHandleForWriting];
+            NSFileHandle* filtRead = [iCPFiltOutputPipe fileHandleForReading];
+            NSMutableData* dataToWrite = [NSMutableData dataWithBytes: iLineOperandsCString
+                                                               length: strlen(iLineOperandsCString)];
 
-            // Replace trailing newline with \0.
-            char*   colonPos    = strchr(demangledName, '\n');
+            [dataToWrite appendBytes: "\n"
+                              length: 1];
 
-            if (colonPos)
-                *colonPos   = 0;
+            @try {
+                [filtWrite writeData: dataToWrite];
+            }
+            @catch (NSException* e) {
+                NSLog(@"otx: [Exe32Processor processCodeLine:] failed to write operands to c++filt: %@", [e reason]);
+            }
 
-            uint32_t  demangledLength = strlen(demangledName);
+            NSData* readData = nil;
 
-            if (demangledLength < MAX_OPERANDS_LENGTH - 1)
-                strncpy(iLineOperandsCString, demangledName, demangledLength + 1);
+            @try {
+                readData = [filtRead availableData];
+            }
+            @catch (NSException* e) {
+                NSLog(@"otx: [Exe32Processor processCodeLine:] failed to read operands from c++filt: %@", [e reason]);
+            }
+
+            if (readData != nil)
+            {
+                NSUInteger demangledDataLength = [readData length];
+                NSUInteger demangledStringLength = MIN(demangledDataLength, MAX_OPERANDS_LENGTH - 1);
+
+                if (demangledStringLength < demangledDataLength)
+                    NSLog(@"otx: demangled C++ name is too large. Increase MAX_OPERANDS_LENGTH to %lu.\n"
+                           "Name demangling will now go off the rails.", demangledDataLength);
+
+                [readData getBytes: demangledName
+                            length: demangledStringLength];
+
+                // Remove the trailing newline and terminate.
+                demangledStringLength--;
+                demangledName[demangledStringLength] = 0;
+                strncpy(iLineOperandsCString, demangledName, demangledStringLength + 1);
+            }
+            else
+            {
+                NSLog(@"otx: [Exe32Processor processCodeLine:] got nil operands data from c++filt");
+            }
         }
     }
 
@@ -1008,22 +1078,53 @@
     {
         if (strstr(theCommentCString, "__Z") == theCommentCString)
         {
-            char    demangledName[MAX_COMMENT_LENGTH];
+            char demangledName[MAX_COMMENT_LENGTH];
 
-            fputs(theCommentCString, iCPFiltPipe);
-            fputs("\n", iCPFiltPipe);
-            fgets(demangledName, MAX_COMMENT_LENGTH, iCPFiltPipe);
+            NSFileHandle* filtWrite = [iCPFiltInputPipe fileHandleForWriting];
+            NSFileHandle* filtRead = [iCPFiltOutputPipe fileHandleForReading];
+            NSMutableData* dataToWrite = [NSMutableData dataWithBytes: theCommentCString
+                                                               length: strlen(theCommentCString)];
 
-            // Replace trailing newline with \0.
-            char*   colonPos    = strchr(demangledName, '\n');
+            [dataToWrite appendBytes: "\n"
+                              length: 1];
 
-            if (colonPos)
-                *colonPos   = 0;
+            @try {
+                [filtWrite writeData: dataToWrite];
+            }
+            @catch (NSException* e) {
+                NSLog(@"otx: [Exe32Processor processCodeLine:] failed to write comment to c++filt: %@", [e reason]);
+            }
 
-            uint32_t  demangledLength = strlen(demangledName);
+            NSData* readData = nil;
 
-            if (demangledLength < MAX_OPERANDS_LENGTH - 1)
-                strncpy(theCommentCString, demangledName, demangledLength + 1);
+            @try {
+                readData = [filtRead availableData];
+            }
+            @catch (NSException* e) {
+                NSLog(@"otx: [Exe32Processor processCodeLine:] failed to read comment from c++filt: %@", [e reason]);
+            }
+
+            if (readData != nil)
+            {
+                NSUInteger demangledDataLength = [readData length];
+                NSUInteger demangledStringLength = MIN(demangledDataLength, MAX_COMMENT_LENGTH - 1);
+
+                if (demangledStringLength < demangledDataLength)
+                    NSLog(@"otx: demangled C++ name is too large. Increase MAX_COMMENT_LENGTH to %lu.\n"
+                           "Name demangling will now go off the rails.", demangledDataLength);
+
+                [readData getBytes: demangledName
+                            length: demangledStringLength];
+
+                // Remove the trailing newline and terminate.
+                demangledStringLength--;
+                demangledName[demangledStringLength] = 0;
+                strncpy(theCommentCString, demangledName, demangledStringLength + 1);
+            }
+            else
+            {
+                NSLog(@"otx: [Exe32Processor processCodeLine:] got nil comment data from c++filt");
+            }
         }
     }
 

@@ -87,10 +87,17 @@
     // Setup the C++ name demangler.
     if (iOpts.demangleCppNames)
     {
-        iCPFiltPipe = popen("c++filt -_", "r+");
+        NSArray* args = [NSArray arrayWithObjects: @"-_", nil];
 
-        if (!iCPFiltPipe)
-            fprintf(stderr, "otx: unable to open c++filt pipe.\n");
+        iCPFiltTask = [[NSTask alloc] init];
+        iCPFiltInputPipe = [[NSPipe alloc] init];
+        iCPFiltOutputPipe = [[NSPipe alloc] init];
+
+        [iCPFiltTask setLaunchPath: @"/usr/bin/c++filt"];
+        [iCPFiltTask setArguments: args];
+        [iCPFiltTask setStandardInput: iCPFiltInputPipe];
+        [iCPFiltTask setStandardOutput: iCPFiltOutputPipe];
+        [iCPFiltTask launch];
     }
 
     [self speedyDelivery];
@@ -115,10 +122,22 @@
         iThunks = NULL;
     }
 
-    if (iCPFiltPipe)
+    if (iCPFiltInputPipe)
     {
-        if (pclose(iCPFiltPipe) == -1)
-            perror("otx: unable to close c++filt pipe");
+        [iCPFiltInputPipe release];
+        iCPFiltInputPipe = nil;
+    }
+
+    if (iCPFiltOutputPipe)
+    {
+        [iCPFiltOutputPipe release];
+        iCPFiltOutputPipe = nil;
+    }
+
+    if (iCPFiltTask)
+    {
+        [iCPFiltTask terminate];
+        [iCPFiltTask release];
     }
 
     [super dealloc];
