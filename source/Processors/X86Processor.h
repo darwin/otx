@@ -1,5 +1,5 @@
 /*
-    X86Processor.m
+    X86Processor.h
 
     A subclass of Exe32Processor that handles x86-specific issues.
 

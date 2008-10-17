@@ -1,5 +1,5 @@
 /*
-    X8664Processor.m
+    X8664Processor.h
 
     A subclass of Exe64Processor that handles x86_64-specific issues.
 
