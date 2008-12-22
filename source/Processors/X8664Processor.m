@@ -1729,12 +1729,11 @@
             case 0x59:  // ecx
             case 0x5a:  // edx
             case 0x5b:  // ebx
-                iRegInfos[XREG2(opcode, rexByte)] = (GP64RegisterInfo){0};
-
                 if (inLine->prev &&
                     (inLine->prev->info.code[0] == 0xe8) &&
                     (*(uint32_t*)&inLine->prev->info.code[1] == 0))
                 {
+                    iRegInfos[XREG2(opcode, rexByte)] = (GP64RegisterInfo){0};
                     iRegInfos[XREG2(opcode, rexByte)].value   = inLine->info.address;
                     iRegInfos[XREG2(opcode, rexByte)].isValid = YES;
                     iCurrentThunk = XREG2(opcode, rexByte);
@@ -1916,14 +1915,14 @@
                     }
                     else
                     {   // Check for copied self pointer.
+                        // Zero the destination regardless.
+                        iRegInfos[XREG1(modRM, rexByte)]  = (GP64RegisterInfo){0};
+
                         if (iLocalSelves &&
                             XREG2(modRM, rexByte) == EBP  &&
                             offset < 0)
                         {
                             uint32_t  i;
-
-                            // Zero the destination regardless.
-                            iRegInfos[XREG1(modRM, rexByte)]  = (GP64RegisterInfo){0};
 
                             // If we're accessing a local var copy of self,
                             // copy that info back to the reg in question.
@@ -1941,6 +1940,9 @@
                 }
                 else if (XREG2(modRM, rexByte) == EBP && MOD(modRM) == MOD32)
                 {
+                    // Zero the destination regardless.
+                    iRegInfos[XREG1(modRM, rexByte)]  = (GP64RegisterInfo){0};
+
                     if (iLocalVars)
                     {
                         SInt32 offset = *(SInt32*)&inLine->info.code[opcodeIndex + 2];
