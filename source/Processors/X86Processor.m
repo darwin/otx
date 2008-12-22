@@ -1730,12 +1730,11 @@
         case 0x59:  // ecx
         case 0x5a:  // edx
         case 0x5b:  // ebx
-            iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
-
             if (inLine->prev &&
                 (inLine->prev->info.code[0] == 0xe8) &&
                 (*(uint32_t*)&inLine->prev->info.code[2] == 0))
             {
+                iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
                 iRegInfos[REG2(opcode)].value = inLine->info.address;
                 iRegInfos[REG2(opcode)].isValid = YES;
                 iCurrentThunk = REG2(opcode);
@@ -1913,12 +1912,12 @@
                 }
                 else
                 {   // Check for copied self pointer.
+                    // Zero the destination regardless.
+                    iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
+
                     if (iLocalSelves && REG2(modRM) == EBP && offset < 0)
                     {
                         uint32_t i;
-
-                        // Zero the destination regardless.
-                        iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
 
                         // If we're accessing a local var copy of self,
                         // copy that info back to the reg in question.
@@ -1936,6 +1935,9 @@
             }
             else if (REG2(modRM) == EBP && MOD(modRM) == MOD32)
             {
+                // Zero the destination regardless.
+                iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
+
                 if (iLocalVars)
                 {
                     SInt32 offset = *(SInt32*)&inLine->info.code[2];
@@ -1945,9 +1947,6 @@
                     if (offset < 0)
                     {
                         uint32_t i;
-
-                        // Zero the destination regardless.
-                        iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
 
                         for (i = 0; i < iNumLocalVars; i++)
                         {
