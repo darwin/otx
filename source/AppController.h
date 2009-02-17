@@ -19,9 +19,13 @@
 
 #define NSXViewAnimationCustomEffectsKey    @"NSXViewAnimationCustomEffectsKey"
 
+// There can be only one swap effect per animation in this implementation.
 #define NSXViewAnimationSwapAtBeginningEffect               (1 << 0)
 #define NSXViewAnimationSwapAtEndEffect                     (1 << 1)
 #define NSXViewAnimationSwapAtBeginningAndEndEffect         (1 << 2)
+#define NSXViewAnimationFadeOutAndSwapEffect                (1 << 3)
+
+// These effects can be combined.
 #define NSXViewAnimationUpdateResizeMasksAtEndEffect        (1 << 10)
 #define NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect  (1 << 11)
 #define NSXViewAnimationPerformSelectorAtEndEffect          (1 << 12)

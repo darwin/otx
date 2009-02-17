@@ -695,8 +695,7 @@
         forKey: NSXViewAnimationPerformInNewThreadKey];
 
     SmoothViewAnimation*    theAnim = [[SmoothViewAnimation alloc]
-        initWithViewAnimations: [NSArray arrayWithObjects:
-        newWindowItem, nil]];
+        initWithViewAnimations: [NSArray arrayWithObject: newWindowItem]];
 
     [theAnim setDelegate: self];
     [theAnim setDuration: kMainAnimationTime];
@@ -786,8 +785,7 @@
             forKey: NSXViewAnimationWindowMaxSizeKey];
 
         SmoothViewAnimation*    theAnim = [[SmoothViewAnimation alloc]
-            initWithViewAnimations: [NSArray arrayWithObjects:
-            newWindowItem, nil]];
+            initWithViewAnimations: [NSArray arrayWithObject: newWindowItem]];
 
         [theAnim setDelegate: self];
         [theAnim setDuration: kMainAnimationTime];
@@ -1457,7 +1455,7 @@
         forKey: NSViewAnimationEndFrameKey];
 
     [newWindowDict setObject: [NSNumber numberWithUnsignedInt:
-        NSXViewAnimationSwapAtBeginningAndEndEffect]
+        NSXViewAnimationFadeOutAndSwapEffect]
         forKey: NSXViewAnimationCustomEffectsKey];
     [newWindowDict setObject: iPrefsViews[iPrefsCurrentViewIndex]
         forKey: NSXViewAnimationSwapOldKey];
@@ -1705,9 +1703,9 @@
         animatingWindow != iPrefsWindow)
         return YES;
 
-    uint32_t  i;
-    uint32_t  numAnimations   = [animatedViews count];
-    id      animObject      = nil;
+    uint32_t i;
+    uint32_t numAnimations = [animatedViews count];
+    id animObject = nil;
 
     for (i = 0; i < numAnimations; i++)
     {
@@ -1739,11 +1737,36 @@
         }
         else if (effects & NSXViewAnimationSwapAtBeginningAndEndEffect)
         {   // Hide a view.
-            NSView* oldView = [animObject
-                objectForKey: NSXViewAnimationSwapOldKey];
+            NSView* oldView = [animObject objectForKey: NSXViewAnimationSwapOldKey];
 
             if (oldView)
                 [oldView setHidden: YES];
+        }
+        else if (effects & NSXViewAnimationFadeOutAndSwapEffect)
+        {  // Fade out a view.
+            NSView* oldView = [animObject objectForKey: NSXViewAnimationSwapOldKey];
+
+            if (oldView)
+            {   // Create a new animation to fade out the view.
+                NSMutableDictionary* newAnimDict = [NSMutableDictionary dictionary];
+
+                [newAnimDict setObject: oldView
+                                forKey: NSViewAnimationTargetKey];
+                [newAnimDict setObject: NSViewAnimationFadeOutEffect
+                                forKey: NSViewAnimationEffectKey];
+
+                SmoothViewAnimation *viewFadeOutAnim = [[SmoothViewAnimation alloc]
+                    initWithViewAnimations: [NSArray arrayWithObject: newAnimDict]];
+
+                [viewFadeOutAnim setDuration: [animation duration]];
+                [viewFadeOutAnim setAnimationCurve: [animation animationCurve]];
+                [viewFadeOutAnim setAnimationBlockingMode: [animation animationBlockingMode]];
+                [viewFadeOutAnim setFrameRate: [animation frameRate]];
+
+                // Do the deed.
+                [viewFadeOutAnim startAnimation];
+                [viewFadeOutAnim autorelease];
+            }
         }
     }
 
@@ -1802,7 +1825,8 @@
             if (newView)
                 [newView setHidden: NO];
         }
-        else if (effects & NSXViewAnimationSwapAtBeginningAndEndEffect)
+        else if (effects & NSXViewAnimationSwapAtBeginningAndEndEffect ||
+                 effects & NSXViewAnimationFadeOutAndSwapEffect)
         {   // Show a view.
             NSView* newView = [animObject
                 objectForKey: NSXViewAnimationSwapNewKey];
