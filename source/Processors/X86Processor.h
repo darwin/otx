@@ -51,8 +51,8 @@ enum {
 
 #define IS_JUMP(o, so)                                              \
     ((o) == 0xe3 || (o) == 0xe9 || (o) == 0xeb  || (o) == 0xc3 ||   \
-        ((o) >= 0x71 && (o) <= 0x7f) ||                             \
-        ((o) == 0x0f && (so) >= 0x81 && (so) <= 0x8f))
+    ((o) >= 0x71 && (o) <= 0x7f) ||                                 \
+    ((o) == 0x0f && (so) >= 0x81 && (so) <= 0x8f))
 #define IS_CALL(o)  ((o) == 0xe8)
 #define IS_RET(o)   ((o) == 0xc3)
 
@@ -64,9 +64,9 @@ enum {
     GPRegisterInfo  iRegInfos[8];
 
     VarInfo*    iLocalSelves;           // 'self' copied to local variables
-    uint32_t      iNumLocalSelves;
+    uint32_t    iNumLocalSelves;
     VarInfo*    iLocalVars;
-    uint32_t      iNumLocalVars;
+    uint32_t    iNumLocalVars;
 }
 
 @end
