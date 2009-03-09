@@ -2245,6 +2245,9 @@
                 case 0x84:
                 case 0x85:
                 {
+                    if (inLine->next == NULL)
+                        break;
+
                     SInt32 offset = *(SInt32*)&inLine->info.code[2];
                     UInt64 jumpTarget = inLine->next->info.address + offset;
 
@@ -2278,6 +2281,9 @@
         case 0x7d: case 0x7e: case 0x7f: case 0xe3:
         case 0xeb:  // jmp
         {
+            if (inLine->next == NULL)
+                break;
+
             UInt64 jumpTarget = inLine->next->info.address + (SInt8)opcode2;
 
             if (jumpTarget >= iHighestJumpTarget)
