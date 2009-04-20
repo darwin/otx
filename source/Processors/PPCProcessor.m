@@ -25,7 +25,7 @@ extern BOOL gCancel;
 
 - (id)initWithURL: (NSURL*)inURL
        controller: (id)inController
-          options: (ProcOptions*)inOptions;
+          options: (ProcOptions*)inOptions
 {
     if ((self = [super initWithURL: inURL
         controller: inController options: inOptions]))

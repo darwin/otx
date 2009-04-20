@@ -34,7 +34,7 @@
 
 - (id)initWithURL: (NSURL*)inURL
        controller: (id)inController
-          options: (ProcOptions*)inOptions;
+          options: (ProcOptions*)inOptions
 {
     if (!inURL || !inController || !inOptions)
         return nil;
