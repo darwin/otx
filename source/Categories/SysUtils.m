@@ -19,13 +19,11 @@
 {
     NSString* otoolPath = [self pathForTool: @"otool"];
     NSTask* otoolTask = [[[NSTask alloc] init] autorelease];
-    NSPipe* otoolPipe = [NSPipe pipe];
-    NSArray* args = [NSArray arrayWithObjects: @"-h",
-        [NSString stringWithFormat: @"\"%@\"", filePath], nil];
+    NSPipe* silence = [NSPipe pipe];
 
     [otoolTask setLaunchPath: otoolPath];
-    [otoolTask setArguments: args];
-    [otoolTask setStandardOutput: otoolPipe];
+    [otoolTask setStandardOutput: silence];
+    [otoolTask setStandardError: silence];
     [otoolTask launch];
     [otoolTask waitUntilExit];
 
