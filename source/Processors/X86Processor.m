@@ -1488,35 +1488,29 @@
         }
         else
         {
-            char*   formatString    = NULL;
-
             switch (sendType)
             {
                 case send:
                 case send_fpret:
                 case send_variadic:
-                    formatString    = "-%s[(%%esp,1) %s]";
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[(%%esp,1) %s]", returnTypeString, selString);
                     break;
 
                 case sendSuper:
-                    formatString    = "-%s[[(%%esp,1) super] %s]";
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[(%%esp,1) super] %s]", returnTypeString, selString);
                     break;
 
                 case send_stret:
-                    formatString    = "-%s[0x04(%%esp,1) %s]";
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[0x04(%%esp,1) %s]", returnTypeString, selString);
                     break;
 
                 case sendSuper_stret:
-                    formatString    = "-%s[[0x04(%%esp,1) super] %s]";
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[0x04(%%esp,1) super] %s]", returnTypeString, selString);
                     break;
 
                 default:
                     break;
             }
-
-            if (formatString)
-                snprintf(ioComment, MAX_COMMENT_LENGTH - 1, formatString,
-                    returnTypeString, selString);
         }
     }
     else if (!strncmp(ioComment, "_objc_assign_ivar", 17))
@@ -1635,15 +1629,13 @@
     else if (iThunks)   // otool didn't spot it, maybe we did earlier...
     {
         uint32_t  i, target;
-        BOOL    found   = NO;
 
-        for (i = 0; i < iNumThunks && !found; i++)
+        for (i = 0; i < iNumThunks; i++)
         {
             target  = strtoul(iLineOperandsCString, NULL, 16);
 
             if (target == iThunks[i].address)
             {
-                found           = YES;
                 iCurrentThunk   = iThunks[i].reg;
 
                 iRegInfos[iCurrentThunk].value      =

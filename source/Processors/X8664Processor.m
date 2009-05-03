@@ -254,7 +254,7 @@
             case 0x4c: case 0x4d: case 0x4e: case 0x4f:
                 // Save the REX bits and continue.
                 rexByte = opcode;
-                opcodeIndex = 1;
+                opcodeIndex++;
                 opcode = inLine->info.code[opcodeIndex];
                 continue;
 
@@ -474,7 +474,8 @@
                                 break;
                         }
 
-                        theSymPtr = GetPointer(theIvar->name, NULL);
+                        if (theIvar)
+                            theSymPtr = GetPointer(theIvar->name, NULL);
 
                         if (theSymPtr)
                         {
@@ -864,7 +865,8 @@
                             break;
                     }
 
-                    theSymPtr = GetPointer(theIvar->name, NULL);
+                    if (theIvar)
+                        theSymPtr = GetPointer(theIvar->name, NULL);
 
                     if (theSymPtr)
                     {
@@ -1005,7 +1007,8 @@
                             break;
                     }
 
-                    theSymPtr = GetPointer(theIvar->name, NULL);
+                    if (theIvar)
+                        theSymPtr = GetPointer(theIvar->name, NULL);
 
                     if (theSymPtr)
                     {
@@ -1066,15 +1069,12 @@
                         char* sel = iRegInfos[XREG2(modRM, rexByte)].messageRefSel;
 
                         if (iRegInfos[EDI].className != NULL)
-                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1,
-                                "+[%s %s]", iRegInfos[EDI].className, sel);
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "+[%s %s]", iRegInfos[EDI].className, sel);
                         else // Instance method?
                             if (iRegInfos[EDI].isValid)
-                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1,
-                                    "objc_msgSend(%%rdi, %s)", sel);
+                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "objc_msgSend(%%rdi, %s)", sel);
                             else
-                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1,
-                                    "-[%%rdi %s]", sel);
+                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "-[%%rdi %s]", sel);
                     }
                 }
                 else if (MOD(modRM) == MODimm && REG2(modRM) == EBP)    // call/jmp through RIP-relative pointer
@@ -1084,8 +1084,7 @@
                         char* sel = iRegInfos[ESI].messageRefSel;
 
                         if (iRegInfos[EDI].className != NULL)
-                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "+[%s %s]",
-                                iRegInfos[EDI].className, sel);
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "+[%s %s]", iRegInfos[EDI].className, sel);
                         else // Instance method?
                             if (iRegInfos[EDI].isValid)
                                 snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "+[? %s]", sel);
@@ -1473,35 +1472,29 @@
         }
         else
         {
-            char*   formatString    = NULL;
-
             switch (sendType)
             {
                 case send:
                 case send_fpret:
                 case send_variadic:
-                    formatString    = "-%s[(%%esp,1) %s]";
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[(%%esp,1) %s]", returnTypeString, selString);
                     break;
 
                 case sendSuper:
-                    formatString    = "-%s[[(%%esp,1) super] %s]";
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[(%%esp,1) super] %s]", returnTypeString, selString);
                     break;
 
                 case send_stret:
-                    formatString    = "-%s[0x04(%%esp,1) %s]";
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[0x04(%%esp,1) %s]", returnTypeString, selString);
                     break;
 
                 case sendSuper_stret:
-                    formatString    = "-%s[[0x04(%%esp,1) super] %s]";
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[0x04(%%esp,1) super] %s]", returnTypeString, selString);
                     break;
 
                 default:
                     break;
             }
-
-            if (formatString)
-                snprintf(ioComment, MAX_COMMENT_LENGTH - 1, formatString,
-                    returnTypeString, selString);
         }
     }   // if (!strncmp(ioComment, "_objc_msgSend", 13))
     else if (!strncmp(ioComment, "_objc_assign_ivar", 17))
@@ -1614,20 +1607,17 @@
     else if (iThunks)   // otool didn't spot it, maybe we did earlier...
     {
         uint32_t  i, target;
-        BOOL    found = NO;
 
-        for (i = 0; i < iNumThunks && !found; i++)
+        for (i = 0; i < iNumThunks; i++)
         {
-            target  = strtoul(iLineOperandsCString, NULL, 16);
+            target = strtoul(iLineOperandsCString, NULL, 16);
 
             if (target == iThunks[i].address)
             {
-                found           = YES;
-                iCurrentThunk   = iThunks[i].reg;
+                iCurrentThunk = iThunks[i].reg;
 
-                iRegInfos[iCurrentThunk].value      =
-                    (*ioLine)->next->info.address;
-                iRegInfos[iCurrentThunk].isValid    = YES;
+                iRegInfos[iCurrentThunk].value =  (*ioLine)->next->info.address;
+                iRegInfos[iCurrentThunk].isValid = YES;
 
                 return;
             }
@@ -1704,7 +1694,6 @@
 - (void)updateRegisters: (Line64*)inLine;
 {
     UInt8 opcode = inLine->info.code[0];;
-    UInt8 opcode2 = inLine->info.code[1];
     UInt8 modRM;
     UInt8 opcodeIndex = 0;
     UInt8 rexByte = 0;
@@ -1719,9 +1708,8 @@
             case 0x4c: case 0x4d: case 0x4e: case 0x4f:
                 // Save the REX bits and continue.
                 rexByte = opcode;
-                opcodeIndex = 1;
+                opcodeIndex++;
                 opcode = inLine->info.code[opcodeIndex];
-                opcode2 = inLine->info.code[opcodeIndex + 1];
                 continue;
 
             // pop stack into thunk registers.
@@ -2076,8 +2064,6 @@
 
             case 0xe8:  // callq
             case 0xff:  // callq
-                    
-
                     memset(iStack, 0, sizeof(GP64RegisterInfo) * MAX_STACK_SIZE);
                     iRegInfos[EAX]  = (GP64RegisterInfo){0};
 

@@ -971,35 +971,29 @@
     }
     else
     {
-        char*   formatString    = NULL;
-
         switch (sendType)
         {
             case send:
             case send_rtp:
             case send_variadic:
-                formatString    = "-%s[r3 %s]";
+                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[r3 %s]", returnTypeString, selString);
                 break;
 
             case sendSuper:
-                formatString    = "-%s[[r3 super] %s]";
+                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[[r3 super] %s]", returnTypeString, selString);
                 break;
 
             case send_stret:
-                formatString    = "-%s[r4 %s]";
+                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[r4 %s]", returnTypeString, selString);
                 break;
 
             case sendSuper_stret:
-                formatString    = "-%s[[r4 super] %s]";
+                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[[r4 super] %s]", returnTypeString, selString);
                 break;
 
             default:
                 break;
         }
-
-        if (formatString)
-            snprintf(tempComment, MAX_COMMENT_LENGTH - 1, formatString,
-                returnTypeString, selString);
     }
     }   // if (!strncmp(ioComment, "_objc_msgSend", 13))
     else if (!strncmp(ioComment, "_objc_assign_ivar", 17))

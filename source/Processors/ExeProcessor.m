@@ -400,7 +400,7 @@
     }
     @catch (NSException* e)
     {
-        NSLog(@"otx: unable to launch md5: ", [e reason]);
+        NSLog(@"otx: unable to launch md5: %@", [e reason]);
         return nil;
     }
 
