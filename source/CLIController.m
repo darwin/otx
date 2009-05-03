@@ -477,10 +477,10 @@
         case CPU_TYPE_I386:
         case CPU_TYPE_X86_64:
         {
-            ProcOptions opts            = {0};
-            id          theProcessor    =
-                [[procClass alloc] initWithURL: iOFile controller: self
-                options: &opts];
+            ProcOptions opts = {0};
+            id theProcessor = [[procClass alloc] initWithURL: iOFile
+                                                  controller: self
+                                                     options: &opts];
 
             if (!theProcessor)
             {
@@ -524,7 +524,7 @@
             else
                 printf("The executable is healthy.\n");
 
-//          [theProcessor release];
+            [theProcessor release];
 
             break;
         }
