@@ -739,11 +739,17 @@
 
     char theCodeCString[32] = {0};
     UInt8* inBuffer = (*ioLine)->info.code;
-    char codeFormatString[MAX_FORMAT_LENGTH] = {0};
     SInt16 i;
 
-    for (i = 0; i < (*ioLine)->info.codeLength; i++ )
-        strncat(codeFormatString, "%02x", 4);
+    char codeFormatString[61] = "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x";
+
+    if ((*ioLine)->info.codeLength > 15)
+    {
+        fprintf(stderr, "otx: surprisingly long instruction of %u bytes at 0x%016llx\n", (*ioLine)->info.codeLength, (*ioLine)->info.address);
+        return;
+    }
+
+    codeFormatString[(*ioLine)->info.codeLength * 4] = 0;
 
     snprintf(theCodeCString, 31, codeFormatString,
         inBuffer[0], inBuffer[1], inBuffer[2], inBuffer[3],
