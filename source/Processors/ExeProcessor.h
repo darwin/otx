@@ -119,7 +119,8 @@ enum {
     OCProtoRefType,     // objc2_protocol_t* in (__DATA,__objc_protorefs)
 };
 
-#define MAX_FIELD_SPACING           100     // spaces between fields
+#define MAX_FIELD_SPACING           50      // spaces between fields
+#define MAX_FIELD_SPACES            "                                                  "  // 50 spaces
 #define MAX_FORMAT_LENGTH           50      // snprintf() format string
 #define MAX_OPERANDS_LENGTH         1000
 #define MAX_COMMENT_LENGTH          2000

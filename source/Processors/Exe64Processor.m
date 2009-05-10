@@ -689,11 +689,12 @@
     char    theAddressCString[17]    = {0};
     char    theMnemonicCString[20]  = {0};
 
-    char    addrSpaces[MAX_FIELD_SPACING];
-    char    instSpaces[MAX_FIELD_SPACING];
-    char    mnemSpaces[MAX_FIELD_SPACING];
-    char    opSpaces[MAX_FIELD_SPACING];
-    char    commentSpaces[MAX_FIELD_SPACING];
+    char    addrSpaces[MAX_FIELD_SPACING] = MAX_FIELD_SPACES;
+    char    instSpaces[MAX_FIELD_SPACING] = MAX_FIELD_SPACES;
+    char    mnemSpaces[MAX_FIELD_SPACING] = MAX_FIELD_SPACES;
+    char    opSpaces[MAX_FIELD_SPACING] = MAX_FIELD_SPACES;
+    char    commentSpaces[MAX_FIELD_SPACING] = MAX_FIELD_SPACES;
+
     char    theOrigCommentCString[MAX_COMMENT_LENGTH];
     char    theCommentCString[MAX_COMMENT_LENGTH];
 
@@ -739,7 +740,7 @@
 
     char theCodeCString[32] = {0};
     UInt8* inBuffer = (*ioLine)->info.code;
-    SInt16 i;
+    UInt8 i;
 
     char codeFormatString[61] = "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x";
 
@@ -757,29 +758,28 @@
         inBuffer[8], inBuffer[9], inBuffer[10], inBuffer[11],
         inBuffer[12], inBuffer[13], inBuffer[14]);
 
-    i = iFieldWidths.instruction - strlen(theCodeCString);
-
+    i = iFieldWidths.instruction - (*ioLine)->info.codeLength * 2;
     mnemSpaces[i - 1] = 0;
 
-    for (; i > 1; i--)
-        mnemSpaces[i - 2] = 0x20;
-
     i = iFieldWidths.mnemonic - strlen(theMnemonicCString);
-
     opSpaces[i - 1] = 0;
 
-    for (; i > 1; i--)
-        opSpaces[i - 2] = 0x20;
-
-    // Fill up commentSpaces based on operands field width.
+    // Terminate commentSpaces based on operands field width.
     if (iLineOperandsCString[0] && theOrigCommentCString[0])
     {
-        i   = iFieldWidths.operands - strlen(iLineOperandsCString);
+        size_t opLength = strlen(iLineOperandsCString);
 
-        commentSpaces[i - 1]    = 0;
-
-        for (; i > 1; i--)
-            commentSpaces[i - 2]    = 0x20;
+        if (opLength < iFieldWidths.operands)
+        {
+            i = iFieldWidths.operands - opLength;
+            commentSpaces[i - 1] = 0;
+        }
+        else
+            commentSpaces[0] = 0;
+    }
+    else
+    {
+        commentSpaces[0] = 0;
     }
 
     // Remove "; symbol stub for: "
@@ -1018,13 +1018,18 @@
                 strncpy(iLineOperandsCString, tempComment,
                     strlen(tempComment) + 1);
 
-            // Fill up commentSpaces based on operands field width.
-            SInt32  k   = iFieldWidths.operands - strlen(iLineOperandsCString);
+            // Terminate commentSpaces based on operands field width.
+            size_t opLength = strlen(iLineOperandsCString);
 
-            commentSpaces[k - 1]    = 0;
-
-            for (; k > 1; k--)
-                commentSpaces[k - 2]    = 0x20;
+            if (opLength < iFieldWidths.operands)
+            {
+                UInt8 k = iFieldWidths.operands - opLength;
+                commentSpaces[k - 1]    = 0;
+            }
+            else
+            {
+                commentSpaces[0] = 0;
+            }
         }
     }   // if (!theCommentCString[0])
     else    // otool gave us a comment.
@@ -1166,22 +1171,14 @@
         if (theCodeCString)
             iLocalOffset += strlen(theCodeCString) / 2;
 
-        // Fill up addrSpaces based on offset field width.
+        // Terminate addrSpaces based on offset field width.
         i   = iFieldWidths.offset - 6;
-
         addrSpaces[i - 1] = 0;
-
-        for (; i > 1; i--)
-            addrSpaces[i - 2] = 0x20;
     }
 
-    // Fill up instSpaces based on address field width.
+    // Terminate instSpaces based on address field width.
     i   = iFieldWidths.address - 16;
-
     instSpaces[i - 1] = 0;
-
-    for (; i > 1; i--)
-        instSpaces[i - 2] = 0x20;
 
     // Insert a generic function name if needed.
     if (needFuncName)
