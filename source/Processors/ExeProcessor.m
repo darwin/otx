@@ -64,7 +64,6 @@
     if (iRAMFileSize < sizeof(iFileArchMagic))
     {
         fprintf(stderr, "otx: truncated executable file\n");
-        [theData release];
         [self release];
         return nil;
     }
@@ -74,7 +73,6 @@
     if (!iRAMFile)
     {
         fprintf(stderr, "otx: not enough memory to allocate mRAMFile\n");
-        [theData release];
         [self release];
         return nil;
     }
