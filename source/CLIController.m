@@ -336,7 +336,7 @@
 
     if (!exeBundle)
     {
-        fprintf(stderr, "otx: [AppController newPackageFile:] "
+        fprintf(stderr, "otx: [CLIController newPackageFile:] "
             "unable to get bundle from path: %s\n", UTF8STRING(origPath));
         return;
     }
@@ -345,7 +345,7 @@
 
     if (!exePath)
     {
-        fprintf(stderr, "otx: [AppController newPackageFile:] "
+        fprintf(stderr, "otx: [CLIController newPackageFile:] "
             "unable to get executable path from bundle: %s\n",
             UTF8STRING(origPath));
         return;
