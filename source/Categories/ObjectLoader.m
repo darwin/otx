@@ -196,6 +196,8 @@
                 [self loadCoalDataNTSection: sectionPtr];
             else if (!strcmp(sectionPtr->sectname, "__const"))
                 [self loadConstDataSection: sectionPtr];
+            else if (!strcmp(sectionPtr->sectname, "__bss"))
+                [self loadBssDataSection: sectionPtr];
             else if (!strcmp(sectionPtr->sectname, "__dyld"))
                 [self loadDyldDataSection: sectionPtr];
             else if (!strcmp(sectionPtr->sectname, "__cfstring"))
@@ -227,6 +229,7 @@
     if (iSwapped)
         swap_symtab_command(&swappedSymTab, OSHostByteOrder());
 
+    iStringTableOffset  = swappedSymTab.stroff;
     nlist*  theSymPtr   = (nlist*)((char*)iMachHeaderPtr + swappedSymTab.symoff);
     nlist   theSym      = {0};
     uint32_t  i;
@@ -799,6 +802,20 @@
 
     iConstDataSect.contents = (char*)iMachHeaderPtr + iConstDataSect.s.offset;
     iConstDataSect.size     = iConstDataSect.s.size;
+}
+
+//  loadBssDataSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadBssDataSection: (section*)inSect
+{
+    iBssDataSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iBssDataSect.s, 1, OSHostByteOrder());
+
+    iBssDataSect.contents = (char*)iMachHeaderPtr + iBssDataSect.s.offset;
+    iBssDataSect.size     = iBssDataSect.s.size;
 }
 
 //  loadDyldDataSection:

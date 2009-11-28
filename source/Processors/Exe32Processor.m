@@ -1833,6 +1833,16 @@
             }
         }
     }
+    else    // (__DATA,__bss) (?)
+    if (inAddr >= iBssDataSect.s.addr &&
+        inAddr < iBssDataSect.s.addr + iBssDataSect.size)
+    {
+        thePtr  = (char*)((uint32_t)iBssDataSect.contents +
+            (inAddr - iBssDataSect.s.addr));
+
+        if (outType)
+            *outType    = DataBssType;
+    }
     else    // (__DATA,__cfstring) (cf_string_object*)
     if (inAddr >= iCFStringSect.s.addr &&
         inAddr < iCFStringSect.s.addr + iCFStringSect.size)
@@ -1989,6 +1999,7 @@
         UInt8   theNType    = inSym.n_type & N_TYPE;
         UInt16  theRefType  = inSym.n_desc & REFERENCE_TYPE;
 
+        fprintf(stderr, "Symbol name: %s\n", (char*)((uint32_t)iMachHeaderPtr + iStringTableOffset + inSym.n_un.n_strx));
         fprintf(stderr, "Symbol type: ");
 
         if (theNType == N_ABS)

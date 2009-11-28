@@ -206,6 +206,7 @@ FunctionInfo;
     section_info        iCoalDataSect;
     section_info        iCoalDataNTSect;
     section_info        iConstDataSect;
+    section_info        iBssDataSect;
     section_info        iDyldSect;
     section_info        iCFStringSect;
     section_info        iNLSymSect;
@@ -249,7 +250,7 @@ FunctionInfo;
     void    (*ReplaceLine)          (id, SEL, Line*, Line*, Line**);
     void    (*DeleteLinesBefore)    (id, SEL, Line*, Line**);
 
-    BOOL    (*FindSymbolByAddress)      (id, SEL, uint32_t);
+    char*   (*FindSymbolByAddress)      (id, SEL, uint32_t);
     BOOL    (*FindClassMethodByAddress) (id, SEL, MethodInfo**, uint32_t);
     BOOL    (*FindCatMethodByAddress)   (id, SEL, MethodInfo**, uint32_t);
     BOOL    (*FindIvar)                 (id, SEL, objc_ivar*, objc_class*, uint32_t);

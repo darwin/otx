@@ -1149,7 +1149,8 @@
                     break;
 
                 case DataConstType:
-                    theSymPtr   = NULL;
+                case DataBssType:
+                    theSymPtr = FindSymbolByAddress(localAddy);
 
                     break;
 

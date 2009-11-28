@@ -13,7 +13,7 @@
 
 @interface Exe32Processor(Searchers)
 
-- (BOOL)findSymbolByAddress: (uint32_t)inAddress;
+- (char*)findSymbolByAddress: (uint32_t)inAddress;
 - (BOOL)findClassMethod: (MethodInfo**)outMI
               byAddress: (uint32_t)inAddress;
 - (BOOL)findCatMethod: (MethodInfo**)outMI

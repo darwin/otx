@@ -42,7 +42,7 @@
 #define InsertLineAfterFuncType                 (void   (*)(id, SEL, Line*, Line*, Line**))
 #define ReplaceLineFuncType                     (void   (*)(id, SEL, Line*, Line*, Line**))
 #define DeleteLinesBeforeFuncType               (void   (*)(id, SEL, Line*, Line**))
-#define FindSymbolByAddressFuncType             (BOOL   (*)(id, SEL, uint32_t))
+#define FindSymbolByAddressFuncType             (char*  (*)(id, SEL, uint32_t))
 #define FindClassMethodByAddressFuncType        (BOOL   (*)(id, SEL, MethodInfo**, uint32_t))
 #define FindCatMethodByAddressFuncType          (BOOL   (*)(id, SEL, MethodInfo**, uint32_t))
 #define FindIvarFuncType                        (BOOL   (*)(id, SEL, objc_ivar*, objc_class*, uint32_t))
