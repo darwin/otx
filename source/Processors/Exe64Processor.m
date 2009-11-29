@@ -1023,6 +1023,7 @@
 
             if (opLength < iFieldWidths.operands)
             {
+                commentSpaces[0] = ' ';
                 UInt8 k = iFieldWidths.operands - opLength;
                 commentSpaces[k - 1]    = 0;
             }
