@@ -194,8 +194,11 @@
 				E145F6D20B437F5900615A16 /* SmoothViewAnimation.m */,
 				E1B1325D0B180AF6002EB674 /* Processors */,
 			);
+			indentWidth = 4;
 			name = Classes;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
@@ -257,8 +260,11 @@
 				E1B1316E0B17EF84002EB674 /* SystemIncludes.h */,
 				E1BB58C80A50CB120076CDCA /* UserDefaultKeys.h */,
 			);
+			indentWidth = 4;
 			name = "Other Sources";
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
@@ -330,8 +336,11 @@
 				252DFAB90C9D38A100C712BD /* SysUtils.h */,
 				252DFABA0C9D38A100C712BD /* SysUtils.m */,
 			);
+			indentWidth = 4;
 			name = Categories;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		E1B132720B180C85002EB674 /* Protocols */ = {
 			isa = PBXGroup;
@@ -340,8 +349,11 @@
 				252DFA080C9D2E7D00C712BD /* ErrorReporter.h */,
 				E1B132FC0B182599002EB674 /* ProgressReporter.h */,
 			);
+			indentWidth = 4;
 			name = Protocols;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 /* End PBXGroup section */
 
@@ -520,7 +532,6 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = otx;
 				WRAPPER_EXTENSION = app;
-				ZERO_LINK = NO;
 			};
 			name = Debug;
 		};
@@ -554,6 +565,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = otx_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = OTX_DEBUG;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -563,14 +575,11 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OTHER_CFLAGS = (
-					"-falign-loops=16",
-					"-DOTX_DEBUG",
-					"-wall",
-				);
+				OTHER_CFLAGS = "-falign-loops=16";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 				USER_HEADER_SEARCH_PATHS = "source/binutils-2.17/include/ source/binutils-2.17/libiberty/";
+				WARNING_CFLAGS = "-wall";
 			};
 			name = Debug;
 		};
@@ -615,21 +624,14 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = otx_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					OTX_CLI,
+					OTX_DEBUG,
+				);
 				INSTALL_PATH = "$(HOME)/bin";
-				OTHER_CFLAGS = (
-					"-falign-loops=16",
-					"-DOTX_CLI",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-					"-lz",
-				);
+				OTHER_CFLAGS = "-falign-loops=16";
 				PREBINDING = NO;
 				PRODUCT_NAME = otx;
-				ZERO_LINK = NO;
 			};
 			name = Debug;
 		};
@@ -643,21 +645,11 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = otx_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = OTX_CLI;
 				INSTALL_PATH = "$(HOME)/bin";
-				OTHER_CFLAGS = (
-					"-falign-loops=16",
-					"-DOTX_CLI",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-					"-lz",
-				);
+				OTHER_CFLAGS = "-falign-loops=16";
 				PREBINDING = NO;
 				PRODUCT_NAME = otx;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
