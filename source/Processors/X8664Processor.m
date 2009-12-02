@@ -384,8 +384,11 @@
 
                 UInt8 immOffset = opcodeIndex + 2;
 
-                if (HAS_DISP8(modRM))
-                    immOffset++;
+                if (HAS_DISP8(modRM) || HAS_SIB(modRM))
+                    immOffset += 1;
+
+                if (HAS_REL_DISP32(modRM) || HAS_ABS_DISP32(modRM))
+                    immOffset += 4;
 
                 UInt8 imm = inLine->info.code[immOffset];
 
