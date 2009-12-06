@@ -533,9 +533,10 @@
                 if (MOD(modRM) == MODimm && REG2(modRM) == EBP) // RIP-relative addressing
                 {
                     UInt64 baseAddress = inLine->next->info.address;
+                    localAddy = baseAddress + offset;
                     objc2_ivar_t* ivar;
 
-                    if (FindIvar(&ivar, iCurrentClass, baseAddress + offset))
+                    if (FindIvar(&ivar, iCurrentClass, localAddy))
                     {
                         theSymPtr = GetPointer(ivar->name, NULL);
 
@@ -552,35 +553,6 @@
                             else
                                 snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s",
                                     theSymPtr);
-                        }
-                    }
-                    else    // not an ivar, try everything else
-                    {
-                        UInt8 type;
-                        char* symName = NULL;
-
-                        theSymPtr = GetPointer(baseAddress + offset, &type);
-
-                        if (theSymPtr)
-                        {
-                            switch (type)
-                            {
-                                case CFStringType:
-                                    GetObjcDescriptionFromObject(&symName, theSymPtr, type);
-
-                                    if (symName)
-                                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", symName);
-
-                                    break;
-
-                                case OCClassRefType:
-                                case OCMsgRefType:
-                                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
-                                    break;
-
-                                default:
-                                    break;
-                            }
                         }
                     }
                 }
@@ -1142,27 +1114,12 @@
 
                 case PStringType:
                 case PointerType:
+                case OCClassRefType:
+                case OCMsgRefType:
                     theSymPtr   = theDummyPtr;
 
                     break;
 
-                case CFStringType:
-                {
-                    cf_string_object    theCFString = 
-                        *(cf_string_object*)theDummyPtr;
-
-                    if (theCFString.oc_string.length == 0)
-                    {
-                        theSymPtr   = NULL;
-                        break;
-                    }
-
-                    theValue    = (uint32_t)theCFString.oc_string.chars;
-                    theValue    = OSSwapLittleToHostInt32(theValue);
-                    theSymPtr   = GetPointer(theValue, NULL);
-
-                    break;
-                }
                 case ImpPtrType:
                 case NLSymType:
                 {
@@ -1208,6 +1165,7 @@
                     break;
                 }
 
+                case CFStringType:
                 case OCGenericType:
                 case OCStrObjectType:
                 case OCClassType:

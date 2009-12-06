@@ -98,6 +98,7 @@ enum {
 enum {
     PointerType,        // C string in (__TEXT,__cstring)
     PStringType,        // Str255 in (__TEXT,__const)
+    TextConstType,      // ? in (__TEXT,__const)
     CFStringType,       // cf_string_object in (__TEXT,__cfstring)
     FloatType,          // float in (__TEXT,__literal4)
     DoubleType,         // double in (__TEXT,__literal8)

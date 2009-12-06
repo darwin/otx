@@ -1661,10 +1661,21 @@
     {
         thePtr  = (iConstTextSect.contents + (inAddr - iConstTextSect.s.addr));
 
-        if (outType && strlen(thePtr) == thePtr[0] + 1)
-            *outType    = PStringType;
-        else
-            thePtr  = NULL;
+        if (outType)
+        {
+            size_t length = strlen(thePtr);
+            BOOL isPString = (length == (thePtr[0] + 1));
+            if (isPString)
+            {
+                for (size_t i = 1; i <= length; i++)
+                    isPString = isPString && (thePtr[i] >= 0x20 && thePtr[i] < 0x7F);
+            }
+
+            if (isPString)
+                *outType = PStringType;
+            else
+                *outType = TextConstType;
+        }
     }
     else    // (__TEXT,__literal4) (float)
     if (inAddr >= iLit4Sect.s.addr &&
