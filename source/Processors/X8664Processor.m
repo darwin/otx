@@ -754,7 +754,7 @@
                 }
                 else    // absolute address
                 {
-                    UInt8 immOffset = 2;
+                    UInt8 immOffset = opcodeIndex + 2;
 
                     if (HAS_DISP8(modRM))
                         immOffset += 1;
