@@ -392,8 +392,11 @@
                     localAddy = baseAddress + offset;
                 }
                 else
-                {                
-                    if (HAS_DISP8(modRM) || HAS_SIB(modRM))
+                {
+                    if (HAS_DISP8(modRM))
+                        immOffset += 1;
+
+                    if (HAS_SIB(modRM))
                         immOffset += 1;
 
                     if (HAS_REL_DISP32(modRM) || HAS_ABS_DISP32(modRM))
