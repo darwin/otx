@@ -384,17 +384,27 @@
 
                 UInt8 immOffset = opcodeIndex + 2;
 
-                if (HAS_DISP8(modRM) || HAS_SIB(modRM))
-                    immOffset += 1;
+                if (HAS_ABS_DISP32(modRM)) // RIP-relative addressing
+                {
+                    UInt64 baseAddress = inLine->next->info.address;
+                    uint32_t offset = *(uint32_t*)&inLine->info.code[immOffset];
+                    offset = OSSwapLittleToHostInt32(offset);
+                    localAddy = baseAddress + offset;
+                }
+                else
+                {                
+                    if (HAS_DISP8(modRM) || HAS_SIB(modRM))
+                        immOffset += 1;
 
-                if (HAS_REL_DISP32(modRM) || HAS_ABS_DISP32(modRM))
-                    immOffset += 4;
+                    if (HAS_REL_DISP32(modRM) || HAS_ABS_DISP32(modRM))
+                        immOffset += 4;
 
-                UInt8 imm = inLine->info.code[immOffset];
+                    UInt8 imm = inLine->info.code[immOffset];
 
-                // Check for a single printable 7-bit char.
-                if (imm >= 0x20 && imm < 0x7f)
-                    snprintf(iLineCommentCString, 4, "'%c'", imm);
+                    // Check for a single printable 7-bit char.
+                    if (imm >= 0x20 && imm < 0x7f)
+                        snprintf(iLineCommentCString, 4, "'%c'", imm);
+                }
 
                 break;
             }
@@ -412,16 +422,13 @@
                 if (opcode == 0x81 && OPEXT(modRM) != 7)
                     break;
 
-                if (MOD(modRM) == MODimm && REG2(modRM) == EBP) // RIP-relative addressing
+                if (HAS_ABS_DISP32(modRM)) // RIP-relative addressing
                 {
                     UInt64 baseAddress = inLine->next->info.address;
                     uint32_t offset = *(uint32_t*)&inLine->info.code[opcodeIndex + 2];
 
                     offset = OSSwapLittleToHostInt32(offset);
-                    theSymPtr = GetPointer(baseAddress + offset, NULL);
-
-                    if (theSymPtr)
-                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                    localAddy = baseAddress + offset;
                 }
                 else if (MOD(modRM) == MODimm)   // 1st addressing mode
                 {
@@ -530,7 +537,7 @@
                 modRM = inLine->info.code[opcodeIndex + 1];
                 offset = OSSwapLittleToHostInt32(offset);
 
-                if (MOD(modRM) == MODimm && REG2(modRM) == EBP) // RIP-relative addressing
+                if (HAS_ABS_DISP32(modRM)) // RIP-relative addressing
                 {
                     UInt64 baseAddress = inLine->next->info.address;
                     localAddy = baseAddress + offset;
@@ -1107,8 +1114,10 @@
 
                     break;
 
+                case TextConstType:
                 case DataConstType:
-                    theSymPtr   = NULL;
+                case DataBssType:
+                    theSymPtr = FindSymbolByAddress(localAddy);
 
                     break;
 
@@ -1116,6 +1125,8 @@
                 case PointerType:
                 case OCClassRefType:
                 case OCMsgRefType:
+                case OCSelRefType:
+                case OCSuperRefType:
                     theSymPtr   = theDummyPtr;
 
                     break;

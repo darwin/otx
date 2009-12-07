@@ -233,6 +233,17 @@ Sym_Compare(
     return (sym1->n_value > sym2->n_value);
 }
 
+static int
+Sym_Compare_64(
+    nlist_64*  sym1,
+    nlist_64*  sym2)
+{
+    if (sym1->n_value < sym2->n_value)
+        return -1;
+
+    return (sym1->n_value > sym2->n_value);
+}
+
 // ----------------------------------------------------------------------------
 // Utils
 

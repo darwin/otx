@@ -36,6 +36,7 @@
 #define symtab_command      struct symtab_command
 #define dysymtab_command    struct dysymtab_command
 #define nlist               struct nlist
+#define nlist_64            struct nlist_64
 #define section             struct section
 #define section_64          struct section_64
 #define objc_module         struct objc_module

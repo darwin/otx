@@ -1677,6 +1677,16 @@
                 *outType = TextConstType;
         }
     }
+    else    // (__DATA,__bss) (?)
+    if (inAddr >= iBssDataSect.s.addr &&
+        inAddr < iBssDataSect.s.addr + iBssDataSect.size)
+    {
+        thePtr  = (char*)(iBssDataSect.contents +
+            (inAddr - iBssDataSect.s.addr));
+
+        if (outType)
+            *outType    = DataBssType;
+    }
     else    // (__TEXT,__literal4) (float)
     if (inAddr >= iLit4Sect.s.addr &&
         inAddr < iLit4Sect.s.addr + iLit4Sect.size)
@@ -2079,14 +2089,14 @@
 // ----------------------------------------------------------------------------
 //  Used for symbol debugging.
 
-- (void)printSymbol: (nlist)inSym
+- (void)printSymbol: (nlist_64)inSym
 {
     fprintf(stderr, "----------------\n\n");
     fprintf(stderr, " n_strx = 0x%08x\n", inSym.n_un.n_strx);
     fprintf(stderr, " n_type = 0x%02x\n", inSym.n_type);
     fprintf(stderr, " n_sect = 0x%02x\n", inSym.n_sect);
     fprintf(stderr, " n_desc = 0x%04x\n", inSym.n_desc);
-    fprintf(stderr, "n_value = 0x%08x (%u)\n\n", inSym.n_value, inSym.n_value);
+    fprintf(stderr, "n_value = 0x%016llx (%llu)\n\n", inSym.n_value, inSym.n_value);
 
     if ((inSym.n_type & N_STAB) != 0)
     {   // too complicated, see <mach-o/stab.h>
@@ -2102,6 +2112,7 @@
         UInt8   theNType    = inSym.n_type & N_TYPE;
         UInt16  theRefType  = inSym.n_desc & REFERENCE_TYPE;
 
+        fprintf(stderr, "Symbol name: %s\n", (char*)((uint32_t)iMachHeaderPtr + iStringTableOffset + inSym.n_un.n_strx));
         fprintf(stderr, "Symbol type: ");
 
         if (theNType == N_ABS)

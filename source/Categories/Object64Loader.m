@@ -344,6 +344,8 @@
                 [self loadCoalDataNTSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__const") == 0)
                 [self loadConstDataSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__bss") == 0)
+                [self loadBssDataSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__dyld") == 0)
                 [self loadDyldDataSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__cfstring") == 0)
@@ -393,8 +395,9 @@
     if (iSwapped)
         swap_symtab_command(&swappedSymTab, OSHostByteOrder());
 
-    nlist*  theSymPtr   = (nlist*)((char*)iMachHeaderPtr + swappedSymTab.symoff);
-    nlist   theSym      = {0};
+    iStringTableOffset     = swappedSymTab.stroff;
+    nlist_64*  theSymPtr   = (nlist_64*)((char*)iMachHeaderPtr + swappedSymTab.symoff);
+    nlist_64   theSym      = {0};
     uint32_t  i;
 
     // loop thru symbols
@@ -403,7 +406,7 @@
         theSym  = theSymPtr[i];
 
         if (iSwapped)
-            swap_nlist(&theSym, 1, OSHostByteOrder());
+            swap_nlist_64(&theSym, 1, OSHostByteOrder());
 
         if (theSym.n_value == 0)
             continue;
@@ -415,7 +418,7 @@
 
             iNumFuncSyms++;
             iFuncSyms   = realloc(iFuncSyms,
-                iNumFuncSyms * sizeof(nlist));
+                iNumFuncSyms * sizeof(nlist_64));
             iFuncSyms[iNumFuncSyms - 1] = theSym;
 
 #ifdef OTX_DEBUG
@@ -427,8 +430,8 @@
     }   // for (i = 0; i < swappedSymTab.nsyms; i++)
 
     // Sort the symbols so we can use binary searches later.
-    qsort(iFuncSyms, iNumFuncSyms, sizeof(nlist),
-        (COMPARISON_FUNC_TYPE)Sym_Compare);
+    qsort(iFuncSyms, iNumFuncSyms, sizeof(nlist_64),
+        (COMPARISON_FUNC_TYPE)Sym_Compare_64);
 }
 
 //  loadCStringSection:
@@ -599,6 +602,20 @@
 
     iConstDataSect.contents = (char*)iMachHeaderPtr + iConstDataSect.s.offset;
     iConstDataSect.size     = iConstDataSect.s.size;
+}
+
+//  loadBssDataSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadBssDataSection: (section_64*)inSect
+{
+    iBssDataSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section_64(&iBssDataSect.s, 1, OSHostByteOrder());
+
+    iBssDataSect.contents = (char*)iMachHeaderPtr + iBssDataSect.s.offset;
+    iBssDataSect.size     = iBssDataSect.s.size;
 }
 
 //  loadDyldDataSection:

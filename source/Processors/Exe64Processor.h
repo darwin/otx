@@ -170,8 +170,8 @@ Function64Info;
     UInt64              iCurrentFuncPtr;    // PPC function address
 
     // symbols that point to functions
-    nlist*              iFuncSyms;
-    uint32_t              iNumFuncSyms;
+    nlist_64*           iFuncSyms;
+    uint32_t            iNumFuncSyms;
 
     // FunctionInfo array
     Function64Info*     iFuncInfos;
@@ -206,6 +206,7 @@ Function64Info;
     section_info_64     iCoalDataSect;
     section_info_64     iCoalDataNTSect;
     section_info_64     iConstDataSect;
+    section_info_64     iBssDataSect;
     section_info_64     iDyldSect;
     section_info_64     iCFStringSect;
     section_info_64     iNLSymSect;
@@ -248,7 +249,7 @@ Function64Info;
     void    (*ReplaceLine)          (id, SEL, Line64*, Line64*, Line64**);
     void    (*DeleteLinesBefore)    (id, SEL, Line64*, Line64**);
 
-    BOOL    (*FindSymbolByAddress)      (id, SEL, UInt64);
+    char*   (*FindSymbolByAddress)      (id, SEL, UInt64);
     BOOL    (*FindClassMethodByAddress) (id, SEL, Method64Info**, UInt64);
     BOOL    (*FindCatMethodByAddress)   (id, SEL, Method64Info**, UInt64);
     BOOL    (*FindIvar)                 (id, SEL, objc2_ivar_t**, objc2_class_t*, UInt64);
@@ -291,7 +292,7 @@ Function64Info;
 - (void)speedyDelivery;
 
 #ifdef OTX_DEBUG
-- (void)printSymbol: (nlist)inSym;
+- (void)printSymbol: (nlist_64)inSym;
 - (void)printBlocks: (uint32_t)inFuncIndex;
 #endif
 

@@ -42,7 +42,7 @@
 #define InsertLineAfter64FuncType               (void   (*)(id, SEL, Line64*, Line64*, Line64**))
 #define ReplaceLine64FuncType                   (void   (*)(id, SEL, Line64*, Line64*, Line64**))
 #define DeleteLinesBefore64FuncType             (void   (*)(id, SEL, Line64*, Line64**))
-#define FindSymbolByAddress64FuncType           (BOOL   (*)(id, SEL, UInt64))
+#define FindSymbolByAddress64FuncType           (char*  (*)(id, SEL, UInt64))
 #define FindClassMethodByAddress64FuncType      (BOOL   (*)(id, SEL, Method64Info**, UInt64))
 #define FindCatMethodByAddress64FuncType        (BOOL   (*)(id, SEL, Method64Info**, UInt64))
 #define FindIvar64FuncType                      (BOOL   (*)(id, SEL, objc2_ivar_t**, objc2_class_t*, UInt64))

@@ -16,17 +16,20 @@
 //  findSymbolByAddress:
 // ----------------------------------------------------------------------------
 
-- (BOOL)findSymbolByAddress: (uint32_t)inAddress
+- (char*)findSymbolByAddress: (uint64_t)inAddress
 {
     if (!iFuncSyms)
         return NO;
 
-    nlist searchKey = {{0}, 0, 0, 0, inAddress};
-    BOOL symbolExists = (bsearch(&searchKey,
-        iFuncSyms, iNumFuncSyms, sizeof(nlist),
-        (COMPARISON_FUNC_TYPE)Sym_Compare) != NULL);
+    nlist_64 searchKey = {{0}, 0, 0, 0, inAddress};
+    nlist_64* symbol = bsearch(&searchKey,
+        iFuncSyms, iNumFuncSyms, sizeof(nlist_64),
+        (COMPARISON_FUNC_TYPE)Sym_Compare_64);
 
-    return symbolExists;
+    if (symbol)
+        return (char*)((uint32_t)iMachHeaderPtr + iStringTableOffset + symbol->n_un.n_strx);
+    else
+        return NULL;
 }
 
 //  findClassMethod:byAddress:

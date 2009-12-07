@@ -29,6 +29,7 @@
 - (void)loadCoalDataSection: (section_64*)inSect;
 - (void)loadCoalDataNTSection: (section_64*)inSect;
 - (void)loadConstDataSection: (section_64*)inSect;
+- (void)loadBssDataSection: (section_64*)inSect;
 - (void)loadDyldDataSection: (section_64*)inSect;
 - (void)loadCFStringSection: (section_64*)inSect;
 - (void)loadNonLazySymbolSection: (section_64*)inSect;
