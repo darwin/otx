@@ -1093,6 +1093,10 @@
         UInt8   theType     = PointerType;
         uint32_t  theValue;
 
+        theSymPtr = FindSymbolByAddress(localAddy);
+        if (theSymPtr && strncmp("_OBJC_IVAR_$_", theSymPtr, 13) == 0)
+            theSymPtr = strchr(theSymPtr, '.') + 1;
+
         theDummyPtr = GetPointer(localAddy, &theType);
 
         if (theDummyPtr)
@@ -1114,13 +1118,6 @@
                             theSymPtr   = NULL;
                             break;
                     }
-
-                    break;
-
-                case TextConstType:
-                case DataConstType:
-                case DataBssType:
-                    theSymPtr = FindSymbolByAddress(localAddy);
 
                     break;
 
