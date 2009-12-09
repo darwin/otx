@@ -1102,8 +1102,8 @@
         {
             char    demangledName[MAX_COMMENT_LENGTH];
 
-            NSFileHandle* filtWrite = [[iCPFiltTask standardInput] fileHandleForWriting];
-            NSFileHandle* filtRead = [[iCPFiltTask standardOutput] fileHandleForReading];
+            NSFileHandle* filtWrite = [iCPFiltInputPipe fileHandleForWriting];
+            NSFileHandle* filtRead = [iCPFiltOutputPipe fileHandleForReading];
             NSMutableData* dataToWrite = [NSMutableData dataWithBytes: theCommentCString
                                                                length: strlen(theCommentCString)];
 
