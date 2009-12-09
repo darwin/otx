@@ -1833,16 +1833,6 @@
             }
         }
     }
-    else    // (__DATA,__bss) (?)
-    if (inAddr >= iBssDataSect.s.addr &&
-        inAddr < iBssDataSect.s.addr + iBssDataSect.size)
-    {
-        thePtr  = (char*)((uint32_t)iBssDataSect.contents +
-            (inAddr - iBssDataSect.s.addr));
-
-        if (outType)
-            *outType    = DataBssType;
-    }
     else    // (__DATA,__cfstring) (cf_string_object*)
     if (inAddr >= iCFStringSect.s.addr &&
         inAddr < iCFStringSect.s.addr + iCFStringSect.size)

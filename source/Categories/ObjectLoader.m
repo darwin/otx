@@ -196,8 +196,6 @@
                 [self loadCoalDataNTSection: sectionPtr];
             else if (!strcmp(sectionPtr->sectname, "__const"))
                 [self loadConstDataSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__bss"))
-                [self loadBssDataSection: sectionPtr];
             else if (!strcmp(sectionPtr->sectname, "__dyld"))
                 [self loadDyldDataSection: sectionPtr];
             else if (!strcmp(sectionPtr->sectname, "__cfstring"))
@@ -802,20 +800,6 @@
 
     iConstDataSect.contents = (char*)iMachHeaderPtr + iConstDataSect.s.offset;
     iConstDataSect.size     = iConstDataSect.s.size;
-}
-
-//  loadBssDataSection:
-// ----------------------------------------------------------------------------
-
-- (void)loadBssDataSection: (section*)inSect
-{
-    iBssDataSect.s = *inSect;
-
-    if (iSwapped)
-        swap_section(&iBssDataSect.s, 1, OSHostByteOrder());
-
-    iBssDataSect.contents = (char*)iMachHeaderPtr + iBssDataSect.s.offset;
-    iBssDataSect.size     = iBssDataSect.s.size;
 }
 
 //  loadDyldDataSection:

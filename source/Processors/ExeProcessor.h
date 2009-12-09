@@ -104,7 +104,6 @@ enum {
     DoubleType,         // double in (__TEXT,__literal8)
     DataGenericType,    // ? in (__DATA,__data)
     DataConstType,      // ? in (__DATA,__const)
-    DataBssType,        // ? in (__DATA,__bss)
     DYLDType,           // function ptr in (__DATA,__dyld)
     NLSymType,          // non-lazy symbol* in (__DATA,__nl_symbol_ptr)
     ImpPtrType,         // cf_string_object* in (__IMPORT,__pointers)

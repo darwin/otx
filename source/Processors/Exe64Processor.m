@@ -1677,16 +1677,6 @@
                 *outType = TextConstType;
         }
     }
-    else    // (__DATA,__bss) (?)
-    if (inAddr >= iBssDataSect.s.addr &&
-        inAddr < iBssDataSect.s.addr + iBssDataSect.size)
-    {
-        thePtr  = (char*)(iBssDataSect.contents +
-            (inAddr - iBssDataSect.s.addr));
-
-        if (outType)
-            *outType    = DataBssType;
-    }
     else    // (__TEXT,__literal4) (float)
     if (inAddr >= iLit4Sect.s.addr &&
         inAddr < iLit4Sect.s.addr + iLit4Sect.size)

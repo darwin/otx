@@ -1124,6 +1124,8 @@
         UInt8   theType     = PointerType;
         uint32_t  theValue;
 
+        theSymPtr = FindSymbolByAddress(localAddy);
+
         theDummyPtr = GetPointer(localAddy, &theType);
 
         if (theDummyPtr)
@@ -1145,12 +1147,6 @@
                             theSymPtr   = NULL;
                             break;
                     }
-
-                    break;
-
-                case DataConstType:
-                case DataBssType:
-                    theSymPtr = FindSymbolByAddress(localAddy);
 
                     break;
 

@@ -206,7 +206,6 @@ FunctionInfo;
     section_info        iCoalDataSect;
     section_info        iCoalDataNTSect;
     section_info        iConstDataSect;
-    section_info        iBssDataSect;
     section_info        iDyldSect;
     section_info        iCFStringSect;
     section_info        iNLSymSect;
