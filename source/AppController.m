@@ -359,10 +359,18 @@
 {
     gCancel = NO;    // Fresh start.
 
-    if (iIndeterminateProgBarMainThreadTimer)
-        [iIndeterminateProgBarMainThreadTimer release];
+    NSTimeInterval interval = 0.0333;
 
-    iIndeterminateProgBarMainThreadTimer = [NSTimer scheduledTimerWithTimeInterval: 0.0
+    if (OS_IS_PRE_SNOW)
+        interval = 0.0;
+
+    if (iIndeterminateProgBarMainThreadTimer)
+    {
+        [iIndeterminateProgBarMainThreadTimer invalidate];
+        [iIndeterminateProgBarMainThreadTimer release];
+    }
+
+    iIndeterminateProgBarMainThreadTimer = [NSTimer scheduledTimerWithTimeInterval: interval
         target: self selector: @selector(nudgeIndeterminateProgBar:)
         userInfo: nil repeats: YES];
 

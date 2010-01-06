@@ -73,7 +73,7 @@ CPUID;
 
 // ============================================================================
 
-@interface AppController : NSObject<ProgressReporter, ErrorReporter>
+@interface AppController : NSObject<ProgressReporter, ErrorReporter, NSAnimationDelegate, NSToolbarDelegate>
 {
 @private
 // main window
