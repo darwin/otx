@@ -1525,7 +1525,7 @@
 
     UInt8 theCode = (*ioLine)->info.code[0];
 
-    if (theCode == 0xe8 || theCode == 0xff || theCode == 0x9a)
+    if (theCode == 0xe8 || theCode == 0xe9 || theCode == 0xff || theCode == 0x9a)
     {
         Line64* theNewLine  = malloc(sizeof(Line64));
 
