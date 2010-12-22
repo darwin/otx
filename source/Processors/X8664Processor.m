@@ -1283,29 +1283,22 @@
 
     // Store the variant type locally to reduce string comparisons.
     uint32_t  sendType    = SendTypeFromMsgSend(outComment);
-//    UInt64  receiverAddy;
     UInt64  selectorAddy;
 
     // Make sure we know what the selector is.
     if (sendType == sendSuper_stret || sendType == send_stret)
     {
-        if (iStack[2].isValid)
-        {
-            selectorAddy    = iStack[2].value;
-//            receiverAddy    = (iStack[1].isValid) ?
-//                iStack[1].value : 0;
-        }
+        GP64RegisterInfo rdx = iRegInfos[EDX];
+        if (rdx.isValid)
+            selectorAddy = rdx.value;
         else
             return NULL;
     }
     else
     {
-        if (iStack[1].isValid)
-        {
-            selectorAddy    = iStack[1].value;
-//            receiverAddy    = (iStack[0].isValid) ?
-//                iStack[0].value : 0;
-        }
+        GP64RegisterInfo rsi = iRegInfos[ESI];
+        if (rsi.isValid)
+            selectorAddy = rsi.value;
         else
             return NULL;
     }
@@ -1321,6 +1314,7 @@
     switch (selType)
     {
         case PointerType:
+        case OCSelRefType:
             selString   = selPtr;
 
             break;
@@ -1373,13 +1367,15 @@
         // If *.classPtr is non-NULL, it's not a name string.
         if (sendType == sendSuper_stret || sendType == send_stret)
         {
-            if (iStack[1].isValid && !iStack[1].classPtr)
-                classNameAddy   = iStack[1].value;
+            GP64RegisterInfo rsi = iRegInfos[ESI];
+            if (rsi.isValid && !rsi.classPtr)
+                classNameAddy = rsi.value;
         }
         else
         {
-            if (iStack[0].isValid && !iStack[0].classPtr)
-                classNameAddy   = iStack[0].value;
+            GP64RegisterInfo rdi = iRegInfos[EDI];
+            if (rdi.isValid && !rdi.classPtr)
+                classNameAddy = rdi.value;
         }
 
         char*   className           = NULL;
@@ -1405,6 +1401,7 @@
                     break;
 
                 case PointerType:
+                case OCClassRefType:
                     className   = classNamePtr;
                     break;
 
@@ -1449,19 +1446,19 @@
                 case send:
                 case send_fpret:
                 case send_variadic:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[(%%esp,1) %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[%%rdi %s]", returnTypeString, selString);
                     break;
 
                 case sendSuper:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[(%%esp,1) super] %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[%%rdi super] %s]", returnTypeString, selString);
                     break;
 
                 case send_stret:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[0x04(%%esp,1) %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[%%rsi %s]", returnTypeString, selString);
                     break;
 
                 case sendSuper_stret:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[0x04(%%esp,1) super] %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[%%rsi super] %s]", returnTypeString, selString);
                     break;
 
                 default:
