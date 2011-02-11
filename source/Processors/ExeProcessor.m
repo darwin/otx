@@ -389,6 +389,7 @@
 
     [md5Task setLaunchPath: md5Path];
     [md5Task setArguments: args];
+    [md5Task setStandardInput: [NSPipe pipe]];
     [md5Task setStandardOutput: md5Pipe];
     [md5Task setStandardError: errorPipe];
 
