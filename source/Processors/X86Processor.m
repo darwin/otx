@@ -1810,11 +1810,19 @@
             if (MOD(modRM) == MODx) // reg to reg
             {
                 if (!iRegInfos[REG1(modRM)].isValid)
+                {
                     iRegInfos[REG2(modRM)]  = (GPRegisterInfo){0};
+                }
                 else
+                {
                     memcpy(&iRegInfos[REG2(modRM)], &iRegInfos[REG1(modRM)],
                         sizeof(GPRegisterInfo));
 
+                    if (iCurrentThunk == REG1(modRM))
+                    {
+                        iCurrentThunk = REG2(modRM);
+                    }
+                }
                 break;
             }
 
@@ -2142,6 +2150,9 @@
             memcpy(iLocalVars, machState.localVars,
                 sizeof(VarInfo) * iNumLocalVars);
         }
+
+        if (machState.currentThunk != NO_REG)
+            iCurrentThunk = machState.currentThunk;
 
         // Optionally add a blank line before this block.
         if (iOpts.separateLogicalBlocks && inLine->chars[0] != '\n' &&
@@ -2484,7 +2495,7 @@
 
             MachineState    machState   =
                 {savedRegs, savedSelves, iNumLocalSelves,
-                    savedVars, iNumLocalVars};
+                    savedVars, iNumLocalVars, iCurrentThunk };
 
             // Store the new BlockInfo.
             BlockInfo   blockInfo   =

@@ -119,6 +119,7 @@ typedef struct
     uint32_t          numLocalSelves;
     VarInfo*        localVars;
     uint32_t          numLocalVars;
+    SInt8           currentThunk;
 }
 MachineState;
 
