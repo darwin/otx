@@ -1152,6 +1152,10 @@
 
                 case PStringType:
                 case PointerType:
+                case OCClassRefType:
+                case OCMsgRefType:
+                case OCSelRefType:
+                case OCSuperRefType:
                     theSymPtr   = theDummyPtr;
 
                     break;
@@ -1452,6 +1456,7 @@
                     break;
 
                 case PointerType:
+                case OCClassRefType:
                     className   = classNamePtr;
                     break;
 
