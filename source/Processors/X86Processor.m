@@ -2339,13 +2339,20 @@
                 jumpTarget  = theLine->info.address + 2 + (SInt8)opcode2;
                 validTarget = YES;
             }
-            else if (opcode == 0xe9 ||
-                (opcode == 0x0f && opcode2 >= 0x81 && opcode2 <= 0x8f))
+            else if (opcode == 0xe9)
             {
                 SInt32 rel32 = *(SInt32*)&theLine->info.code[1];
 
                 rel32 = OSSwapLittleToHostInt32(rel32);
                 jumpTarget = theLine->info.address + 5 + rel32;
+                validTarget = YES;
+            }
+            else if (opcode == 0x0f && opcode2 >= 0x81 && opcode2 <= 0x8f)
+            {
+                SInt32 rel32 = *(SInt32*)&theLine->info.code[2];
+
+                rel32 = OSSwapLittleToHostInt32(rel32);
+                jumpTarget = theLine->info.address + 6 + rel32;
                 validTarget = YES;
             }
 
