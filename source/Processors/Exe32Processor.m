@@ -18,6 +18,7 @@
 #import "ObjectLoader.h"
 #import "SysUtils.h"
 #import "UserDefaultKeys.h"
+#import "X86Processor.h"
 
 @implementation Exe32Processor
 
@@ -2202,10 +2203,40 @@
 
 //  printBlocks:
 // ----------------------------------------------------------------------------
-//  Used for block debugging. Sublclasses may override.
+//  Used for block debugging. Subclasses may override.
 
 - (void)printBlocks: (uint32_t)inFuncIndex;
-{}
+{
+    if (!iFuncInfos)
+        return;
+
+    FunctionInfo*   funcInfo    = &iFuncInfos[inFuncIndex];
+
+    if (!funcInfo || !funcInfo->blocks)
+        return;
+
+    uint32_t  i;
+
+    fprintf(stderr, "\nfunction at 0x%x:\n\n", funcInfo->address);
+    fprintf(stderr, "%d blocks\n", funcInfo->numBlocks);
+
+    for (i = 0; i < funcInfo->numBlocks; i++)
+    {
+        fprintf(stderr, "\nblock %d at 0x%x:\n\n", i + 1,
+            funcInfo->blocks[i].beginAddress);
+
+        GPRegisterInfo *regInfo = funcInfo->blocks[i].state.regInfos;
+        
+        if (regInfo[EAX].isValid) fprintf(stderr, "\t\teax: 0x%x\n", regInfo[EAX].value);
+        if (regInfo[EBX].isValid) fprintf(stderr, "\t\tebx: 0x%x\n", regInfo[EBX].value);
+        if (regInfo[ECX].isValid) fprintf(stderr, "\t\tecx: 0x%x\n", regInfo[ECX].value);
+        if (regInfo[EDX].isValid) fprintf(stderr, "\t\tedx: 0x%x\n", regInfo[EDX].value);
+        if (regInfo[ESP].isValid) fprintf(stderr, "\t\tesp: 0x%x\n", regInfo[ESP].value);
+        if (regInfo[EBP].isValid) fprintf(stderr, "\t\tebp: 0x%x\n", regInfo[EBP].value);
+        if (regInfo[ESI].isValid) fprintf(stderr, "\t\tesi: 0x%x\n", regInfo[ESI].value);
+        if (regInfo[EDI].isValid) fprintf(stderr, "\t\tedi: 0x%x\n", regInfo[EDI].value);
+    }
+}
 #endif  // OTX_DEBUG
 
 @end
