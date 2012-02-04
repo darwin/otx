@@ -181,6 +181,10 @@
                 [self loadConstTextSection: sectionPtr];
             else if (!strcmp(sectionPtr->sectname, "__cstring"))
                 [self loadCStringSection: sectionPtr];
+            else if (!strcmp(sectionPtr->sectname, "__objc_methname"))
+                [self loadObjcMethnameSection: sectionPtr];
+            else if (!strcmp(sectionPtr->sectname, "__objc_classname"))
+                [self loadObjcClassnameSection: sectionPtr];
             else if (!strcmp(sectionPtr->sectname, "__literal4"))
                 [self loadLit4Section: sectionPtr];
             else if (!strcmp(sectionPtr->sectname, "__literal8"))
@@ -202,6 +206,24 @@
                 [self loadCFStringSection: sectionPtr];
             else if (!strcmp(sectionPtr->sectname, "__nl_symbol_ptr"))
                 [self loadNonLazySymbolSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_classlist") == 0)
+                [self loadObjcClassListSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_classrefs") == 0)
+                [self loadObjcClassRefsSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_msgrefs") == 0)
+                [self loadObjcMsgRefsSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_catlist") == 0)
+                [self loadObjcCatListSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_catlist") == 0)
+                [self loadObjcCatListSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_protolist") == 0)
+                [self loadObjcProtoListSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_protorefs") == 0)
+                [self loadObjcProtoRefsSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_superrefs") == 0)
+                [self loadObjcSuperRefsSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_selrefs") == 0)
+                [self loadObjcSelRefsSection: sectionPtr];
         }
         else if (!strcmp(sectionPtr->segname, "__IMPORT"))
         {
@@ -660,6 +682,34 @@
     iObjcSymSect.size       = iObjcSymSect.s.size;
 }
 
+//  loadObjcMethNameSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcMethnameSection: (section*)inSect
+{
+    iObjcMethnameSect.s  = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcMethnameSect.s, 1, OSHostByteOrder());
+
+    iObjcMethnameSect.contents   = (char*)iMachHeaderPtr + iObjcMethnameSect.s.offset;
+    iObjcMethnameSect.size       = iObjcMethnameSect.s.size;
+}
+
+//  loadObjcClassNameSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcClassnameSection: (section*)inSect
+{
+    iObjcClassnameSect.s  = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcClassnameSect.s, 1, OSHostByteOrder());
+
+    iObjcClassnameSect.contents   = (char*)iMachHeaderPtr + iObjcClassnameSect.s.offset;
+    iObjcClassnameSect.size       = iObjcClassnameSect.s.size;
+}
+
 //  loadLit4Section:
 // ----------------------------------------------------------------------------
 
@@ -852,6 +902,118 @@
 
     iNLSymSect.contents = (char*)iMachHeaderPtr + iNLSymSect.s.offset;
     iNLSymSect.size     = iNLSymSect.s.size;
+}
+
+//  loadObjcClassListSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcClassListSection: (section*)inSect
+{
+    iObjcClassListSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcClassListSect.s, 1, OSHostByteOrder());
+
+    iObjcClassListSect.contents = (char*)iMachHeaderPtr + iObjcClassListSect.s.offset;
+    iObjcClassListSect.size = iObjcClassListSect.s.size;
+}
+
+//  loadObjcCatListSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcCatListSection: (section*)inSect
+{
+    iObjcCatListSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcCatListSect.s, 1, OSHostByteOrder());
+
+    iObjcCatListSect.contents = (char*)iMachHeaderPtr + iObjcCatListSect.s.offset;
+    iObjcCatListSect.size = iObjcCatListSect.s.size;
+}
+
+//  loadObjcProtoListSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcProtoListSection: (section*)inSect
+{
+    iObjcProtoListSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcProtoListSect.s, 1, OSHostByteOrder());
+
+    iObjcProtoListSect.contents = (char*)iMachHeaderPtr + iObjcProtoListSect.s.offset;
+    iObjcProtoListSect.size = iObjcProtoListSect.s.size;
+}
+
+//  loadObjcSuperRefsSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcSuperRefsSection: (section*)inSect
+{
+    iObjcSuperRefsSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcSuperRefsSect.s, 1, OSHostByteOrder());
+
+    iObjcSuperRefsSect.contents = (char*)iMachHeaderPtr + iObjcSuperRefsSect.s.offset;
+    iObjcSuperRefsSect.size = iObjcSuperRefsSect.s.size;
+}
+
+//  loadObjcClassRefsSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcClassRefsSection: (section*)inSect
+{
+    iObjcClassRefsSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcClassRefsSect.s, 1, OSHostByteOrder());
+
+    iObjcClassRefsSect.contents = (char*)iMachHeaderPtr + iObjcClassRefsSect.s.offset;
+    iObjcClassRefsSect.size = iObjcClassRefsSect.s.size;
+}
+
+//  loadObjcProtoRefsSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcProtoRefsSection: (section*)inSect
+{
+    iObjcProtoRefsSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcProtoRefsSect.s, 1, OSHostByteOrder());
+
+    iObjcProtoRefsSect.contents = (char*)iMachHeaderPtr + iObjcProtoRefsSect.s.offset;
+    iObjcProtoRefsSect.size = iObjcProtoRefsSect.s.size;
+}
+
+//  loadObjcMsgRefsSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcMsgRefsSection: (section*)inSect
+{
+    iObjcMsgRefsSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcMsgRefsSect.s, 1, OSHostByteOrder());
+
+    iObjcMsgRefsSect.contents = (char*)iMachHeaderPtr + iObjcMsgRefsSect.s.offset;
+    iObjcMsgRefsSect.size = iObjcMsgRefsSect.s.size;
+}
+
+//  loadObjcSelRefsSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcSelRefsSection: (section*)inSect
+{
+    iObjcSelRefsSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcSelRefsSect.s, 1, OSHostByteOrder());
+
+    iObjcSelRefsSect.contents = (char*)iMachHeaderPtr + iObjcSelRefsSect.s.offset;
+    iObjcSelRefsSect.size = iObjcSelRefsSect.s.size;
 }
 
 //  loadImpPtrSection:

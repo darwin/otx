@@ -202,6 +202,8 @@ Function64Info;
     section_info_64     iCoalTextSect;
     section_info_64     iCoalTextNTSect;
     section_info_64     iConstTextSect;
+    section_info_64     iObjcMethnameSect;
+    section_info_64     iObjcClassnameSect;
     section_info_64     iDataSect;
     section_info_64     iCoalDataSect;
     section_info_64     iCoalDataNTSect;

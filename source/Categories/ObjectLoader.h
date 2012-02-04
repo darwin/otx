@@ -25,6 +25,8 @@
 - (void)loadIVarSection: (section*)inSect;
 - (void)loadObjcModSection: (section*)inSect;
 - (void)loadObjcSymSection: (section*)inSect;
+- (void)loadObjcMethnameSection: (section*)inSect;
+- (void)loadObjcClassnameSection: (section*)inSect;
 - (void)loadLit4Section: (section*)inSect;
 - (void)loadLit8Section: (section*)inSect;
 - (void)loadTextSection: (section*)inSect;
@@ -38,6 +40,14 @@
 - (void)loadDyldDataSection: (section*)inSect;
 - (void)loadCFStringSection: (section*)inSect;
 - (void)loadNonLazySymbolSection: (section*)inSect;
+- (void)loadObjcClassListSection: (section*)inSect;
+- (void)loadObjcCatListSection: (section*)inSect;
+- (void)loadObjcProtoListSection: (section*)inSect;
+- (void)loadObjcSuperRefsSection: (section*)inSect;
+- (void)loadObjcClassRefsSection: (section*)inSect;
+- (void)loadObjcProtoRefsSection: (section*)inSect;
+- (void)loadObjcMsgRefsSection: (section*)inSect;
+- (void)loadObjcSelRefsSection: (section*)inSect;
 - (void)loadImpPtrSection: (section*)inSect;
 
 @end

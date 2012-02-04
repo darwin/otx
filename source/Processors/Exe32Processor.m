@@ -662,7 +662,7 @@
 
                 if (demangledStringLength < demangledDataLength)
                     NSLog(@"otx: demangled C++ name is too large. Increase MAX_LINE_LENGTH to %lu.\n"
-                           "Name demangling will now go off the rails.", demangledDataLength);
+                           "Name demangling will now go off the rails.", (unsigned long)demangledDataLength);
 
                 // Get the string and terminate it.
                 [readData getBytes: demangledName
@@ -1062,7 +1062,7 @@
 
                 if (demangledStringLength < demangledDataLength)
                     NSLog(@"otx: demangled C++ name is too large. Increase MAX_OPERANDS_LENGTH to %lu.\n"
-                           "Name demangling will now go off the rails.", demangledDataLength);
+                           "Name demangling will now go off the rails.", (unsigned long)demangledDataLength);
 
                 [readData getBytes: demangledName
                             length: demangledStringLength];
@@ -1117,7 +1117,7 @@
 
                 if (demangledStringLength < demangledDataLength)
                     NSLog(@"otx: demangled C++ name is too large. Increase MAX_COMMENT_LENGTH to %lu.\n"
-                           "Name demangling will now go off the rails.", demangledDataLength);
+                           "Name demangling will now go off the rails.", (unsigned long)demangledDataLength);
 
                 [readData getBytes: demangledName
                             length: demangledStringLength];
@@ -1661,6 +1661,18 @@
         else
             thePtr  = NULL;
     }
+    else    // (__TEXT,__objc_methname) (char*)
+    if (inAddr >= iObjcMethnameSect.s.addr &&
+        inAddr < iObjcMethnameSect.s.addr + iObjcMethnameSect.size)
+    {
+        thePtr  = (iObjcMethnameSect.contents + (inAddr - iObjcMethnameSect.s.addr));
+    }
+    else    // (__TEXT,__objc_classname) (char*)
+    if (inAddr >= iObjcClassnameSect.s.addr &&
+        inAddr < iObjcClassnameSect.s.addr + iObjcClassnameSect.size)
+    {
+        thePtr  = (iObjcClassnameSect.contents + (inAddr - iObjcClassnameSect.s.addr));
+    }
     else    // (__TEXT,__literal4) (float)
     if (inAddr >= iLit4Sect.s.addr &&
         inAddr < iLit4Sect.s.addr + iLit4Sect.size)
@@ -1842,6 +1854,159 @@
 
         if (outType)
             *outType    = CFStringType;
+    }
+    else    // (__DATA,__objc_classrefs)
+    if (inAddr >= iObjcClassRefsSect.s.addr &&
+        inAddr < iObjcClassRefsSect.s.addr + iObjcClassRefsSect.size)
+    {
+        if (inAddr % 8 == 0)
+        {
+            UInt32 classRef = *(UInt32*)(iObjcClassRefsSect.contents +
+                (inAddr - iObjcClassRefsSect.s.addr));
+
+            if (classRef != 0)
+            {
+                if (iSwapped)
+                    classRef = OSSwapInt32(classRef);
+
+                objc2_32_class_t swappedClass = *(objc2_32_class_t*)(iObjcClassRefsSect.contents +
+                    (classRef - iObjcClassRefsSect.s.addr));
+
+                if (iSwapped)
+                    swap_objc2_32_class(&swappedClass);
+
+                objc2_32_class_ro_t roData = *(objc2_32_class_ro_t*)(iDataSect.contents +
+                    (swappedClass.data - iDataSect.s.addr));
+
+                if (iSwapped)
+                    roData.name = OSSwapInt64(roData.name);
+
+                thePtr = GetPointer(roData.name, NULL);
+
+                if (outType)
+                    *outType = OCClassRefType;
+            }
+        }
+    }
+    else    // (__DATA,__objc_msgrefs)
+    if (inAddr >= iObjcMsgRefsSect.s.addr &&
+        inAddr < iObjcMsgRefsSect.s.addr + iObjcMsgRefsSect.size)
+    {
+        objc2_32_message_ref_t ref = *(objc2_32_message_ref_t*)(iObjcMsgRefsSect.contents +
+            (inAddr - iObjcMsgRefsSect.s.addr));
+
+        if (iSwapped)
+            ref.sel = OSSwapInt64(ref.sel);
+
+        thePtr = GetPointer(ref.sel, NULL);
+
+        if (outType)
+            *outType = OCMsgRefType;
+    }
+    else    // (__DATA,__objc_catlist)
+    if (inAddr >= iObjcCatListSect.s.addr &&
+        inAddr < iObjcCatListSect.s.addr + iObjcCatListSect.size)
+    {
+    }
+    else    // (__DATA,__objc_superrefs)
+    if (inAddr >= iObjcSuperRefsSect.s.addr &&
+        inAddr < iObjcSuperRefsSect.s.addr + iObjcSuperRefsSect.size)
+    {
+        UInt32 superAddy = *(UInt32*)(iObjcSuperRefsSect.contents +
+            (inAddr - iObjcSuperRefsSect.s.addr));
+
+        if (iSwapped)
+            superAddy = OSSwapInt32(superAddy);
+
+        if (superAddy != 0)
+        {
+            objc2_32_class_t swappedClass = *(objc2_32_class_t*)(iDataSect.contents +
+                (superAddy - iDataSect.s.addr));
+
+            if (iSwapped)
+                swap_objc2_32_class(&swappedClass);
+
+            if (swappedClass.data != 0)
+            {
+                objc2_32_class_ro_t* roPtr = (objc2_32_class_ro_t*)(iDataSect.contents +
+                    (swappedClass.data - iDataSect.s.addr));
+                UInt32 namePtr = roPtr->name;
+
+                if (iSwapped)
+                    namePtr = OSSwapInt32(namePtr);
+
+                if (namePtr != 0)
+                {
+                    thePtr = GetPointer(namePtr, NULL);
+
+                    if (outType)
+                        *outType = OCSuperRefType;
+                }
+            }
+        }
+    }
+    else    // (__DATA,__objc_selrefs)
+    if (inAddr >= iObjcSelRefsSect.s.addr &&
+        inAddr < iObjcSelRefsSect.s.addr + iObjcSelRefsSect.size)
+    {
+        UInt32 selAddy = *(UInt32*)(iObjcSelRefsSect.contents +
+            (inAddr - iObjcSelRefsSect.s.addr));
+
+        if (iSwapped)
+            selAddy = OSSwapInt32(selAddy);
+
+        if (selAddy != 0)
+        {
+            thePtr = GetPointer(selAddy, NULL);
+
+            if (outType)
+                *outType = OCSelRefType;
+        }
+    }
+    else
+    if ((inAddr >= iObjcProtoRefsSect.s.addr &&    // (__DATA,__objc_protorefs)
+        inAddr < iObjcProtoRefsSect.s.addr + iObjcProtoRefsSect.size) ||
+        (inAddr >= iObjcProtoListSect.s.addr &&    // (__DATA,__objc_protolist)
+        inAddr < iObjcProtoListSect.s.addr + iObjcProtoListSect.size))
+    {
+        UInt64 protoAddy;
+        UInt8 tempType;
+
+        if (inAddr >= iObjcProtoRefsSect.s.addr &&
+            inAddr < iObjcProtoRefsSect.s.addr + iObjcProtoRefsSect.size)
+        {
+            protoAddy = *(UInt64*)(iObjcProtoRefsSect.contents +
+                (inAddr - iObjcProtoRefsSect.s.addr));
+            tempType = OCProtoRefType;
+        }
+        else
+        {
+            protoAddy = *(UInt64*)(iObjcProtoListSect.contents +
+                (inAddr - iObjcProtoListSect.s.addr));
+            tempType = OCProtoListType;
+        }
+
+        if (iSwapped)
+            protoAddy = OSSwapInt64(protoAddy);
+
+        if (protoAddy != 0 &&
+            (protoAddy >= iDataSect.s.addr && protoAddy < (iDataSect.s.addr + iDataSect.size)))
+        {
+            objc2_32_protocol_t* proto = (objc2_32_protocol_t*)(iDataSect.contents +
+                (protoAddy - iDataSect.s.addr));
+            UInt32 protoName = proto->name;
+
+            if (iSwapped)
+                protoName = OSSwapInt32(protoName);
+
+            if (protoName != 0)
+            {
+                thePtr = GetPointer(protoName, NULL);
+
+                if (outType)
+                    *outType = tempType;
+            }
+        }
     }
     else    // (__DATA,__nl_symbol_ptr) (cf_string_object*)
     if (inAddr >= iNLSymSect.s.addr &&

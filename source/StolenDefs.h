@@ -94,6 +94,123 @@ cf_string_object;
     name, and the original pointer field types are saved as comments.
 */
 
+typedef struct
+{
+    uint32_t name;   // SEL
+    uint32_t types;  // const char *
+    uint32_t imp;    // IMP
+}
+objc2_32_method_t;
+
+typedef struct
+{
+    uint32_t entsize;
+    uint32_t count;
+    objc2_32_method_t first;
+}
+objc2_32_method_list_t;
+
+typedef struct
+{
+    uint32_t imp;   // IMP
+    uint32_t sel;   // SEL
+}
+objc2_32_message_ref_t;
+
+typedef struct
+{
+    // *offset is 64-bit by accident even though other 
+    // fields restrict total instance size to 32-bit. 
+    uint64_t offset;    // uintptr_t *
+    uint32_t name;      // const char *
+    uint32_t type;      // const char *
+    uint32_t alignment;
+    uint32_t size;
+}
+objc2_32_ivar_t;
+
+typedef struct
+{
+    uint32_t entsize;
+    uint32_t count;
+    objc2_32_ivar_t first;
+}
+objc2_32_ivar_list_t;
+
+typedef struct
+{
+    uint32_t isa;                       // id
+    uint32_t name;                      // const char *
+    uint32_t protocols;                 // struct objc2_protocol_list_t *
+    uint32_t instanceMethods;           // objc2_method_list_t *
+    uint32_t classMethods;              // objc2_method_list_t *
+    uint32_t optionalInstanceMethods;   // objc2_method_list_t *
+    uint32_t optionalClassMethods;      // objc2_method_list_t *
+    uint32_t instanceProperties;        // struct objc2_property_list *
+}
+objc2_32_protocol_t;
+
+typedef struct
+{
+    // count is 64-bit by accident. 
+    uint64_t count;     // uintptr_t
+    uint32_t list[0];   // objc2_protocol_t *
+}
+objc2_32_protocol_list_t;
+
+typedef struct
+{
+    uint32_t flags;
+    uint32_t instanceStart;
+    uint32_t instanceSize;
+
+    uint32_t ivarLayout;        // const uint8_t *
+
+    uint32_t name;              // const char *
+    uint32_t baseMethods;       // const objc2_method_list_t *
+    uint32_t baseProtocols;     // const objc2_protocol_list_t *
+    uint32_t ivars;             // const objc2_ivar_list_t *
+
+    uint32_t weakIvarLayout;    // const uint8_t *
+    uint32_t baseProperties;    // const struct objc2_property_list *
+}
+objc2_32_class_ro_t;
+
+typedef struct
+{
+    uint32_t flags;
+    uint32_t version;
+
+    uint32_t ro;                // const objc2_class_ro_t *
+
+    uint32_t methods;           // chained_method_list *
+    uint32_t properties;        // chained_property_list *
+    uint32_t protocols;         // objc2_protocol_list_t **
+
+    uint32_t firstSubclass;     // objc2_class_t *
+    uint32_t nextSiblingClass;  // objc2_class_t *
+}
+objc2_32_class_rw_t;
+
+typedef struct
+{
+    uint32_t isa;           // objc2_class_t *
+    uint32_t superclass;    // objc2_class_t *
+    uint32_t cache;         // Cache
+    uint32_t vtable;        // IMP *
+    uint32_t data;          // objc2_class_rw_t *
+}
+objc2_32_class_t;
+
+typedef struct
+{
+    uint32_t    isa;
+    uint32_t    chars;
+    uint32_t    length;
+}
+objc2_32_string_object;
+
+
 typedef struct method_t
 {
     uint64_t name;   // SEL
@@ -223,6 +340,45 @@ cf_string_object_64;
 
 //  swap_objc2_class
 // ----------------------------------------------------------------------------
+
+static void
+swap_objc2_32_class(
+    objc2_32_class_t* oc)
+{
+    oc->isa         = OSSwapInt32(oc->isa);
+    oc->superclass  = OSSwapInt32(oc->superclass);
+    oc->cache       = OSSwapInt32(oc->cache);
+    oc->vtable      = OSSwapInt32(oc->vtable);
+    oc->data        = OSSwapInt32(oc->data);
+}
+
+//  swap_objc2_32_method
+// ----------------------------------------------------------------------------
+
+static void
+swap_objc2_32_method(
+    objc2_32_method_t* m)
+{
+    m->name     = OSSwapInt32(m->name);
+    m->types    = OSSwapInt32(m->types);
+    m->imp      = OSSwapInt32(m->imp);
+}
+
+//  swap_objc2_32_ivar
+// ----------------------------------------------------------------------------
+
+static void
+swap_objc2_32_ivar(
+    objc2_32_ivar_t* i)
+{
+    i->offset       = OSSwapInt64(i->offset);
+    i->name         = OSSwapInt32(i->name);
+    i->type         = OSSwapInt32(i->type);
+    i->alignment    = OSSwapInt32(i->alignment);
+    i->size         = OSSwapInt32(i->size);
+}
+
+
 
 static void
 swap_objc2_class(

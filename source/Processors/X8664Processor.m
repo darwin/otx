@@ -1055,11 +1055,8 @@
 
                         if (iRegInfos[EDI].className != NULL)
                             snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "+[%s %s]", iRegInfos[EDI].className, sel);
-                        else // Instance method?
-                            if (iRegInfos[EDI].isValid)
-                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "objc_msgSend(%%rdi, %s)", sel);
-                            else
-                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "-[%%rdi %s]", sel);
+                        else
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "-[%%rdi %s]", sel);
                     }
                 }
                 else if (MOD(modRM) == MODimm && REG2(modRM) == EBP)    // call/jmp through RIP-relative pointer
@@ -1070,11 +1067,8 @@
 
                         if (iRegInfos[EDI].className != NULL)
                             snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "+[%s %s]", iRegInfos[EDI].className, sel);
-                        else // Instance method?
-                            if (iRegInfos[EDI].isValid)
-                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "+[? %s]", sel);
-                            else
-                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "-[%%rdi %s]", sel);
+                        else
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "-[%%rdi %s]", sel);
                     }
                 }
 
@@ -1854,7 +1848,7 @@
                         {
                             if (type == OCClassRefType)
                                 iRegInfos[XREG1(modRM, rexByte)].className = name;
-                            else if (type == OCMsgRefType)
+                            else if (type == OCMsgRefType || type == OCSelRefType)
                                 iRegInfos[XREG1(modRM, rexByte)].messageRefSel = name;
                         }
 

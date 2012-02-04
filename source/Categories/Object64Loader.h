@@ -25,6 +25,8 @@
 - (void)loadCoalTextSection: (section_64*)inSect;
 - (void)loadCoalTextNTSection: (section_64*)inSect;
 - (void)loadConstTextSection: (section_64*)inSect;
+- (void)loadObjcMethnameSection: (section_64*)inSect;
+- (void)loadObjcClassnameSection: (section_64*)inSect;
 - (void)loadDataSection: (section_64*)inSect;
 - (void)loadCoalDataSection: (section_64*)inSect;
 - (void)loadCoalDataNTSection: (section_64*)inSect;

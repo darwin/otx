@@ -327,6 +327,10 @@
                 [self loadCoalTextNTSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__const") == 0)
                 [self loadConstTextSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_methname") == 0)
+                [self loadObjcMethnameSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_classname") == 0)
+                [self loadObjcClassnameSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__cstring") == 0)
                 [self loadCStringSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__literal4") == 0)
@@ -516,6 +520,34 @@
 
     iConstTextSect.contents = (char*)iMachHeaderPtr + iConstTextSect.s.offset;
     iConstTextSect.size     = iConstTextSect.s.size;
+}
+
+//  loadObjcMethnameSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcMethnameSection: (section_64*)inSect
+{
+    iObjcMethnameSect.s    = *inSect;
+    
+    if (iSwapped)
+        swap_section_64(&iObjcMethnameSect.s, 1, OSHostByteOrder());
+    
+    iObjcMethnameSect.contents = (char*)iMachHeaderPtr + iObjcMethnameSect.s.offset;
+    iObjcMethnameSect.size     = iObjcMethnameSect.s.size;
+}
+
+//  loadObjcClassnameSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcClassnameSection: (section_64*)inSect
+{
+    iObjcClassnameSect.s    = *inSect;
+    
+    if (iSwapped)
+        swap_section_64(&iObjcClassnameSect.s, 1, OSHostByteOrder());
+    
+    iObjcClassnameSect.contents = (char*)iMachHeaderPtr + iObjcClassnameSect.s.offset;
+    iObjcClassnameSect.size     = iObjcClassnameSect.s.size;
 }
 
 //  loadCoalTextSection:

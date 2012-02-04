@@ -1365,6 +1365,7 @@
     switch (selType)
     {
         case PointerType:
+        case OCSelRefType:
             selString   = selPtr;
 
             break;
