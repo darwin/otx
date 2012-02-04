@@ -1358,10 +1358,6 @@
     // sanity check
     if (!selectorAddy)
         return NULL;
-
-    // Get at the selector.
-    if (iStack[ESI].isValid)
-        selectorAddy += iStack[ESI].value;  // add the esi register
     
     UInt8   selType = PointerType;
     char*   selPtr  = GetPointer(selectorAddy, &selType);
@@ -1429,8 +1425,6 @@
         {
             if (iStack[0].isValid && !iStack[0].classPtr)
                 classNameAddy   = iStack[0].value;
-            if (iStack[ESI].isValid)
-                classNameAddy   += iStack[ESI].value;
         }
 
         char*   className           = NULL;
@@ -1727,6 +1721,11 @@
     {
         // pop stack into thunk registers.
         case 0x5e:  // esi
+        case 0x5f:  // edi
+        case 0x58:  // eax
+        case 0x59:  // ecx
+        case 0x5a:  // edx
+        case 0x5b:  // ebx
             if (inLine->prev &&
                 (inLine->prev->info.code[0] == 0xe8) &&
                 (*(uint32_t*)&inLine->prev->info.code[2] == 0))
@@ -1741,26 +1740,10 @@
                 iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
             }
             break;
-        case 0x58:  // eax
-        case 0x59:  // ecx
-        case 0x5a:  // edx
-        case 0x5b:  // ebx
-            if (inLine->prev &&
-                (inLine->prev->info.code[0] == 0xe8) &&
-                (*(uint32_t*)&inLine->prev->info.code[2] == 0))
-            {
-                iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
-                iRegInfos[REG2(opcode)].value = inLine->info.address;
-                iRegInfos[REG2(opcode)].isValid = YES;
-                iCurrentThunk = REG2(opcode);
-            }
-
-            break;
 
         // pop stack into non-thunk registers. Wipe em.
         case 0x5c:  // esp
         case 0x5d:  // ebp
-        case 0x5f:  // edi
             iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
 
             break;
