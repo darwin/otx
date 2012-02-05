@@ -14,7 +14,6 @@
 #import "ListUtils.h"
 #import "ObjcAccessors.h"
 #import "ObjectLoader.h"
-#import "Optimizations.h"
 #import "SysUtils.h"
 #import "UserDefaultKeys.h"
 
@@ -97,8 +96,6 @@
         [iCPFiltTask setStandardOutput: iCPFiltOutputPipe];
         [iCPFiltTask launch];
     }
-
-    [self speedyDelivery];
 
     return self;
 }
@@ -347,7 +344,7 @@
             theCType[0] = 0;
 
             isArray = YES;
-            GetDescription(theCType, &inTypeCode[theNextChar]);
+            [self getDescription:theCType forType:&inTypeCode[theNextChar]];
             isArray = NO;
 
             snprintf(theTypeCString, MAX_TYPE_STRING_LENGTH + 1, "%s[%s]",
@@ -502,19 +499,9 @@
             break;
     }
 
-    GetDescription(outCString, &inTypeCode[theNextChar]);
+    [self getDescription:outCString forType:&inTypeCode[theNextChar]];
 }
 
-#pragma mark -
-
-//  speedyDelivery
-// ----------------------------------------------------------------------------
-
-- (void)speedyDelivery
-{
-    GetDescription = GetDescriptionFuncType
-        [self methodForSelector: GetDescriptionSel];
-}
 
 #ifdef OTX_DEBUG
 //  printSymbol:

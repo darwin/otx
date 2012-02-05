@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "ObjcAccessors.h"
+#import "Searchers.h"
 
 @implementation Exe32Processor(ObjcAccessors)
 
@@ -24,8 +25,7 @@
     *outClass = NULL;
 
     MethodInfo* theInfo = NULL;
-
-    FindClassMethodByAddress(&theInfo, inAddress);
+    [self findClassMethod:&theInfo byAddress:inAddress];
 
     if (theInfo)
         *outClass = &theInfo->oc_class;
@@ -43,8 +43,7 @@
     *outCat = NULL;
 
     MethodInfo* theInfo = NULL;
-
-    FindCatMethodByAddress(&theInfo, inAddress);
+    [self findCatMethod:&theInfo byAddress:inAddress];
 
     if (theInfo)
         *outCat = &theInfo->oc_cat;
@@ -61,12 +60,12 @@
 {
     *outMI  = NULL;
 
-    FindClassMethodByAddress(outMI, inAddress);
+    [self findClassMethod:outMI byAddress:inAddress];
 
     if (*outMI)
         return YES;
 
-    FindCatMethodByAddress(outMI, inAddress);
+    [self findCatMethod:outMI byAddress:inAddress];
 
     return (*outMI != NULL);
 }
@@ -172,7 +171,7 @@
     if (iSwapped)
         theValue    = OSSwapInt32(theValue);
 
-    *outDescription = GetPointer(theValue, NULL);
+    *outDescription = [self getPointer:theValue type:NULL];
 
     return (*outDescription != NULL);
 }
@@ -288,7 +287,7 @@
         if (iSwapped)
             namePtr = OSSwapInt32(namePtr);
 
-        if (GetPointer(namePtr, NULL) == inName)
+        if ([self getPointer:namePtr type:NULL] == inName)
         {
             *outClass   = iClassMethodInfos[i].oc_class;
             return YES;
@@ -316,7 +315,7 @@
         if (iSwapped)
             namePtr = OSSwapInt32(namePtr);
 
-        if (GetPointer(namePtr, NULL) == inName)
+        if ([self getPointer:namePtr type:NULL] == inName)
         {
             *outClassPtr = &iClassMethodInfos[i].oc_class;
             return YES;

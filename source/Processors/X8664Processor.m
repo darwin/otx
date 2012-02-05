@@ -10,10 +10,11 @@
 
 #import "X8664Processor.h"
 #import "X86Processor.h"
-#import "ArchSpecifics.h"
+#import "Arch64Specifics.h"
 #import "List64Utils.h"
 #import "Objc64Accessors.h"
 #import "Object64Loader.h"
+#import "Searchers64.h"
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
@@ -101,7 +102,7 @@
 
     if (nextLine)
     {
-        UInt64 newNextAddy = AddressFromLine(nextLine->chars);
+        UInt64 newNextAddy = [self addressFromLine:nextLine->chars];
 
         if (newNextAddy > thisAddy && newNextAddy <= thisAddy + 15)
             nextAddy = newNextAddy;
@@ -264,7 +265,7 @@
                 {
                     localAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 3];
                     localAddy = OSSwapLittleToHostInt32(localAddy);
-                    theDummyPtr = GetPointer(localAddy, NULL);
+                    theDummyPtr = [self getPointer:localAddy type:NULL];
 
                     if (theDummyPtr)
                     {
@@ -326,7 +327,7 @@
 
                 localAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 4];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
-                theDummyPtr = GetPointer(localAddy, NULL);
+                theDummyPtr = [self getPointer:localAddy type:NULL];
 
                 if (theDummyPtr)
                 {
@@ -452,8 +453,8 @@
                         if (MOD(modRM) == MODx)
                             break;
 
-                        objc2_ivar_t* theIvar = NULL;
-                        objc2_class_t swappedClass =
+                        objc2_64_ivar_t* theIvar = NULL;
+                        objc2_64_class_t swappedClass =
                             *iRegInfos[XREG2(modRM, rexByte)].classPtr;
 
                         #if __BIG_ENDIAN__
@@ -462,7 +463,7 @@
 
                         if (!iIsInstanceMethod)
                         {
-                            if (!GetObjcMetaClassFromClass(&swappedClass, &swappedClass))
+                            if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
                                 break;
 
                             #if __BIG_ENDIAN__
@@ -474,7 +475,7 @@
                         {
                             UInt8 theSymOffset = inLine->info.code[opcodeIndex + 2];
 
-                            if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
+                            if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                                 break;
                         }
                         else if (MOD(modRM) == MOD32)
@@ -483,12 +484,12 @@
 
                             theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
-                            if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
+                            if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                                 break;
                         }
 
                         if (theIvar)
-                            theSymPtr = GetPointer(theIvar->name, NULL);
+                            theSymPtr = [self getPointer:theIvar->name type:NULL];
 
                         if (theSymPtr)
                         {
@@ -498,8 +499,7 @@
 
                                 theTypeCString[0]   = 0;
 
-                                GetDescription(theTypeCString,
-                                    GetPointer(theIvar->type, NULL));
+                                [self getDescription:theTypeCString forType:[self getPointer:theIvar->type type:NULL]];
                                 snprintf(iLineCommentCString,
                                     MAX_COMMENT_LENGTH - 1, "(%s)%s",
                                     theTypeCString, theSymPtr);
@@ -544,11 +544,11 @@
                 {
                     UInt64 baseAddress = inLine->next->info.address;
                     localAddy = baseAddress + offset;
-                    objc2_ivar_t* ivar;
+                    objc2_64_ivar_t* ivar;
 
-                    if (FindIvar(&ivar, iCurrentClass, localAddy))
+                    if ([self findIvar:&ivar inClass:iCurrentClass withOffset:localAddy])
                     {
-                        theSymPtr = GetPointer(ivar->name, NULL);
+                        theSymPtr = [self getPointer:ivar->name type:NULL];
 
                         if (theSymPtr)
                         {
@@ -556,7 +556,7 @@
                             {
                                 char theTypeCString[MAX_TYPE_STRING_LENGTH] = "";
 
-                                GetDescription(theTypeCString, GetPointer(ivar->type, NULL));
+                                [self getDescription:theTypeCString forType:[self getPointer:ivar->type type:NULL]];
                                 snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
                                     theTypeCString, theSymPtr);
                             }
@@ -657,8 +657,8 @@
                     if (HAS_SIB(modRM))
                         immOffset   += 1;
 
-                    objc2_ivar_t* theIvar = NULL;
-                    objc2_class_t swappedClass =
+                    objc2_64_ivar_t* theIvar = NULL;
+                    objc2_64_class_t swappedClass =
                         *iRegInfos[XREG2(modRM, rexByte)].classPtr;
 
                     #if __BIG_ENDIAN__
@@ -667,8 +667,7 @@
 
                     if (!iIsInstanceMethod)
                     {
-                        if (!GetObjcMetaClassFromClass(
-                            &swappedClass, &swappedClass))
+                        if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
                             break;
 
                         #if __BIG_ENDIAN__
@@ -681,7 +680,7 @@
                         // offset precedes immediate value, subtract
                         UInt8 theSymOffset = inLine->info.code[immOffset - 1];
 
-                        if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
+                        if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                             break;
                     }
                     else if (MOD(modRM) == MOD32)
@@ -715,11 +714,11 @@
                             snprintf(fcc, 4, "'%c'", imm);
                         }
 
-                        FindIvar(&theIvar, &swappedClass, theSymOffset);
+                        [self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset];
                     }
 
                     if (theIvar != NULL)
-                        theSymPtr = GetPointer(theIvar->name, NULL);
+                        theSymPtr = [self getPointer:theIvar->name type:NULL];
 
                     char tempComment[MAX_COMMENT_LENGTH];
 
@@ -742,7 +741,7 @@
 
                             theTypeCString[0]   = 0;
 
-                            GetDescription(theTypeCString, GetPointer(theIvar->type, NULL));
+                            [self getDescription:theTypeCString forType:[self getPointer:theIvar->type type:NULL]];
                             snprintf(&tempComment[tempCommentLength], MAX_COMMENT_LENGTH - tempCommentLength - 1,
                                 "(%s)%s", theTypeCString, theSymPtr);
                         }
@@ -798,7 +797,7 @@
                 modRM = inLine->info.code[opcodeIndex + 1];
 
                 if (modRM == 0x80)
-                    CommentForSystemCall();
+                    [self commentForSystemCall];
 
                 break;
 
@@ -815,8 +814,8 @@
                     if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                         break;
 
-                    objc2_ivar_t* theIvar = NULL;
-                    objc2_class_t swappedClass =
+                    objc2_64_ivar_t* theIvar = NULL;
+                    objc2_64_class_t swappedClass =
                         *iRegInfos[XREG2(modRM, rexByte)].classPtr;
 
                     #if __BIG_ENDIAN__
@@ -825,7 +824,7 @@
 
                     if (!iIsInstanceMethod)
                     {
-                        if (!GetObjcMetaClassFromClass(&swappedClass, &swappedClass))
+                        if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
                             break;
 
                         #if __BIG_ENDIAN__
@@ -837,7 +836,7 @@
                     {
                         UInt8 theSymOffset = inLine->info.code[opcodeIndex + 2];
 
-                        if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
+                        if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                             break;
                     }
                     else if (MOD(modRM) == MOD32)
@@ -846,12 +845,12 @@
 
                         theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
-                        if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
+                        if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                             break;
                     }
 
                     if (theIvar)
-                        theSymPtr = GetPointer(theIvar->name, NULL);
+                        theSymPtr = [self getPointer:theIvar->name type:NULL];
 
                     if (theSymPtr)
                     {
@@ -861,7 +860,7 @@
 
                             theTypeCString[0]   = 0;
 
-                            GetDescription(theTypeCString, GetPointer(theIvar->type, NULL));
+                            [self getDescription:theTypeCString forType:[self getPointer:theIvar->type type:NULL]];
                             snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
                                 theTypeCString, theSymPtr);
                         }
@@ -882,7 +881,7 @@
 
                     localAddy = *(uint32_t*)&inLine->info.code[immOffset];
                     localAddy = OSSwapLittleToHostInt32(localAddy);
-                    theDummyPtr = GetPointer(localAddy, NULL);
+                    theDummyPtr = [self getPointer:localAddy type:NULL];
 
                     if (!theDummyPtr)
                         break;
@@ -957,8 +956,8 @@
                     if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                         break;
 
-                    objc2_ivar_t* theIvar = NULL;
-                    objc2_class_t swappedClass =
+                    objc2_64_ivar_t* theIvar = NULL;
+                    objc2_64_class_t swappedClass =
                         *iRegInfos[XREG2(modRM, rexByte)].classPtr;
 
                     #if __BIG_ENDIAN__
@@ -967,7 +966,7 @@
 
                     if (!iIsInstanceMethod)
                     {
-                        if (!GetObjcMetaClassFromClass(&swappedClass, &swappedClass))
+                        if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
                             break;
 
                         #if __BIG_ENDIAN__
@@ -979,7 +978,7 @@
                     {
                         UInt8 theSymOffset = inLine->info.code[opcodeIndex + 4];
 
-                        if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
+                        if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                             break;
                     }
                     else if (MOD(modRM) == MOD32)
@@ -988,12 +987,12 @@
 
                         theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
 
-                        if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
+                        if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                             break;
                     }
 
                     if (theIvar)
-                        theSymPtr = GetPointer(theIvar->name, NULL);
+                        theSymPtr = [self getPointer:theIvar->name type:NULL];
 
                     if (theSymPtr)
                     {
@@ -1003,7 +1002,7 @@
 
                             theTypeCString[0]   = 0;
 
-                            GetDescription(theTypeCString, GetPointer(theIvar->type, NULL));
+                            [self getDescription:theTypeCString forType:[self getPointer:theIvar->type type:NULL]];
                             snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
                                 theTypeCString, theSymPtr);
                         }
@@ -1016,7 +1015,7 @@
                 {
                     localAddy = *(uint32_t*)&inLine->info.code[opcodeIndex + 4];
                     localAddy = OSSwapLittleToHostInt32(localAddy);
-                    theDummyPtr = GetPointer(localAddy, NULL);
+                    theDummyPtr = [self getPointer:localAddy type:NULL];
 
                     if (theDummyPtr)
                     {
@@ -1087,11 +1086,11 @@
         UInt8   theType     = PointerType;
         uint32_t  theValue;
 
-        theSymPtr = FindSymbolByAddress(localAddy);
+        theSymPtr = [self findSymbolByAddress:localAddy];
         if (theSymPtr && strncmp("_OBJC_IVAR_$_", theSymPtr, 13) == 0)
             theSymPtr = strchr(theSymPtr, '.') + 1;
 
-        theDummyPtr = GetPointer(localAddy, &theType);
+        theDummyPtr = [self getPointer:localAddy type:&theType];
 
         if (theDummyPtr)
         {
@@ -1100,7 +1099,7 @@
                 case DataGenericType:
                     theValue    = *(uint32_t*)theDummyPtr;
                     theValue    = OSSwapLittleToHostInt32(theValue);
-                    theDummyPtr = GetPointer(theValue, &theType);
+                    theDummyPtr = [self getPointer:theValue type:&theType];
 
                     switch (theType)
                     {
@@ -1130,7 +1129,7 @@
                 {
                     theValue    = *(uint32_t*)theDummyPtr;
                     theValue    = OSSwapLittleToHostInt32(theValue);
-                    theDummyPtr = GetPointer(theValue, NULL);
+                    theDummyPtr = [self getPointer:theValue type:NULL];
 
                     if (!theDummyPtr)
                     {
@@ -1145,7 +1144,7 @@
                     {
                         theValue    = *(uint32_t*)theDummyPtr;
                         theValue    = OSSwapLittleToHostInt32(theValue);
-                        theDummyPtr = GetPointer(theValue, NULL);
+                        theDummyPtr = [self getPointer:theValue type:NULL];
 
                         if (!theDummyPtr)
                         {
@@ -1165,7 +1164,7 @@
 
                     theValue    = (uint32_t)theCFString.oc_string.chars;
                     theValue    = OSSwapLittleToHostInt32(theValue);
-                    theSymPtr   = GetPointer(theValue, NULL);
+                    theSymPtr   = [self getPointer:theValue type:NULL];
 
                     break;
                 }
@@ -1175,8 +1174,7 @@
                 case OCStrObjectType:
                 case OCClassType:
                 case OCModType:
-                    GetObjcDescriptionFromObject(
-                        &theSymPtr, theDummyPtr, theType);
+                    [self getObjcDescription:&theSymPtr fromObject:theDummyPtr type:theType];
 
                     break;
 
@@ -1276,7 +1274,7 @@
         return NULL;
 
     // Store the variant type locally to reduce string comparisons.
-    uint32_t  sendType    = SendTypeFromMsgSend(outComment);
+    uint32_t  sendType    = [self sendTypeFromMsgSend:outComment];
     UInt64  selectorAddy;
 
     // Make sure we know what the selector is.
@@ -1303,7 +1301,7 @@
 
     // Get at the selector.
     UInt8   selType = PointerType;
-    char*   selPtr  = GetPointer(selectorAddy, &selType);
+    char*   selPtr  = [self getPointer:selectorAddy type:&selType];
 
     switch (selType)
     {
@@ -1319,7 +1317,7 @@
                 uint32_t  selPtrValue = *(uint32_t*)selPtr;
 
                 selPtrValue = OSSwapLittleToHostInt32(selPtrValue);
-                selString   = GetPointer(selPtrValue, NULL);
+                selString   = [self getPointer:selPtrValue type:NULL];
             }
 
             break;
@@ -1347,13 +1345,13 @@
 
     if (!strncmp(ioComment, "_objc_msgSend", 13))
     {
-        char*   selString   = SelectorForMsgSend(ioComment, inLine);
+        char* selString = [self selectorForMsgSend:ioComment fromLine:inLine];
 
         // Bail if we couldn't find the selector.
         if (!selString)
             return;
 
-        UInt8   sendType    = SendTypeFromMsgSend(ioComment);
+        UInt8   sendType    = [self sendTypeFromMsgSend:ioComment];
 
         // Get the address of the class name string, if this a class method.
         UInt64  classNameAddy   = 0;
@@ -1381,7 +1379,7 @@
         {
             // Get at the class name
             UInt8   classNameType   = PointerType;
-            char*   classNamePtr    = GetPointer(classNameAddy, &classNameType);
+            char*   classNamePtr    = [self getPointer:classNameAddy type:&classNameType];
 
             switch (classNameType)
             {
@@ -1405,15 +1403,14 @@
                         uint32_t  namePtrValue    = *(uint32_t*)classNamePtr;
 
                         namePtrValue    = OSSwapLittleToHostInt32(namePtrValue);
-                        className   = GetPointer(namePtrValue, NULL);
+                        className   = [self getPointer:namePtrValue type:NULL];
                     }
 
                     break;
 
                 case OCClassType:
                     if (classNamePtr)
-                        GetObjcDescriptionFromObject(
-                            &className, classNamePtr, OCClassType);
+                        [self getObjcDescription:&className fromObject:classNamePtr type:OCClassType];
 
                     break;
 
@@ -1462,15 +1459,16 @@
     }   // if (!strncmp(ioComment, "_objc_msgSend", 13))
     else if (!strncmp(ioComment, "_objc_assign_ivar", 17))
     {
+        //!i: Why the EDX hardcode?
         if (iCurrentClass && iRegInfos[EDX].isValid)
         {
             char* theSymPtr = NULL;
-            objc2_ivar_t* theIvar = NULL;
-            objc2_class_t swappedClass = *iCurrentClass;
+            objc2_64_ivar_t* theIvar = NULL;
+            objc2_64_class_t swappedClass = *iCurrentClass;
 
             if (!iIsInstanceMethod)
             {
-                if (!GetObjcMetaClassFromClass(&swappedClass, &swappedClass))
+                if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
                     return;
 
                 #if __BIG_ENDIAN__
@@ -1478,10 +1476,10 @@
                 #endif
             }
 
-            if (!FindIvar(&theIvar, &swappedClass, iRegInfos[EDX].value))
+            if (![self findIvar:&theIvar inClass:&swappedClass withOffset:iRegInfos[EDX].value])
                 return;
 
-            theSymPtr = GetPointer(theIvar->name, NULL);
+            theSymPtr = [self getPointer:theIvar->name type:NULL];
 
             if (!theSymPtr)
                 return;
@@ -1492,7 +1490,7 @@
 
                 theTypeCString[0]   = 0;
 
-                GetDescription(theTypeCString, GetPointer(theIvar->type, NULL));
+                [self getDescription:theTypeCString forType:[self getPointer:theIvar->type type:NULL]];
                 snprintf(tempComment, MAX_COMMENT_LENGTH - 1, " (%s)%s",
                     theTypeCString, theSymPtr);
             }
@@ -1526,8 +1524,8 @@
             theNewLine->length + 1);
 
         // Swap in the verbose line and free the previous verbose lines.
-        DeleteLinesBefore((*ioLine)->alt, &iVerboseLineListHead);
-        ReplaceLine(*ioLine, theNewLine, &iPlainLineListHead);
+        [self deleteLinesBefore:(*ioLine)->alt fromList:&iVerboseLineListHead];
+        [self replaceLine:*ioLine withLine:theNewLine inList:&iPlainLineListHead];
         *ioLine = theNewLine;
     }
 }
@@ -1601,8 +1599,8 @@
         return;
     }
 
-    GetObjcClassPtrFromMethod(&iCurrentClass, inLine->info.address);
-//    GetObjcCatPtrFromMethod(&iCurrentCat, inLine->info.address);
+    [self getObjcClassPtr:&iCurrentClass fromMethod:inLine->info.address];
+//    [self getObjcCatPtr:&iCurrentCat fromMethod:inLine->info.address];
 
     iCurrentThunk   = NO_REG;
     memset(iRegInfos, 0, sizeof(GP64RegisterInfo) * 16);
@@ -1617,8 +1615,7 @@
             swap_objc_category(&swappedCat);
         #endif
 
-        GetObjcClassPtrFromName(&iCurrentClass,
-            GetPointer(swappedCat.class_name, NULL));
+        [self getObjcClassPtr:&iCurrentClass fromName:[self getPointer:swappedCat.class_name type:NULL]];
     }*/
 
     iRegInfos[EDI].classPtr = iCurrentClass;
@@ -1626,7 +1623,7 @@
     // Try to find out whether this is a class or instance method.
     Method64Info* thisMethod  = NULL;
 
-    if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
+    if ([self getObjcMethod:&thisMethod fromAddress:inLine->info.address])
         iIsInstanceMethod   = thisMethod->inst;
 
     if (iLocalSelves)
@@ -1842,7 +1839,7 @@
 
                         iRegInfos[XREG1(modRM, rexByte)].value = baseAddress + (SInt32)offset;
 
-                        char* name = GetPointer(baseAddress + (SInt32)offset, &type);
+                        char* name = [self getPointer:baseAddress + (SInt32)offset type:&type];
 
                         if (name)
                         {
@@ -2132,14 +2129,14 @@
 
     // In Obj-C apps, the majority of funcs will have Obj-C symbols, so check
     // those first.
-    if (FindClassMethodByAddress(&theDummyInfo, theAddy))
+    if ([self findClassMethod:&theDummyInfo byAddress:theAddy])
         return YES;
 
-//    if (FindCatMethodByAddress(&theDummyInfo, theAddy))
+//    if ([self findCatMethod:&theDummyInfo byAddress:theAddy])
 //        return YES;
 
     // If it's not an Obj-C method, maybe there's an nlist.
-    if (FindSymbolByAddress(theAddy))
+    if ([self findSymbolByAddress:theAddy])
         return YES;
 
     // If otool gave us a function name, but it came from a dynamic symbol...
@@ -2353,12 +2350,12 @@
         if (theLine->info.isFunction)
         {
             iCurrentFuncPtr = theLine->info.address;
-            ResetRegisters(theLine);
+            [self resetRegisters:theLine];
         }
         else
         {
-            RestoreRegisters(theLine);
-            UpdateRegisters(theLine);
+            [self restoreRegisters:theLine];
+            [self updateRegisters:theLine];
 
             ThunkInfo   theInfo;
 

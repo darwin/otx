@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 44;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -98,10 +98,8 @@
 		2578336E0D4C61EA00E05A06 /* List64Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = List64Utils.h; path = source/Categories/List64Utils.h; sourceTree = "<group>"; };
 		257833750D4C62FD00E05A06 /* Arch64Specifics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Arch64Specifics.m; path = source/Categories/Arch64Specifics.m; sourceTree = "<group>"; };
 		257833760D4C62FD00E05A06 /* Arch64Specifics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Arch64Specifics.h; path = source/Categories/Arch64Specifics.h; sourceTree = "<group>"; };
-		2578337C0D4C649500E05A06 /* Optimizations64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Optimizations64.h; path = source/Optimizations64.h; sourceTree = "<group>"; };
 		25924A880D4D670C0050AA16 /* Exe32Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Exe32Processor.m; path = source/Processors/Exe32Processor.m; sourceTree = "<group>"; };
 		25924A890D4D670C0050AA16 /* Exe32Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exe32Processor.h; path = source/Processors/Exe32Processor.h; sourceTree = "<group>"; };
-		25924B380D4D71620050AA16 /* Optimizations32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Optimizations32.h; path = source/Optimizations32.h; sourceTree = "<group>"; };
 		25924BF90D4D88C90050AA16 /* Searchers64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Searchers64.m; path = source/Categories/Searchers64.m; sourceTree = "<group>"; };
 		25924BFA0D4D88C90050AA16 /* Searchers64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Searchers64.h; path = source/Categories/Searchers64.h; sourceTree = "<group>"; };
 		25A62EFA0C38A7C500B08D38 /* Prefs Output Icon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = "Prefs Output Icon.tif"; path = "images/Prefs Output Icon.tif"; sourceTree = "<group>"; };
@@ -120,7 +118,6 @@
 		E13539900A68185500CBDDE5 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AppController.h; path = source/AppController.h; sourceTree = "<group>"; };
 		E145F6D10B437F5900615A16 /* SmoothViewAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SmoothViewAnimation.h; path = source/SmoothViewAnimation.h; sourceTree = "<group>"; };
 		E145F6D20B437F5900615A16 /* SmoothViewAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SmoothViewAnimation.m; path = source/SmoothViewAnimation.m; sourceTree = "<group>"; };
-		E16222240A4F80F4007ECB26 /* Optimizations.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Optimizations.h; path = source/Optimizations.h; sourceTree = "<group>"; };
 		E182007009AE4CD800584B07 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppController.m; path = source/AppController.m; sourceTree = "<group>"; wrapsLines = 0; };
 		E1978C6B0AC603A40096EE62 /* English */ = {isa = PBXFileReference; lastKnownFileType = folder; name = English; path = English.lproj/Help; sourceTree = "<group>"; };
 		E1AD98A40B57311B00E56D96 /* DropBox.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DropBox.h; path = source/DropBox.h; sourceTree = "<group>"; };
@@ -251,9 +248,6 @@
 			children = (
 				2524F42F0E94A8ED008C1C42 /* ObjcSwap.h */,
 				E13539820A6817C700CBDDE5 /* ObjcSwap.c */,
-				E16222240A4F80F4007ECB26 /* Optimizations.h */,
-				25924B380D4D71620050AA16 /* Optimizations32.h */,
-				2578337C0D4C649500E05A06 /* Optimizations64.h */,
 				E1F483530B38DB4200CECE18 /* SharedDefs.h */,
 				E1167F1C09C8086900E7398D /* StolenDefs.h */,
 				E13539810A68178D00CBDDE5 /* SyscallStrings.h */,
@@ -398,8 +392,11 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "otx" */;
-			compatibilityVersion = "Xcode 3.0";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -532,7 +529,6 @@
 					"\"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PREFIX_HEADER = otx_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
@@ -564,7 +560,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = YES;
@@ -584,8 +580,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "-falign-loops=16";
-				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				SDKROOT = macosx;
 				WARNING_CFLAGS = "-wall";
 			};
 			name = Debug;
@@ -594,10 +589,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_DYNAMIC_NO_PIC = YES;
@@ -616,8 +608,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "-falign-loops=16";
-				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -626,7 +617,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -637,7 +627,6 @@
 				);
 				INSTALL_PATH = "$(HOME)/bin";
 				OTHER_CFLAGS = "-falign-loops=16";
-				PREBINDING = NO;
 				PRODUCT_NAME = otx;
 			};
 			name = Debug;
@@ -647,7 +636,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_DYNAMIC_NO_PIC = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -655,7 +643,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = OTX_CLI;
 				INSTALL_PATH = "$(HOME)/bin";
 				OTHER_CFLAGS = "-falign-loops=16";
-				PREBINDING = NO;
 				PRODUCT_NAME = otx;
 			};
 			name = Release;

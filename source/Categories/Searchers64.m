@@ -62,16 +62,16 @@
 // TODO: keep a sorted list of ClassInfo's, where each ClassInfo keeps a sorted
 // list of objc2_ivar_t's.
 
-- (BOOL)findIvar: (objc2_ivar_t**)outIvar
-         inClass: (objc2_class_t*)inClass
+- (BOOL)findIvar: (objc2_64_ivar_t**)outIvar
+         inClass: (objc2_64_class_t*)inClass
       withOffset: (UInt64)inOffset
 {
     if (!inClass || !outIvar)
         return NO;
 
-    objc2_ivar_t searchKey = {inOffset, 0, 0, 0, 0};
+    objc2_64_ivar_t searchKey = {inOffset, 0, 0, 0, 0};
 
-    *outIvar = bsearch(&searchKey, iClassIvars, iNumClassIvars, sizeof(objc2_ivar_t),
+    *outIvar = bsearch(&searchKey, iClassIvars, iNumClassIvars, sizeof(objc2_64_ivar_t),
         (COMPARISON_FUNC_TYPE)objc2_ivar_t_Compare);
 
     return (*outIvar != NULL);

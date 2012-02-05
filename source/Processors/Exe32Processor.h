@@ -8,7 +8,6 @@
 
 #import "ExeProcessor.h"
 #import "ObjcSwap.h"
-#import "Optimizations32.h"
 
 /*  MethodInfo
 
@@ -223,47 +222,6 @@ FunctionInfo;
     section_info        iImpPtrSect;
     uint32_t              iTextOffset;
     uint32_t              iEndOfText;
-
-    // C function pointers- see Optimizations.h and speedyDelivery
-    BOOL    (*LineIsCode)                   (id, SEL, const char*);
-    BOOL    (*LineIsFunction)               (id, SEL, Line*);
-    BOOL    (*CodeIsBlockJump)              (id, SEL, UInt8*);
-    uint32_t  (*AddressFromLine)              (id, SEL, const char*);
-    void    (*CodeFromLine)                 (id, SEL, Line*);
-    void    (*CheckThunk)                   (id, SEL, Line*);
-    void    (*ProcessLine)                  (id, SEL, Line*);
-    void    (*ProcessCodeLine)              (id, SEL, Line**);
-    void    (*PostProcessCodeLine)          (id, SEL, Line**);
-    void    (*ChooseLine)                   (id, SEL, Line**);
-    void    (*EntabLine)                    (id, SEL, Line*);
-    char*   (*GetPointer)                   (id, SEL, uint32_t, UInt8*);
-    void    (*CommentForLine)               (id, SEL, Line*);
-    void    (*CommentForSystemCall)         (id, SEL);
-    void    (*CommentForMsgSendFromLine)    (id, SEL, char*, Line*);
-    void    (*ResetRegisters)               (id, SEL, Line*);
-    void    (*UpdateRegisters)              (id, SEL, Line*);
-    BOOL    (*RestoreRegisters)             (id, SEL, Line*);
-    char*   (*SelectorForMsgSend)           (id, SEL, char*, Line*);
-    UInt8   (*SendTypeFromMsgSend)          (id, SEL, char*);
-    char*   (*PrepareNameForDemangling)     (id, SEL, char*);
-
-    BOOL    (*GetObjcClassPtrFromMethod)    (id, SEL, objc_class**, uint32_t);
-    BOOL    (*GetObjcCatPtrFromMethod)      (id, SEL, objc_category**, uint32_t);
-    BOOL    (*GetObjcMethodFromAddress)     (id, SEL, MethodInfo**, uint32_t);
-    BOOL    (*GetObjcClassFromName)         (id, SEL, objc_class*, const char*);
-    BOOL    (*GetObjcClassPtrFromName)      (id, SEL, objc_class**, const char*);
-    BOOL    (*GetObjcDescriptionFromObject) (id, SEL, char**, const char*, UInt8);
-    BOOL    (*GetObjcMetaClassFromClass)    (id, SEL, objc_class*, objc_class*);
-
-    void    (*InsertLineBefore)     (id, SEL, Line*, Line*, Line**);
-    void    (*InsertLineAfter)      (id, SEL, Line*, Line*, Line**);
-    void    (*ReplaceLine)          (id, SEL, Line*, Line*, Line**);
-    void    (*DeleteLinesBefore)    (id, SEL, Line*, Line**);
-
-    char*   (*FindSymbolByAddress)      (id, SEL, uint32_t);
-    BOOL    (*FindClassMethodByAddress) (id, SEL, MethodInfo**, uint32_t);
-    BOOL    (*FindCatMethodByAddress)   (id, SEL, MethodInfo**, uint32_t);
-    BOOL    (*FindIvar)                 (id, SEL, objc_ivar*, objc_class*, uint32_t);
 }
 
 - (id)initWithURL: (NSURL*)inURL
@@ -299,8 +257,6 @@ FunctionInfo;
                    fromLine: (Line*)inLine;
 
 - (void)insertMD5;
-
-- (void)speedyDelivery;
 
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;

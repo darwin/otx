@@ -7,7 +7,6 @@
 #import <Cocoa/Cocoa.h>
 
 #import "ExeProcessor.h"
-#import "Optimizations64.h"
 
 /*  MethodInfo
 
@@ -15,9 +14,9 @@
 */
 typedef struct
 {
-    objc2_method_t  m;
-    objc2_class_t   oc_class;
-    BOOL            inst;       // to determine '+' or '-'
+    objc2_64_method_t  m;
+    objc2_64_class_t   oc_class;
+    BOOL               inst;       // to determine '+' or '-'
 }
 Method64Info;
 
@@ -29,11 +28,11 @@ Method64Info;
 */
 typedef struct
 {
-    UInt64          value;
-    BOOL            isValid;        // value can be trusted
-    objc2_class_t*  classPtr;
-    char*           className;
-    char*           messageRefSel;  // selector for calls through pointers
+    UInt64             value;
+    BOOL               isValid;        // value can be trusted
+    objc2_64_class_t*  classPtr;
+    char*              className;
+    char*              messageRefSel;  // selector for calls through pointers
 }
 GP64RegisterInfo;
 
@@ -180,9 +179,9 @@ Function64Info;
     // Obj-C stuff
     Method64Info*       iClassMethodInfos;
     uint32_t              iNumClassMethodInfos;
-    objc2_ivar_t*       iClassIvars;
+    objc2_64_ivar_t*    iClassIvars;
     uint32_t              iNumClassIvars;
-    objc2_class_t*      iCurrentClass;
+    objc2_64_class_t*   iCurrentClass;
     BOOL                iIsInstanceMethod;
 
     // Mach-O sections
@@ -214,46 +213,6 @@ Function64Info;
     section_info_64     iImpPtrSect;
     UInt64              iTextOffset;
     UInt64              iEndOfText;
-
-    // C function pointers- see Optimizations.h and speedyDelivery
-    BOOL    (*LineIsCode)                   (id, SEL, const char*);
-    BOOL    (*LineIsFunction)               (id, SEL, Line64*);
-    BOOL    (*CodeIsBlockJump)              (id, SEL, UInt8*);
-    UInt64  (*AddressFromLine)              (id, SEL, const char*);
-    void    (*CodeFromLine)                 (id, SEL, Line64*);
-    void    (*CheckThunk)                   (id, SEL, Line64*);
-    void    (*ProcessLine)                  (id, SEL, Line64*);
-    void    (*ProcessCodeLine)              (id, SEL, Line64**);
-    void    (*PostProcessCodeLine)          (id, SEL, Line64**);
-    void    (*ChooseLine)                   (id, SEL, Line64**);
-    void    (*EntabLine)                    (id, SEL, Line64*);
-    char*   (*GetPointer)                   (id, SEL, UInt64, UInt8*);
-    void    (*CommentForLine)               (id, SEL, Line64*);
-    void    (*CommentForSystemCall)         (id, SEL);
-    void    (*CommentForMsgSendFromLine)    (id, SEL, char*, Line64*);
-    void    (*ResetRegisters)               (id, SEL, Line64*);
-    void    (*UpdateRegisters)              (id, SEL, Line64*);
-    BOOL    (*RestoreRegisters)             (id, SEL, Line64*);
-    char*   (*SelectorForMsgSend)           (id, SEL, char*, Line64*);
-    UInt8   (*SendTypeFromMsgSend)          (id, SEL, char*);
-    char*   (*PrepareNameForDemangling)     (id, SEL, char*);
-
-    BOOL    (*GetObjcClassPtrFromMethod)    (id, SEL, objc2_class_t**, UInt64);
-    BOOL    (*GetObjcMethodFromAddress)     (id, SEL, Method64Info**, UInt64);
-    BOOL    (*GetObjcClassFromName)         (id, SEL, objc2_class_t*, const char*);
-    BOOL    (*GetObjcClassPtrFromName)      (id, SEL, objc2_class_t**, const char*);
-    BOOL    (*GetObjcDescriptionFromObject) (id, SEL, char**, const char*, UInt8);
-    BOOL    (*GetObjcMetaClassFromClass)    (id, SEL, objc2_class_t*, objc2_class_t*);
-
-    void    (*InsertLineBefore)     (id, SEL, Line64*, Line64*, Line64**);
-    void    (*InsertLineAfter)      (id, SEL, Line64*, Line64*, Line64**);
-    void    (*ReplaceLine)          (id, SEL, Line64*, Line64*, Line64**);
-    void    (*DeleteLinesBefore)    (id, SEL, Line64*, Line64**);
-
-    char*   (*FindSymbolByAddress)      (id, SEL, UInt64);
-    BOOL    (*FindClassMethodByAddress) (id, SEL, Method64Info**, UInt64);
-    BOOL    (*FindCatMethodByAddress)   (id, SEL, Method64Info**, UInt64);
-    BOOL    (*FindIvar)                 (id, SEL, objc2_ivar_t**, objc2_class_t*, UInt64);
 }
 
 - (id)initWithURL: (NSURL*)inURL
@@ -289,8 +248,6 @@ Function64Info;
                    fromLine: (Line64*)inLine;
 
 - (void)insertMD5;
-
-- (void)speedyDelivery;
 
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist_64)inSym;
@@ -340,8 +297,8 @@ Method64Info_Compare_Swapped(
 
 static int
 objc2_ivar_t_Compare(
-    objc2_ivar_t* i1,
-    objc2_ivar_t* i2)
+    objc2_64_ivar_t* i1,
+    objc2_64_ivar_t* i2)
 {
     if (i1->offset < i2->offset)
         return -1;
@@ -356,6 +313,6 @@ static void
 swap_method64_info(
     Method64Info* mi)
 {
-    swap_objc2_method(&mi->m);
-    swap_objc2_class(&mi->oc_class);
+    swap_objc2_64_method(&mi->m);
+    swap_objc2_64_class(&mi->oc_class);
 }

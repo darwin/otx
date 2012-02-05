@@ -16,6 +16,7 @@
 #import "ListUtils.h"
 #import "ObjcAccessors.h"
 #import "ObjectLoader.h"
+#import "Searchers.h"
 #import "SysUtils.h"
 #import "UserDefaultKeys.h"
 #import "X86Processor.h"
@@ -262,13 +263,13 @@
 
         if (theLine->info.isCode)
         {
-            ProcessCodeLine(&theLine);
+            [self processCodeLine:&theLine];
 
             if (iOpts.entabOutput)
-                EntabLine(theLine);
+                [self entabLine:theLine];
         }
         else
-            ProcessLine(theLine);
+            [self processLine:theLine];
 
         theLine = theLine->next;
         progCounter++;
@@ -445,7 +446,7 @@
             theNewLine->length + 1);
 
         // Add the line to the list.
-        InsertLineAfter(theNewLine, *inLine, inList);
+        [self insertLine:theNewLine after:*inLine inList:inList];
 
         *inLine = theNewLine;
     }
@@ -481,11 +482,11 @@
 //            [NSThread sleepForTimeInterval: 0.0];
         }
 
-        if (LineIsCode(theLine->chars))
+        if ([self lineIsCode:theLine->chars])
         {
             theLine->info.isCode    = YES;
-            theLine->info.address   = AddressFromLine(theLine->chars);
-            CodeFromLine(theLine);  // FIXME: return a value like the cool kids do.
+            theLine->info.address   = [self addressFromLine:theLine->chars];
+            [self codeFromLine:theLine];  // FIXME: return a value like the cool kids do.
 
             if (theLine->alt)
             {
@@ -496,7 +497,7 @@
                     sizeof(theLine->info.code));
             }
 
-            CheckThunk(theLine);
+            [self checkThunk:theLine];
         }
         else    // not code...
         {
@@ -524,8 +525,8 @@
 
     while (theLine)
     {
-        theLine->info.isFunction    = LineIsFunction(theLine);
-
+        theLine->info.isFunction    = [self lineIsFunction:theLine];
+        
         if (theLine->alt)
             theLine->alt->info.isFunction   = theLine->info.isFunction;
 
@@ -695,7 +696,7 @@
         return;
     }
 
-    ChooseLine(ioLine);
+    [self chooseLine:ioLine];
 
     uint32_t  theOrigLength           = (*ioLine)->length;
     char    localOffsetString[9]    = {0};
@@ -714,7 +715,7 @@
     theCommentCString[0]        = 0;
 
     // Swap in saved registers if necessary
-    BOOL    needNewLine = RestoreRegisters(*ioLine);
+    BOOL    needNewLine = [self restoreRegisters:*ioLine];
 
     iLineOperandsCString[0] = 0;
 
@@ -816,7 +817,7 @@
         MethodInfo* theSwappedInfoPtr   = NULL;
         MethodInfo  theSwappedInfo;
 
-        if (GetObjcMethodFromAddress(&theSwappedInfoPtr, iCurrentFuncPtr))
+        if ([self getObjcMethod:&theSwappedInfoPtr fromAddress:iCurrentFuncPtr])
         {
             theSwappedInfo  = *theSwappedInfoPtr;
 
@@ -828,29 +829,24 @@
 
             if (theSwappedInfo.oc_cat.category_name)
             {
-                className   = GetPointer(
-                    (uint32_t)theSwappedInfo.oc_cat.class_name, NULL);
-                catName     = GetPointer(
-                    (uint32_t)theSwappedInfo.oc_cat.category_name, NULL);
+                className   = [self getPointer:(uint32_t)theSwappedInfo.oc_cat.class_name type:NULL];
+                catName     = [self getPointer:(uint32_t)theSwappedInfo.oc_cat.category_name type:NULL];
             }
             else if (theSwappedInfo.oc_class.name)
             {
-                className   = GetPointer(
-                    (uint32_t)theSwappedInfo.oc_class.name, NULL);
+                className   = [self getPointer:(uint32_t)theSwappedInfo.oc_class.name type:NULL];
             }
 
             if (className)
             {
-                char*   selName = GetPointer(
-                    (uint32_t)theSwappedInfo.m.method_name, NULL);
+                char*   selName = [self getPointer:(uint32_t)theSwappedInfo.m.method_name type:NULL];
 
                 if (selName)
                 {
                     if (!theSwappedInfo.m.method_types)
                         return;
 
-                    char*   methTypes   =
-                        GetPointer((uint32_t)theSwappedInfo.m.method_types, NULL);
+                    char*   methTypes = [self getPointer:(uint32_t)theSwappedInfo.m.method_types type:NULL];
 
                     if (methTypes)
                     {
@@ -885,7 +881,7 @@
                     }
                 }
             }
-        }   // if (GetObjcMethodFromAddress(&theSwappedInfoPtr, mCurrentFuncPtr))
+        }   // if ([self getObjcMethod:&theSwappedInfoPtr fromAddress:mCurrentFuncPtr])
 
         // Add or replace the method name if possible, else add '\n'.
         if ((*ioLine)->prev && (*ioLine)->prev->info.isCode)    // prev line is code
@@ -899,7 +895,7 @@
 
                 strncpy(theNewLine->chars, theMethCName,
                     theNewLine->length + 1);
-                InsertLineBefore(theNewLine, *ioLine, &iPlainLineListHead);
+                [self insertLine:theNewLine before:*ioLine inList:&iPlainLineListHead];
             }
             else if ((*ioLine)->info.address == iAddrDyldStubBindingHelper)
             {
@@ -910,7 +906,7 @@
                 theNewLine->chars   = malloc(theNewLine->length + 1);
 
                 strncpy(theNewLine->chars, theDyldName, theNewLine->length + 1);
-                InsertLineBefore(theNewLine, *ioLine, &iPlainLineListHead);
+                [self insertLine:theNewLine before:*ioLine inList:&iPlainLineListHead];
             }
             else if ((*ioLine)->info.address == iAddrDyldFuncLookupPointer)
             {
@@ -921,7 +917,7 @@
                 theNewLine->chars   = malloc(theNewLine->length + 1);
 
                 strncpy(theNewLine->chars, theDyldName, theNewLine->length + 1);
-                InsertLineBefore(theNewLine, *ioLine, &iPlainLineListHead);
+                [self insertLine:theNewLine before:*ioLine inList:&iPlainLineListHead];
             }
             else
                 needFuncName = YES;
@@ -937,7 +933,7 @@
 
                 strncpy(theNewLine->chars, theMethCName,
                     theNewLine->length + 1);
-                ReplaceLine((*ioLine)->prev, theNewLine, &iPlainLineListHead);
+                [self replaceLine:(*ioLine)->prev withLine:theNewLine inList:&iPlainLineListHead];
             }
             else
             {   // theMethName sux, add '\n' to otool's method name.
@@ -961,14 +957,14 @@
                     (*ioLine)->prev->length + 1);
             }
         }
-
-        ResetRegisters(*ioLine);
+        
+        [self resetRegisters:*ioLine];
     }   // if ((*ioLine)->info.isFunction)
 
     // Find a comment if necessary.
     if (!theCommentCString[0])
     {
-        CommentForLine(*ioLine);
+        [self commentForLine:*ioLine];
 
         uint32_t  origCommentLength   = strlen(iLineCommentCString);
 
@@ -1022,7 +1018,7 @@
     {
         // Optionally modify otool's comment.
         if (iOpts.verboseMsgSends)
-            CommentForMsgSendFromLine(theCommentCString, *ioLine);
+            [self commentForMsgSend:theCommentCString fromLine:*ioLine];
     }
 
     // Demangle operands if necessary.
@@ -1199,7 +1195,7 @@
             funcName->length    = snprintf(funcName->chars, maxlength,
                 "\n%s???:\n", ANON_FUNC_BASE);
 
-        InsertLineBefore(funcName, *ioLine, &iPlainLineListHead);
+        [self insertLine:funcName before:*ioLine inList:&iPlainLineListHead];
     }
 
     // Finally, assemble the new string.
@@ -1271,11 +1267,11 @@
     // should reset it here instead.
     iEnteringNewBlock = NO;
 
-    UpdateRegisters(*ioLine);
-    PostProcessCodeLine(ioLine);
+    [self updateRegisters:*ioLine];
+    [self postProcessCodeLine:ioLine];
 
     // Possibly prepend a \n to the following line.
-    if (CodeIsBlockJump((*ioLine)->info.code))
+    if ([self codeIsBlockJump:(*ioLine)->info.code])
         iEnteringNewBlock = YES;
 }
 
@@ -1503,7 +1499,7 @@
     newLine->chars = malloc(newLine->length + 1);
     strncpy(newLine->chars, utf8String, newLine->length + 1);
 
-    InsertLineAfter(newLine, iPlainLineListHead, &iPlainLineListHead);
+    [self insertLine:newLine after:iPlainLineListHead inList:&iPlainLineListHead];
 }
 
 #pragma mark -
@@ -1799,7 +1795,7 @@
                     break;
                 }
 
-                thePtr  = GetPointer(theValue, &theType);
+                thePtr  = [self getPointer:theValue type:&theType];
 
                 if (!thePtr)
                 {
@@ -1882,7 +1878,7 @@
                 if (iSwapped)
                     roData.name = OSSwapInt64(roData.name);
 
-                thePtr = GetPointer(roData.name, NULL);
+                thePtr = [self getPointer:roData.name type:NULL];
 
                 if (outType)
                     *outType = OCClassRefType;
@@ -1899,7 +1895,7 @@
         if (iSwapped)
             ref.sel = OSSwapInt64(ref.sel);
 
-        thePtr = GetPointer(ref.sel, NULL);
+        thePtr = [self getPointer:ref.sel type:NULL];
 
         if (outType)
             *outType = OCMsgRefType;
@@ -1938,7 +1934,7 @@
 
                 if (namePtr != 0)
                 {
-                    thePtr = GetPointer(namePtr, NULL);
+                    thePtr = [self getPointer:namePtr type:NULL];
 
                     if (outType)
                         *outType = OCSuperRefType;
@@ -1958,7 +1954,7 @@
 
         if (selAddy != 0)
         {
-            thePtr = GetPointer(selAddy, NULL);
+            thePtr = [self getPointer:selAddy type:NULL];
 
             if (outType)
                 *outType = OCSelRefType;
@@ -2002,7 +1998,7 @@
 
             if (protoName != 0)
             {
-                thePtr = GetPointer(protoName, NULL);
+                thePtr = [self getPointer:protoName type:NULL];
 
                 if (outType)
                     *outType = tempType;
@@ -2043,88 +2039,6 @@
     }*/
 
     return thePtr;
-}
-
-#pragma mark -
-//  speedyDelivery
-// ----------------------------------------------------------------------------
-
-- (void)speedyDelivery
-{
-    [super speedyDelivery];
-
-    LineIsCode                      = LineIsCodeFuncType
-        [self methodForSelector: LineIsCodeSel];
-    LineIsFunction                  = LineIsFunctionFuncType
-        [self methodForSelector: LineIsFunctionSel];
-    CodeIsBlockJump                 = CodeIsBlockJumpFuncType
-        [self methodForSelector: CodeIsBlockJumpSel];
-    AddressFromLine                 = AddressFromLineFuncType
-        [self methodForSelector: AddressFromLineSel];
-    CodeFromLine                    = CodeFromLineFuncType
-        [self methodForSelector: CodeFromLineSel];
-    CheckThunk                      = CheckThunkFuncType
-        [self methodForSelector : CheckThunkSel];
-    ProcessLine                     = ProcessLineFuncType
-        [self methodForSelector: ProcessLineSel];
-    ProcessCodeLine                 = ProcessCodeLineFuncType
-        [self methodForSelector: ProcessCodeLineSel];
-    PostProcessCodeLine             = PostProcessCodeLineFuncType
-        [self methodForSelector: PostProcessCodeLineSel];
-    ChooseLine                      = ChooseLineFuncType
-        [self methodForSelector: ChooseLineSel];
-    EntabLine                       = EntabLineFuncType
-        [self methodForSelector: EntabLineSel];
-    GetPointer                      = GetPointerFuncType
-        [self methodForSelector: GetPointerSel];
-    CommentForLine                  = CommentForLineFuncType
-        [self methodForSelector: CommentForLineSel];
-    CommentForSystemCall            = CommentForSystemCallFuncType
-        [self methodForSelector: CommentForSystemCallSel];
-    CommentForMsgSendFromLine       = CommentForMsgSendFromLineFuncType
-        [self methodForSelector: CommentForMsgSendFromLineSel];
-    SelectorForMsgSend              = SelectorForMsgSendFuncType
-        [self methodForSelector: SelectorForMsgSendSel];
-    ResetRegisters                  = ResetRegistersFuncType
-        [self methodForSelector: ResetRegistersSel];
-    UpdateRegisters                 = UpdateRegistersFuncType
-        [self methodForSelector: UpdateRegistersSel];
-    RestoreRegisters                = RestoreRegistersFuncType
-        [self methodForSelector: RestoreRegistersSel];
-    SendTypeFromMsgSend             = SendTypeFromMsgSendFuncType
-        [self methodForSelector: SendTypeFromMsgSendSel];
-    PrepareNameForDemangling        = PrepareNameForDemanglingFuncType
-        [self methodForSelector: PrepareNameForDemanglingSel];
-    GetObjcClassPtrFromMethod       = GetObjcClassPtrFromMethodFuncType
-        [self methodForSelector: GetObjcClassPtrFromMethodSel];
-    GetObjcCatPtrFromMethod         = GetObjcCatPtrFromMethodFuncType
-        [self methodForSelector: GetObjcCatPtrFromMethodSel];
-    GetObjcMethodFromAddress        = GetObjcMethodFromAddressFuncType
-        [self methodForSelector: GetObjcMethodFromAddressSel];
-    GetObjcClassFromName            = GetObjcClassFromNameFuncType
-        [self methodForSelector: GetObjcClassFromNameSel];
-    GetObjcClassPtrFromName         = GetObjcClassPtrFromNameFuncType
-        [self methodForSelector: GetObjcClassPtrFromNameSel];
-    GetObjcDescriptionFromObject    = GetObjcDescriptionFromObjectFuncType
-        [self methodForSelector: GetObjcDescriptionFromObjectSel];
-    GetObjcMetaClassFromClass       = GetObjcMetaClassFromClassFuncType
-        [self methodForSelector: GetObjcMetaClassFromClassSel];
-    InsertLineBefore                = InsertLineBeforeFuncType
-        [self methodForSelector: InsertLineBeforeSel];
-    InsertLineAfter                 = InsertLineAfterFuncType
-        [self methodForSelector: InsertLineAfterSel];
-    ReplaceLine                     = ReplaceLineFuncType
-        [self methodForSelector: ReplaceLineSel];
-    DeleteLinesBefore               = DeleteLinesBeforeFuncType
-        [self methodForSelector: DeleteLinesBeforeSel];
-    FindSymbolByAddress             = FindSymbolByAddressFuncType
-        [self methodForSelector: FindSymbolByAddressSel];
-    FindClassMethodByAddress        = FindClassMethodByAddressFuncType
-        [self methodForSelector: FindClassMethodByAddressSel];
-    FindCatMethodByAddress          = FindCatMethodByAddressFuncType
-        [self methodForSelector: FindCatMethodByAddressSel];
-    FindIvar                        = FindIvarFuncType
-        [self methodForSelector: FindIvarSel];
 }
 
 #ifdef OTX_DEBUG

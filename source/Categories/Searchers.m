@@ -10,6 +10,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "Searchers.h"
+#import "ObjcAccessors.h"
 
 @implementation Exe32Processor(Searchers)
 
@@ -114,18 +115,16 @@
 //      if (mSwapped)
 //          swap_objc_class(&theSwappedClass);
 
-        theIvars    = (objc_ivar_list*)GetPointer(
-            (uint32_t)theSwappedClass.ivars, NULL);
+        theIvars    = (objc_ivar_list*)[self getPointer:(uint32_t)theSwappedClass.ivars type:NULL];
 
         if (!theIvars)
         {   // Try again with the superclass.
-            theSuperName    = GetPointer(
-                (uint32_t)theClassPtr->super_class, NULL);
+            theSuperName    = [self getPointer:(uint32_t)theClassPtr->super_class type:NULL];
 
             if (!theSuperName)
                 break;
 
-            if (!GetObjcClassFromName(&theDummyClass, theSuperName))
+            if (![self getObjcClass:&theDummyClass fromName:theSuperName])
                 break;
 
             theClassPtr = &theDummyClass;
@@ -171,12 +170,12 @@
         }
 
         // Try again with the superclass.
-        theSuperName    = GetPointer((uint32_t)theClassPtr->super_class, NULL);
+        theSuperName    = [self getPointer:(uint32_t)theClassPtr->super_class type:NULL];
 
         if (!theSuperName)
             break;
 
-        if (!GetObjcClassFromName(&theDummyClass, theSuperName))
+        if (![self getObjcClass:&theDummyClass fromName:theSuperName])
             break;
 
         theClassPtr = &theDummyClass;

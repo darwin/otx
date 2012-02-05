@@ -211,30 +211,30 @@ typedef struct
 objc2_32_string_object;
 
 
-typedef struct method_t
+typedef struct
 {
     uint64_t name;   // SEL
     uint64_t types;  // const char *
     uint64_t imp;    // IMP
 }
-objc2_method_t;
+objc2_64_method_t;
 
-typedef struct method_list_t
+typedef struct
 {
     uint32_t entsize;
     uint32_t count;
-    objc2_method_t first;
+    objc2_64_method_t first;
 }
-objc2_method_list_t;
+objc2_64_method_list_t;
 
-typedef struct message_ref
+typedef struct
 {
     uint64_t imp;   // IMP
     uint64_t sel;   // SEL
 }
-objc2_message_ref_t;
+objc2_64_message_ref_t;
 
-typedef struct ivar_t
+typedef struct
 {
     // *offset is 64-bit by accident even though other 
     // fields restrict total instance size to 32-bit. 
@@ -244,17 +244,17 @@ typedef struct ivar_t
     uint32_t alignment;
     uint32_t size;
 }
-objc2_ivar_t;
+objc2_64_ivar_t;
 
-typedef struct ivar_list_t
+typedef struct
 {
     uint32_t entsize;
     uint32_t count;
-    objc2_ivar_t first;
+    objc2_64_ivar_t first;
 }
-objc2_ivar_list_t;
+objc2_64_ivar_list_t;
 
-typedef struct protocol_t
+typedef struct
 {
     uint64_t isa;                       // id
     uint64_t name;                      // const char *
@@ -265,17 +265,17 @@ typedef struct protocol_t
     uint64_t optionalClassMethods;      // objc2_method_list_t *
     uint64_t instanceProperties;        // struct objc2_property_list *
 }
-objc2_protocol_t;
+objc2_64_protocol_t;
 
-typedef struct protocol_list_t
+typedef struct
 {
     // count is 64-bit by accident. 
     uint64_t count;     // uintptr_t
     uint64_t list[0];   // objc2_protocol_t *
 }
-objc2_protocol_list_t;
+objc2_64_protocol_list_t;
 
-typedef struct class_ro_t
+typedef struct
 {
     uint32_t flags;
     uint32_t instanceStart;
@@ -292,9 +292,9 @@ typedef struct class_ro_t
     uint64_t weakIvarLayout;    // const uint8_t *
     uint64_t baseProperties;    // const struct objc2_property_list *
 }
-objc2_class_ro_t;
+objc2_64_class_ro_t;
 
-typedef struct class_rw_t
+typedef struct
 {
     uint32_t flags;
     uint32_t version;
@@ -308,9 +308,9 @@ typedef struct class_rw_t
     uint64_t firstSubclass;     // objc2_class_t *
     uint64_t nextSiblingClass;  // objc2_class_t *
 }
-objc2_class_rw_t;
+objc2_64_class_rw_t;
 
-typedef struct class_t
+typedef struct
 {
     uint64_t isa;           // objc2_class_t *
     uint64_t superclass;    // objc2_class_t *
@@ -318,7 +318,7 @@ typedef struct class_t
     uint64_t vtable;        // IMP *
     uint64_t data;          // objc2_class_rw_t *
 }
-objc2_class_t;
+objc2_64_class_t;
 
 typedef struct
 {
@@ -326,12 +326,12 @@ typedef struct
     uint64_t    chars;
     uint64_t    length;
 }
-objc2_string_object;
+objc2_64_string_object;
 
 typedef struct
 {
     uint64_t            isa;
-    objc2_string_object oc_string;
+    objc2_64_string_object oc_string;
 }
 cf_string_object_64;
 
@@ -378,11 +378,12 @@ swap_objc2_32_ivar(
     i->size         = OSSwapInt32(i->size);
 }
 
-
+//  swap_objc2_64_class
+// ----------------------------------------------------------------------------
 
 static void
-swap_objc2_class(
-    objc2_class_t* oc)
+swap_objc2_64_class(
+    objc2_64_class_t* oc)
 {
     oc->isa         = OSSwapInt64(oc->isa);
     oc->superclass  = OSSwapInt64(oc->superclass);
@@ -391,24 +392,24 @@ swap_objc2_class(
     oc->data        = OSSwapInt64(oc->data);
 }
 
-//  swap_objc2_method
+//  swap_objc2_64_method
 // ----------------------------------------------------------------------------
 
 static void
-swap_objc2_method(
-    objc2_method_t* m)
+swap_objc2_64_method(
+    objc2_64_method_t* m)
 {
     m->name     = OSSwapInt64(m->name);
     m->types    = OSSwapInt64(m->types);
     m->imp      = OSSwapInt64(m->imp);
 }
 
-//  swap_objc2_ivar
+//  swap_objc2_64_ivar
 // ----------------------------------------------------------------------------
 
 static void
-swap_objc2_ivar(
-    objc2_ivar_t* i)
+swap_objc2_64_ivar(
+    objc2_64_ivar_t* i)
 {
     i->offset       = OSSwapInt64(i->offset);
     i->name         = OSSwapInt64(i->name);

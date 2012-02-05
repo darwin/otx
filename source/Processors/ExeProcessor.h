@@ -96,28 +96,28 @@ enum {
 // Constants that represent which section is being referenced, indicating
 // likely data types.
 enum {
-    PointerType,        // C string in (__TEXT,__cstring)
-    PStringType,        // Str255 in (__TEXT,__const)
-    TextConstType,      // ? in (__TEXT,__const)
-    CFStringType,       // cf_string_object in (__TEXT,__cfstring)
-    FloatType,          // float in (__TEXT,__literal4)
-    DoubleType,         // double in (__TEXT,__literal8)
-    DataGenericType,    // ? in (__DATA,__data)
-    DataConstType,      // ? in (__DATA,__const)
-    DYLDType,           // function ptr in (__DATA,__dyld)
-    NLSymType,          // non-lazy symbol* in (__DATA,__nl_symbol_ptr)
-    ImpPtrType,         // cf_string_object* in (__IMPORT,__pointers)
-    OCGenericType,          // Obj-C types
-    OCStrObjectType,    // objc_string_object in (__OBJC,__string_object)
-    OCClassType,        // objc_class in (__OBJC,__class)
-    OCModType,          // objc_module in (__OBJC,__module_info)
-    OCClassRefType,     // objc2_class_t* in (__DATA,__objc_classrefs)
-    OCMsgRefType,       // objc2_message_ref_t in (__DATA,__objc_msgrefs)
-    OCSelRefType,       // char* in (__DATA,__objc_selrefs)
-    OCSuperRefType,     // objc2_class_t* in (__DATA,__objc_superrefs)
-    OCCatListType,      // ? in (__DATA,__objc_catlist)
-    OCProtoListType,    // objc2_protocol_t* in (__DATA,__objc_protolist)
-    OCProtoRefType,     // objc2_protocol_t* in (__DATA,__objc_protorefs)
+    PointerType,        // 0  - C string in (__TEXT,__cstring)
+    PStringType,        // 1  - Str255 in (__TEXT,__const)
+    TextConstType,      // 2  - ? in (__TEXT,__const)
+    CFStringType,       // 3  - cf_string_object in (__TEXT,__cfstring)
+    FloatType,          // 4  - float in (__TEXT,__literal4)
+    DoubleType,         // 5  - double in (__TEXT,__literal8)
+    DataGenericType,    // 6  - ? in (__DATA,__data)
+    DataConstType,      // 7  - ? in (__DATA,__const)
+    DYLDType,           // 8  - function ptr in (__DATA,__dyld)
+    NLSymType,          // 9  - non-lazy symbol* in (__DATA,__nl_symbol_ptr)
+    ImpPtrType,         // 10 - cf_string_object* in (__IMPORT,__pointers)
+    OCGenericType,          // (11) Obj-C types
+    OCStrObjectType,    // 12 - objc_string_object in (__OBJC,__string_object)
+    OCClassType,        // 13 - objc_class in (__OBJC,__class)
+    OCModType,          // 14 - objc_module in (__OBJC,__module_info)
+    OCClassRefType,     // 15 - objc2_class_t* in (__DATA,__objc_classrefs)
+    OCMsgRefType,       // 16 - objc2_message_ref_t in (__DATA,__objc_msgrefs)
+    OCSelRefType,       // 17 - char* in (__DATA,__objc_selrefs)
+    OCSuperRefType,     // 18 - objc2_class_t* in (__DATA,__objc_superrefs)
+    OCCatListType,      // 19 - ? in (__DATA,__objc_catlist)
+    OCProtoListType,    // 20 - objc2_protocol_t* in (__DATA,__objc_protolist)
+    OCProtoRefType,     // 21 - objc2_protocol_t* in (__DATA,__objc_protorefs)
 };
 
 #define MAX_FIELD_SPACING           50      // spaces between fields
@@ -190,8 +190,6 @@ enum {
     char        iArchString[MAX_ARCH_STRING_LENGTH];    // "ppc", "i386" etc.
     char        iLineCommentCString[MAX_COMMENT_LENGTH];
     char        iLineOperandsCString[MAX_OPERANDS_LENGTH];
-
-    void        (*GetDescription)(id, SEL, char*, const char*);
 }
 
 - (id)initWithURL: (NSURL*)inURL
@@ -208,8 +206,6 @@ enum {
 
 - (void)getDescription: (char*)ioCString
                forType: (const char*)inTypeCode;
-
-- (void)speedyDelivery;
 
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;

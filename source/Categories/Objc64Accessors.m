@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "Objc64Accessors.h"
+#import "Searchers64.h"
 
 @implementation Exe64Processor(Objc64Accessors)
 
@@ -18,14 +19,13 @@
 //  is called each time a new function is detected. If that function is known
 //  to be an Obj-C method, it's class is returned. Otherwise this returns NULL.
 
-- (BOOL)getObjcClassPtr: (objc2_class_t**)outClass
+- (BOOL)getObjcClassPtr: (objc2_64_class_t**)outClass
              fromMethod: (UInt64)inAddress;
 {
     *outClass   = NULL;
 
     Method64Info* theInfo = NULL;
-
-    FindClassMethodByAddress(&theInfo, inAddress);
+    [self findClassMethod:&theInfo byAddress:inAddress];
 
     if (theInfo)
         *outClass   = &theInfo->oc_class;
@@ -41,13 +41,12 @@
           fromAddress: (UInt64)inAddress;
 {
     *outMI  = NULL;
-
-    FindClassMethodByAddress(outMI, inAddress);
+    [self findClassMethod:outMI byAddress:inAddress];
 
 /*    if (*outMI)
         return YES;
 
-    FindCatMethodByAddress(outMI, inAddress);*/
+    [self findCatMethod:outMI byAddress:inAddress];*/
 
     return (*outMI != NULL);
 }
@@ -56,8 +55,8 @@
 // ----------------------------------------------------------------------------
 //  Removed the truncation flag. 'left' is no longer used by the caller.
 
-- (BOOL)getObjcMethodList: (objc2_method_list_t*)outList
-                  methods: (objc2_method_t**)outMethods
+- (BOOL)getObjcMethodList: (objc2_64_method_list_t*)outList
+                  methods: (objc2_64_method_t**)outMethods
               fromAddress: (UInt64)inAddress;
 {
 /*    uint32_t  left, i;
@@ -131,7 +130,7 @@
 
         case OCStrObjectType:
         {
-            objc2_string_object ocString = *(objc2_string_object*)inObject;
+            objc2_64_string_object ocString = *(objc2_64_string_object*)inObject;
 
             if (ocString.length == 0)
                 break;
@@ -154,7 +153,7 @@
     if (iSwapped)
         theValue = OSSwapInt64(theValue);
 
-    *outDescription = GetPointer(theValue, NULL);
+    *outDescription = [self getPointer:theValue type:NULL];
 
     return (*outDescription != NULL);
 }
@@ -165,7 +164,7 @@
 //  categories to classes. We have 2 pointers to the same name, so pointer
 //  equality is sufficient.
 
-- (BOOL)getObjcClass: (objc2_class_t*)outClass
+- (BOOL)getObjcClass: (objc2_64_class_t*)outClass
             fromName: (const char*)inName;
 {
     uint32_t  i;
@@ -173,7 +172,7 @@
 
     for (i = 0; i < iNumClassMethodInfos; i++)
     {
-        objc2_class_ro_t* roData = (objc2_class_ro_t*)(iDataSect.contents +
+        objc2_64_class_ro_t* roData = (objc2_64_class_ro_t*)(iDataSect.contents +
             (uintptr_t)(iClassMethodInfos[i].oc_class.data - iDataSect.s.addr)); 
 
         namePtr = roData->name;
@@ -181,14 +180,14 @@
         if (iSwapped)
             namePtr = OSSwapInt64(namePtr);
 
-        if (GetPointer(namePtr, NULL) == inName)
+        if ([self getPointer:namePtr type:NULL] == inName)
         {
             *outClass   = iClassMethodInfos[i].oc_class;
             return YES;
         }
     }
 
-    *outClass   = (objc2_class_t){0};
+    *outClass   = (objc2_64_class_t){0};
     return NO;
 }
 
@@ -196,7 +195,7 @@
 // ----------------------------------------------------------------------------
 //  Same as above, but returns a pointer.
 
-- (BOOL)getObjcClassPtr: (objc2_class_t**)outClassPtr
+- (BOOL)getObjcClassPtr: (objc2_64_class_t**)outClassPtr
                fromName: (const char*)inName;
 {
     uint32_t  i;
@@ -204,7 +203,7 @@
 
     for (i = 0; i < iNumClassMethodInfos; i++)
     {
-        objc2_class_ro_t* roData = (objc2_class_ro_t*)(iDataSect.contents +
+        objc2_64_class_ro_t* roData = (objc2_64_class_ro_t*)(iDataSect.contents +
             (uintptr_t)(iClassMethodInfos[i].oc_class.data - iDataSect.s.addr)); 
 
         namePtr = roData->name;
@@ -212,7 +211,7 @@
         if (iSwapped)
             namePtr = OSSwapInt64(namePtr);
 
-        if (GetPointer(namePtr, NULL) == inName)
+        if ([self getPointer:namePtr type:NULL] == inName)
         {
             *outClassPtr = &iClassMethodInfos[i].oc_class;
             return YES;
@@ -226,8 +225,8 @@
 //  getObjcMetaClass:fromClass:
 // ----------------------------------------------------------------------------
 
-- (BOOL)getObjcMetaClass: (objc2_class_t*)outClass
-               fromClass: (objc2_class_t*)inClass;
+- (BOOL)getObjcMetaClass: (objc2_64_class_t*)outClass
+               fromClass: (objc2_64_class_t*)inClass;
 {
 /*    if ((uint32_t)inClass->isa >= iMetaClassSect.s.addr &&
         (uint32_t)inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)

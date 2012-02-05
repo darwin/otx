@@ -160,13 +160,13 @@
 
         // Save methods, ivars, and protocols
         // Don't call getPointer here, its __DATA logic doesn't fit
-        objc2_class_t workingClass = *(objc2_class_t*)(iDataSect.contents +
+        objc2_64_class_t workingClass = *(objc2_64_class_t*)(iDataSect.contents +
             (fileClassPtr - iDataSect.s.addr));
 
         if (iSwapped)
-            swap_objc2_class(&workingClass);
+            swap_objc2_64_class(&workingClass);
 
-        objc2_class_ro_t* roData;
+        objc2_64_class_ro_t* roData;
         UInt64 methodBase;
         UInt64 ivarBase;
 
@@ -175,7 +175,7 @@
             uint32_t count;
             uint32_t i;
 
-            roData = (objc2_class_ro_t*)(iDataSect.contents +
+            roData = (objc2_64_class_ro_t*)(iDataSect.contents +
                 (uintptr_t)(workingClass.data - iDataSect.s.addr));
             methodBase = roData->baseMethods;
             ivarBase = roData->ivars;
@@ -188,9 +188,9 @@
 
             if (methodBase != 0)
             {
-                objc2_method_list_t* methods = (objc2_method_list_t*)(iDataSect.contents +
+                objc2_64_method_list_t* methods = (objc2_64_method_list_t*)(iDataSect.contents +
                     (uintptr_t)(methodBase - iDataSect.s.addr));
-                objc2_method_t* methodArray = &methods->first;
+                objc2_64_method_t* methodArray = &methods->first;
                 count = methods->count;
 
                 if (iSwapped)
@@ -198,10 +198,10 @@
 
                 for (i = 0; i < count; i++)
                 {
-                    objc2_method_t swappedMethod = methodArray[i];
+                    objc2_64_method_t swappedMethod = methodArray[i];
 
                     if (iSwapped)
-                        swap_objc2_method(&swappedMethod);
+                        swap_objc2_64_method(&swappedMethod);
 
                     Method64Info methodInfo = {swappedMethod, workingClass, YES};
 
@@ -214,9 +214,9 @@
 
             if (ivarBase != 0)
             {
-                objc2_ivar_list_t* ivars = (objc2_ivar_list_t*)(iDataSect.contents +
+                objc2_64_ivar_list_t* ivars = (objc2_64_ivar_list_t*)(iDataSect.contents +
                     (uintptr_t)(ivarBase - iDataSect.s.addr));
-                objc2_ivar_t* ivarArray = &ivars->first;
+                objc2_64_ivar_t* ivarArray = &ivars->first;
                 count = ivars->count;
 
                 if (iSwapped)
@@ -224,14 +224,14 @@
 
                 for (i = 0; i < count; i++)
                 {
-                    objc2_ivar_t swappedIvar = ivarArray[i];
+                    objc2_64_ivar_t swappedIvar = ivarArray[i];
 
                     if (iSwapped)
-                        swap_objc2_ivar(&swappedIvar);
+                        swap_objc2_64_ivar(&swappedIvar);
 
                     iNumClassIvars++;
                     iClassIvars = realloc(iClassIvars,
-                        iNumClassIvars * sizeof(objc2_ivar_t));
+                        iNumClassIvars * sizeof(objc2_64_ivar_t));
                     iClassIvars[iNumClassIvars - 1] = swappedIvar;
                 }
             }
@@ -240,15 +240,15 @@
         // Get metaclass methods
         if (workingClass.isa != 0)
         {
-            workingClass = *(objc2_class_t*)(iDataSect.contents +
+            workingClass = *(objc2_64_class_t*)(iDataSect.contents +
                 (workingClass.isa - iDataSect.s.addr));
 
             if (iSwapped)
-                swap_objc2_class(&workingClass);
+                swap_objc2_64_class(&workingClass);
 
             if (workingClass.data != 0)
             {
-                roData = (objc2_class_ro_t*)(iDataSect.contents +
+                roData = (objc2_64_class_ro_t*)(iDataSect.contents +
                     (uintptr_t)(workingClass.data - iDataSect.s.addr));
                 methodBase = roData->baseMethods;
 
@@ -257,9 +257,9 @@
 
                 if (methodBase != 0)
                 {
-                    objc2_method_list_t* methods = (objc2_method_list_t*)(iDataSect.contents +
+                    objc2_64_method_list_t* methods = (objc2_64_method_list_t*)(iDataSect.contents +
                         (uintptr_t)(methodBase - iDataSect.s.addr));
-                    objc2_method_t* methodArray = &methods->first;
+                    objc2_64_method_t* methodArray = &methods->first;
                     uint32_t count = methods->count;
                     uint32_t i;
 
@@ -268,10 +268,10 @@
 
                     for (i = 0; i < count; i++)
                     {
-                        objc2_method_t swappedMethod = methodArray[i];
+                        objc2_64_method_t swappedMethod = methodArray[i];
 
                         if (iSwapped)
-                            swap_objc2_method(&swappedMethod);
+                            swap_objc2_64_method(&swappedMethod);
 
                         Method64Info methodInfo = {swappedMethod, workingClass, NO};
 
@@ -288,7 +288,7 @@
     qsort(iClassMethodInfos, iNumClassMethodInfos, sizeof(Method64Info),
         (COMPARISON_FUNC_TYPE)
         (iSwapped ? Method64Info_Compare_Swapped : Method64Info_Compare));
-    qsort(iClassIvars, iNumClassIvars, sizeof(objc2_ivar_t),
+    qsort(iClassIvars, iNumClassIvars, sizeof(objc2_64_ivar_t),
         (COMPARISON_FUNC_TYPE)objc2_ivar_t_Compare);
 }
 
