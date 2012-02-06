@@ -19,22 +19,10 @@
 
 #define REUSE_BLOCKS    1
 
+//For debugging -updateRegisters:
+//#define UPDATE_REGISTERS_START_DEBUG 0x00000000
+//#define UPDATE_REGISTERS_END_DEBUG   0x00000000
 
-static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c, ...)
-{
-    va_list v;
-    va_start(v, c);
-    vsnprintf(a, b, c, v);
-    
-    size_t len = strlen(a);
-    for (int i = 0; i < len; i++) {
-        if (!isprint(a[i])) {
-            NSLog(@"Found noprint!");
-        }   
-    }
-}
-
-    
 
 @implementation X86Processor
 
@@ -502,7 +490,7 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
                     if (MOD(modRM) == MOD8)
                     {
-                        UInt8 theSymOffset = inLine->info.code[2];
+                        SInt8 theSymOffset = (SInt8)inLine->info.code[2];
 
                         if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                             break;
@@ -542,17 +530,22 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
                     if (HAS_SIB(modRM))
                         break;
 
-                    if (REG2(modRM) == iCurrentThunk &&
-                        iRegInfos[iCurrentThunk].isValid)
+                    if (iRegInfos[REG2(modRM)].isValid)
                     {
                         uint32_t imm = *(uint32_t*)&inLine->info.code[2];
                         imm = OSSwapLittleToHostInt32(imm);
-                        localAddy = iRegInfos[iCurrentThunk].value + imm;
+                        localAddy = iRegInfos[REG2(modRM)].value + imm;
                     }
-                    else
+                }
+                else if (MOD(modRM) == MOD8)   // absolute address
+                {
+                    if (HAS_SIB(modRM))
+                        break;
+
+                    if (iRegInfos[REG2(modRM)].isValid)
                     {
-                        localAddy = *(uint32_t*)&inLine->info.code[2];
-                        localAddy = OSSwapLittleToHostInt32(localAddy);
+                        SInt8 imm = (SInt8)inLine->info.code[2];
+                        localAddy = iRegInfos[REG2(modRM)].value + imm;
                     }
                 }
             }
@@ -590,7 +583,7 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
                 if (MOD(modRM) == MOD8)
                 {
-                    UInt8 theSymOffset = inLine->info.code[2];
+                    SInt8 theSymOffset = (SInt8)inLine->info.code[2];
 
                     if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                         break;
@@ -626,12 +619,12 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
                             theSymPtr);
                 }
             }
-            else if (REG2(modRM) == iCurrentThunk)
+            else if (iRegInfos[REG2(modRM)].isValid)
             {
                 uint32_t imm = *(uint32_t*)&inLine->info.code[2];
 
                 imm = OSSwapLittleToHostInt32(imm);
-                localAddy = iRegInfos[iCurrentThunk].value + imm;
+                localAddy = iRegInfos[REG2(modRM)].value + imm;
             }
             else
             {
@@ -746,7 +739,7 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
                 if (MOD(modRM) == MOD8)
                 {
                     // offset precedes immediate value
-                    UInt8 theSymOffset = inLine->info.code[immOffset - 1];
+                    SInt8 theSymOffset = (SInt8)inLine->info.code[immOffset - 1];
 
                     if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                         break;
@@ -904,7 +897,7 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
                 if (MOD(modRM) == MOD8)
                 {
-                    UInt8 theSymOffset = inLine->info.code[2];
+                    SInt8 theSymOffset = (SInt8)inLine->info.code[2];
 
                     if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                         break;
@@ -1045,7 +1038,7 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
                 if (MOD(modRM) == MOD8)
                 {
-                    UInt8 theSymOffset = inLine->info.code[4];
+                    SInt8 theSymOffset = (SInt8)inLine->info.code[4];
 
                     if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
                         break;
@@ -1334,7 +1327,12 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 //                iStack[1].value : 0;
         }
         else
+        {
+            if (iOpts.debugMode)
+                fprintf(stderr, "%x: selector match: iStack[2].isValid == NO\n", inLine->info.address);
+
             return NULL;
+        }
     }
     else
     {
@@ -1345,13 +1343,23 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 //                iStack[0].value : 0;
         }
         else
+        {
+            if (iOpts.debugMode)
+                fprintf(stderr, "%x: selector match: iStack[1].isValid == NO\n", inLine->info.address);
+
             return NULL;
+        }
     }
 
     // sanity check
     if (!selectorAddy)
+    {
+        if (iOpts.debugMode)
+            fprintf(stderr, "%x: selector match: selectorAddy == nil\n", inLine->info.address);
+
         return NULL;
-    
+    }
+
     UInt8   selType = PointerType;
     char*   selPtr  = [self getPointer:selectorAddy type:&selType];
 
@@ -1370,6 +1378,9 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
                 selPtrValue = OSSwapLittleToHostInt32(selPtrValue);
                 selString   = [self getPointer:selPtrValue type:NULL];
+
+                if (!selString && iOpts.debugMode)
+                    fprintf(stderr, "%x: selector match returning nil.  selectorAddy=0x%x, selPtrValue=0x%x\n", inLine->info.address, (unsigned int)selectorAddy, selPtrValue);
             }
 
             break;
@@ -1381,6 +1392,13 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
             break;
     }
+    
+    if (!selString && (!selPtr || (selType != OCGenericType)))
+    {
+        if (iOpts.debugMode)
+            fprintf(stderr, "%x: selector match returning nil.  selectorAddy=0x%x, selType=%d\n", inLine->info.address, (unsigned int)selectorAddy, selType);
+    }
+
 
     return selString;
 }
@@ -1604,24 +1622,21 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
     if (theSubstring)   // otool knew this was a thunk call
     {
-        BOOL applyThunk = YES;
+        SInt8 thunkReg = NO_REG;
 
         if (!strncmp(&theSubstring[18], "ax", 2))
-            iCurrentThunk = EAX;
+            thunkReg = EAX;
         else if (!strncmp(&theSubstring[18], "bx", 2))
-            iCurrentThunk = EBX;
+            thunkReg = EBX;
         else if (!strncmp(&theSubstring[18], "cx", 2))
-            iCurrentThunk = ECX;
+            thunkReg = ECX;
         else if (!strncmp(&theSubstring[18], "dx", 2))
-            iCurrentThunk = EDX;
-        else
-            applyThunk = NO;
+            thunkReg = EDX;
 
-        if (applyThunk)
+        if (thunkReg != NO_REG)
         {
-            iRegInfos[iCurrentThunk].value      =
-                (*ioLine)->next->info.address;
-            iRegInfos[iCurrentThunk].isValid    = YES;
+            iRegInfos[thunkReg].value   = (*ioLine)->next->info.address;
+            iRegInfos[thunkReg].isValid = YES;
         }
     }
     else if (iThunks)   // otool didn't spot it, maybe we did earlier...
@@ -1635,11 +1650,13 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
             if (target == iThunks[i].address)
             {
-                iCurrentThunk   = iThunks[i].reg;
+                SInt8 thunkReg = iThunks[i].reg;
 
-                iRegInfos[iCurrentThunk].value      =
-                    (*ioLine)->next->info.address;
-                iRegInfos[iCurrentThunk].isValid    = YES;
+                if (thunkReg != NO_REG) {
+                    iRegInfos[thunkReg].value      =
+                        (*ioLine)->next->info.address;
+                    iRegInfos[thunkReg].isValid    = YES;
+                }
 
                 return;
             }
@@ -1663,7 +1680,6 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
     [self getObjcClassPtr:&iCurrentClass fromMethod:inLine->info.address];
     [self getObjcCatPtr:&iCurrentCat fromMethod:inLine->info.address];
 
-    iCurrentThunk   = NO_REG;
     memset(iRegInfos, 0, sizeof(GPRegisterInfo) * 8);
 
     // If we didn't get the class from the method, try to get it from the
@@ -1713,6 +1729,28 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
     UInt8 opcode = inLine->info.code[0];
     UInt8 modRM;
 
+#if OTX_DEBUG
+#if UPDATE_REGISTERS_START_DEBUG
+#if UPDATE_REGISTERS_END_DEBUG
+    {
+        static BOOL sIsInDebugMode = NO;
+
+        if (inLine->info.address == UPDATE_REGISTERS_START_DEBUG) {
+            sIsInDebugMode = YES;
+            [self printBlocks:(uint32_t)iCurrentFuncInfoIndex];
+        }
+        
+        if (sIsInDebugMode) {
+            [self printCurrentState:inLine->info.address];
+            if (inLine->info.address == UPDATE_REGISTERS_END_DEBUG) {
+                sIsInDebugMode = NO;
+            }
+        }
+    }
+#endif
+#endif
+#endif 
+
     switch (opcode)
     {
         // pop stack into thunk registers.
@@ -1729,7 +1767,6 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
                 iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
                 iRegInfos[REG2(opcode)].value = inLine->info.address;
                 iRegInfos[REG2(opcode)].isValid = YES;
-                iCurrentThunk = REG2(opcode);
             }
             else
             {
@@ -1758,37 +1795,37 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
             switch (OPEXT(modRM))
             {
                 case 0: // add
-                    iRegInfos[REG1(modRM)].value    += (SInt32)imm;
-                    iRegInfos[REG1(modRM)].classPtr = NULL;
-                    iRegInfos[REG1(modRM)].catPtr   = NULL;
+                    iRegInfos[REG2(modRM)].value    += (SInt32)imm;
+                    iRegInfos[REG2(modRM)].classPtr = NULL;
+                    iRegInfos[REG2(modRM)].catPtr   = NULL;
 
                     break;
 
                 case 1: // or
-                    iRegInfos[REG1(modRM)].value    |= (SInt32)imm;
-                    iRegInfos[REG1(modRM)].classPtr = NULL;
-                    iRegInfos[REG1(modRM)].catPtr   = NULL;
+                    iRegInfos[REG2(modRM)].value    |= (SInt32)imm;
+                    iRegInfos[REG2(modRM)].classPtr = NULL;
+                    iRegInfos[REG2(modRM)].catPtr   = NULL;
 
                     break;
 
                 case 4: // and
-                    iRegInfos[REG1(modRM)].value    &= (SInt32)imm;
-                    iRegInfos[REG1(modRM)].classPtr = NULL;
-                    iRegInfos[REG1(modRM)].catPtr   = NULL;
+                    iRegInfos[REG2(modRM)].value    &= (SInt32)imm;
+                    iRegInfos[REG2(modRM)].classPtr = NULL;
+                    iRegInfos[REG2(modRM)].catPtr   = NULL;
 
                     break;
 
                 case 5: // sub
-                    iRegInfos[REG1(modRM)].value    -= (SInt32)imm;
-                    iRegInfos[REG1(modRM)].classPtr = NULL;
-                    iRegInfos[REG1(modRM)].catPtr   = NULL;
+                    iRegInfos[REG2(modRM)].value    -= (SInt32)imm;
+                    iRegInfos[REG2(modRM)].classPtr = NULL;
+                    iRegInfos[REG2(modRM)].catPtr   = NULL;
 
                     break;
 
                 case 6: // xor
-                    iRegInfos[REG1(modRM)].value    ^= (SInt32)imm;
-                    iRegInfos[REG1(modRM)].classPtr = NULL;
-                    iRegInfos[REG1(modRM)].catPtr   = NULL;
+                    iRegInfos[REG2(modRM)].value    ^= (SInt32)imm;
+                    iRegInfos[REG2(modRM)].classPtr = NULL;
+                    iRegInfos[REG2(modRM)].catPtr   = NULL;
 
                     break;
 
@@ -1813,11 +1850,6 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
                 {
                     memcpy(&iRegInfos[REG2(modRM)], &iRegInfos[REG1(modRM)],
                         sizeof(GPRegisterInfo));
-
-                    if (iCurrentThunk == REG1(modRM))
-                    {
-                        iCurrentThunk = REG2(modRM);
-                    }
                 }
                 break;
             }
@@ -1862,17 +1894,37 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
                     iLocalSelves[iNumLocalSelves - 1]   = (VarInfo)
                         {iRegInfos[REG1(modRM)], offset};
                 }
-                else if (iRegInfos[REG1(modRM)].isValid && MOD(modRM) == MOD32)
+                else if (iRegInfos[REG1(modRM)].isValid)
                 {
-                    SInt32 varOffset = *(SInt32*)&inLine->info.code[2];
+                    SInt32 varOffset = 0;
 
-                    varOffset = OSSwapLittleToHostInt32(varOffset);
-
-                    iNumLocalVars++;
-                    iLocalVars  = realloc(iLocalVars,
-                        iNumLocalVars * sizeof(VarInfo));
-                    iLocalVars[iNumLocalVars - 1]   = (VarInfo)
-                        {iRegInfos[REG1(modRM)], varOffset};
+                    if (MOD(modRM) == MOD32)
+                    {
+                        varOffset = *(SInt32*)&inLine->info.code[2];
+                        varOffset = OSSwapLittleToHostInt32(varOffset);
+                    }
+                    else if (MOD(modRM) == MOD8)
+                    {
+                        varOffset = (SInt8)inLine->info.code[2];
+                    }
+                
+                    VarInfo *localVarToUse = NULL;
+                    for (SInt32 i = 0; i < iNumLocalVars; i++)
+                    {
+                        if (iLocalVars[i].offset == varOffset)
+                        {
+                            localVarToUse = &iLocalVars[i];
+                        }
+                    }
+                    
+                    if (!localVarToUse)
+                    {
+                        iNumLocalVars++;
+                        iLocalVars  = realloc(iLocalVars, iNumLocalVars * sizeof(VarInfo));
+                        localVarToUse = &iLocalVars[iNumLocalVars - 1];
+                    }
+                    
+                    *localVarToUse = (VarInfo) {iRegInfos[REG1(modRM)], varOffset};
                 }
             }
 
@@ -1916,20 +1968,36 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
                     // Zero the destination regardless.
                     iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
 
-                    if (iLocalSelves && REG2(modRM) == EBP && offset < 0)
+                    if (REG2(modRM) == EBP && offset < 0)
                     {
                         uint32_t i;
 
-                        // If we're accessing a local var copy of self,
-                        // copy that info back to the reg in question.
-                        for (i = 0; i < iNumLocalSelves; i++)
+                        if (iLocalSelves)
                         {
-                            if (iLocalSelves[i].offset != offset)
-                                continue;
+                            // If we're accessing a local var copy of self,
+                            // copy that info back to the reg in question.
+                            for (i = 0; i < iNumLocalSelves; i++)
+                            {
+                                if (iLocalSelves[i].offset != offset)
+                                    continue;
 
-                            iRegInfos[REG1(modRM)] = iLocalSelves[i].regInfo;
+                                iRegInfos[REG1(modRM)] = iLocalSelves[i].regInfo;
 
-                            break;
+                                break;
+                            }
+                        }
+                        
+                        if (!iRegInfos[REG1(modRM)].isValid)
+                        {
+                            for (i = 0; i < iNumLocalVars; i++)
+                            {
+                                if (iLocalVars[i].offset != offset)
+                                    continue;
+
+                                iRegInfos[REG1(modRM)] = iLocalVars[i].regInfo;
+
+                                break;
+                            }
                         }
                     }
                 }
@@ -2147,9 +2215,6 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
                 sizeof(VarInfo) * iNumLocalVars);
         }
 
-        if (machState.currentThunk != NO_REG)
-            iCurrentThunk = machState.currentThunk;
-
         // Optionally add a blank line before this block.
         if (iOpts.separateLogicalBlocks && inLine->chars[0] != '\n' &&
             !inLine->info.isFunction)
@@ -2326,7 +2391,6 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
             {
                 iRegInfos[theInfo.reg].value    = theLine->next->info.address;
                 iRegInfos[theInfo.reg].isValid  = YES;
-                iCurrentThunk                   = theInfo.reg;
             }
         }
 
@@ -2491,7 +2555,7 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
             MachineState    machState   =
                 {savedRegs, savedSelves, iNumLocalSelves,
-                    savedVars, iNumLocalVars, iCurrentThunk };
+                    savedVars, iNumLocalVars };
 
             // Store the new BlockInfo.
             BlockInfo   blockInfo   =
@@ -2787,6 +2851,54 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
     // Return fixed file.
     return newURL;
+}
+
+
+- (void) printCurrentState: (uint32_t)currentAddress
+{
+    char r[8 ][20];
+    char s[MAX_STACK_SIZE][20];
+    char v[MAX_STACK_SIZE][20];
+    
+    bzero(r, sizeof(r));
+    bzero(s, sizeof(s));
+    bzero(v, sizeof(v));
+    
+    BOOL srow[8] = { NO, NO, NO, NO, NO, NO, NO, NO };
+
+    for (int i = 0; i < 8; i++) {
+        if (iRegInfos[i].isValid) {
+            snprintf(r[i], 20, "%08x", iRegInfos[i].value);
+        } else {
+            snprintf(r[i], 20, "--------");
+        }
+    }
+
+    for (int i = 0; i < MAX_STACK_SIZE; i++) {
+        if (iStack[i].isValid) {
+            srow[i / 8] = YES;
+            snprintf(s[i], 20, "%08x", iStack[i].value);
+        } else {
+            snprintf(s[i], 20, "--------");
+        }
+    }
+
+    
+    printf("---[ 0x%08x ]---\n", currentAddress);
+    printf("EAX:%s  EBX:%s  ECX:%s  EDX:%s  ESI:%s  EDI:%s  EBP:%s  ESP:%s\n", r[EAX],  r[EBX],  r[ECX],  r[EDX],  r[ESI],  r[EDI],  r[EBP],  r[ESP]  );
+    if (srow[0]) printf(" s0:%s   s1:%s   s2:%s   s3:%s   s4:%s   s5:%s   s6:%s   s7:%s\n", s[0],  s[1],  s[2],  s[3],  s[4],  s[5],  s[6],  s[7]  );
+    if (srow[1]) printf(" s8:%s   s9:%s  s10:%s  s11:%s  s12:%s  s13:%s  s14:%s  s15:%s\n", s[8],  s[9],  s[10], s[11], s[12], s[13], s[14], s[15] );
+    if (srow[2]) printf("s16:%s  s17:%s  s18:%s  s19:%s  s20:%s  s21:%s  s22:%s  s23:%s\n", s[16], s[17], s[18], s[19], s[20], s[21], s[22], s[23] );
+    if (srow[3]) printf("s24:%s  s25:%s  s26:%s  s27:%s  s28:%s  s29:%s  s30:%s  s31:%s\n", s[24], s[25], s[26], s[27], s[28], s[29], s[30], s[31] );
+    if (srow[4]) printf("s32:%s  s33:%s  s34:%s  s35:%s  s36:%s  s37:%s  s38:%s  s39:%s\n", s[32], s[33], s[34], s[35], s[36], s[37], s[38], s[39] );
+
+    for (int i = 0; i < iNumLocalVars; i++) {
+        printf(" var %x: %08x\n", (unsigned int)iLocalVars[i].offset, iLocalVars[i].regInfo.value);
+    }
+
+    for (int i = 0; i < iNumLocalSelves; i++) {
+        printf("self %x: %08x\n", (unsigned int)iLocalSelves[i].offset, iLocalSelves[i].regInfo.value);
+    }
 }
 
 @end

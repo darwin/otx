@@ -117,7 +117,6 @@ typedef struct
     uint32_t          numLocalSelves;
     VarInfo*        localVars;
     uint32_t          numLocalVars;
-    SInt8           currentThunk;
 }
 MachineState;
 
@@ -165,7 +164,6 @@ FunctionInfo;
     cpu_type_t          iArchSelector;
 
     // base pointers for indirect addressing
-    SInt8               iCurrentThunk;      // x86 register identifier
     uint32_t              iCurrentFuncPtr;    // PPC function address
 
     // symbols that point to functions

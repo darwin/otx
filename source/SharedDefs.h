@@ -25,5 +25,6 @@ typedef struct
     BOOL    returnTypes;            // r
     BOOL    variableTypes;          // v
     BOOL    returnStatements;       // R
+    BOOL    debugMode;              // -debug
 }
 ProcOptions;

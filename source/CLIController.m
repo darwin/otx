@@ -111,6 +111,10 @@
                     return nil;
                 }
             }
+            else if (!strncmp(&argv[i][1], "debug", 6))
+            {
+                iOpts.debugMode = YES;
+            }
             else
             {
                 for (j = 1; argv[i][j] != '\0'; j++)
@@ -455,7 +459,10 @@
         return;
     }
     
-    [theProcessor printSummary];
+    if (iOpts.debugMode)
+    {
+        [theProcessor printSummary];
+    }
 
     [theProcessor release];
 }
