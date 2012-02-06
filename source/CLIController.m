@@ -454,6 +454,8 @@
         [theProcessor release];
         return;
     }
+    
+    [theProcessor printSummary];
 
     [theProcessor release];
 }

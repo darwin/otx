@@ -174,6 +174,9 @@ enum {
     NSPipe*             iCPFiltInputPipe;
     NSPipe*             iCPFiltOutputPipe;
 
+    uint32_t            iMatchedSelectorCount;
+    uint32_t            iMissedSelectorCount;
+
     // FunctionInfo stuff
     uint32_t              iCurrentGenericFuncNum;
 
@@ -207,6 +210,8 @@ enum {
 
 - (void)getDescription: (char*)ioCString
                forType: (const char*)inTypeCode;
+
+- (void) printSummary;
 
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;

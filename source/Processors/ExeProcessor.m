@@ -583,4 +583,10 @@
 {}
 #endif  // OTX_DEBUG
 
+- (void) printSummary
+{
+    unsigned percentage = (iMatchedSelectorCount * 100) / (iMatchedSelectorCount + iMissedSelectorCount);
+    fprintf(stderr, "%u selectors matched, %u missed, %u%%\n", iMatchedSelectorCount, iMissedSelectorCount, percentage);
+}
+
 @end

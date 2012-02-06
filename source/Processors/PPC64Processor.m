@@ -847,7 +847,12 @@
     
     // Bail if we couldn't find the selector.
     if (!selString)
+    {
+        iMissedSelectorCount++;
         return;
+    }
+    
+    iMatchedSelectorCount++;
 
     UInt8 sendType = [self sendTypeFromMsgSend:ioComment];
 

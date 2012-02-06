@@ -1401,7 +1401,12 @@ static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c
 
         // Bail if we couldn't find the selector.
         if (!selString)
+        {
+            iMissedSelectorCount++;
             return;
+        }
+        
+        iMatchedSelectorCount++;
 
         UInt8   sendType    = [self sendTypeFromMsgSend:ioComment];
 
