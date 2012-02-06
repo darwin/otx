@@ -733,7 +733,7 @@
                         if (fcc[0])
                             strncat(tempComment, " ", 2);
 
-                        uint32_t  tempCommentLength   = strlen(tempComment);
+                        size_t  tempCommentLength   = strlen(tempComment);
 
                         if (iOpts.variableTypes)
                         {
@@ -1153,8 +1153,7 @@
                         }
                     }
 
-                    cf_string_object    theCFString = 
-                        *(cf_string_object*)theDummyPtr;
+                    cfstring_object theCFString = *(cfstring_object*)theDummyPtr;
 
                     if (theCFString.oc_string.length == 0)
                     {
@@ -1162,7 +1161,7 @@
                         break;
                     }
 
-                    theValue    = (uint32_t)theCFString.oc_string.chars;
+                    theValue    = theCFString.oc_string.chars;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theSymPtr   = [self getPointer:theValue type:NULL];
 
@@ -1567,7 +1566,8 @@
     }
     else if (iThunks)   // otool didn't spot it, maybe we did earlier...
     {
-        uint32_t  i, target;
+        uint32_t i;
+        size_t target;
 
         for (i = 0; i < iNumThunks; i++)
         {

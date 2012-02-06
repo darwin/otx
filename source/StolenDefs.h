@@ -46,18 +46,25 @@ typedef struct
 }
 dyld_data_section;
 
+
+
 /*  NSString
 
     From cctools-590/otool/print_objc.c, alternate definition in
     http://www.opensource.apple.com/darwinsource/10.4.7.ppc/objc4-267.1/runtime/objc-private.h
 */
-typedef struct
-{
-    objc_class*     isa;
-    char*           chars;
-    unsigned int    length;
-}
-objc_string_object;
+typedef struct {
+    uint32_t  isa;    /* objc_class *       */
+    uint32_t  chars;  /* char *             */
+    uint32_t  length; /* unsigned int       */
+} nxstring_object;
+
+typedef struct {
+    uint64_t isa;     /* objc_class *       */
+    uint64_t chars;   /* char *             */ 
+    uint32_t length;  /* unsigned int       */
+} nxstring_object_64;
+
 
 /*  CFString
 
@@ -69,12 +76,18 @@ objc_string_object;
     some light on what they actually point to, but otx has nothing to gain from
     that knowledge. Still, any feedback regarding this issue is most welcome.
 */
-typedef struct
-{
-    uint32_t              isa;
-    objc_string_object  oc_string;
-}
-cf_string_object;
+typedef struct {
+    uint32_t isa;
+    nxstring_object oc_string;
+} cfstring_object;
+
+typedef struct {
+    uint64_t isa;
+    nxstring_object_64 oc_string;
+} cfstring_object_64;
+
+
+
 
 /*  The isa field of an NSString is 0x7c8 (1992) when it exists in the
     (__DATA,__const) section. This makes it possible to identify both
@@ -82,338 +95,3 @@ cf_string_object;
     1992 date, but it is assumed to be the date of birth of NSStrings.
 */
 #define typeid_NSString     0x000007c8
-
-/* ----------------------------------------------------------------------------
-    Objective-C 2.0 private structs
-
-    Copied and modified here because-
-        The structs are private, unlike the earlier runtime.
-        otx being 32-bit, the pointer fields need to be explicit about their size.
-
-    For reference, the 'FOO' in 'typedef struct FOO' is the original private struct
-    name, and the original pointer field types are saved as comments.
-*/
-
-typedef struct
-{
-    uint32_t name;   // SEL
-    uint32_t types;  // const char *
-    uint32_t imp;    // IMP
-}
-objc2_32_method_t;
-
-typedef struct
-{
-    uint32_t entsize;
-    uint32_t count;
-    objc2_32_method_t first;
-}
-objc2_32_method_list_t;
-
-typedef struct
-{
-    uint32_t imp;   // IMP
-    uint32_t sel;   // SEL
-}
-objc2_32_message_ref_t;
-
-typedef struct
-{
-    // *offset is 64-bit by accident even though other 
-    // fields restrict total instance size to 32-bit. 
-    uint64_t offset;    // uintptr_t *
-    uint32_t name;      // const char *
-    uint32_t type;      // const char *
-    uint32_t alignment;
-    uint32_t size;
-}
-objc2_32_ivar_t;
-
-typedef struct
-{
-    uint32_t entsize;
-    uint32_t count;
-    objc2_32_ivar_t first;
-}
-objc2_32_ivar_list_t;
-
-typedef struct
-{
-    uint32_t isa;                       // id
-    uint32_t name;                      // const char *
-    uint32_t protocols;                 // struct objc2_protocol_list_t *
-    uint32_t instanceMethods;           // objc2_method_list_t *
-    uint32_t classMethods;              // objc2_method_list_t *
-    uint32_t optionalInstanceMethods;   // objc2_method_list_t *
-    uint32_t optionalClassMethods;      // objc2_method_list_t *
-    uint32_t instanceProperties;        // struct objc2_property_list *
-}
-objc2_32_protocol_t;
-
-typedef struct
-{
-    // count is 64-bit by accident. 
-    uint64_t count;     // uintptr_t
-    uint32_t list[0];   // objc2_protocol_t *
-}
-objc2_32_protocol_list_t;
-
-typedef struct
-{
-    uint32_t flags;
-    uint32_t instanceStart;
-    uint32_t instanceSize;
-
-    uint32_t ivarLayout;        // const uint8_t *
-
-    uint32_t name;              // const char *
-    uint32_t baseMethods;       // const objc2_method_list_t *
-    uint32_t baseProtocols;     // const objc2_protocol_list_t *
-    uint32_t ivars;             // const objc2_ivar_list_t *
-
-    uint32_t weakIvarLayout;    // const uint8_t *
-    uint32_t baseProperties;    // const struct objc2_property_list *
-}
-objc2_32_class_ro_t;
-
-typedef struct
-{
-    uint32_t flags;
-    uint32_t version;
-
-    uint32_t ro;                // const objc2_class_ro_t *
-
-    uint32_t methods;           // chained_method_list *
-    uint32_t properties;        // chained_property_list *
-    uint32_t protocols;         // objc2_protocol_list_t **
-
-    uint32_t firstSubclass;     // objc2_class_t *
-    uint32_t nextSiblingClass;  // objc2_class_t *
-}
-objc2_32_class_rw_t;
-
-typedef struct
-{
-    uint32_t isa;           // objc2_class_t *
-    uint32_t superclass;    // objc2_class_t *
-    uint32_t cache;         // Cache
-    uint32_t vtable;        // IMP *
-    uint32_t data;          // objc2_class_rw_t *
-}
-objc2_32_class_t;
-
-typedef struct
-{
-    uint32_t    isa;
-    uint32_t    chars;
-    uint32_t    length;
-}
-objc2_32_string_object;
-
-
-typedef struct
-{
-    uint64_t name;   // SEL
-    uint64_t types;  // const char *
-    uint64_t imp;    // IMP
-}
-objc2_64_method_t;
-
-typedef struct
-{
-    uint32_t entsize;
-    uint32_t count;
-    objc2_64_method_t first;
-}
-objc2_64_method_list_t;
-
-typedef struct
-{
-    uint64_t imp;   // IMP
-    uint64_t sel;   // SEL
-}
-objc2_64_message_ref_t;
-
-typedef struct
-{
-    // *offset is 64-bit by accident even though other 
-    // fields restrict total instance size to 32-bit. 
-    uint64_t offset;    // uintptr_t *
-    uint64_t name;      // const char *
-    uint64_t type;      // const char *
-    uint32_t alignment;
-    uint32_t size;
-}
-objc2_64_ivar_t;
-
-typedef struct
-{
-    uint32_t entsize;
-    uint32_t count;
-    objc2_64_ivar_t first;
-}
-objc2_64_ivar_list_t;
-
-typedef struct
-{
-    uint64_t isa;                       // id
-    uint64_t name;                      // const char *
-    uint64_t protocols;                 // struct objc2_protocol_list_t *
-    uint64_t instanceMethods;           // objc2_method_list_t *
-    uint64_t classMethods;              // objc2_method_list_t *
-    uint64_t optionalInstanceMethods;   // objc2_method_list_t *
-    uint64_t optionalClassMethods;      // objc2_method_list_t *
-    uint64_t instanceProperties;        // struct objc2_property_list *
-}
-objc2_64_protocol_t;
-
-typedef struct
-{
-    // count is 64-bit by accident. 
-    uint64_t count;     // uintptr_t
-    uint64_t list[0];   // objc2_protocol_t *
-}
-objc2_64_protocol_list_t;
-
-typedef struct
-{
-    uint32_t flags;
-    uint32_t instanceStart;
-    uint32_t instanceSize;
-    uint32_t reserved;
-
-    uint64_t ivarLayout;        // const uint8_t *
-
-    uint64_t name;              // const char *
-    uint64_t baseMethods;       // const objc2_method_list_t *
-    uint64_t baseProtocols;     // const objc2_protocol_list_t *
-    uint64_t ivars;             // const objc2_ivar_list_t *
-
-    uint64_t weakIvarLayout;    // const uint8_t *
-    uint64_t baseProperties;    // const struct objc2_property_list *
-}
-objc2_64_class_ro_t;
-
-typedef struct
-{
-    uint32_t flags;
-    uint32_t version;
-
-    uint64_t ro;                // const objc2_class_ro_t *
-
-    uint64_t methods;           // chained_method_list *
-    uint64_t properties;        // chained_property_list *
-    uint64_t protocols;         // objc2_protocol_list_t **
-
-    uint64_t firstSubclass;     // objc2_class_t *
-    uint64_t nextSiblingClass;  // objc2_class_t *
-}
-objc2_64_class_rw_t;
-
-typedef struct
-{
-    uint64_t isa;           // objc2_class_t *
-    uint64_t superclass;    // objc2_class_t *
-    uint64_t cache;         // Cache
-    uint64_t vtable;        // IMP *
-    uint64_t data;          // objc2_class_rw_t *
-}
-objc2_64_class_t;
-
-typedef struct
-{
-    uint64_t    isa;
-    uint64_t    chars;
-    uint64_t    length;
-}
-objc2_64_string_object;
-
-typedef struct
-{
-    uint64_t            isa;
-    objc2_64_string_object oc_string;
-}
-cf_string_object_64;
-
-// ----------------------------------------------------------------------------
-//  Swap
-
-//  swap_objc2_class
-// ----------------------------------------------------------------------------
-
-static void
-swap_objc2_32_class(
-    objc2_32_class_t* oc)
-{
-    oc->isa         = OSSwapInt32(oc->isa);
-    oc->superclass  = OSSwapInt32(oc->superclass);
-    oc->cache       = OSSwapInt32(oc->cache);
-    oc->vtable      = OSSwapInt32(oc->vtable);
-    oc->data        = OSSwapInt32(oc->data);
-}
-
-//  swap_objc2_32_method
-// ----------------------------------------------------------------------------
-
-static void
-swap_objc2_32_method(
-    objc2_32_method_t* m)
-{
-    m->name     = OSSwapInt32(m->name);
-    m->types    = OSSwapInt32(m->types);
-    m->imp      = OSSwapInt32(m->imp);
-}
-
-//  swap_objc2_32_ivar
-// ----------------------------------------------------------------------------
-
-static void
-swap_objc2_32_ivar(
-    objc2_32_ivar_t* i)
-{
-    i->offset       = OSSwapInt64(i->offset);
-    i->name         = OSSwapInt32(i->name);
-    i->type         = OSSwapInt32(i->type);
-    i->alignment    = OSSwapInt32(i->alignment);
-    i->size         = OSSwapInt32(i->size);
-}
-
-//  swap_objc2_64_class
-// ----------------------------------------------------------------------------
-
-static void
-swap_objc2_64_class(
-    objc2_64_class_t* oc)
-{
-    oc->isa         = OSSwapInt64(oc->isa);
-    oc->superclass  = OSSwapInt64(oc->superclass);
-    oc->cache       = OSSwapInt64(oc->cache);
-    oc->vtable      = OSSwapInt64(oc->vtable);
-    oc->data        = OSSwapInt64(oc->data);
-}
-
-//  swap_objc2_64_method
-// ----------------------------------------------------------------------------
-
-static void
-swap_objc2_64_method(
-    objc2_64_method_t* m)
-{
-    m->name     = OSSwapInt64(m->name);
-    m->types    = OSSwapInt64(m->types);
-    m->imp      = OSSwapInt64(m->imp);
-}
-
-//  swap_objc2_64_ivar
-// ----------------------------------------------------------------------------
-
-static void
-swap_objc2_64_ivar(
-    objc2_64_ivar_t* i)
-{
-    i->offset       = OSSwapInt64(i->offset);
-    i->name         = OSSwapInt64(i->name);
-    i->type         = OSSwapInt64(i->type);
-    i->alignment    = OSSwapInt32(i->alignment);
-    i->size         = OSSwapInt32(i->size);
-}

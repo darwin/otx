@@ -171,40 +171,40 @@
             else
                 iTextOffset = swappedSeg.vmaddr - swappedSeg.fileoff;
 
-            if (!strcmp(sectionPtr->sectname, SECT_TEXT))
+            if (strcmp_sectname(sectionPtr->sectname, SECT_TEXT) == 0)
                 [self loadTextSection: sectionPtr];
-            else if (!strncmp(sectionPtr->sectname, "__coalesced_text", 16))
+            else if (strcmp_sectname(sectionPtr->sectname, "__coalesced_text") == 0)
                 [self loadCoalTextSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__textcoal_nt"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__textcoal_nt") == 0)
                 [self loadCoalTextNTSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__const"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__const") == 0)
                 [self loadConstTextSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__cstring"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__cstring") == 0)
                 [self loadCStringSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__objc_methname"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_methname") == 0)
                 [self loadObjcMethnameSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__objc_classname"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_classname") == 0)
                 [self loadObjcClassnameSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__literal4"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__literal4") == 0)
                 [self loadLit4Section: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__literal8"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__literal8") == 0)
                 [self loadLit8Section: sectionPtr];
         }
         else if (!strcmp(sectionPtr->segname, SEG_DATA))
         {
-            if (!strcmp(sectionPtr->sectname, SECT_DATA))
+            if (strcmp_sectname(sectionPtr->sectname, SECT_DATA) == 0)
                 [self loadDataSection: sectionPtr];
-            else if (!strncmp(sectionPtr->sectname, "__coalesced_data", 16))
+            else if (strcmp_sectname(sectionPtr->sectname, "__coalesced_data") == 0)
                 [self loadCoalDataSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__datacoal_nt"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__datacoal_nt") == 0)
                 [self loadCoalDataNTSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__const"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__const") == 0)
                 [self loadConstDataSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__dyld"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__dyld") == 0)
                 [self loadDyldDataSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__cfstring"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__cfstring") == 0)
                 [self loadCFStringSection: sectionPtr];
-            else if (!strcmp(sectionPtr->sectname, "__nl_symbol_ptr"))
+            else if (strcmp_sectname(sectionPtr->sectname, "__nl_symbol_ptr") == 0)
                 [self loadNonLazySymbolSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_classlist") == 0)
                 [self loadObjcClassListSection: sectionPtr];
@@ -214,8 +214,8 @@
                 [self loadObjcMsgRefsSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_catlist") == 0)
                 [self loadObjcCatListSection: sectionPtr];
-            else if (strcmp_sectname(sectionPtr->sectname, "__objc_catlist") == 0)
-                [self loadObjcCatListSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_const") == 0)
+                [self loadObjcConstSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_protolist") == 0)
                 [self loadObjcProtoListSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_protorefs") == 0)
@@ -224,10 +224,12 @@
                 [self loadObjcSuperRefsSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_selrefs") == 0)
                 [self loadObjcSelRefsSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_data") == 0)
+                [self loadObjcDataSection: sectionPtr];
         }
-        else if (!strcmp(sectionPtr->segname, "__IMPORT"))
+        else if (strcmp_sectname(sectionPtr->segname, "__IMPORT") == 0)
         {
-            if (!strcmp(sectionPtr->sectname, "__pointers"))
+            if (strcmp_sectname(sectionPtr->sectname, "__pointers") == 0)
                 [self loadImpPtrSection: sectionPtr];
         }
 
@@ -324,18 +326,18 @@
 
 - (void)loadObjcModules
 {
-    char*           theMachPtr  = (char*)iMachHeaderPtr;
-    char*           theModPtr;
-    section_info*   theSectInfo;
-    objc_module     theModule;
-    uint32_t          theModSize;
-    objc_symtab     theSymTab;
-    objc_class      theClass, theSwappedClass;
-    objc_class      theMetaClass, theSwappedMetaClass;
-    objc_category   theCat, theSwappedCat;
-    void**          theDefs;
-    uint32_t          theOffset;
-    uint32_t          i, j, k;
+    char*               theMachPtr  = (char*)iMachHeaderPtr;
+    char*               theModPtr;
+    section_info*       theSectInfo;
+    objc1_32_module     theModule;
+    uint32_t            theModSize;
+    objc1_32_symtab     theSymTab;
+    objc1_32_class      theClass, theSwappedClass;
+    objc1_32_class      theMetaClass, theSwappedMetaClass;
+    objc1_32_category   theCat, theSwappedCat;
+    uint32_t*           theDefs;
+    uint32_t            theOffset;
+    uint32_t            i, j, k;
 
     // Loop thru objc sections.
     for (i = 0; i < iNumObjcSects; i++)
@@ -348,10 +350,10 @@
 
         theOffset   = theSectInfo->s.addr - theSectInfo->s.offset;
         theModPtr   = theMachPtr + theSectInfo->s.addr - theOffset;
-        theModule   = *(objc_module*)theModPtr;
+        theModule   = *(objc1_32_module*)theModPtr;
 
         if (iSwapped)
-            swap_objc_module(&theModule);
+            swap_objc1_32_module(&theModule);
 
         theModSize  = theModule.size;
 
@@ -365,10 +367,10 @@
             {
                 // point to next module
                 theModPtr   += theModSize;
-                theModule   = *(objc_module*)theModPtr;
+                theModule   = *(objc1_32_module*)theModPtr;
 
                 if (iSwapped)
-                    swap_objc_module(&theModule);
+                    swap_objc1_32_module(&theModule);
 
                 theModSize  = theModule.size;
 
@@ -376,7 +378,7 @@
             }
 
             if (iSwapped)
-                swap_objc_symtab(&theSymTab);
+                swap_objc1_32_symtab(&theSymTab);
 
 // In the objc_symtab struct defined in <objc/objc-runtime.h>, the format of
 // the void* array 'defs' is 'cls_def_cnt' class pointers followed by
@@ -398,23 +400,23 @@
                 theSwappedClass = theClass;
 
                 if (iSwapped)
-                    swap_objc_class(&theSwappedClass);
+                    swap_objc1_32_class(&theSwappedClass);
 
                 // Save class's instance method info.
-                objc_method_list    theMethodList;
-                objc_method_list    theSwappedMethodList;
-                objc_method*        theMethods;
-                objc_method         theMethod;
-                objc_method         theSwappedMethod;
+                objc1_32_method_list    theMethodList;
+                objc1_32_method_list    theSwappedMethodList;
+                objc1_32_method*        theMethods;
+                objc1_32_method         theMethod;
+                objc1_32_method         theSwappedMethod;
 
                 if ([self getObjcMethodList: &theMethodList
                     methods: &theMethods
-                    fromAddress: (uint32_t)theSwappedClass.methodLists])
+                    fromAddress: theSwappedClass.methodLists])
                 {
                     theSwappedMethodList    = theMethodList;
 
                     if (iSwapped)
-                        swap_objc_method_list(&theSwappedMethodList);
+                        swap_objc1_32_method_list(&theSwappedMethodList);
 
                     for (k = 0; k < theSwappedMethodList.method_count; k++)
                     {
@@ -422,7 +424,7 @@
                         theSwappedMethod    = theMethod;
 
                         if (iSwapped)
-                            swap_objc_method(&theSwappedMethod);
+                            swap_objc1_32_method(&theSwappedMethod);
 
                         MethodInfo  theMethInfo =
                             {theMethod, theClass, {0}, YES};
@@ -441,16 +443,16 @@
                     theSwappedMetaClass = theMetaClass;
 
                     if (iSwapped)
-                        swap_objc_class(&theSwappedMetaClass);
+                        swap_objc1_32_class(&theSwappedMetaClass);
 
                     if ([self getObjcMethodList: &theMethodList
                         methods: &theMethods
-                        fromAddress: (uint32_t)theSwappedMetaClass.methodLists])
+                        fromAddress: theSwappedMetaClass.methodLists])
                     {
                         theSwappedMethodList    = theMethodList;
 
                         if (iSwapped)
-                            swap_objc_method_list(&theSwappedMethodList);
+                            swap_objc1_32_method_list(&theSwappedMethodList);
 
                         for (k = 0; k < theSwappedMethodList.method_count; k++)
                         {
@@ -458,7 +460,7 @@
                             theSwappedMethod    = theMethod;
 
                             if (iSwapped)
-                                swap_objc_method(&theSwappedMethod);
+                                swap_objc1_32_method(&theSwappedMethod);
 
                             MethodInfo  theMethInfo =
                                 {theMethod, theClass, {0}, NO};
@@ -489,32 +491,32 @@
                 theSwappedCat   = theCat;
 
                 if (iSwapped)
-                    swap_objc_category(&theSwappedCat);
+                    swap_objc1_32_category(&theSwappedCat);
 
                 // Categories are linked to classes by name only. Try to 
                 // find the class for this category. May be nil.
-                [self getObjcClass:&theClass fromName:[self getPointer:(uint32_t)theSwappedCat.class_name type:NULL]];
+                [self getObjcClass:&theClass fromName:[self getPointer:theSwappedCat.class_name type:NULL]];
 
                 theSwappedClass = theClass;
 
                 if (iSwapped)
-                    swap_objc_class(&theSwappedClass);
+                    swap_objc1_32_class(&theSwappedClass);
 
                 // Save category instance method info.
-                objc_method_list    theMethodList;
-                objc_method_list    theSwappedMethodList;
-                objc_method*        theMethods;
-                objc_method         theMethod;
-                objc_method         theSwappedMethod;
+                objc1_32_method_list    theMethodList;
+                objc1_32_method_list    theSwappedMethodList;
+                objc1_32_method*        theMethods;
+                objc1_32_method         theMethod;
+                objc1_32_method         theSwappedMethod;
 
                 if ([self getObjcMethodList: &theMethodList
                     methods: &theMethods
-                    fromAddress: (uint32_t)theSwappedCat.instance_methods])
+                    fromAddress: theSwappedCat.instance_methods])
                 {
                     theSwappedMethodList    = theMethodList;
 
                     if (iSwapped)
-                        swap_objc_method_list(&theSwappedMethodList);
+                        swap_objc1_32_method_list(&theSwappedMethodList);
 
                     for (k = 0; k < theSwappedMethodList.method_count; k++)
                     {
@@ -522,7 +524,7 @@
                         theSwappedMethod    = theMethod;
 
                         if (iSwapped)
-                            swap_objc_method(&theSwappedMethod);
+                            swap_objc1_32_method(&theSwappedMethod);
 
                         MethodInfo  theMethInfo =
                             {theMethod, theClass, theCat, YES};
@@ -537,12 +539,12 @@
                 // Save category class method info.
                 if ([self getObjcMethodList: &theMethodList
                     methods: &theMethods
-                    fromAddress: (uint32_t)theSwappedCat.class_methods])
+                    fromAddress: theSwappedCat.class_methods])
                 {
                     theSwappedMethodList    = theMethodList;
 
                     if (iSwapped)
-                        swap_objc_method_list(&theSwappedMethodList);
+                        swap_objc1_32_method_list(&theSwappedMethodList);
 
                     for (k = 0; k < theSwappedMethodList.method_count; k++)
                     {
@@ -550,7 +552,7 @@
                         theSwappedMethod    = theMethod;
 
                         if (iSwapped)
-                            swap_objc_method(&theSwappedMethod);
+                            swap_objc1_32_method(&theSwappedMethod);
 
                         MethodInfo  theMethInfo =
                             {theMethod, theClass, theCat, NO};
@@ -565,10 +567,10 @@
 
             // point to next module
             theModPtr   += theModSize;
-            theModule   = *(objc_module*)theModPtr;
+            theModule   = *(objc1_32_module*)theModPtr;
 
             if (iSwapped)
-                swap_objc_module(&theModule);
+                swap_objc1_32_module(&theModule);
 
             theModSize  = theModule.size;
         }   // while (theModPtr...)
@@ -931,6 +933,20 @@
     iObjcCatListSect.size = iObjcCatListSect.s.size;
 }
 
+//  loadObjcConstSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcConstSection: (section*)inSect
+{
+    iObjcConstSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcConstSect.s, 1, OSHostByteOrder());
+
+    iObjcConstSect.contents = (char*)iMachHeaderPtr + iObjcConstSect.s.offset;
+    iObjcConstSect.size = iObjcCatListSect.s.size;
+}
+
 //  loadObjcProtoListSection:
 // ----------------------------------------------------------------------------
 
@@ -1013,6 +1029,20 @@
 
     iObjcSelRefsSect.contents = (char*)iMachHeaderPtr + iObjcSelRefsSect.s.offset;
     iObjcSelRefsSect.size = iObjcSelRefsSect.s.size;
+}
+
+//  loadObjcDataSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcDataSection: (section*)inSect
+{
+    iObjcDataSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section(&iObjcDataSect.s, 1, OSHostByteOrder());
+
+    iObjcDataSect.contents = (char*)iMachHeaderPtr + iObjcDataSect.s.offset;
+    iObjcDataSect.size = iObjcDataSect.s.size;
 }
 
 //  loadImpPtrSection:

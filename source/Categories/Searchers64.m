@@ -27,7 +27,7 @@
         (COMPARISON_FUNC_TYPE)Sym_Compare_64);
 
     if (symbol)
-        return (char*)((uint32_t)iMachHeaderPtr + iStringTableOffset + symbol->n_un.n_strx);
+        return (char*)((char *)iMachHeaderPtr + iStringTableOffset + symbol->n_un.n_strx);
     else
         return NULL;
 }

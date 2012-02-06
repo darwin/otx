@@ -42,12 +42,14 @@
 - (void)loadNonLazySymbolSection: (section*)inSect;
 - (void)loadObjcClassListSection: (section*)inSect;
 - (void)loadObjcCatListSection: (section*)inSect;
+- (void)loadObjcConstSection: (section*)inSect;
 - (void)loadObjcProtoListSection: (section*)inSect;
 - (void)loadObjcSuperRefsSection: (section*)inSect;
 - (void)loadObjcClassRefsSection: (section*)inSect;
 - (void)loadObjcProtoRefsSection: (section*)inSect;
 - (void)loadObjcMsgRefsSection: (section*)inSect;
 - (void)loadObjcSelRefsSection: (section*)inSect;
+- (void)loadObjcDataSection: (section*)inSect;
 - (void)loadImpPtrSection: (section*)inSect;
 
 @end

@@ -95,7 +95,7 @@ Line64Info;
 struct Line64
 {
     char*           chars;      // C string
-    uint32_t          length;     // C string length
+    size_t          length;     // C string length
     struct Line64*  next;       // next line in this list
     struct Line64*  prev;       // previous line in this list
     struct Line64*  alt;        // "this" line in the other list
@@ -187,12 +187,14 @@ Function64Info;
     // Mach-O sections
     section_info_64     iObjcClassListSect;
     section_info_64     iObjcCatListSect;   //
+    section_info_64     iObjcConstSect;
     section_info_64     iObjcProtoListSect; //
     section_info_64     iObjcSuperRefsSect;  //
     section_info_64     iObjcClassRefsSect;
     section_info_64     iObjcProtoRefsSect;  //
     section_info_64     iObjcMsgRefsSect;
     section_info_64     iObjcSelRefsSect;    //
+    section_info_64     iObjcDataSect;
     section_info_64     iCStringSect;
     section_info_64     iNSStringSect;
     section_info_64     iLit4Sect;

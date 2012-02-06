@@ -514,8 +514,7 @@
 
                         case CFStringType:
                         {
-                            cf_string_object_64 theCFString = 
-                                *(cf_string_object_64*)theSymPtr;
+                            cfstring_object_64 theCFString =  *(cfstring_object_64*)theSymPtr;
 
                             if (theCFString.oc_string.length == 0)
                             {
@@ -559,8 +558,7 @@
                                 }
                             }
 
-                            cf_string_object_64 theCFString = 
-                                *(cf_string_object_64*)theDummyPtr;
+                            cfstring_object_64 theCFString = *(cfstring_object_64*)theDummyPtr;
 
                             if (theCFString.oc_string.length == 0)
                             {
@@ -906,8 +904,7 @@
                         case CFStringType:
                             if (classNamePtr != NULL)
                             {
-                                cf_string_object_64 classNameCFString   =
-                                    *(cf_string_object_64*)classNamePtr;
+                                cfstring_object_64 classNameCFString = *(cfstring_object_64*)classNamePtr;
 
                                 namePtrValue	= classNameCFString.oc_string.chars;
                                 namePtrValue	= OSSwapBigToHostInt64(namePtrValue);
@@ -1563,7 +1560,7 @@
             }
             else if (iRegInfos[RA(theCode)].isValid)
             {
-                uint32_t  tempPtr = (uint32_t)[self getPointer:iRegInfos[RA(theCode)].value + SIMM(theCode) type:NULL];
+                void *tempPtr = [self getPointer:iRegInfos[RA(theCode)].value + SIMM(theCode) type:NULL];
 
                 if (tempPtr)
                 {

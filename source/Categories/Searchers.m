@@ -27,9 +27,9 @@
         iFuncSyms, iNumFuncSyms, sizeof(nlist),
         (COMPARISON_FUNC_TYPE)Sym_Compare);
 
-    if (symbol)
-        return (char*)((uint32_t)iMachHeaderPtr + iStringTableOffset + symbol->n_un.n_strx);
-    else
+    if (symbol) {
+        return (char*)((char *)iMachHeaderPtr + iStringTableOffset + symbol->n_un.n_strx);
+    }else
         return NULL;
 }
 
@@ -53,7 +53,7 @@
     if (iSwapped)
         swappedAddress  = OSSwapInt32(swappedAddress);
 
-    MethodInfo  searchKey   = {{NULL, NULL, (IMP)swappedAddress}, {0}, {0}, NO};
+    MethodInfo  searchKey   = {{0, 0, swappedAddress}, {0}, {0}, NO};
 
     *outMI  = bsearch(&searchKey,
         iClassMethodInfos, iNumClassMethodInfos, sizeof(MethodInfo),
@@ -83,7 +83,7 @@
     if (iSwapped)
         swappedAddress  = OSSwapInt32(swappedAddress);
 
-    MethodInfo  searchKey   = {{NULL, NULL, (IMP)swappedAddress}, {0}, {0}, NO};
+    MethodInfo  searchKey   = {{0, 0, swappedAddress}, {0}, {0}, NO};
 
     *outMI  = bsearch(&searchKey,
         iCatMethodInfos, iNumCatMethodInfos, sizeof(MethodInfo),
@@ -96,30 +96,30 @@
 //  findIvar:inClass:withOffset:
 // ----------------------------------------------------------------------------
 
-- (BOOL)findIvar: (objc_ivar*)outIvar
-         inClass: (objc_class*)inClass
+- (BOOL)findIvar: (objc1_32_ivar*)outIvar
+         inClass: (objc1_32_class*)inClass
       withOffset: (uint32_t)inOffset
 {
     if (!inClass || !outIvar)
         return NO;
 
     // Loop thru inClass and all superclasses.
-    objc_class*         theClassPtr     = inClass;
-    objc_class          theSwappedClass = *theClassPtr;
-    objc_class          theDummyClass   = {0};
-    char*               theSuperName    = NULL;
-    objc_ivar_list*     theIvars;
+    objc1_32_class*         theClassPtr     = inClass;
+    objc1_32_class          theSwappedClass = *theClassPtr;
+    objc1_32_class          theDummyClass   = {0};
+    char*                   theSuperName    = NULL;
+    objc1_32_ivar_list*     theIvars;
 
     while (theClassPtr)
     {
 //      if (mSwapped)
 //          swap_objc_class(&theSwappedClass);
 
-        theIvars    = (objc_ivar_list*)[self getPointer:(uint32_t)theSwappedClass.ivars type:NULL];
+        theIvars    = (objc1_32_ivar_list*)[self getPointer:theSwappedClass.ivars type:NULL];
 
         if (!theIvars)
         {   // Try again with the superclass.
-            theSuperName    = [self getPointer:(uint32_t)theClassPtr->super_class type:NULL];
+            theSuperName    = [self getPointer:theClassPtr->super_class type:NULL];
 
             if (!theSuperName)
                 break;
@@ -156,7 +156,7 @@
                 *outIvar    = theIvars->ivar_list[split];
 
                 if (iSwapped)
-                    swap_objc_ivar(outIvar);
+                    swap_objc1_32_ivar(outIvar);
 
                 return YES;
             }
@@ -170,7 +170,7 @@
         }
 
         // Try again with the superclass.
-        theSuperName    = [self getPointer:(uint32_t)theClassPtr->super_class type:NULL];
+        theSuperName    = [self getPointer:theClassPtr->super_class type:NULL];
 
         if (!theSuperName)
             break;

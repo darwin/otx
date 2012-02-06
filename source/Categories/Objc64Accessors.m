@@ -118,7 +118,7 @@
     {
         case CFStringType:
         {
-            cf_string_object_64 cfString = *(cf_string_object_64*)inObject;
+            cfstring_object_64 cfString = *(cfstring_object_64*)inObject;
 
             if (cfString.oc_string.length == 0)
                 break;
@@ -130,7 +130,7 @@
 
         case OCStrObjectType:
         {
-            objc2_64_string_object ocString = *(objc2_64_string_object*)inObject;
+            nxstring_object_64 ocString = *(nxstring_object_64*)inObject;
 
             if (ocString.length == 0)
                 break;
@@ -228,11 +228,11 @@
 - (BOOL)getObjcMetaClass: (objc2_64_class_t*)outClass
                fromClass: (objc2_64_class_t*)inClass;
 {
-/*    if ((uint32_t)inClass->isa >= iMetaClassSect.s.addr &&
-        (uint32_t)inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)
+/*    if (inClass->isa >= iMetaClassSect.s.addr &&
+        inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)
     {
         *outClass   = *(objc_class*)(iMetaClassSect.contents +
-            ((uint32_t)inClass->isa - iMetaClassSect.s.addr));
+            (inClass->isa - iMetaClassSect.s.addr));
 
         return YES;
     }*/

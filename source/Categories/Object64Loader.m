@@ -362,8 +362,8 @@
                 [self loadObjcMsgRefsSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_catlist") == 0)
                 [self loadObjcCatListSection: sectionPtr];
-            else if (strcmp_sectname(sectionPtr->sectname, "__objc_catlist") == 0)
-                [self loadObjcCatListSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_const") == 0)
+                [self loadObjcConstSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_protolist") == 0)
                 [self loadObjcProtoListSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_protorefs") == 0)
@@ -372,6 +372,8 @@
                 [self loadObjcSuperRefsSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_selrefs") == 0)
                 [self loadObjcSelRefsSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_data") == 0)
+                [self loadObjcDataSection: sectionPtr];
         }
         else if (strcmp_sectname(sectionPtr->segname, "__IMPORT") == 0)
         {
@@ -714,6 +716,20 @@
     iObjcCatListSect.size = iObjcCatListSect.s.size;
 }
 
+//  loadObjcConstSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcConstSection: (section_64*)inSect
+{
+    iObjcConstSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section_64(&iObjcConstSect.s, 1, OSHostByteOrder());
+
+    iObjcConstSect.contents = (char*)iMachHeaderPtr + iObjcConstSect.s.offset;
+    iObjcConstSect.size = iObjcConstSect.s.size;
+}
+
 //  loadObjcProtoListSection:
 // ----------------------------------------------------------------------------
 
@@ -797,6 +813,22 @@
     iObjcSelRefsSect.contents = (char*)iMachHeaderPtr + iObjcSelRefsSect.s.offset;
     iObjcSelRefsSect.size = iObjcSelRefsSect.s.size;
 }
+
+
+//  loadObjcSelRefsSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcDataSection: (section_64*)inSect
+{
+    iObjcDataSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section_64(&iObjcDataSect.s, 1, OSHostByteOrder());
+
+    iObjcDataSect.contents = (char*)iMachHeaderPtr + iObjcSelRefsSect.s.offset;
+    iObjcDataSect.size = iObjcSelRefsSect.s.size;
+}
+
 
 //  loadImpPtrSection:
 // ----------------------------------------------------------------------------

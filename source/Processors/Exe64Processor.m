@@ -676,6 +676,13 @@
 
 - (void)processCodeLine: (Line64**)ioLine;
 {
+    static id constSelf = nil;
+    if (!constSelf) constSelf = self;
+    
+    if (self != constSelf) {
+        NSLog(@"Boom 2");
+    }
+    
     if (!ioLine || !(*ioLine) || !((*ioLine)->chars))
     {
         fprintf(stderr, "otx: tried to process NULL code line\n");
@@ -684,9 +691,9 @@
 
     [self chooseLine:ioLine];
 
-    uint32_t  theOrigLength           = (*ioLine)->length;
+    size_t  theOrigLength           = (*ioLine)->length;
     char    localOffsetString[9]    = {0};
-    char    theAddressCString[17]    = {0};
+    char    theAddressCString[17]   = {0};
     char    theMnemonicCString[20]  = {0};
 
     char    addrSpaces[MAX_FIELD_SPACING] = MAX_FIELD_SPACES;
@@ -728,7 +735,7 @@
         }
         else    // regular comment
         {
-            uint32_t  origCommentLength   = theOrigLength - consumedAfterOp - 1;
+            size_t  origCommentLength   = theOrigLength - consumedAfterOp - 1;
 
             strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
                 origCommentLength);
@@ -800,6 +807,10 @@
     char    theMethCName[1000];
 
     theMethCName[0] = 0;
+
+    if (self != constSelf) {
+        NSLog(@"Boom 3");
+    }
 
     // Check if this is the beginning of a function.
     if ((*ioLine)->info.isFunction)
@@ -892,6 +903,10 @@
             }
         }   // if ([self getObjcMethod:&theSwappedInfoPtr fromAddress:mCurrentFuncPtr])
 
+        if (self != constSelf) {
+            NSLog(@"Boom 4 ");
+        }
+
         // Add or replace the method name if possible, else add '\n'.
         if ((*ioLine)->prev && (*ioLine)->prev->info.isCode)    // prev line is code
         {
@@ -970,12 +985,16 @@
         [self resetRegisters:*ioLine];
     }   // if ((*ioLine)->info.isFunction)
 
+    if (self != constSelf) {
+        NSLog(@"Boom 5");
+    }
+
     // Find a comment if necessary.
     if (!theCommentCString[0])
     {
         [self commentForLine:*ioLine];
 
-        uint32_t  origCommentLength   = strlen(iLineCommentCString);
+        size_t origCommentLength = strlen(iLineCommentCString);
 
         if (origCommentLength)
         {
@@ -1534,7 +1553,7 @@
     }
 
     char    entabbedLine[MAX_LINE_LENGTH];
-    uint32_t  theOrigLength   = ioLine->length;
+    size_t  theOrigLength   = ioLine->length;
 
     // If 1st char is '\n', skip it.
     uint32_t  firstChar   = (ioLine->chars[0] == '\n');
@@ -1812,7 +1831,9 @@
             UInt64 classRef = *(UInt64*)(iObjcClassRefsSect.contents +
                 (inAddr - iObjcClassRefsSect.s.addr));
 
-            if (classRef != 0)
+            if (classRef &&
+                classRef >= iObjcClassRefsSect.s.addr &&
+                classRef < iObjcClassRefsSect.s.addr + iObjcClassRefsSect.s.size)
             {
                 if (iSwapped)
                     classRef = OSSwapInt64(classRef);
@@ -1823,16 +1844,22 @@
                 if (iSwapped)
                     swap_objc2_64_class(&swappedClass);
 
-                objc2_64_class_ro_t roData = *(objc2_64_class_ro_t*)(iDataSect.contents +
-                    (swappedClass.data - iDataSect.s.addr));
+                if (swappedClass.data &&
+                    swappedClass.data >= iObjcConstSect.s.addr &&
+                    swappedClass.data < iObjcConstSect.s.addr + iObjcConstSect.s.size)
+                {
+                    objc2_64_class_ro_t roData = *(objc2_64_class_ro_t*)(iObjcConstSect.contents +
+                        (swappedClass.data - iObjcConstSect.s.addr));
 
-                if (iSwapped)
-                    roData.name = OSSwapInt64(roData.name);
+                    if (iSwapped)
+                        roData.name = OSSwapInt64(roData.name);
 
-                thePtr = [self getPointer:roData.name type:NULL];
+                    thePtr = [self getPointer:roData.name type:NULL];
 
-                if (outType)
-                    *outType = OCClassRefType;
+                    if (outType)
+                        *outType = OCClassRefType;
+                }
+
             }
         }
     }
@@ -1866,18 +1893,22 @@
         if (iSwapped)
             superAddy = OSSwapInt64(superAddy);
 
-        if (superAddy != 0)
+        if (superAddy &&
+            superAddy >= iObjcDataSect.s.addr &&
+            superAddy < iObjcDataSect.s.addr + iObjcDataSect.s.size)
         {
-            objc2_64_class_t swappedClass = *(objc2_64_class_t*)(iDataSect.contents +
-                (superAddy - iDataSect.s.addr));
+            objc2_64_class_t swappedClass = *(objc2_64_class_t*)(iObjcDataSect.contents +
+                (superAddy - iObjcDataSect.s.addr));
 
             if (iSwapped)
                 swap_objc2_64_class(&swappedClass);
 
-            if (swappedClass.data != 0)
+            if (swappedClass.data &&
+                swappedClass.data >= iObjcConstSect.s.addr &&
+                swappedClass.data < iObjcConstSect.s.addr + iObjcConstSect.s.size)
             {
-                objc2_64_class_ro_t* roPtr = (objc2_64_class_ro_t*)(iDataSect.contents +
-                    (swappedClass.data - iDataSect.s.addr));
+                objc2_64_class_ro_t* roPtr = (objc2_64_class_ro_t*)(iObjcConstSect.contents +
+                    (swappedClass.data - iObjcConstSect.s.addr));
                 UInt64 namePtr = roPtr->name;
 
                 if (iSwapped)
@@ -2031,7 +2062,7 @@
         UInt8   theNType    = inSym.n_type & N_TYPE;
         UInt16  theRefType  = inSym.n_desc & REFERENCE_TYPE;
 
-        fprintf(stderr, "Symbol name: %s\n", (char*)((uint32_t)iMachHeaderPtr + iStringTableOffset + inSym.n_un.n_strx));
+        fprintf(stderr, "Symbol name: %s\n", (char*)((char *)iMachHeaderPtr + iStringTableOffset + inSym.n_un.n_strx));
         fprintf(stderr, "Symbol type: ");
 
         if (theNType == N_ABS)

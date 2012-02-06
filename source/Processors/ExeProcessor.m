@@ -232,8 +232,7 @@
         {
             if (inTypeCode[theNextChar + 1] == '"')
             {
-                uint32_t  classNameLength =
-                    strlen(&inTypeCode[theNextChar + 2]);
+                size_t classNameLength = strlen(&inTypeCode[theNextChar + 2]);
 
                 memcpy(theTypeCString, &inTypeCode[theNextChar + 2],
                     classNameLength - 1);
@@ -347,7 +346,7 @@
             [self getDescription:theCType forType:&inTypeCode[theNextChar]];
             isArray = NO;
 
-            snprintf(theTypeCString, MAX_TYPE_STRING_LENGTH + 1, "%s[%s]",
+            snprintf(theTypeCString, MAX_TYPE_STRING_LENGTH - 1, "%s[%s]",
                 theCType, theArrayCCount);
 
             break;

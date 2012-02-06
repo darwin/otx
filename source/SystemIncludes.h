@@ -39,16 +39,6 @@
 #define nlist_64            struct nlist_64
 #define section             struct section
 #define section_64          struct section_64
-#define objc_module         struct objc_module
-#define objc_symtab         struct objc_symtab
-#define objc_class          struct objc_class
-#define objc_ivar_list      struct objc_ivar_list
-#define objc_ivar           struct objc_ivar
-#define objc_method_list    struct objc_method_list
-#define objc_method         struct objc_method
-#define objc_cache          struct objc_cache
-#define objc_category       struct objc_category
-#define objc_protocol_list  struct objc_protocol_list
 
 // carpal tunnel inhibitors
 #define UTF8STRING(s)   [(s) UTF8String]

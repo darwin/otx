@@ -8,6 +8,7 @@
 
 #import "SystemIncludes.h"
 
+#import "ObjcTypes.h"
 #import "SharedDefs.h"
 #import "StolenDefs.h"
 #import "ProgressReporter.h"
@@ -160,7 +161,7 @@ enum {
     // guts
     NSURL*              iOFile;                 // exe on disk
     char*               iRAMFile;               // exe in RAM
-    uint32_t              iRAMFileSize;
+    NSUInteger          iRAMFileSize;
     NSString*           iOutputFilePath;
     uint32_t              iFileArchMagic;         // 0xCAFEBABE etc.
     BOOL                iExeIsFat;

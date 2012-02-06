@@ -18,8 +18,8 @@
               byAddress: (uint32_t)inAddress;
 - (BOOL)findCatMethod: (MethodInfo**)outMI
             byAddress: (uint32_t)inAddress;
-- (BOOL)findIvar: (objc_ivar*)outIvar
-         inClass: (objc_class*)inClass
+- (BOOL)findIvar: (objc1_32_ivar*)outIvar
+         inClass: (objc1_32_class*)inClass
       withOffset: (uint32_t)inOffset;
 
 @end

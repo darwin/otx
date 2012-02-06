@@ -19,6 +19,23 @@
 
 #define REUSE_BLOCKS    1
 
+
+static void my_snprintf(char * __restrict a, size_t b, const char * __restrict c, ...)
+{
+    va_list v;
+    va_start(v, c);
+    vsnprintf(a, b, c, v);
+    
+    size_t len = strlen(a);
+    for (int i = 0; i < len; i++) {
+        if (!isprint(a[i])) {
+            NSLog(@"Found noprint!");
+        }   
+    }
+}
+
+    
+
 @implementation X86Processor
 
 //  initWithURL:controller:options:
@@ -383,9 +400,8 @@
                 if (MOD(modRM) == MODx)
                     break;
 
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[REG2(modRM)].classPtr;
+                objc1_32_ivar  theIvar      = {0};
+                objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
 
                 #if __BIG_ENDIAN__
                     swap_objc_class(&swappedClass);
@@ -406,7 +422,7 @@
                 if (![self findIvar:&theIvar inClass:&swappedClass withOffset:immOffset])
                     break;
 
-                theSymPtr   = [self getPointer:(uint32_t)theIvar.ivar_name type:NULL];
+                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
 
                 if (theSymPtr)
                 {
@@ -416,7 +432,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:(uint32_t)theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -467,12 +483,11 @@
                     if (MOD(modRM) == MODx)
                         break;
 
-                    objc_ivar   theIvar         = {0};
-                    objc_class  swappedClass    =
-                        *iRegInfos[REG2(modRM)].classPtr;
+                    objc1_32_ivar  theIvar      = {0};
+                    objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
 
                     #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
+                        swap_objc1_32_class(&swappedClass);
                     #endif
 
                     if (!iIsInstanceMethod)
@@ -481,7 +496,7 @@
                             break;
 
                         #if __BIG_ENDIAN__
-                            swap_objc_class(&swappedClass);
+                            swap_objc1_32_class(&swappedClass);
                         #endif
                     }
 
@@ -501,7 +516,7 @@
                             break;
                     }
 
-                    theSymPtr = [self getPointer:(uint32_t)theIvar.ivar_name type:NULL];
+                    theSymPtr = [self getPointer:theIvar.ivar_name type:NULL];
 
                     if (theSymPtr)
                     {
@@ -511,7 +526,7 @@
 
                             theTypeCString[0] = 0;
 
-                            [self getDescription:theTypeCString forType:[self getPointer:(uint32_t)theIvar.ivar_type type:NULL]];
+                            [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
                             snprintf(iLineCommentCString,
                                 MAX_COMMENT_LENGTH - 1, "(%s)%s",
                                 theTypeCString, theSymPtr);
@@ -556,12 +571,11 @@
                 if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                     break;
 
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[REG2(modRM)].classPtr;
+                objc1_32_ivar  theIvar      = {0};
+                objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
 
                 #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
+                    swap_objc1_32_class(&swappedClass);
                 #endif
 
                 if (!iIsInstanceMethod)
@@ -570,7 +584,7 @@
                         break;
 
                     #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
+                        swap_objc1_32_class(&swappedClass);
                     #endif
                 }
 
@@ -591,7 +605,7 @@
                         break;
                 }
 
-                theSymPtr   = [self getPointer:(uint32_t)theIvar.ivar_name type:NULL];
+                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
 
                 if (theSymPtr)
                 {
@@ -601,7 +615,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:(uint32_t)theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -712,11 +726,11 @@
                 if (HAS_SIB(modRM))
                     immOffset += 1;
 
-                objc_ivar theIvar = {0};
-                objc_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
+                objc1_32_ivar theIvar = {0};
+                objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
 
                 #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
+                    swap_objc1_32_class(&swappedClass);
                 #endif
 
                 if (!iIsInstanceMethod)
@@ -725,7 +739,7 @@
                         break;
 
                     #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
+                        swap_objc1_32_class(&swappedClass);
                     #endif
                 }
 
@@ -774,7 +788,7 @@
                     [self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset];
                 }
 
-                theSymPtr   = [self getPointer:(uint32_t)theIvar.ivar_name type:NULL];
+                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
 
                 char    tempComment[MAX_COMMENT_LENGTH];
 
@@ -789,7 +803,7 @@
                     if (fcc[0])
                         strncat(tempComment, " ", 2);
 
-                    uint32_t  tempCommentLength   = strlen(tempComment);
+                    size_t tempCommentLength = strlen(tempComment);
 
                     if (iOpts.variableTypes)
                     {
@@ -797,7 +811,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:(uint32_t)theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
                         snprintf(&tempComment[tempCommentLength],
                             MAX_COMMENT_LENGTH - tempCommentLength - 1,
                             "(%s)%s", theTypeCString, theSymPtr);
@@ -871,12 +885,11 @@
                 if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                     break;
 
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[REG2(modRM)].classPtr;
+                objc1_32_ivar  theIvar      = {0};
+                objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
 
                 #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
+                    swap_objc1_32_class(&swappedClass);
                 #endif
 
                 if (!iIsInstanceMethod)
@@ -885,7 +898,7 @@
                         break;
 
                     #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
+                        swap_objc1_32_class(&swappedClass);
                     #endif
                 }
 
@@ -906,7 +919,7 @@
                         break;
                 }
 
-                theSymPtr   = [self getPointer:(uint32_t)theIvar.ivar_name type:NULL];
+                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
 
                 if (theSymPtr)
                 {
@@ -916,7 +929,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:(uint32_t)theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -1013,9 +1026,8 @@
                 if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                     break;
 
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[REG2(modRM)].classPtr;
+                objc1_32_ivar  theIvar      = {0};
+                objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
 
                 #if __BIG_ENDIAN__
                     swap_objc_class(&swappedClass);
@@ -1048,7 +1060,7 @@
                         break;
                 }
 
-                theSymPtr   = [self getPointer:(uint32_t)theIvar.ivar_name type:NULL];
+                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
 
                 if (theSymPtr)
                 {
@@ -1058,7 +1070,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:(uint32_t)theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
 
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
@@ -1146,8 +1158,7 @@
 
                 case CFStringType:
                 {
-                    cf_string_object    theCFString = 
-                        *(cf_string_object*)theDummyPtr;
+                    cfstring_object theCFString =  *(cfstring_object*)theDummyPtr;
 
                     if (theCFString.oc_string.length == 0)
                     {
@@ -1155,7 +1166,7 @@
                         break;
                     }
 
-                    theValue    = (uint32_t)theCFString.oc_string.chars;
+                    theValue    = theCFString.oc_string.chars;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theSymPtr   = [self getPointer:theValue type:NULL];
 
@@ -1190,8 +1201,7 @@
                         }
                     }
 
-                    cf_string_object    theCFString = 
-                        *(cf_string_object*)theDummyPtr;
+                    cfstring_object theCFString = *(cfstring_object*)theDummyPtr;
 
                     if (theCFString.oc_string.length == 0)
                     {
@@ -1199,7 +1209,7 @@
                         break;
                     }
 
-                    theValue    = (uint32_t)theCFString.oc_string.chars;
+                    theValue    = theCFString.oc_string.chars;
                     theValue    = OSSwapLittleToHostInt32(theValue);
                     theSymPtr   = [self getPointer:theValue type:NULL];
 
@@ -1502,9 +1512,9 @@
     {
         if (iCurrentClass && iStack[2].isValid)
         {
-            char*       theSymPtr       = NULL;
-            objc_ivar   theIvar         = {0};
-            objc_class  swappedClass    = *iCurrentClass;
+            char*          theSymPtr    = NULL;
+            objc1_32_ivar  theIvar      = {0};
+            objc1_32_class swappedClass = *iCurrentClass;
 
             #if __BIG_ENDIAN__
                 swap_objc_class(&swappedClass);
@@ -1523,7 +1533,7 @@
             if (![self findIvar:&theIvar inClass:&swappedClass withOffset:iStack[2].value])
                 return;
 
-            theSymPtr   = [self getPointer:(uint32_t)theIvar.ivar_name type:NULL];
+            theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
 
             if (!theSymPtr)
                 return;
@@ -1534,7 +1544,7 @@
 
                 theTypeCString[0]   = 0;
 
-                [self getDescription:theTypeCString forType:[self getPointer:(uint32_t)theIvar.ivar_type type:NULL]];
+                [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
                 snprintf(tempComment,
                     MAX_COMMENT_LENGTH - 1, " (%s)%s",
                     theTypeCString, theSymPtr);
@@ -1611,7 +1621,8 @@
     }
     else if (iThunks)   // otool didn't spot it, maybe we did earlier...
     {
-        uint32_t  i, target;
+        uint32_t i;
+        size_t target;
 
         for (i = 0; i < iNumThunks; i++)
         {
@@ -1654,13 +1665,13 @@
     // category.
     if (!iCurrentClass && iCurrentCat)
     {
-        objc_category   swappedCat  = *iCurrentCat;
+        objc1_32_category swappedCat = *iCurrentCat;
 
         #if __BIG_ENDIAN__
-            swap_objc_category(&swappedCat);
+            swap_objc1_32_category(&swappedCat);
         #endif
 
-        [self getObjcClassPtr:&iCurrentClass fromName:[self getPointer:(uint32_t)swappedCat.class_name type:NULL]];
+        [self getObjcClassPtr:&iCurrentClass fromName:[self getPointer:swappedCat.class_name type:NULL]];
     }
 
     // Try to find out whether this is a class or instance method.
@@ -2760,7 +2771,7 @@
     }
 
     NSDictionary*   permsDict   = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithUnsignedInt: [fileAttrs filePosixPermissions]],
+        [NSNumber numberWithUnsignedInteger: [fileAttrs filePosixPermissions]],
         NSFilePosixPermissions, nil];
 
     if (![fileMan changeFileAttributes: permsDict atPath: [newURL path]])

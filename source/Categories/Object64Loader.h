@@ -37,11 +37,13 @@
 - (void)loadImpPtrSection: (section_64*)inSect;
 - (void)loadObjcClassListSection: (section_64*)inSect;
 - (void)loadObjcCatListSection: (section_64*)inSect;
+- (void)loadObjcConstSection: (section_64*)inSect;
 - (void)loadObjcProtoListSection: (section_64*)inSect;
 - (void)loadObjcSuperRefsSection: (section_64*)inSect;
 - (void)loadObjcClassRefsSection: (section_64*)inSect;
 - (void)loadObjcProtoRefsSection: (section_64*)inSect;
 - (void)loadObjcMsgRefsSection: (section_64*)inSect;
 - (void)loadObjcSelRefsSection: (section_64*)inSect;
+- (void)loadObjcDataSection: (section_64*)inSect;
 
 @end

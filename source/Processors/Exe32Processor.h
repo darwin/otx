@@ -7,7 +7,6 @@
 #import <Cocoa/Cocoa.h>
 
 #import "ExeProcessor.h"
-#import "ObjcSwap.h"
 
 /*  MethodInfo
 
@@ -15,10 +14,10 @@
 */
 typedef struct
 {
-    objc_method     m;
-    objc_class      oc_class;
-    objc_category   oc_cat;
-    BOOL            inst;       // to determine '+' or '-'
+    objc1_32_method     m;
+    objc1_32_class      oc_class;
+    objc1_32_category   oc_cat;
+    BOOL                inst;       // to determine '+' or '-'
 }
 MethodInfo;
 
@@ -30,10 +29,10 @@ MethodInfo;
 */
 typedef struct
 {
-    uint32_t          value;
-    BOOL            isValid;        // value can be trusted
-    objc_class*     classPtr;
-    objc_category*  catPtr;
+    uint32_t            value;
+    BOOL                isValid;        // value can be trusted
+    objc1_32_class*     classPtr;
+    objc1_32_category*  catPtr;
 }
 GPRegisterInfo;
 
@@ -95,7 +94,7 @@ LineInfo;
 struct Line
 {
     char*           chars;      // C string
-    uint32_t          length;     // C string length
+    size_t          length;     // C string length
     struct Line*    next;       // next line in this list
     struct Line*    prev;       // previous line in this list
     struct Line*    alt;        // "this" line in the other list
@@ -184,8 +183,8 @@ FunctionInfo;
     uint32_t              iNumClassMethodInfos;
     MethodInfo*         iCatMethodInfos;
     uint32_t              iNumCatMethodInfos;
-    objc_class*         iCurrentClass;
-    objc_category*      iCurrentCat;
+    objc1_32_class*     iCurrentClass;
+    objc1_32_category*  iCurrentCat;
     BOOL                iIsInstanceMethod;
 
     // Mach-O sections
@@ -200,12 +199,14 @@ FunctionInfo;
     section_info        iObjcClassnameSect;
     section_info        iObjcClassListSect;
     section_info        iObjcCatListSect;
+    section_info        iObjcConstSect;
     section_info        iObjcProtoListSect;
     section_info        iObjcSuperRefsSect;
     section_info        iObjcClassRefsSect;
     section_info        iObjcProtoRefsSect;
     section_info        iObjcMsgRefsSect;
     section_info        iObjcSelRefsSect;
+    section_info        iObjcDataSect;
     section_info        iLit4Sect;
     section_info        iLit8Sect;
     section_info        iTextSect;
@@ -295,10 +296,10 @@ MethodInfo_Compare(
     MethodInfo* mi1,
     MethodInfo* mi2)
 {
-    if ((uint32_t)mi1->m.method_imp < (uint32_t)mi2->m.method_imp)
+    if (mi1->m.method_imp < mi2->m.method_imp)
         return -1;
 
-    return ((uint32_t)mi1->m.method_imp > (uint32_t)mi2->m.method_imp);
+    return (mi1->m.method_imp > mi2->m.method_imp);
 }
 
 static int
@@ -306,8 +307,8 @@ MethodInfo_Compare_Swapped(
     MethodInfo* mi1,
     MethodInfo* mi2)
 {
-    uint32_t  imp1    = (uint32_t)mi1->m.method_imp;
-    uint32_t  imp2    = (uint32_t)mi2->m.method_imp;
+    uint32_t  imp1 = mi1->m.method_imp;
+    uint32_t  imp2 = mi2->m.method_imp;
 
     imp1    = OSSwapInt32(imp1);
     imp2    = OSSwapInt32(imp2);
@@ -325,7 +326,7 @@ static void
 swap_method_info(
     MethodInfo* mi)
 {
-    swap_objc_method(&mi->m);
-    swap_objc_class(&mi->oc_class);
-    swap_objc_category(&mi->oc_cat);
+    swap_objc1_32_method(&mi->m);
+    swap_objc1_32_class(&mi->oc_class);
+    swap_objc1_32_category(&mi->oc_cat);
 }

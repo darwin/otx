@@ -19,7 +19,7 @@
 //  is called each time a new function is detected. If that function is known
 //  to be an Obj-C method, it's class is returned. Otherwise this returns NULL.
 
-- (BOOL)getObjcClassPtr: (objc_class**)outClass
+- (BOOL)getObjcClassPtr: (objc1_32_class**)outClass
              fromMethod: (uint32_t)inAddress;
 {
     *outClass = NULL;
@@ -37,7 +37,7 @@
 // ----------------------------------------------------------------------------
 //  Same as above, for categories.
 
-- (BOOL)getObjcCatPtr: (objc_category**)outCat
+- (BOOL)getObjcCatPtr: (objc1_32_category**)outCat
            fromMethod: (uint32_t)inAddress;
 {
     *outCat = NULL;
@@ -74,8 +74,8 @@
 // ----------------------------------------------------------------------------
 //  Removed the truncation flag. 'left' is no longer used by the caller.
 
-- (BOOL)getObjcMethodList: (objc_method_list*)outList
-                  methods: (objc_method**)outMethods
+- (BOOL)getObjcMethodList: (objc1_32_method_list*)outList
+                  methods: (objc1_32_method**)outMethods
               fromAddress: (uint32_t)inAddress;
 {
     uint32_t  left, i;
@@ -83,7 +83,7 @@
     if (!outList)
         return NO;
 
-    *outList    = (objc_method_list){0};
+    *outList    = (objc1_32_method_list){0};
 
     for (i = 0; i < iNumObjcSects; i++)
     {
@@ -93,14 +93,14 @@
             left = iObjcSects[i].s.size -
                 (inAddress - iObjcSects[i].s.addr);
 
-            if (left >= sizeof(objc_method_list) - sizeof(objc_method))
+            if (left >= sizeof(objc1_32_method_list) - sizeof(objc1_32_method))
             {
                 memcpy(outList, iObjcSects[i].contents +
                     (inAddress - iObjcSects[i].s.addr),
-                    sizeof(objc_method_list) - sizeof(objc_method));
-                *outMethods = (objc_method*)(iObjcSects[i].contents +
+                    sizeof(objc1_32_method_list) - sizeof(objc1_32_method));
+                *outMethods = (objc1_32_method*)(iObjcSects[i].contents +
                     (inAddress - iObjcSects[i].s.addr) +
-                    sizeof(objc_method_list) - sizeof(objc_method));
+                    sizeof(objc1_32_method_list) - sizeof(objc1_32_method));
             }
             else
             {
@@ -132,29 +132,28 @@
     {
         case OCStrObjectType:
         {
-            objc_string_object  ocString    = *(objc_string_object*)inObject;
+            nxstring_object  ocString    = *(nxstring_object*)inObject;
 
             if (ocString.length == 0)
                 break;
 
-            theValue    = (uint32_t)ocString.chars;
+            theValue = ocString.chars;
 
             break;
         }
         case OCClassType:
         {
-            objc_class  ocClass = *(objc_class*)inObject;
+            objc1_32_class  ocClass = *(objc1_32_class*)inObject;
 
-            theValue    = (ocClass.name != 0) ?
-                (uint32_t)ocClass.name : (uint32_t)ocClass.isa;
+            theValue = ocClass.name ? ocClass.name : ocClass.isa;
 
             break;
         }
         case OCModType:
         {
-            objc_module ocMod   = *(objc_module*)inObject;
+            objc1_32_module ocMod   = *(objc1_32_module*)inObject;
 
-            theValue    = (uint32_t)ocMod.name;
+            theValue = ocMod.name;
 
             break;
         }
@@ -180,17 +179,17 @@
 // ----------------------------------------------------------------------------
 //  Removed the truncation flag. 'left' is no longer used by the caller.
 
-- (BOOL)getObjcSymtab: (objc_symtab*)outSymTab
-                 defs: (void***)outDefs
-           fromModule: (objc_module*)inModule;
+- (BOOL)getObjcSymtab: (objc1_32_symtab*)outSymTab
+                 defs: (uint32_t **)outDefs
+           fromModule: (objc1_32_module*)inModule;
 {
     if (!outSymTab)
         return NO;
 
-    unsigned long   addr    = (unsigned long)inModule->symtab;
-    unsigned long   i, left;
+    uint32_t   addr    = inModule->symtab;
+    uint32_t   i, left;
 
-    *outSymTab  = (objc_symtab){0};
+    *outSymTab  = (objc1_32_symtab){0};
 
     for (i = 0; i < iNumObjcSects; i++)
     {
@@ -200,14 +199,14 @@
             left = iObjcSects[i].size -
                 (addr - iObjcSects[i].s.addr);
 
-            if (left >= sizeof(objc_symtab) - sizeof(void*))
+            if (left >= sizeof(objc1_32_symtab) - sizeof(uint32_t))
             {
                 memcpy(outSymTab, iObjcSects[i].contents +
                     (addr - iObjcSects[i].s.addr),
-                    sizeof(objc_symtab) - sizeof(void*));
-                *outDefs    = (void**)(iObjcSects[i].contents +
+                    sizeof(objc1_32_symtab) - sizeof(uint32_t));
+                *outDefs    = (uint32_t *)(iObjcSects[i].contents +
                     (addr - iObjcSects[i].s.addr) +
-                    sizeof(objc_symtab) - sizeof(void*));
+                    sizeof(objc1_32_symtab) - sizeof(uint32_t));
             }
             else
             {
@@ -226,7 +225,7 @@
 //  getObjcClass:fromDef: (was get_objc_class)
 // ----------------------------------------------------------------------------
 
-- (BOOL)getObjcClass: (objc_class*)outClass
+- (BOOL)getObjcClass: (objc1_32_class*)outClass
              fromDef: (uint32_t)inDef;
 {
     uint32_t  i;
@@ -236,7 +235,7 @@
         if (inDef >= iObjcSects[i].s.addr &&
             inDef < iObjcSects[i].s.addr + iObjcSects[i].size)
         {
-            *outClass   = *(objc_class*)(iObjcSects[i].contents +
+            *outClass   = *(objc1_32_class*)(iObjcSects[i].contents +
                 (inDef - iObjcSects[i].s.addr));
 
             return YES;
@@ -249,7 +248,7 @@
 //  getObjcCategory:fromDef: (was get_objc_category)
 // ----------------------------------------------------------------------------
 
-- (BOOL)getObjcCategory: (objc_category*)outCat
+- (BOOL)getObjcCategory: (objc1_32_category*)outCat
                 fromDef: (uint32_t)inDef;
 {
     uint32_t  i;
@@ -259,7 +258,7 @@
         if (inDef >= iObjcSects[i].s.addr &&
             inDef < iObjcSects[i].s.addr + iObjcSects[i].s.size)
         {
-            *outCat = *(objc_category*)(iObjcSects[i].contents +
+            *outCat = *(objc1_32_category*)(iObjcSects[i].contents +
                 (inDef - iObjcSects[i].s.addr));
 
             return YES;
@@ -275,7 +274,7 @@
 //  categories to classes. We have 2 pointers to the same name, so pointer
 //  equality is sufficient.
 
-- (BOOL)getObjcClass: (objc_class*)outClass
+- (BOOL)getObjcClass: (objc1_32_class*)outClass
             fromName: (const char*)inName;
 {
     uint32_t  i, namePtr;
@@ -294,7 +293,7 @@
         }
     }
 
-    *outClass   = (objc_class){0};
+    *outClass   = (objc1_32_class){0};
 
     return NO;
 }
@@ -303,7 +302,7 @@
 // ----------------------------------------------------------------------------
 //  Same as above, but returns a pointer.
 
-- (BOOL)getObjcClassPtr: (objc_class**)outClassPtr
+- (BOOL)getObjcClassPtr: (objc1_32_class**)outClassPtr
                fromName: (const char*)inName;
 {
     uint32_t  i, namePtr;
@@ -330,14 +329,14 @@
 //  getObjcMetaClass:fromClass:
 // ----------------------------------------------------------------------------
 
-- (BOOL)getObjcMetaClass: (objc_class*)outClass
-               fromClass: (objc_class*)inClass;
+- (BOOL)getObjcMetaClass: (objc1_32_class*)outClass
+               fromClass: (objc1_32_class*)inClass;
 {
-    if ((uint32_t)inClass->isa >= iMetaClassSect.s.addr &&
-        (uint32_t)inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)
+    if (inClass->isa >= iMetaClassSect.s.addr &&
+        inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)
     {
-        *outClass   = *(objc_class*)(iMetaClassSect.contents +
-            ((uint32_t)inClass->isa - iMetaClassSect.s.addr));
+        *outClass   = *(objc1_32_class*)(iMetaClassSect.contents +
+            (inClass->isa - iMetaClassSect.s.addr));
 
         return YES;
     }
