@@ -16,6 +16,7 @@
 typedef struct
 {                                   // CLI flags
     BOOL    localOffsets;           // l
+    BOOL    code;                   // C
     BOOL    entabOutput;            // e
     BOOL    dataSections;           // d
     BOOL    checksum;               // c

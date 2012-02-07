@@ -63,6 +63,7 @@
     // Assign default options.
     iOpts   = (ProcOptions){
         SHOW_LOCAL_OFFSETS,
+        SHOW_CODE,
         DONT_ENTAB_OUTPUT,
         DONT_SHOW_DATA_SECTIONS,
         SHOW_CHECKSUM,
@@ -71,7 +72,8 @@
         DEMANGLE_CPP_NAMES,
         SHOW_METHOD_RETURN_TYPES,
         SHOW_VARIABLE_TYPES,
-        SHOW_RETURN_STATEMENTS
+        SHOW_RETURN_STATEMENTS,
+        0
     };
 
     // Parse options.
@@ -123,6 +125,9 @@
                     {
                         case 'l':
                             iOpts.localOffsets = !SHOW_LOCAL_OFFSETS;
+                            break;
+                        case 'C':
+                            iOpts.code = !SHOW_CODE;
                             break;
                         case 'e':
                             iOpts.entabOutput = !DONT_ENTAB_OUTPUT;
@@ -298,6 +303,7 @@
         "Usage: otx [-bcdelmnoprv] [-arch <arch type>] <object file>\n"
         "\t-b             separate logical blocks\n"
         "\t-c             don't show md5 checksum\n"
+        "\t-C             don't show binary code\n"
         "\t-d             show data sections\n"
         "\t-e             don't entab output\n"
         "\t-l             don't show local offsets\n"
