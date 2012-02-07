@@ -676,13 +676,6 @@
 
 - (void)processCodeLine: (Line64**)ioLine;
 {
-    static id constSelf = nil;
-    if (!constSelf) constSelf = self;
-    
-    if (self != constSelf) {
-        NSLog(@"Boom 2");
-    }
-    
     if (!ioLine || !(*ioLine) || !((*ioLine)->chars))
     {
         fprintf(stderr, "otx: tried to process NULL code line\n");
@@ -808,10 +801,6 @@
 
     theMethCName[0] = 0;
 
-    if (self != constSelf) {
-        NSLog(@"Boom 3");
-    }
-
     // Check if this is the beginning of a function.
     if ((*ioLine)->info.isFunction)
     {
@@ -903,10 +892,6 @@
             }
         }   // if ([self getObjcMethod:&theSwappedInfoPtr fromAddress:mCurrentFuncPtr])
 
-        if (self != constSelf) {
-            NSLog(@"Boom 4 ");
-        }
-
         // Add or replace the method name if possible, else add '\n'.
         if ((*ioLine)->prev && (*ioLine)->prev->info.isCode)    // prev line is code
         {
@@ -984,10 +969,6 @@
 
         [self resetRegisters:*ioLine];
     }   // if ((*ioLine)->info.isFunction)
-
-    if (self != constSelf) {
-        NSLog(@"Boom 5");
-    }
 
     // Find a comment if necessary.
     if (!theCommentCString[0])
