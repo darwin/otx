@@ -127,7 +127,7 @@
                             iOpts.localOffsets = !SHOW_LOCAL_OFFSETS;
                             break;
                         case 'C':
-                            iOpts.code = !SHOW_CODE;
+                            iOpts.showCode = !SHOW_CODE;
                             break;
                         case 'e':
                             iOpts.entabOutput = !DONT_ENTAB_OUTPUT;

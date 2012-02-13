@@ -165,7 +165,6 @@ enum {
     NSString*           iOutputFilePath;
     uint32_t              iFileArchMagic;         // 0xCAFEBABE etc.
     BOOL                iExeIsFat;
-    uint32_t              iLocalOffset;           // +420 etc.
     ThunkInfo*          iThunks;                // x86 only
     uint32_t              iNumThunks;             // x86 only
     TextFieldWidths     iFieldWidths;

@@ -163,6 +163,7 @@ Function64Info;
     uint32_t              iNumLines;
     uint32_t              iNumCodeLines;
     cpu_type_t          iArchSelector;
+    uint64_t            iCurrentFunctionStart;
 
     // base pointers for indirect addressing
     SInt8               iCurrentThunk;      // x86 register identifier

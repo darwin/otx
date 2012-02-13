@@ -581,13 +581,13 @@
     {
         if (strstr(ioLine->chars, "__coalesced_text)"))
         {
-            iEndOfText      = iCoalTextSect.s.addr + iCoalTextSect.s.size;
-            iLocalOffset    = 0;
+            iEndOfText = iCoalTextSect.s.addr + iCoalTextSect.s.size;
+            iCurrentFunctionStart = ioLine->info.address;
         }
         else if (strstr(ioLine->chars, "__textcoal_nt)"))
         {
-            iEndOfText      = iCoalTextNTSect.s.addr + iCoalTextNTSect.s.size;
-            iLocalOffset    = 0;
+            iEndOfText = iCoalTextNTSect.s.addr + iCoalTextNTSect.s.size;
+            iCurrentFunctionStart = ioLine->info.address;
         }
 
         char    theTempLine[MAX_LINE_LENGTH];
@@ -808,8 +808,7 @@
         iEnteringNewBlock = NO;
 
         // New function, new local offset count and current func.
-        iLocalOffset    = 0;
-        iCurrentFuncPtr = (*ioLine)->info.address;
+        iCurrentFunctionStart = iCurrentFuncPtr = (*ioLine)->info.address;
 
         // Try to build the method name.
         Method64Info* methodInfoPtr   = NULL;
@@ -1151,7 +1150,7 @@
     {
         // Build a right-aligned string  with a '+' in it.
         snprintf((char*)&localOffsetString, iFieldWidths.offset,
-            "%6u", iLocalOffset);
+            "%6llu", (unsigned long long) ((*ioLine)->info.address) - iCurrentFunctionStart);
 
         // Find the space that's followed by a nonspace.
         // *Reverse count to optimize for short functions.
@@ -1164,9 +1163,6 @@
                 break;
             }
         }
-
-        if (theCodeCString)
-            iLocalOffset += strlen(theCodeCString) / 2;
 
         // Terminate addrSpaces based on offset field width.
         i   = iFieldWidths.offset - 6;

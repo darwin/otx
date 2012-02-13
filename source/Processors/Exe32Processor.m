@@ -597,13 +597,13 @@
     {
         if (strstr(ioLine->chars, "__coalesced_text)"))
         {
-            iEndOfText      = iCoalTextSect.s.addr + iCoalTextSect.s.size;
-            iLocalOffset    = 0;
+            iEndOfText = iCoalTextSect.s.addr + iCoalTextSect.s.size;
+            iCurrentFunctionStart = ioLine->info.address;
         }
         else if (strstr(ioLine->chars, "__textcoal_nt)"))
         {
-            iEndOfText      = iCoalTextNTSect.s.addr + iCoalTextNTSect.s.size;
-            iLocalOffset    = 0;
+            iEndOfText = iCoalTextNTSect.s.addr + iCoalTextNTSect.s.size;
+            iCurrentFunctionStart = ioLine->info.address;
         }
 
         char    theTempLine[MAX_LINE_LENGTH];
@@ -810,8 +810,7 @@
         iEnteringNewBlock = NO;
 
         // New function, new local offset count and current func.
-        iLocalOffset    = 0;
-        iCurrentFuncPtr = (*ioLine)->info.address;
+        iCurrentFunctionStart = iCurrentFuncPtr = (*ioLine)->info.address;
 
         // Try to build the method name.
         MethodInfo* theSwappedInfoPtr   = NULL;
@@ -1136,7 +1135,7 @@
     {
         // Build a right-aligned string  with a '+' in it.
         snprintf((char*)&localOffsetString, iFieldWidths.offset,
-            "%6u", iLocalOffset);
+            "%6u", ((*ioLine)->info.address - iCurrentFunctionStart));
 
         // Find the space that's followed by a nonspace.
         // *Reverse count to optimize for short functions.
@@ -1149,9 +1148,6 @@
                 break;
             }
         }
-
-        if (theCodeCString)
-            iLocalOffset += strlen(theCodeCString) / 2;
 
         // Fill up addrSpaces based on offset field width.
         i   = iFieldWidths.offset - 6;
@@ -1215,7 +1211,7 @@
         formatMarker += snprintf(&finalFormatCString[formatMarker],
             10, "%s", "%s %s");
 
-    if (iOpts.code)
+    if (iOpts.showCode)
         formatMarker += snprintf(&finalFormatCString[formatMarker],
             10, "%s", "%s %s");
 
@@ -1234,7 +1230,7 @@
 
     char    theFinalCString[MAX_LINE_LENGTH] = "";
 
-    if (iOpts.localOffsets && iOpts.code)
+    if (iOpts.localOffsets && iOpts.showCode)
         snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
             finalFormatCString, localOffsetString,
             addrSpaces, theAddressCString,
@@ -1249,7 +1245,7 @@
             instSpaces, theMnemonicCString,
             opSpaces, iLineOperandsCString,
             commentSpaces, theCommentCString);
-    else if (iOpts.code)
+    else if (iOpts.showCode)
         snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
             addrSpaces, theAddressCString,
             instSpaces, theCodeCString,

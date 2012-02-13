@@ -162,6 +162,7 @@ FunctionInfo;
     uint32_t              iNumLines;
     uint32_t              iNumCodeLines;
     cpu_type_t          iArchSelector;
+    uint32_t            iCurrentFunctionStart;
 
     // base pointers for indirect addressing
     uint32_t              iCurrentFuncPtr;    // PPC function address
