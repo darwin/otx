@@ -867,7 +867,7 @@
                     }
                     else
                     {
-                        strncpy(returnCType, "???", 3);
+                        strncpy(returnCType, "???", 4);
                     }
 
                     snprintf(theMethCName, 1000,
