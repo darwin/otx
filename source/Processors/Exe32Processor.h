@@ -195,6 +195,7 @@ FunctionInfo;
     section_info        iObjcModSect;
     section_info        iObjcSymSect;
     section_info        iObjcMethnameSect;
+    section_info        iObjcMethtypeSect;
     section_info        iObjcClassnameSect;
     section_info        iObjcClassListSect;
     section_info        iObjcCatListSect;

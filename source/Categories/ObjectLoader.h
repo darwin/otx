@@ -26,6 +26,7 @@
 - (void)loadObjcModSection: (section*)inSect;
 - (void)loadObjcSymSection: (section*)inSect;
 - (void)loadObjcMethnameSection: (section*)inSect;
+- (void)loadObjcMethtypeSection: (section*)inSect;
 - (void)loadObjcClassnameSection: (section*)inSect;
 - (void)loadLit4Section: (section*)inSect;
 - (void)loadLit8Section: (section*)inSect;

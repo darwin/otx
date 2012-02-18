@@ -329,6 +329,8 @@
                 [self loadConstTextSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_methname") == 0)
                 [self loadObjcMethnameSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_methtype") == 0)
+                [self loadObjcMethtypeSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_classname") == 0)
                 [self loadObjcClassnameSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__cstring") == 0)
@@ -536,6 +538,20 @@
     
     iObjcMethnameSect.contents = (char*)iMachHeaderPtr + iObjcMethnameSect.s.offset;
     iObjcMethnameSect.size     = iObjcMethnameSect.s.size;
+}
+
+//  loadObjcMethTypeSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcMethtypeSection: (section_64*)inSect
+{
+    iObjcMethtypeSect.s  = *inSect;
+
+    if (iSwapped)
+        swap_section_64(&iObjcMethtypeSect.s, 1, OSHostByteOrder());
+
+    iObjcMethtypeSect.contents   = (char*)iMachHeaderPtr + iObjcMethtypeSect.s.offset;
+    iObjcMethtypeSect.size       = iObjcMethtypeSect.s.size;
 }
 
 //  loadObjcClassnameSection:

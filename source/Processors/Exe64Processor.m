@@ -855,38 +855,25 @@
                         return;
 
                     char*   methTypes = [self getPointer:methodInfo.m.types type:NULL];
+                    char    returnCType[MAX_TYPE_STRING_LENGTH];
+                    char*   methNameFormat  = iOpts.returnTypes ? "\n%1$c(%4$s)[%2$s %3$s]\n" : "\n%c[%s %s]\n";
+
+                    returnCType[0]  = 0;
 
                     if (methTypes)
                     {
-                        char    returnCType[MAX_TYPE_STRING_LENGTH];
-
-                        returnCType[0]  = 0;
-
                         [self decodeMethodReturnType: methTypes
-                            output: returnCType];
-
-/*                        if (catName)
-                        {
-                            char*   methNameFormat  = iOpts.returnTypes ?
-                                "\n%1$c(%5$s)[%2$s(%3$s) %4$s]\n" :
-                                "\n%c[%s(%s) %s]\n";
-
-                            snprintf(theMethCName, 1000,
-                                methNameFormat,
-                                (theSwappedInfo.inst) ? '-' : '+',
-                                className, catName, selName, returnCType);
-                        }
-                        else*/
-                        //{
-                            char*   methNameFormat  = iOpts.returnTypes ?
-                                "\n%1$c(%4$s)[%2$s %3$s]\n" : "\n%c[%s %s]\n";
-
-                            snprintf(theMethCName, 1000,
-                                methNameFormat,
-                                (methodInfo.inst) ? '-' : '+',
-                                className, selName, returnCType);
-                        //}
+                                output: returnCType];
                     }
+                    else
+                    {
+                        strncpy(returnCType, "???", 3);
+                    }
+
+                    snprintf(theMethCName, 1000,
+                        methNameFormat,
+                        (methodInfo.inst) ? '-' : '+',
+                        className, selName, returnCType);
                 }
             }
         }   // if ([self getObjcMethod:&theSwappedInfoPtr fromAddress:mCurrentFuncPtr])
@@ -1674,6 +1661,12 @@
         inAddr < iObjcMethnameSect.s.addr + iObjcMethnameSect.size)
     {
         thePtr  = (iObjcMethnameSect.contents + (inAddr - iObjcMethnameSect.s.addr));
+    }
+    else    // (__TEXT,__objc_methtype) (char*)
+    if (inAddr >= iObjcMethtypeSect.s.addr &&
+        inAddr < iObjcMethtypeSect.s.addr + iObjcMethtypeSect.size)
+    {
+        thePtr  = (iObjcMethtypeSect.contents + (inAddr - iObjcMethtypeSect.s.addr));
     }
     else    // (__TEXT,__objc_classname) (char*)
     if (inAddr >= iObjcClassnameSect.s.addr &&
