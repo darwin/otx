@@ -856,7 +856,7 @@
 
                     char*   methTypes = [self getPointer:methodInfo.m.types type:NULL];
                     char    returnCType[MAX_TYPE_STRING_LENGTH];
-                    char*   methNameFormat  = iOpts.returnTypes ? "\n%1$c(%4$s)[%2$s %3$s]\n" : "\n%c[%s %s]\n";
+                    char*   methNameFormat  = iOpts.returnTypes ? "\n%1$c(%4$s)[%2$s %3$s]:\n" : "\n%c[%s %s]:\n";
 
                     returnCType[0]  = 0;
 

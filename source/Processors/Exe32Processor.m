@@ -898,8 +898,8 @@
                     if (catName)
                     {
                         char*   methNameFormat  = iOpts.returnTypes ?
-                            "\n%1$c(%5$s)[%2$s(%3$s) %4$s]\n" :
-                            "\n%c[%s(%s) %s]\n";
+                            "\n%1$c(%5$s)[%2$s(%3$s) %4$s]:\n" :
+                            "\n%c[%s(%s) %s]:\n";
 
                         snprintf(theMethCName, 1000,
                             methNameFormat,
@@ -909,7 +909,7 @@
                     else
                     {
                         char*   methNameFormat  = iOpts.returnTypes ?
-                            "\n%1$c(%4$s)[%2$s %3$s]\n" : "\n%c[%s %s]\n";
+                            "\n%1$c(%4$s)[%2$s %3$s]:\n" : "\n%c[%s %s]:\n";
 
                         snprintf(theMethCName, 1000,
                             methNameFormat,
