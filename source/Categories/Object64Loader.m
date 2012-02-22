@@ -289,7 +289,7 @@
         (COMPARISON_FUNC_TYPE)
         (iSwapped ? Method64Info_Compare_Swapped : Method64Info_Compare));
     qsort(iClassIvars, iNumClassIvars, sizeof(objc2_64_ivar_t),
-        (COMPARISON_FUNC_TYPE)objc2_ivar_t_Compare);
+        (COMPARISON_FUNC_TYPE)objc2_64_ivar_t_Compare);
 }
 
 //  loadSegment:

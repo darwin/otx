@@ -244,6 +244,17 @@ Sym_Compare_64(
     return (sym1->n_value > sym2->n_value);
 }
 
+static int
+objc2_32_ivar_t_Compare(
+    objc2_32_ivar_t* i1,
+    objc2_32_ivar_t* i2)
+{
+    if (i1->offset < i2->offset)
+        return -1;
+
+    return (i1->offset > i2->offset);
+}
+
 // ----------------------------------------------------------------------------
 // Utils
 

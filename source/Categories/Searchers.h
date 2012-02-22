@@ -21,5 +21,8 @@
 - (BOOL)findIvar: (objc1_32_ivar*)outIvar
          inClass: (objc1_32_class*)inClass
       withOffset: (uint32_t)inOffset;
+- (BOOL)findIvar: (objc2_32_ivar_t**)outIvar
+        inClass2: (objc2_32_class_t*)inClass
+      withOffset: (uint32_t)inOffset;
 
 @end

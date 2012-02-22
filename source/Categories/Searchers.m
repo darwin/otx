@@ -53,7 +53,8 @@
     if (iSwapped)
         swappedAddress  = OSSwapInt32(swappedAddress);
 
-    MethodInfo  searchKey   = {{0, 0, swappedAddress}, {0}, {0}, NO};
+    MethodInfo  searchKey   = {0};
+    searchKey.m.method_imp = swappedAddress;
 
     *outMI  = bsearch(&searchKey,
         iClassMethodInfos, iNumClassMethodInfos, sizeof(MethodInfo),
@@ -83,7 +84,8 @@
     if (iSwapped)
         swappedAddress  = OSSwapInt32(swappedAddress);
 
-    MethodInfo  searchKey   = {{0, 0, swappedAddress}, {0}, {0}, NO};
+    MethodInfo searchKey = {0};
+    searchKey.m.method_imp = swappedAddress;
 
     *outMI  = bsearch(&searchKey,
         iCatMethodInfos, iNumCatMethodInfos, sizeof(MethodInfo),
@@ -124,7 +126,7 @@
             if (!theSuperName)
                 break;
 
-            if (![self getObjcClass:&theDummyClass fromName:theSuperName])
+            if (![self getObjc1Class:&theDummyClass fromName:theSuperName])
                 break;
 
             theClassPtr = &theDummyClass;
@@ -175,13 +177,31 @@
         if (!theSuperName)
             break;
 
-        if (![self getObjcClass:&theDummyClass fromName:theSuperName])
+        if (![self getObjc1Class:&theDummyClass fromName:theSuperName])
             break;
 
         theClassPtr = &theDummyClass;
     }
 
     return NO;
+}
+
+//  findIvar:inClass:withOffset:
+// ----------------------------------------------------------------------------
+
+- (BOOL)findIvar: (objc2_32_ivar_t**)outIvar
+        inClass2: (objc2_32_class_t*)inClass
+      withOffset: (uint32_t)inOffset
+{
+    if (!inClass || !outIvar)
+        return NO;
+
+    objc2_64_ivar_t searchKey = {inOffset, 0, 0, 0, 0};
+
+    *outIvar = bsearch(&searchKey, iClassIvars, iNumClassIvars, sizeof(objc2_32_ivar_t),
+        (COMPARISON_FUNC_TYPE)objc2_32_ivar_t_Compare);
+
+    return (*outIvar != NULL);
 }
 
 @end

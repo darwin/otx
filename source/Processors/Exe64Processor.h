@@ -300,7 +300,7 @@ Method64Info_Compare_Swapped(
 }
 
 static int
-objc2_ivar_t_Compare(
+objc2_64_ivar_t_Compare(
     objc2_64_ivar_t* i1,
     objc2_64_ivar_t* i2)
 {

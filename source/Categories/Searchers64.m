@@ -72,7 +72,7 @@
     objc2_64_ivar_t searchKey = {inOffset, 0, 0, 0, 0};
 
     *outIvar = bsearch(&searchKey, iClassIvars, iNumClassIvars, sizeof(objc2_64_ivar_t),
-        (COMPARISON_FUNC_TYPE)objc2_ivar_t_Compare);
+        (COMPARISON_FUNC_TYPE)objc2_64_ivar_t_Compare);
 
     return (*outIvar != NULL);
 }

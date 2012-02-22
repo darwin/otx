@@ -77,6 +77,12 @@
         iCatMethodInfos = NULL;
     }
 
+    if (iClassIvars)
+    {
+        free(iClassIvars);
+        iClassIvars = NULL;
+    }
+
     if (iLineArray)
     {
         free(iLineArray);
@@ -820,20 +826,49 @@
         {
             theSwappedInfo  = *theSwappedInfoPtr;
 
-            if (iSwapped)
-                swap_method_info(&theSwappedInfo);
-
             char*   className   = NULL;
             char*   catName     = NULL;
 
-            if (theSwappedInfo.oc_cat.category_name)
+            if (iObjcVersion < 2)
             {
-                className   = [self getPointer:theSwappedInfo.oc_cat.class_name type:NULL];
-                catName     = [self getPointer:theSwappedInfo.oc_cat.category_name type:NULL];
+                if (iSwapped)
+                {
+                    swap_objc1_32_method(&theSwappedInfo.m);
+                    swap_objc1_32_class(&theSwappedInfo.oc_class);
+                    swap_objc1_32_category(&theSwappedInfo.oc_cat);
+                }
+            
+                if (theSwappedInfo.oc_cat.category_name)
+                {
+                    className   = [self getPointer:theSwappedInfo.oc_cat.class_name type:NULL];
+                    catName     = [self getPointer:theSwappedInfo.oc_cat.category_name type:NULL];
+                }
+                else if (theSwappedInfo.oc_class.name)
+                {
+                    className   = [self getPointer:theSwappedInfo.oc_class.name type:NULL];
+                }
+            
             }
-            else if (theSwappedInfo.oc_class.name)
+            else if (iObjcVersion == 2)
             {
-                className   = [self getPointer:theSwappedInfo.oc_class.name type:NULL];
+                if (iSwapped)
+                {
+                    swap_objc2_32_method(&theSwappedInfo.m2);
+                    swap_objc2_32_class(&theSwappedInfo.oc_class2);
+                }
+
+                if (theSwappedInfo.oc_class2.data)
+                {
+                    objc2_32_class_ro_t* roData = (objc2_32_class_ro_t*)(iObjcConstSect.contents +
+                        (uintptr_t)(theSwappedInfo.oc_class2.data - iObjcConstSect.s.addr));
+
+                    UInt32 name = roData->name;
+
+                    if (iSwapped)
+                        name = OSSwapInt32(name);
+
+                    className = [self getPointer:name type:NULL];
+                }
             }
 
             if (className)
@@ -1632,6 +1667,56 @@
     strncpy(ioLine->chars, entabbedLine, ioLine->length + 1);
 }
 
+
+- (BOOL)getIvarName:(char **)outName type:(char **)outType withOffset:(uint32_t)offset inClass:(objc_32_class_ptr)classPtr
+{
+    if (iObjcVersion == 1) {
+        objc1_32_ivar  ivar = {0};
+        objc1_32_class cls  = *(objc1_32_class *)classPtr;
+    
+        #if __BIG_ENDIAN__
+            swap_objc1_32_class(&cls);
+        #endif
+
+        if (!iIsInstanceMethod)
+        {
+            if (![self getObjc1MetaClass:&cls fromClass:&cls])
+                return NO;
+        
+            #if __BIG_ENDIAN__
+                swap_objc1_32_class(&cls);
+            #endif
+        }
+
+        if (![self findIvar:&ivar inClass:&cls withOffset:offset])
+            return NO;
+        
+        char *name = [self getPointer:ivar.ivar_name type:NULL];
+        char *type = [self getPointer:ivar.ivar_type type:NULL];
+        
+        if (outName) *outName = name;
+        if (outType) *outType = type;
+        
+        return YES;
+
+    } else if (iObjcVersion == 2) {
+        objc2_32_ivar_t* ivar;
+
+        if ([self findIvar:&ivar inClass2:(objc2_32_class_t *)classPtr withOffset:offset])
+        {
+            char *name = [self getPointer:ivar->name type:NULL];
+            char *type = [self getPointer:ivar->type type:NULL];
+            
+            if (outName) *outName = name;
+            if (outType) *outType = type;
+        }
+        
+        return YES;
+    }
+
+    return NO;
+}
+
 //  getPointer:type:    (was get_pointer)
 // ----------------------------------------------------------------------------
 //  Convert a relative ptr to an absolute ptr. Return which data type is being
@@ -1868,20 +1953,20 @@
     if (inAddr >= iObjcClassRefsSect.s.addr &&
         inAddr < iObjcClassRefsSect.s.addr + iObjcClassRefsSect.size)
     {
-        if (inAddr % 8 == 0)
+        if (inAddr % 4 == 0)
         {
             UInt32 classRef = *(UInt32*)(iObjcClassRefsSect.contents +
                 (inAddr - iObjcClassRefsSect.s.addr));
 
             if (classRef &&
-                classRef >= iObjcClassRefsSect.s.addr &&
-                classRef < iObjcClassRefsSect.s.addr + iObjcClassRefsSect.s.size)
+                classRef >= iObjcDataSect.s.addr &&
+                classRef < iObjcDataSect.s.addr + iObjcDataSect.s.size)
             {
                 if (iSwapped)
                     classRef = OSSwapInt32(classRef);
 
-                objc2_32_class_t swappedClass = *(objc2_32_class_t*)(iObjcClassRefsSect.contents +
-                    (classRef - iObjcClassRefsSect.s.addr));
+                objc2_32_class_t swappedClass = *(objc2_32_class_t*)(iObjcDataSect.contents +
+                    (classRef - iObjcDataSect.s.addr));
 
                 if (iSwapped)
                     swap_objc2_32_class(&swappedClass);

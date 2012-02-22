@@ -19,7 +19,7 @@
 //  is called each time a new function is detected. If that function is known
 //  to be an Obj-C method, it's class is returned. Otherwise this returns NULL.
 
-- (BOOL)getObjcClassPtr: (objc1_32_class**)outClass
+- (BOOL)getObjcClassPtr: (objc_32_class_ptr*)outClass
              fromMethod: (uint32_t)inAddress;
 {
     *outClass = NULL;
@@ -28,27 +28,69 @@
     [self findClassMethod:&theInfo byAddress:inAddress];
 
     if (theInfo)
-        *outClass = &theInfo->oc_class;
+    {
+        if (iObjcVersion < 2)
+        {
+            *outClass = (objc_32_class_ptr)&theInfo->oc_class;
+        }
+        else if (iObjcVersion == 2)
+        {
+            *outClass = (objc_32_class_ptr)&theInfo->oc_class2;
+        }
+    }
 
     return (*outClass != NULL);
 }
 
-//  getObjcCatPtr:fromMethod:
+//  getObjcClassPtr:fromName:
 // ----------------------------------------------------------------------------
-//  Same as above, for categories.
+//  Given a class name, return the class itself. This func is used to tie
+//  categories to classes. We have 2 pointers to the same name, so pointer
+//  equality is sufficient.
 
-- (BOOL)getObjcCatPtr: (objc1_32_category**)outCat
-           fromMethod: (uint32_t)inAddress;
+- (BOOL)getObjcClassPtr: (objc_32_class_ptr *)outClassPtr
+               fromName: (const char*)inName;
 {
-    *outCat = NULL;
+    if (iObjcVersion < 2)
+    {
+        for (uint32_t i = 0; i < iNumClassMethodInfos; i++)
+        {
+            uint32_t namePtr = (uint32_t)iClassMethodInfos[i].oc_class.name;
 
-    MethodInfo* theInfo = NULL;
-    [self findCatMethod:&theInfo byAddress:inAddress];
+            if (iSwapped)
+                namePtr = OSSwapInt32(namePtr);
 
-    if (theInfo)
-        *outCat = &theInfo->oc_cat;
+            if ([self getPointer:namePtr type:NULL] == inName)
+            {
+                *outClassPtr = (objc_32_class_ptr) &iClassMethodInfos[i].oc_class;
+                return YES;
+            }
+        }
 
-    return (*outCat != NULL);
+    }
+    else if (iObjcVersion == 2)
+    {
+        for (uint32_t i = 0; i < iNumClassMethodInfos; i++)
+        {
+            objc2_32_class_ro_t* roData = (objc2_32_class_ro_t*)(iObjcConstSect.contents +
+                (uintptr_t)(iClassMethodInfos[i].oc_class2.data - iObjcConstSect.s.addr)); 
+
+            uint32_t namePtr = roData->name;
+
+            if (iSwapped)
+                namePtr = OSSwapInt32(namePtr);
+
+            if ([self getPointer:namePtr type:NULL] == inName)
+            {
+                *outClassPtr = (objc_32_class_ptr) &iClassMethodInfos[i].oc_class2;
+                return YES;
+            }
+        }
+    }
+
+    *outClassPtr = NULL;
+
+    return NO;
 }
 
 //  getObjcMethod:fromAddress:
@@ -70,13 +112,31 @@
     return (*outMI != NULL);
 }
 
-//  getObjcMethodList:methods:fromAddress: (was get_method_list)
+//  getObjc1CatPtr:fromMethod:
+// ----------------------------------------------------------------------------
+//  Given a method imp address, return the category to which it belongs.
+
+- (BOOL)getObjc1CatPtr: (objc1_32_category**)outCat
+            fromMethod: (uint32_t)inAddress;
+{
+    *outCat = NULL;
+
+    MethodInfo* theInfo = NULL;
+    [self findCatMethod:&theInfo byAddress:inAddress];
+
+    if (theInfo)
+        *outCat = &theInfo->oc_cat;
+
+    return (*outCat != NULL);
+}
+
+//  getObjc1MethodList:methods:fromAddress: (was get_method_list)
 // ----------------------------------------------------------------------------
 //  Removed the truncation flag. 'left' is no longer used by the caller.
 
-- (BOOL)getObjcMethodList: (objc1_32_method_list*)outList
-                  methods: (objc1_32_method**)outMethods
-              fromAddress: (uint32_t)inAddress;
+- (BOOL)getObjc1MethodList: (objc1_32_method_list*)outList
+                   methods: (objc1_32_method**)outMethods
+               fromAddress: (uint32_t)inAddress;
 {
     uint32_t  left, i;
 
@@ -116,13 +176,13 @@
     return NO;
 }
 
-//  getObjcDescription:fromObject:type:
+//  getObjc1Description:fromObject:type:
 // ----------------------------------------------------------------------------
 //  Given an Obj-C object, return it's description.
 
-- (BOOL)getObjcDescription: (char**)outDescription
-                fromObject: (const char*)inObject
-                      type: (UInt8)inType
+- (BOOL)getObjc1Description: (char**)outDescription
+                 fromObject: (const char*)inObject
+                       type: (UInt8)inType
 {
     *outDescription = NULL;
 
@@ -175,13 +235,13 @@
     return (*outDescription != NULL);
 }
 
-//  getObjcSymtab:defs:fromModule: (was get_symtab)
+//  getObjc1Symtab:defs:fromModule: (was get_symtab)
 // ----------------------------------------------------------------------------
 //  Removed the truncation flag. 'left' is no longer used by the caller.
 
-- (BOOL)getObjcSymtab: (objc1_32_symtab*)outSymTab
-                 defs: (uint32_t **)outDefs
-           fromModule: (objc1_32_module*)inModule;
+- (BOOL)getObjc1Symtab: (objc1_32_symtab*)outSymTab
+                  defs: (uint32_t **)outDefs
+            fromModule: (objc1_32_module*)inModule;
 {
     if (!outSymTab)
         return NO;
@@ -222,60 +282,66 @@
     return NO;
 }
 
-//  getObjcClass:fromDef: (was get_objc_class)
+//  getObjc1Class:fromDef: (was get_objc_class)
 // ----------------------------------------------------------------------------
 
-- (BOOL)getObjcClass: (objc1_32_class*)outClass
-             fromDef: (uint32_t)inDef;
+- (BOOL)getObjc1Class: (objc1_32_class*)outClass
+              fromDef: (uint32_t)inDef;
 {
-    uint32_t  i;
-
-    for (i = 0; i < iNumObjcSects; i++)
+    if (iObjcVersion < 2)
     {
-        if (inDef >= iObjcSects[i].s.addr &&
-            inDef < iObjcSects[i].s.addr + iObjcSects[i].size)
-        {
-            *outClass   = *(objc1_32_class*)(iObjcSects[i].contents +
-                (inDef - iObjcSects[i].s.addr));
+        uint32_t  i;
 
-            return YES;
+        for (i = 0; i < iNumObjcSects; i++)
+        {
+            if (inDef >= iObjcSects[i].s.addr &&
+                inDef < iObjcSects[i].s.addr + iObjcSects[i].size)
+            {
+                *outClass   = *(objc1_32_class*)(iObjcSects[i].contents +
+                    (inDef - iObjcSects[i].s.addr));
+
+                return YES;
+            }
         }
     }
 
     return NO;
 }
 
-//  getObjcCategory:fromDef: (was get_objc_category)
+//  getObjc1Category:fromDef: (was get_objc_category)
 // ----------------------------------------------------------------------------
 
-- (BOOL)getObjcCategory: (objc1_32_category*)outCat
-                fromDef: (uint32_t)inDef;
+- (BOOL)getObjc1Category: (objc1_32_category*)outCat
+                 fromDef: (uint32_t)inDef;
 {
-    uint32_t  i;
-
-    for (i = 0; i < iNumObjcSects; i++)
+    if (iObjcVersion < 2)
     {
-        if (inDef >= iObjcSects[i].s.addr &&
-            inDef < iObjcSects[i].s.addr + iObjcSects[i].s.size)
-        {
-            *outCat = *(objc1_32_category*)(iObjcSects[i].contents +
-                (inDef - iObjcSects[i].s.addr));
+        uint32_t  i;
 
-            return YES;
+        for (i = 0; i < iNumObjcSects; i++)
+        {
+            if (inDef >= iObjcSects[i].s.addr &&
+                inDef < iObjcSects[i].s.addr + iObjcSects[i].s.size)
+            {
+                *outCat = *(objc1_32_category*)(iObjcSects[i].contents +
+                    (inDef - iObjcSects[i].s.addr));
+
+                return YES;
+            }
         }
     }
 
     return NO;
 }
 
-//  getObjcClass:fromName:
+//  getObjc1Class:fromName:
 // ----------------------------------------------------------------------------
 //  Given a class name, return the class itself. This func is used to tie
 //  categories to classes. We have 2 pointers to the same name, so pointer
 //  equality is sufficient.
 
-- (BOOL)getObjcClass: (objc1_32_class*)outClass
-            fromName: (const char*)inName;
+- (BOOL)getObjc1Class: (objc1_32_class *)outClass
+             fromName: (const char*)inName;
 {
     uint32_t  i, namePtr;
 
@@ -298,47 +364,22 @@
     return NO;
 }
 
-//  getObjcClassPtr:fromName:
+//  getObjc1MetaClass:fromClass:
 // ----------------------------------------------------------------------------
-//  Same as above, but returns a pointer.
 
-- (BOOL)getObjcClassPtr: (objc1_32_class**)outClassPtr
-               fromName: (const char*)inName;
+- (BOOL)getObjc1MetaClass: (objc1_32_class*)outClass
+                fromClass: (objc1_32_class*)inClass;
 {
-    uint32_t  i, namePtr;
-
-    for (i = 0; i < iNumClassMethodInfos; i++)
+    if (iObjcVersion < 2)
     {
-        namePtr = (uint32_t)iClassMethodInfos[i].oc_class.name;
-
-        if (iSwapped)
-            namePtr = OSSwapInt32(namePtr);
-
-        if ([self getPointer:namePtr type:NULL] == inName)
+        if (inClass->isa >= iMetaClassSect.s.addr &&
+            inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)
         {
-            *outClassPtr = &iClassMethodInfos[i].oc_class;
+            *outClass   = *(objc1_32_class*)(iMetaClassSect.contents +
+                (inClass->isa - iMetaClassSect.s.addr));
+
             return YES;
         }
-    }
-
-    *outClassPtr = NULL;
-
-    return NO;
-}
-
-//  getObjcMetaClass:fromClass:
-// ----------------------------------------------------------------------------
-
-- (BOOL)getObjcMetaClass: (objc1_32_class*)outClass
-               fromClass: (objc1_32_class*)inClass;
-{
-    if (inClass->isa >= iMetaClassSect.s.addr &&
-        inClass->isa < iMetaClassSect.s.addr + iMetaClassSect.s.size)
-    {
-        *outClass   = *(objc1_32_class*)(iMetaClassSect.contents +
-            (inClass->isa - iMetaClassSect.s.addr));
-
-        return YES;
     }
 
     return NO;

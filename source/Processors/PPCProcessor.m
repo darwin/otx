@@ -181,7 +181,7 @@ extern BOOL gCancel;
                         if (iRegInfos[5].isValid)
                         {
                             objc1_32_ivar   theIvar         = {0};
-                            objc1_32_class  swappedClass    = *iCurrentClass;
+                            objc1_32_class  swappedClass    = *(objc1_32_class *)iCurrentClass;
 
                             #if __LITTLE_ENDIAN__
                                 swap_objc1_32_class(&swappedClass);
@@ -189,7 +189,7 @@ extern BOOL gCancel;
 
                             if (!iIsInstanceMethod)
                             {
-                                if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
+                                if (![self getObjc1MetaClass:&swappedClass fromClass:&swappedClass])
                                     break;
 
                                 #if __LITTLE_ENDIAN__
@@ -324,28 +324,12 @@ extern BOOL gCancel;
 
             if (iRegInfos[RA(theCode)].classPtr)
             {   // search instance vars
-                objc1_32_ivar   theIvar         = {0};
-                objc1_32_class  swappedClass    =
-                    *iRegInfos[RA(theCode)].classPtr;
+                objc_32_class_ptr classPtr = iRegInfos[RA(theCode)].classPtr;
 
-                #if __LITTLE_ENDIAN__
-                    swap_objc1_32_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
-                        break;
-
-                    #if __LITTLE_ENDIAN__
-                        swap_objc1_32_class(&swappedClass);
-                    #endif
-                }
-
-                if (![self findIvar:&theIvar inClass:&swappedClass withOffset:UIMM(theCode)])
+                uint32_t offset = UIMM(theCode);
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
                     break;
-
-                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
 
                 if (theSymPtr)
                 {
@@ -355,7 +339,7 @@ extern BOOL gCancel;
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:typePtr];
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -412,28 +396,12 @@ extern BOOL gCancel;
 
             if (iRegInfos[RA(theCode)].classPtr)    // relative to a class
             {   // search instance vars
-                objc1_32_ivar   theIvar     = {0};
-                objc1_32_class  swappedClass    =
-                    *iRegInfos[RA(theCode)].classPtr;
+                objc_32_class_ptr classPtr = iRegInfos[RA(theCode)].classPtr;
 
-                #if __LITTLE_ENDIAN__
-                    swap_objc1_32_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
-                        break;
-
-                    #if __LITTLE_ENDIAN__
-                        swap_objc1_32_class(&swappedClass);
-                    #endif
-                }
-
-                if (![self findIvar:&theIvar inClass:&swappedClass withOffset:UIMM(theCode)])
+                uint32_t offset = UIMM(theCode);
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
                     break;
-
-                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
 
                 if (theSymPtr)
                 {
@@ -443,7 +411,7 @@ extern BOOL gCancel;
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:typePtr];
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -587,7 +555,7 @@ extern BOOL gCancel;
                         case OCStrObjectType:
                         case OCClassType:
                         case OCModType:
-                            if (![self getObjcDescription:&theDummyPtr fromObject:theSymPtr type:theType]) 
+                            if (![self getObjc1Description:&theDummyPtr fromObject:theSymPtr type:theType]) 
                                 break;
 
                             if (theDummyPtr)
@@ -596,7 +564,7 @@ extern BOOL gCancel;
                                 {
                                     case OCClassType:
                                         iRegInfos[RT(theCode)].classPtr =
-                                            (objc1_32_class*)theSymPtr;
+                                            (objc_32_class_ptr)theSymPtr;
                                         break;
 
                                     default:
@@ -883,7 +851,7 @@ extern BOOL gCancel;
 
             case OCClassType:
                 if (classNamePtr)
-                    [self getObjcDescription:&className fromObject:classNamePtr type:OCClassType];
+                    [self getObjc1Description:&className fromObject:classNamePtr type:OCClassType];
 
                 break;
 
@@ -981,7 +949,7 @@ extern BOOL gCancel;
     // if the function was called indirectly. In the case of direct calls,
     // r12 will be overwritten before it is used, if it is used at all.
     [self getObjcClassPtr:&iCurrentClass fromMethod:inLine->info.address];
-    [self getObjcCatPtr:&iCurrentCat fromMethod:inLine->info.address];
+    [self getObjc1CatPtr:&iCurrentCat fromMethod:inLine->info.address];
     memset(iRegInfos, 0, sizeof(GPRegisterInfo) * 32);
 
     // If we didn't get the class from the method, try to get it from the

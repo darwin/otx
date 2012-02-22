@@ -18,6 +18,7 @@
 - (void)loadSymbols: (symtab_command*)inSymPtr;
 - (void)loadObjcSection: (section*)inSect;
 - (void)loadObjcModules;
+- (void)loadObjcClassList;
 - (void)loadCStringSection: (section*)inSect;
 - (void)loadNSStringSection: (section*)inSect;
 - (void)loadClassSection: (section*)inSect;

@@ -20,9 +20,11 @@
 #define REUSE_BLOCKS    1
 
 //For debugging -updateRegisters:
-//#define UPDATE_REGISTERS_START_DEBUG 0x00000000
-//#define UPDATE_REGISTERS_END_DEBUG   0x00000000
+// #define UPDATE_REGISTERS_START_DEBUG 0x00000000
+// #define UPDATE_REGISTERS_END_DEBUG   0x00000000
 
+// For debugging -commentForLine:
+// #define COMMENT_FOR_LINE_DEBUG       0x1999d5
 
 @implementation X86Processor
 
@@ -245,6 +247,13 @@
 
     iLineCommentCString[0]  = 0;
 
+#ifdef COMMENT_FOR_LINE_DEBUG
+    if (inLine->info.address == COMMENT_FOR_LINE_DEBUG)
+    {
+        raise(SIGINT);
+    }
+#endif
+
     switch (opcode)
     {
         case 0x0f:  // 2-byte and SSE opcodes   **add sysenter support here
@@ -388,29 +397,12 @@
                 if (MOD(modRM) == MODx)
                     break;
 
-                objc1_32_ivar  theIvar      = {0};
-                objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
-
-                #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
-                        break;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-                }
-
+                objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
                 immOffset = inLine->info.code[2];
 
-                if (![self findIvar:&theIvar inClass:&swappedClass withOffset:immOffset])
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:immOffset inClass:classPtr])
                     break;
-
-                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
 
                 if (theSymPtr)
                 {
@@ -420,7 +412,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:typePtr];
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -471,40 +463,22 @@
                     if (MOD(modRM) == MODx)
                         break;
 
-                    objc1_32_ivar  theIvar      = {0};
-                    objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc1_32_class(&swappedClass);
-                    #endif
-
-                    if (!iIsInstanceMethod)
-                    {
-                        if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
-                            break;
-
-                        #if __BIG_ENDIAN__
-                            swap_objc1_32_class(&swappedClass);
-                        #endif
-                    }
+                    objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
+                    uint32 offset = 0;
 
                     if (MOD(modRM) == MOD8)
                     {
-                        SInt8 theSymOffset = (SInt8)inLine->info.code[2];
-
-                        if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
-                            break;
+                        offset = (SInt8)inLine->info.code[2];
                     }
                     else if (MOD(modRM) == MOD32)
                     {
-                        uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[2];
-                        theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
-
-                        if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
-                            break;
+                        offset = *(uint32_t*)&inLine->info.code[2];
+                        offset = OSSwapLittleToHostInt32(offset);
                     }
 
-                    theSymPtr = [self getPointer:theIvar.ivar_name type:NULL];
+                    char *typePtr = NULL;
+                    if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
+                        break;
 
                     if (theSymPtr)
                     {
@@ -514,7 +488,7 @@
 
                             theTypeCString[0] = 0;
 
-                            [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
+                            [self getDescription:theTypeCString forType:typePtr];
                             snprintf(iLineCommentCString,
                                 MAX_COMMENT_LENGTH - 1, "(%s)%s",
                                 theTypeCString, theSymPtr);
@@ -564,41 +538,22 @@
                 if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                     break;
 
-                objc1_32_ivar  theIvar      = {0};
-                objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
-
-                #if __BIG_ENDIAN__
-                    swap_objc1_32_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
-                        break;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc1_32_class(&swappedClass);
-                    #endif
-                }
+                objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
+                uint32 offset = 0;
 
                 if (MOD(modRM) == MOD8)
                 {
-                    SInt8 theSymOffset = (SInt8)inLine->info.code[2];
-
-                    if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
-                        break;
+                    offset = (sint8)inLine->info.code[2];
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[2];
-
-                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
-
-                    if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
-                        break;
+                    offset = *(uint32_t*)&inLine->info.code[2];
+                    offset = OSSwapLittleToHostInt32(offset);
                 }
 
-                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
+                    break;
 
                 if (theSymPtr)
                 {
@@ -608,7 +563,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:typePtr];
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -719,41 +674,21 @@
                 if (HAS_SIB(modRM))
                     immOffset += 1;
 
-                objc1_32_ivar theIvar = {0};
-                objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
-
-                #if __BIG_ENDIAN__
-                    swap_objc1_32_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
-                        break;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc1_32_class(&swappedClass);
-                    #endif
-                }
+                objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
+                uint32_t offset = 0;
 
                 if (MOD(modRM) == MOD8)
                 {
-                    // offset precedes immediate value
-                    SInt8 theSymOffset = (SInt8)inLine->info.code[immOffset - 1];
-
-                    if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
-                        break;
+                    offset = (SInt8)inLine->info.code[immOffset - 1];
                 }
                 else if (MOD(modRM) == MOD32)
                 {
                     uint32_t imm = *(uint32_t*)&inLine->info.code[immOffset];
-                    uint32_t theSymOffset;
-
                     imm = OSSwapLittleToHostInt32(imm);
 
                     // offset precedes immediate value
-                    theSymOffset = *(uint32_t*)&inLine->info.code[immOffset - 4];
-                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
+                    offset = *(uint32_t*)&inLine->info.code[immOffset - 4];
+                    offset = OSSwapLittleToHostInt32(offset);
 
                     // Check for a four char code.
                     if (imm >= 0x20202020 && imm < 0x7f7f7f7f)
@@ -777,11 +712,11 @@
                     {
                         snprintf(fcc, 4, "'%c'", imm);
                     }
-
-                    [self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset];
                 }
 
-                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
+                    break;
 
                 char    tempComment[MAX_COMMENT_LENGTH];
 
@@ -804,7 +739,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:typePtr];
                         snprintf(&tempComment[tempCommentLength],
                             MAX_COMMENT_LENGTH - tempCommentLength - 1,
                             "(%s)%s", theTypeCString, theSymPtr);
@@ -878,41 +813,22 @@
                 if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                     break;
 
-                objc1_32_ivar  theIvar      = {0};
-                objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
-
-                #if __BIG_ENDIAN__
-                    swap_objc1_32_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
-                        break;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc1_32_class(&swappedClass);
-                    #endif
-                }
+                objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
+                uint32 offset = 0;
 
                 if (MOD(modRM) == MOD8)
                 {
-                    SInt8 theSymOffset = (SInt8)inLine->info.code[2];
-
-                    if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
-                        break;
+                    offset = (SInt8)inLine->info.code[2];
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[2];
-
-                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
-
-                    if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
-                        break;
+                    offset = *(uint32_t*)&inLine->info.code[2];
+                    offset = OSSwapLittleToHostInt32(offset);
                 }
 
-                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
+                    break;
 
                 if (theSymPtr)
                 {
@@ -922,7 +838,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:typePtr];
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
                             theTypeCString, theSymPtr);
@@ -1019,41 +935,22 @@
                 if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                     break;
 
-                objc1_32_ivar  theIvar      = {0};
-                objc1_32_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
-
-                #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
-                        break;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-                }
+                objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
+                uint32 offset = 0;
 
                 if (MOD(modRM) == MOD8)
                 {
-                    SInt8 theSymOffset = (SInt8)inLine->info.code[4];
-
-                    if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
-                        break;
+                    offset = (SInt8)inLine->info.code[2];
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[4];
-
-                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
-
-                    if (![self findIvar:&theIvar inClass:&swappedClass withOffset:theSymOffset])
-                        break;
+                    offset = *(uint32_t*)&inLine->info.code[2];
+                    offset = OSSwapLittleToHostInt32(offset);
                 }
 
-                theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
+                    break;
 
                 if (theSymPtr)
                 {
@@ -1063,7 +960,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
+                        [self getDescription:theTypeCString forType:typePtr];
 
                         snprintf(iLineCommentCString,
                             MAX_COMMENT_LENGTH - 1, "(%s)%s",
@@ -1213,7 +1110,7 @@
                 case OCStrObjectType:
                 case OCClassType:
                 case OCModType:
-                    [self getObjcDescription:&theSymPtr fromObject:theDummyPtr type:theType];
+                    [self getObjc1Description:&theSymPtr fromObject:theDummyPtr type:theType];
 
                     break;
 
@@ -1484,7 +1381,7 @@
 
                 case OCClassType:
                     if (classNamePtr)
-                        [self getObjcDescription:&className fromObject:classNamePtr type:OCClassType];
+                        [self getObjc1Description:&className fromObject:classNamePtr type:OCClassType];
 
                     break;
 
@@ -1535,30 +1432,10 @@
     {
         if (iCurrentClass && iStack[2].isValid)
         {
-            char*          theSymPtr    = NULL;
-            objc1_32_ivar  theIvar      = {0};
-            objc1_32_class swappedClass = *iCurrentClass;
+            char *name = NULL;
+            char *type = NULL;
 
-            #if __BIG_ENDIAN__
-                swap_objc_class(&swappedClass);
-            #endif
-
-            if (!iIsInstanceMethod)
-            {
-                if (![self getObjcMetaClass:&swappedClass fromClass:&swappedClass])
-                    return;
-
-                #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-            }
-
-            if (![self findIvar:&theIvar inClass:&swappedClass withOffset:iStack[2].value])
-                return;
-
-            theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
-
-            if (!theSymPtr)
+            if (![self getIvarName:&name type:&type withOffset:iStack[2].value inClass:iCurrentClass])
                 return;
 
             if (iOpts.variableTypes)
@@ -1567,14 +1444,14 @@
 
                 theTypeCString[0]   = 0;
 
-                [self getDescription:theTypeCString forType:[self getPointer:theIvar.ivar_type type:NULL]];
+                [self getDescription:theTypeCString forType:type];
                 snprintf(tempComment,
                     MAX_COMMENT_LENGTH - 1, " (%s)%s",
-                    theTypeCString, theSymPtr);
+                    theTypeCString, name);
             }
             else
                 snprintf(tempComment,
-                    MAX_COMMENT_LENGTH - 1, " %s", theSymPtr);
+                    MAX_COMMENT_LENGTH - 1, " %s", name);
 
             strncat(ioComment, tempComment, strlen(tempComment));
         }
@@ -1678,21 +1555,23 @@
     }
 
     [self getObjcClassPtr:&iCurrentClass fromMethod:inLine->info.address];
-    [self getObjcCatPtr:&iCurrentCat fromMethod:inLine->info.address];
+    [self getObjc1CatPtr:&iCurrentCat fromMethod:inLine->info.address];
 
     memset(iRegInfos, 0, sizeof(GPRegisterInfo) * 8);
 
     // If we didn't get the class from the method, try to get it from the
     // category.
-    if (!iCurrentClass && iCurrentCat)
-    {
-        objc1_32_category swappedCat = *iCurrentCat;
+    if (iObjcVersion == 1) {
+        if (!iCurrentClass && iCurrentCat)
+        {
+            objc1_32_category swappedCat = *iCurrentCat;
 
-        #if __BIG_ENDIAN__
-            swap_objc1_32_category(&swappedCat);
-        #endif
+            #if __BIG_ENDIAN__
+                swap_objc1_32_category(&swappedCat);
+            #endif
 
-        [self getObjcClassPtr:&iCurrentClass fromName:[self getPointer:swappedCat.class_name type:NULL]];
+            [self getObjcClassPtr:&iCurrentClass fromName:[self getPointer:swappedCat.class_name type:NULL]];
+        }
     }
 
     // Try to find out whether this is a class or instance method.

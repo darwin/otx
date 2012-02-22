@@ -14,9 +14,17 @@
 */
 typedef struct
 {
-    objc1_32_method     m;
-    objc1_32_class      oc_class;
-    objc1_32_category   oc_cat;
+    union {
+    struct {
+        objc1_32_method     m;
+        objc1_32_class      oc_class;
+        objc1_32_category   oc_cat;
+    };
+    struct {
+        objc2_32_method_t   m2;
+        objc2_32_class_t    oc_class2;
+    };
+    };
     BOOL                inst;       // to determine '+' or '-'
 }
 MethodInfo;
@@ -31,7 +39,7 @@ typedef struct
 {
     uint32_t            value;
     BOOL                isValid;        // value can be trusted
-    objc1_32_class*     classPtr;
+    objc_32_class_ptr   classPtr;
     objc1_32_category*  catPtr;
 }
 GPRegisterInfo;
@@ -180,11 +188,21 @@ FunctionInfo;
     uint32_t              iNumObjcSects;
     MethodInfo*         iClassMethodInfos;
     uint32_t              iNumClassMethodInfos;
+    BOOL                iIsInstanceMethod;
+    uint8_t             iObjcVersion;       // 1 for objc1
+
+    // When iObjcVersion=1, this points to a objc1_32_class
+    // When iObjcVersion=2, this points to a objc2_32_class_t
+    objc_32_class_ptr   iCurrentClass;      
+
+    // Only valid when iObjcVersion=1 
+    objc1_32_category*  iCurrentCat;
     MethodInfo*         iCatMethodInfos;
     uint32_t              iNumCatMethodInfos;
-    objc1_32_class*     iCurrentClass;
-    objc1_32_category*  iCurrentCat;
-    BOOL                iIsInstanceMethod;
+
+    // Only valid when iObjcVersion=2
+    objc2_32_ivar_t*    iClassIvars;
+    uint32_t              iNumClassIvars;
 
     // Mach-O sections
     section_info        iCStringSect;
@@ -251,6 +269,7 @@ FunctionInfo;
 - (void)processCodeLine: (Line**)ioLine;
 - (void)chooseLine: (Line**)ioLine;
 - (void)entabLine: (Line*)ioLine;
+- (BOOL)getIvarName:(char **)outName type:(char **)outType withOffset:(uint32_t)offset inClass:(objc_32_class_ptr)classPtr;
 - (char*)getPointer: (uint32_t)inAddr
                type: (UInt8*)outType;
 
@@ -317,16 +336,4 @@ MethodInfo_Compare_Swapped(
         return -1;
 
     return (imp1 > imp2);
-}
-
-// ----------------------------------------------------------------------------
-// Utils
-
-static void
-swap_method_info(
-    MethodInfo* mi)
-{
-    swap_objc1_32_method(&mi->m);
-    swap_objc1_32_class(&mi->oc_class);
-    swap_objc1_32_category(&mi->oc_cat);
 }

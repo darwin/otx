@@ -135,8 +135,15 @@
         ptr += theCommandCopy.cmdsize;
     }   // for(i = 0; i < mMachHeaderPtr->ncmds; i++)
 
+    if (iObjcClassListSect.size != 0) {
+        iObjcVersion = 2;
+    } else if (iNumObjcSects != 0) {
+        iObjcVersion = 1;
+    }
+
     // Now that we have all the objc sections, we can load the objc modules.
     [self loadObjcModules];
+    [self loadObjcClassList];
 }
 
 //  loadSegment:
@@ -364,7 +371,7 @@
             theMachPtr + theSectInfo->s.offset + theSectInfo->s.size)
         {
             // Try to locate the objc_symtab for this module.
-            if (![self getObjcSymtab: &theSymTab defs: &theDefs
+            if (![self getObjc1Symtab: &theSymTab defs: &theDefs
                 fromModule: &theModule] || !theDefs)
             {
                 // point to next module
@@ -396,7 +403,7 @@
                 if (iSwapped)
                     theDef  = OSSwapInt32(theDef);
 
-                if (![self getObjcClass: &theClass fromDef: theDef])
+                if (![self getObjc1Class: &theClass fromDef: theDef])
                     continue;
 
                 theSwappedClass = theClass;
@@ -411,7 +418,7 @@
                 objc1_32_method         theMethod;
                 objc1_32_method         theSwappedMethod;
 
-                if ([self getObjcMethodList: &theMethodList
+                if ([self getObjc1MethodList: &theMethodList
                     methods: &theMethods
                     fromAddress: theSwappedClass.methodLists])
                 {
@@ -439,7 +446,7 @@
                 }
 
                 // Save class's class method info.
-                if ([self getObjcMetaClass: &theMetaClass
+                if ([self getObjc1MetaClass: &theMetaClass
                     fromClass: &theSwappedClass])
                 {
                     theSwappedMetaClass = theMetaClass;
@@ -447,7 +454,7 @@
                     if (iSwapped)
                         swap_objc1_32_class(&theSwappedMetaClass);
 
-                    if ([self getObjcMethodList: &theMethodList
+                    if ([self getObjc1MethodList: &theMethodList
                         methods: &theMethods
                         fromAddress: theSwappedMetaClass.methodLists])
                     {
@@ -487,7 +494,7 @@
                 if (iSwapped)
                     theDef  = OSSwapInt32(theDef);
 
-                if (![self getObjcCategory: &theCat fromDef: theDef])
+                if (![self getObjc1Category: &theCat fromDef: theDef])
                     continue;
 
                 theSwappedCat   = theCat;
@@ -497,7 +504,7 @@
 
                 // Categories are linked to classes by name only. Try to 
                 // find the class for this category. May be nil.
-                [self getObjcClass:&theClass fromName:[self getPointer:theSwappedCat.class_name type:NULL]];
+                [self getObjc1Class:&theClass fromName:[self getPointer:theSwappedCat.class_name type:NULL]];
 
                 theSwappedClass = theClass;
 
@@ -511,7 +518,7 @@
                 objc1_32_method         theMethod;
                 objc1_32_method         theSwappedMethod;
 
-                if ([self getObjcMethodList: &theMethodList
+                if ([self getObjc1MethodList: &theMethodList
                     methods: &theMethods
                     fromAddress: theSwappedCat.instance_methods])
                 {
@@ -539,7 +546,7 @@
                 }
 
                 // Save category class method info.
-                if ([self getObjcMethodList: &theMethodList
+                if ([self getObjc1MethodList: &theMethodList
                     methods: &theMethods
                     fromAddress: theSwappedCat.class_methods])
                 {
@@ -586,6 +593,166 @@
         (COMPARISON_FUNC_TYPE)
         (iSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
 }
+
+//  loadObjcClassList
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcClassList
+{
+    if (iObjcClassListSect.size == 0)
+        return;
+
+    uint32_t numClasses = (uint32_t)(iObjcClassListSect.size / 4);  // sizeof(uint32_t)
+    uint32_t* classList = (uint32_t*)iObjcClassListSect.contents;
+    uint32_t fileClassPtr;
+    uint32_t i;
+
+    for (i = 0; i < numClasses; i++)
+    {
+        fileClassPtr = classList[i];
+
+        if (iSwapped)
+            fileClassPtr = OSSwapInt32(fileClassPtr);
+
+        // Save methods, ivars, and protocols
+        // Don't call getPointer here, its __DATA logic doesn't fit
+        objc2_32_class_t workingClass = *(objc2_32_class_t*)(iObjcDataSect.contents +
+            (fileClassPtr - iObjcDataSect.s.addr));
+
+        if (iSwapped)
+            swap_objc2_32_class(&workingClass);
+
+        objc2_32_class_ro_t* roData;
+        UInt64 methodBase;
+        UInt64 ivarBase;
+
+        if (workingClass.data != 0)
+        {
+            uint32_t count;
+            uint32_t i;
+
+            roData = (objc2_32_class_ro_t*)(iObjcConstSect.contents +
+                (uintptr_t)(workingClass.data - iObjcConstSect.s.addr));
+            methodBase = roData->baseMethods;
+            ivarBase = roData->ivars;
+
+            if (iSwapped)
+            {
+                methodBase = OSSwapInt64(methodBase);
+                ivarBase = OSSwapInt64(ivarBase);
+            }
+
+            if (methodBase != 0)
+            {
+                objc2_32_method_list_t* methods = (objc2_32_method_list_t*)(iObjcDataSect.contents +
+                    (uintptr_t)(methodBase - iObjcDataSect.s.addr));
+                objc2_32_method_t* methodArray = &methods->first;
+                count = methods->count;
+
+                if (iSwapped)
+                    count = OSSwapInt32(count);
+
+                for (i = 0; i < count; i++)
+                {
+                    objc2_32_method_t swappedMethod = methodArray[i];
+
+                    if (iSwapped)
+                        swap_objc2_32_method(&swappedMethod);
+
+                    MethodInfo methodInfo = {0};
+                    methodInfo.inst = YES;
+                    methodInfo.m2 = swappedMethod;
+                    methodInfo.oc_class2 = workingClass;
+
+                    iNumClassMethodInfos++;
+                    iClassMethodInfos   = realloc(iClassMethodInfos,
+                        iNumClassMethodInfos * sizeof(MethodInfo));
+                    iClassMethodInfos[iNumClassMethodInfos - 1] = methodInfo;
+                }
+            }
+
+            if (ivarBase != 0)
+            {
+                objc2_32_ivar_list_t* ivars = (objc2_32_ivar_list_t*)(iObjcDataSect.contents +
+                    (uintptr_t)(ivarBase - iObjcDataSect.s.addr));
+                objc2_32_ivar_t* ivarArray = &ivars->first;
+                count = ivars->count;
+
+                if (iSwapped)
+                    count = OSSwapInt32(count);
+
+                for (i = 0; i < count; i++)
+                {
+                    objc2_32_ivar_t swappedIvar = ivarArray[i];
+
+                    if (iSwapped)
+                        swap_objc2_32_ivar(&swappedIvar);
+
+                    iNumClassIvars++;
+                    iClassIvars = realloc(iClassIvars,
+                        iNumClassIvars * sizeof(objc2_32_ivar_t));
+                    iClassIvars[iNumClassIvars - 1] = swappedIvar;
+                }
+            }
+        }
+
+        // Get metaclass methods
+        if (workingClass.isa != 0)
+        {
+            workingClass = *(objc2_32_class_t*)(iObjcDataSect.contents +
+                (workingClass.isa - iObjcDataSect.s.addr));
+
+            if (iSwapped)
+                swap_objc2_32_class(&workingClass);
+
+            if (workingClass.data != 0)
+            {
+                roData = (objc2_32_class_ro_t*)(iObjcConstSect.contents +
+                    (uintptr_t)(workingClass.data - iObjcConstSect.s.addr));
+                methodBase = roData->baseMethods;
+
+                if (iSwapped)
+                    methodBase = OSSwapInt32(methodBase);
+
+                if (methodBase != 0)
+                {
+                    objc2_32_method_list_t* methods = (objc2_32_method_list_t*)(iObjcDataSect.contents +
+                        (uintptr_t)(methodBase - iObjcDataSect.s.addr));
+                    objc2_32_method_t* methodArray = &methods->first;
+                    uint32_t count = methods->count;
+                    uint32_t i;
+
+                    if (iSwapped)
+                        count = OSSwapInt32(count);
+
+                    for (i = 0; i < count; i++)
+                    {
+                        objc2_32_method_t swappedMethod = methodArray[i];
+
+                        if (iSwapped)
+                            swap_objc2_32_method(&swappedMethod);
+
+                        MethodInfo methodInfo = {0};
+                        methodInfo.m2 = swappedMethod;
+                        methodInfo.oc_class2 = workingClass;
+
+                        iNumClassMethodInfos++;
+                        iClassMethodInfos   = realloc(iClassMethodInfos,
+                            iNumClassMethodInfos * sizeof(MethodInfo));
+                        iClassMethodInfos[iNumClassMethodInfos - 1] = methodInfo;
+                    }
+                }
+            }
+        }
+    }
+
+    qsort(iClassMethodInfos, iNumClassMethodInfos, sizeof(MethodInfo),
+        (COMPARISON_FUNC_TYPE)
+        (iSwapped ? MethodInfo_Compare_Swapped : MethodInfo_Compare));
+    qsort(iClassIvars, iNumClassIvars, sizeof(objc2_32_ivar_t),
+        (COMPARISON_FUNC_TYPE)objc2_32_ivar_t_Compare);
+}
+
 
 //  loadCStringSection:
 // ----------------------------------------------------------------------------

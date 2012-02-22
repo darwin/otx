@@ -9,6 +9,14 @@
 
 #import <Foundation/Foundation.h>
 
+#pragma mark -
+#pragma mark Shared (32-bit)
+
+typedef struct {
+    uint32_t isa;         /* Class  */
+    uint32_t superclass;  /* Class  */
+} *objc_32_class_ptr;
+
 
 #pragma mark -
 #pragma mark Objective-C 1.0 (32-bit)
