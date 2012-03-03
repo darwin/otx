@@ -789,11 +789,9 @@
             strstr(theOrigCommentCString, "; symbol stub for: ");
 
         if (theSubstring)
-            strncpy(theCommentCString, &theOrigCommentCString[19],
-                strlen(&theOrigCommentCString[19]) + 1);
+            snprintf(theCommentCString, MAX_COMMENT_LENGTH, "%s", &theOrigCommentCString[19]);
         else
-            strncpy(theCommentCString, theOrigCommentCString,
-                strlen(theOrigCommentCString) + 1);
+            snprintf(theCommentCString, MAX_COMMENT_LENGTH, "%s", theOrigCommentCString);
     }
 
     BOOL    needFuncName = NO;
@@ -994,11 +992,9 @@
             tempComment[j]  = 0;
 
             if (iLineOperandsCString[0])
-                strncpy(theCommentCString, tempComment,
-                    strlen(tempComment) + 1);
+                snprintf(theCommentCString, MAX_COMMENT_LENGTH, "%s", tempComment);
             else
-                strncpy(iLineOperandsCString, tempComment,
-                    strlen(tempComment) + 1);
+                snprintf(iLineOperandsCString, MAX_COMMENT_LENGTH, "%s", tempComment);
 
             // Terminate commentSpaces based on operands field width.
             size_t opLength = strlen(iLineOperandsCString);
@@ -1221,7 +1217,7 @@
     char    theFinalCString[MAX_LINE_LENGTH] = "";
 
     if (iOpts.localOffsets)
-        snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
+        snprintf(theFinalCString, MAX_LINE_LENGTH,
             finalFormatCString, localOffsetString,
             addrSpaces, theAddressCString,
             instSpaces, theCodeCString,
@@ -1229,7 +1225,7 @@
             opSpaces, iLineOperandsCString,
             commentSpaces, theCommentCString);
     else
-        snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
+        snprintf(theFinalCString, MAX_LINE_LENGTH,
             finalFormatCString, theAddressCString,
             instSpaces, theCodeCString,
             mnemSpaces, theMnemonicCString,

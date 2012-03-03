@@ -217,15 +217,13 @@
                                 theTypeCString[0]   = 0;
 
                                 [self getDescription:theTypeCString forType:[self getPointer:theIvar->type type:NULL]];
-                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s (%s)%s",
-                                    tempComment, theTypeCString, theSymPtr);
+                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s (%s)%s", tempComment, theTypeCString, theSymPtr);
                             }
                             else
-                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s %s",
-                                    tempComment, theSymPtr);
+                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s %s", tempComment, theSymPtr);
                         }
                         else    // !mReginfos[5].isValid
-                            strncpy(iLineCommentCString, tempComment, strlen(tempComment) + 1);
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", tempComment);
 
                         break;
                     }
@@ -306,15 +304,12 @@
                 strncpy(iLineOperandsCString, " ", 2);
 
                 if (iRegInfos[3].className != NULL)
-                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1,
-                        "+[%s %s]", iRegInfos[3].className, sel);
+                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "+[%s %s]", iRegInfos[3].className, sel);
                 else // Instance method?
                     if (iRegInfos[3].isValid)
-                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1,
-                            "objc_msgSend(%%r3, %s)", sel);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "objc_msgSend(%%r3, %s)", sel);
                     else
-                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1,
-                            "-[%%r3 %s]", sel);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "-[%%r3 %s]", sel);
             }
 
             // Print value of ctr, ignoring the low 2 bits.
@@ -365,11 +360,11 @@
                         theTypeCString[0] = 0;
 
                         [self getDescription:theTypeCString forType:[self getPointer:theIvar->type type:NULL]];
-                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s",
                             theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else
@@ -436,11 +431,10 @@
                         theTypeCString[0] = 0;
 
                         [self getDescription:theTypeCString forType:[self getPointer:theIvar->type type:NULL]];
-                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else    // absolute address
@@ -607,8 +601,7 @@
                             snprintf(iLineCommentCString, 255,
                                 "%*s", theSymPtr[0], theSymPtr + 1);
                         else
-                            snprintf(iLineCommentCString,
-                                MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                     }
                 }   // if (theSymPtr)
                 else
@@ -652,7 +645,7 @@
                         [self getObjcDescription:&symName fromObject:theSymPtr type:type];
 
                         if (symName)
-                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", symName);
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", symName);
 
                         break;
 
@@ -662,7 +655,7 @@
                     case OCProtoListType:
                     case OCMsgRefType:
                     case OCSelRefType:
-                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                         break;
 
                     default:
@@ -693,11 +686,10 @@
                                     theTypeCString[0] = 0;
 
                                     [self getDescription:theTypeCString forType:[self getPointer:foundIvar->type type:NULL]];
-                                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                                        theTypeCString, theSymPtr);
+                                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                                 }
                                 else
-                                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                             }
                         }
                     }
@@ -758,14 +750,12 @@
                 snprintf(iLineCommentCString, 40, "%s(%s)",
                     theTempComment, "PT_DENY_ATTACH");
             else
-                strncpy(iLineCommentCString, theTempComment,
-                    strlen(theTempComment) + 1);
+                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theTempComment);
 
             break;
 
         default:
-            strncpy(iLineCommentCString, theTempComment,
-                strlen(theTempComment) + 1);
+            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theTempComment);
 
             break;
     }
@@ -964,7 +954,7 @@
 
     if (className)
     {
-        snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
+        snprintf(tempComment, MAX_COMMENT_LENGTH,
             ((sendType == sendSuper || sendType == sendSuper_stret) ?
             "+%s[[%s super] %s]" : "+%s[%s %s]"),
             returnTypeString, className, selString);
@@ -976,19 +966,19 @@
             case send:
             case send_rtp:
             case send_variadic:
-                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[r3 %s]", returnTypeString, selString);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, "-%s[r3 %s]", returnTypeString, selString);
                 break;
 
             case sendSuper:
-                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[[r3 super] %s]", returnTypeString, selString);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, "-%s[[r3 super] %s]", returnTypeString, selString);
                 break;
 
             case send_stret:
-                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[r4 %s]", returnTypeString, selString);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, "-%s[r4 %s]", returnTypeString, selString);
                 break;
 
             case sendSuper_stret:
-                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[[r4 super] %s]", returnTypeString, selString);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, "-%s[[r4 super] %s]", returnTypeString, selString);
                 break;
 
             default:
@@ -1029,12 +1019,10 @@
                 theTypeCString[0]   = 0;
 
                 [self getDescription:theTypeCString forType:[self getPointer:theIvar->type type:NULL]];
-                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, " (%s)%s",
-                    theTypeCString, theSymPtr);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, " (%s)%s", theTypeCString, theSymPtr);
             }
             else
-                snprintf(tempComment,
-                    MAX_COMMENT_LENGTH - 1, " %s", theSymPtr);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, " %s", theSymPtr);
 
             strncat(ioComment, tempComment, strlen(tempComment));
         }

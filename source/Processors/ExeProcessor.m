@@ -346,8 +346,7 @@
             [self getDescription:theCType forType:&inTypeCode[theNextChar]];
             isArray = NO;
 
-            snprintf(theTypeCString, MAX_TYPE_STRING_LENGTH - 1, "%s[%s]",
-                theCType, theArrayCCount);
+            snprintf(theTypeCString, MAX_TYPE_STRING_LENGTH, "%s[%s]", theCType, theArrayCCount);
 
             break;
         }

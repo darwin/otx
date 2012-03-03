@@ -797,11 +797,9 @@
             strstr(theOrigCommentCString, "; symbol stub for: ");
 
         if (theSubstring)
-            strncpy(theCommentCString, &theOrigCommentCString[19],
-                strlen(&theOrigCommentCString[19]) + 1);
+            snprintf(theCommentCString, MAX_COMMENT_LENGTH, "%s", &theOrigCommentCString[19]);
         else
-            strncpy(theCommentCString, theOrigCommentCString,
-                strlen(theOrigCommentCString) + 1);
+            snprintf(theCommentCString, MAX_COMMENT_LENGTH, "%s", theOrigCommentCString);
     }
 
     BOOL    needFuncName = NO;
@@ -1036,11 +1034,9 @@
             tempComment[j]  = 0;
 
             if (iLineOperandsCString[0])
-                strncpy(theCommentCString, tempComment,
-                    strlen(tempComment) + 1);
+                snprintf(theCommentCString, MAX_COMMENT_LENGTH, "%s", tempComment);
             else
-                strncpy(iLineOperandsCString, tempComment,
-                    strlen(tempComment) + 1);
+                snprintf(iLineOperandsCString, MAX_COMMENT_LENGTH, "%s", tempComment);
 
             // Fill up commentSpaces based on operands field width.
             SInt32  k   = (SInt32)(iFieldWidths.operands - strlen(iLineOperandsCString));
@@ -1269,7 +1265,7 @@
     char    theFinalCString[MAX_LINE_LENGTH] = "";
 
     if (iOpts.localOffsets && iOpts.showCode)
-        snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
+        snprintf(theFinalCString, MAX_LINE_LENGTH,
             finalFormatCString, localOffsetString,
             addrSpaces, theAddressCString,
             instSpaces, theCodeCString,
@@ -1277,21 +1273,21 @@
             opSpaces, iLineOperandsCString,
             commentSpaces, theCommentCString);
     else if (iOpts.localOffsets)
-        snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
+        snprintf(theFinalCString, MAX_LINE_LENGTH,
             finalFormatCString, localOffsetString,
             addrSpaces, theAddressCString,
             instSpaces, theMnemonicCString,
             opSpaces, iLineOperandsCString,
             commentSpaces, theCommentCString);
     else if (iOpts.showCode)
-        snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
+        snprintf(theFinalCString, MAX_LINE_LENGTH,
             addrSpaces, theAddressCString,
             instSpaces, theCodeCString,
             mnemSpaces, theMnemonicCString,
             opSpaces, iLineOperandsCString,
             commentSpaces, theCommentCString);
     else
-        snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
+        snprintf(theFinalCString, MAX_LINE_LENGTH,
             finalFormatCString, theAddressCString,
             instSpaces, theMnemonicCString,
             opSpaces, iLineOperandsCString,

@@ -413,14 +413,10 @@
                         theTypeCString[0]   = 0;
 
                         [self getDescription:theTypeCString forType:typePtr];
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s",
-                            theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else
@@ -489,14 +485,10 @@
                             theTypeCString[0] = 0;
 
                             [self getDescription:theTypeCString forType:typePtr];
-                            snprintf(iLineCommentCString,
-                                MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                                theTypeCString, theSymPtr);
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                         }
                         else
-                            snprintf(iLineCommentCString,
-                                MAX_COMMENT_LENGTH - 1, "%s",
-                                theSymPtr);
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                     }
                 }
                 else if (MOD(modRM) == MOD32)   // absolute address
@@ -564,14 +556,10 @@
                         theTypeCString[0]   = 0;
 
                         [self getDescription:theTypeCString forType:typePtr];
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s",
-                            theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else if (iRegInfos[REG2(modRM)].isValid)
@@ -750,8 +738,7 @@
                 }
 
                 if (tempComment[0])
-                    strncpy(iLineCommentCString, tempComment,
-                        MAX_COMMENT_LENGTH - 1);
+                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", tempComment);
             }
             else    // absolute address
             {
@@ -839,14 +826,10 @@
                         theTypeCString[0]   = 0;
 
                         [self getDescription:theTypeCString forType:typePtr];
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s",
-                            theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else    // absolute address
@@ -962,13 +945,10 @@
 
                         [self getDescription:theTypeCString forType:typePtr];
 
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else    // absolute address
@@ -1125,8 +1105,7 @@
                 snprintf(iLineCommentCString, 255,
                     "%*s", theSymPtr[0], theSymPtr + 1);
             else
-                snprintf(iLineCommentCString,
-                    MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
         }
     }
 }
@@ -1177,14 +1156,12 @@
                 snprintf(iLineCommentCString, 40, "%s(%s)",
                     theTempComment, "PT_DENY_ATTACH");
             else
-                strncpy(iLineCommentCString, theTempComment,
-                    strlen(theTempComment) + 1);
+                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theTempComment);
 
             break;
 
         default:
-            strncpy(iLineCommentCString, theTempComment,
-                strlen(theTempComment) + 1);
+            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theTempComment);
 
             break;
     }
@@ -1396,7 +1373,7 @@
 
         if (className)
         {
-            snprintf(ioComment, MAX_COMMENT_LENGTH - 1,
+            snprintf(ioComment, MAX_COMMENT_LENGTH,
                 ((sendType == sendSuper || sendType == sendSuper_stret) ?
                 "+%s[[%s super] %s]" : "+%s[%s %s]"),
                 returnTypeString, className, selString);
@@ -1408,19 +1385,19 @@
                 case send:
                 case send_fpret:
                 case send_variadic:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[(%%esp,1) %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH, "-%s[(%%esp,1) %s]", returnTypeString, selString);
                     break;
 
                 case sendSuper:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[(%%esp,1) super] %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH, "-%s[[(%%esp,1) super] %s]", returnTypeString, selString);
                     break;
 
                 case send_stret:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[0x04(%%esp,1) %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH, "-%s[0x04(%%esp,1) %s]", returnTypeString, selString);
                     break;
 
                 case sendSuper_stret:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[0x04(%%esp,1) super] %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH, "-%s[[0x04(%%esp,1) super] %s]", returnTypeString, selString);
                     break;
 
                 default:
@@ -1445,13 +1422,10 @@
                 theTypeCString[0]   = 0;
 
                 [self getDescription:theTypeCString forType:type];
-                snprintf(tempComment,
-                    MAX_COMMENT_LENGTH - 1, " (%s)%s",
-                    theTypeCString, name);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, " (%s)%s", theTypeCString, name);
             }
             else
-                snprintf(tempComment,
-                    MAX_COMMENT_LENGTH - 1, " %s", name);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, " %s", name);
 
             strncat(ioComment, tempComment, strlen(tempComment));
         }
