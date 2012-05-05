@@ -1175,7 +1175,7 @@
         if (theSymPtr)
         {
             if (theType == PStringType)
-                snprintf(iLineCommentCString, 255,
+                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH,
                     "%*s", theSymPtr[0], theSymPtr + 1);
             else
                 snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
