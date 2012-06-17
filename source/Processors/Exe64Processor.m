@@ -390,7 +390,7 @@
             return NO;
 
         snprintf(cmdString, MAX_UNIBIN_OTOOL_CMD_SIZE,
-            "%s -arch %s", [otoolPath UTF8String], iArchString);
+            "\"%s\" -arch %s", [otoolPath UTF8String], iArchString);
     }
     else
     {
