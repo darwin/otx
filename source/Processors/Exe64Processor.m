@@ -378,7 +378,7 @@
            includingPath: (BOOL)inIncludePath
 {
     char cmdString[MAX_UNIBIN_OTOOL_CMD_SIZE] = "";
-    NSString* otoolPath = [self pathForTool: @"otool"];
+    NSString* otoolPath = [NSString stringWithFormat:@"\"%@\"", [self pathForTool: @"otool"]];
     NSUInteger otoolPathLength = [otoolPath length];
     size_t archStringLength = strlen(iArchString);
 
@@ -390,7 +390,7 @@
             return NO;
 
         snprintf(cmdString, MAX_UNIBIN_OTOOL_CMD_SIZE,
-            "\"%s\" -arch %s", [otoolPath UTF8String], iArchString);
+            "%s -arch %s", [otoolPath UTF8String], iArchString);
     }
     else
     {
