@@ -124,7 +124,7 @@ enum {
 #define MAX_FIELD_SPACING           50      // spaces between fields
 #define MAX_FIELD_SPACES            "                                                  "  // 50 spaces
 #define MAX_FORMAT_LENGTH           50      // snprintf() format string
-#define MAX_OPERANDS_LENGTH         1000
+#define MAX_OPERANDS_LENGTH         10000
 #define MAX_COMMENT_LENGTH          2000
 #define MAX_LINE_LENGTH             10000
 #define MAX_TYPE_STRING_LENGTH      200     // for encoded ObjC data types
