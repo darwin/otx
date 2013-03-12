@@ -2682,8 +2682,7 @@
 
     // Copy original app's permissions to new file.
     NSFileManager*  fileMan     = [NSFileManager defaultManager];
-    NSDictionary*   fileAttrs   = [fileMan fileAttributesAtPath:
-        [iOFile path] traverseLink: NO];
+    NSDictionary*   fileAttrs   = [fileMan attributesOfItemAtPath:[iOFile path] error:nil];
 
     if (!fileAttrs)
     {
@@ -2696,7 +2695,7 @@
         [NSNumber numberWithUnsignedInteger: [fileAttrs filePosixPermissions]],
         NSFilePosixPermissions, nil];
 
-    if (![fileMan changeFileAttributes: permsDict atPath: [newURL path]])
+    if (![fileMan setAttributes:permsDict ofItemAtPath:[newURL path] error:nil])
     {
         fprintf(stderr, "otx: -[X86Processor fixNops]: "
             "unable to change file permissions for fixed executable.\n");
