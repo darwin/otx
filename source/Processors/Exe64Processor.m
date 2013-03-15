@@ -354,6 +354,11 @@
 
     while (verboseLine && plainLine)
     {
+        // skip any extra text or empty lines in the verbose output
+        if (strncmp(verboseLine->chars, plainLine->chars, 16)) {
+            verboseLine = verboseLine->next;
+            continue;
+        }
         verboseLine->alt    = plainLine;
         plainLine->alt      = verboseLine;
 
