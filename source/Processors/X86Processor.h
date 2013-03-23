@@ -69,4 +69,6 @@ enum {
     uint32_t    iNumLocalVars;
 }
 
+- (void) printCurrentState: (uint32_t)currentAddress;
+
 @end

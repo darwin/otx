@@ -16,8 +16,8 @@
 - (char*)findSymbolByAddress: (uint64_t)inAddress;
 - (BOOL)findClassMethod: (Method64Info**)outMI
               byAddress: (UInt64)inAddress;
-- (BOOL)findIvar: (objc2_ivar_t**)outIvar
-         inClass: (objc2_class_t*)inClass
+- (BOOL)findIvar: (objc2_64_ivar_t**)outIvar
+         inClass: (objc2_64_class_t*)inClass
       withOffset: (UInt64)inOffset;
 
 @end

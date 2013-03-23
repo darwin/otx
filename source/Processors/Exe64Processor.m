@@ -247,13 +247,13 @@
 
         if (theLine->info.isCode)
         {
-            ProcessCodeLine(&theLine);
+            [self processCodeLine:&theLine];
 
             if (iOpts.entabOutput)
-                EntabLine(theLine);
+                [self entabLine:theLine];
         }
         else
-            ProcessLine(theLine);
+            [self processLine:theLine];
 
         theLine = theLine->next;
         progCounter++;
@@ -354,6 +354,11 @@
 
     while (verboseLine && plainLine)
     {
+        // skip any extra text or empty lines in the verbose output
+        if (strncmp(verboseLine->chars, plainLine->chars, 16)) {
+            verboseLine = verboseLine->next;
+            continue;
+        }
         verboseLine->alt    = plainLine;
         plainLine->alt      = verboseLine;
 
@@ -378,7 +383,7 @@
            includingPath: (BOOL)inIncludePath
 {
     char cmdString[MAX_UNIBIN_OTOOL_CMD_SIZE] = "";
-    NSString* otoolPath = [self pathForTool: @"otool"];
+    NSString* otoolPath = [NSString stringWithFormat:@"\"%@\"", [self pathForTool: @"otool"]];
     NSUInteger otoolPathLength = [otoolPath length];
     size_t archStringLength = strlen(iArchString);
 
@@ -430,7 +435,7 @@
             theNewLine->length + 1);
 
         // Add the line to the list.
-        InsertLineAfter(theNewLine, *inLine, inList);
+        [self insertLine:theNewLine after:*inLine inList:inList];
 
         *inLine = theNewLine;
     }
@@ -466,11 +471,11 @@
 //            [NSThread sleepForTimeInterval: 0.0];
         }
 
-        if (LineIsCode(theLine->chars))
+        if ([self lineIsCode:theLine->chars])
         {
             theLine->info.isCode = YES;
-            theLine->info.address = AddressFromLine(theLine->chars);
-            CodeFromLine(theLine);  // FIXME: return a value like the cool kids do.
+            theLine->info.address = [self addressFromLine:theLine->chars];
+            [self codeFromLine:theLine];
 
             if (theLine->alt)
             {
@@ -481,7 +486,7 @@
                     sizeof(theLine->info.code));
             }
 
-            CheckThunk(theLine);
+            [self checkThunk:theLine];
         }
         else    // not code...
         {
@@ -509,7 +514,7 @@
 
     while (theLine)
     {
-        theLine->info.isFunction    = LineIsFunction(theLine);
+        theLine->info.isFunction    = [self lineIsFunction:theLine];
 
         if (theLine->alt)
             theLine->alt->info.isFunction   = theLine->info.isFunction;
@@ -581,13 +586,13 @@
     {
         if (strstr(ioLine->chars, "__coalesced_text)"))
         {
-            iEndOfText      = iCoalTextSect.s.addr + iCoalTextSect.s.size;
-            iLocalOffset    = 0;
+            iEndOfText = iCoalTextSect.s.addr + iCoalTextSect.s.size;
+            iCurrentFunctionStart = ioLine->info.address;
         }
         else if (strstr(ioLine->chars, "__textcoal_nt)"))
         {
-            iEndOfText      = iCoalTextNTSect.s.addr + iCoalTextNTSect.s.size;
-            iLocalOffset    = 0;
+            iEndOfText = iCoalTextNTSect.s.addr + iCoalTextNTSect.s.size;
+            iCurrentFunctionStart = ioLine->info.address;
         }
 
         char    theTempLine[MAX_LINE_LENGTH];
@@ -650,7 +655,7 @@
 
                 if (demangledStringLength < demangledDataLength)
                     NSLog(@"otx: demangled C++ name is too large. Increase MAX_LINE_LENGTH to %lu.\n"
-                           "Name demangling will now go off the rails.", demangledDataLength);
+                           "Name demangling will now go off the rails.", (unsigned long)demangledDataLength);
 
                 // Get the string and terminate it.
                 [readData getBytes: demangledName
@@ -682,11 +687,11 @@
         return;
     }
 
-    ChooseLine(ioLine);
+    [self chooseLine:ioLine];
 
-    uint32_t  theOrigLength           = (*ioLine)->length;
+    size_t  theOrigLength           = (*ioLine)->length;
     char    localOffsetString[9]    = {0};
-    char    theAddressCString[17]    = {0};
+    char    theAddressCString[17]   = {0};
     char    theMnemonicCString[20]  = {0};
 
     char    addrSpaces[MAX_FIELD_SPACING] = MAX_FIELD_SPACES;
@@ -702,7 +707,7 @@
     theCommentCString[0]        = 0;
 
     // Swap in saved registers if necessary
-    BOOL    needNewLine = RestoreRegisters(*ioLine);
+    BOOL    needNewLine = [self restoreRegisters:*ioLine];
 
     iLineOperandsCString[0] = 0;
 
@@ -728,7 +733,7 @@
         }
         else    // regular comment
         {
-            uint32_t  origCommentLength   = theOrigLength - consumedAfterOp - 1;
+            size_t  origCommentLength   = theOrigLength - consumedAfterOp - 1;
 
             strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
                 origCommentLength);
@@ -789,11 +794,9 @@
             strstr(theOrigCommentCString, "; symbol stub for: ");
 
         if (theSubstring)
-            strncpy(theCommentCString, &theOrigCommentCString[19],
-                strlen(&theOrigCommentCString[19]) + 1);
+            snprintf(theCommentCString, MAX_COMMENT_LENGTH, "%s", &theOrigCommentCString[19]);
         else
-            strncpy(theCommentCString, theOrigCommentCString,
-                strlen(theOrigCommentCString) + 1);
+            snprintf(theCommentCString, MAX_COMMENT_LENGTH, "%s", theOrigCommentCString);
     }
 
     BOOL    needFuncName = NO;
@@ -808,14 +811,13 @@
         iEnteringNewBlock = NO;
 
         // New function, new local offset count and current func.
-        iLocalOffset    = 0;
-        iCurrentFuncPtr = (*ioLine)->info.address;
+        iCurrentFunctionStart = iCurrentFuncPtr = (*ioLine)->info.address;
 
         // Try to build the method name.
         Method64Info* methodInfoPtr   = NULL;
         Method64Info  methodInfo;
 
-        if (GetObjcMethodFromAddress(&methodInfoPtr, iCurrentFuncPtr))
+        if ([self getObjcMethod:&methodInfoPtr fromAddress:iCurrentFuncPtr])
         {
             methodInfo  = *methodInfoPtr;
 
@@ -823,7 +825,7 @@
 
             if (methodInfo.oc_class.data)
             {
-                objc2_class_ro_t* roData = (objc2_class_ro_t*)(iDataSect.contents +
+                objc2_64_class_ro_t* roData = (objc2_64_class_ro_t*)(iDataSect.contents +
                     (uintptr_t)(methodInfo.oc_class.data - iDataSect.s.addr));
 
                 UInt64 name = roData->name;
@@ -831,70 +833,53 @@
                 if (iSwapped)
                     name = OSSwapInt64(name);
 
-                className = GetPointer(name, NULL);
+                className = [self getPointer:name type:NULL];
             }
 
 //            char*   catName     = NULL;
 
             /*if (theSwappedInfo.oc_cat.category_name)
             {
-                className   = GetPointer(
-                    theSwappedInfo.oc_cat.class_name, NULL);
-                catName     = GetPointer(
-                    theSwappedInfo.oc_cat.category_name, NULL);
+                className   = [self getPointer:theSwappedInfo.oc_cat.class_name type:NULL];
+                catName     = [self getPointer:theSwappedInfo.oc_cat.category_name type:NULL];
             }
             else if (theSwappedInfo.oc_class.data.name)
             {
-                className   = GetPointer(
-                    theSwappedInfo.oc_class.name, NULL);
+                className   = [self getPointer:theSwappedInfo.oc_class.name type:NULL];
             }*/
 
             if (className)
             {
-                char*   selName = GetPointer(methodInfo.m.name, NULL);
+                char*   selName = [self getPointer:methodInfo.m.name type:NULL];
 
                 if (selName)
                 {
                     if (!methodInfo.m.types)
                         return;
 
-                    char*   methTypes   =
-                        GetPointer(methodInfo.m.types, NULL);
+                    char*   methTypes = [self getPointer:methodInfo.m.types type:NULL];
+                    char    returnCType[MAX_TYPE_STRING_LENGTH];
+                    char*   methNameFormat  = iOpts.returnTypes ? "\n%1$c(%4$s)[%2$s %3$s]:\n" : "\n%c[%s %s]:\n";
+
+                    returnCType[0]  = 0;
 
                     if (methTypes)
                     {
-                        char    returnCType[MAX_TYPE_STRING_LENGTH];
-
-                        returnCType[0]  = 0;
-
                         [self decodeMethodReturnType: methTypes
-                            output: returnCType];
-
-/*                        if (catName)
-                        {
-                            char*   methNameFormat  = iOpts.returnTypes ?
-                                "\n%1$c(%5$s)[%2$s(%3$s) %4$s]\n" :
-                                "\n%c[%s(%s) %s]\n";
-
-                            snprintf(theMethCName, 1000,
-                                methNameFormat,
-                                (theSwappedInfo.inst) ? '-' : '+',
-                                className, catName, selName, returnCType);
-                        }
-                        else*/
-                        //{
-                            char*   methNameFormat  = iOpts.returnTypes ?
-                                "\n%1$c(%4$s)[%2$s %3$s]\n" : "\n%c[%s %s]\n";
-
-                            snprintf(theMethCName, 1000,
-                                methNameFormat,
-                                (methodInfo.inst) ? '-' : '+',
-                                className, selName, returnCType);
-                        //}
+                                output: returnCType];
                     }
+                    else
+                    {
+                        strncpy(returnCType, "???", 4);
+                    }
+
+                    snprintf(theMethCName, 1000,
+                        methNameFormat,
+                        (methodInfo.inst) ? '-' : '+',
+                        className, selName, returnCType);
                 }
             }
-        }   // if (GetObjcMethodFromAddress(&theSwappedInfoPtr, mCurrentFuncPtr))
+        }   // if ([self getObjcMethod:&theSwappedInfoPtr fromAddress:mCurrentFuncPtr])
 
         // Add or replace the method name if possible, else add '\n'.
         if ((*ioLine)->prev && (*ioLine)->prev->info.isCode)    // prev line is code
@@ -908,7 +893,7 @@
 
                 strncpy(theNewLine->chars, theMethCName,
                     theNewLine->length + 1);
-                InsertLineBefore(theNewLine, *ioLine, &iPlainLineListHead);
+                [self insertLine:theNewLine before:*ioLine inList:&iPlainLineListHead];
             }
             else if ((*ioLine)->info.address == iAddrDyldStubBindingHelper)
             {
@@ -919,7 +904,7 @@
                 theNewLine->chars   = malloc(theNewLine->length + 1);
 
                 strncpy(theNewLine->chars, theDyldName, theNewLine->length + 1);
-                InsertLineBefore(theNewLine, *ioLine, &iPlainLineListHead);
+                [self insertLine:theNewLine before:*ioLine inList:&iPlainLineListHead];
             }
             else if ((*ioLine)->info.address == iAddrDyldFuncLookupPointer)
             {
@@ -930,7 +915,7 @@
                 theNewLine->chars   = malloc(theNewLine->length + 1);
 
                 strncpy(theNewLine->chars, theDyldName, theNewLine->length + 1);
-                InsertLineBefore(theNewLine, *ioLine, &iPlainLineListHead);
+                [self insertLine:theNewLine before:*ioLine inList:&iPlainLineListHead];
             }
             else
                 needFuncName = YES;
@@ -946,7 +931,7 @@
 
                 strncpy(theNewLine->chars, theMethCName,
                     theNewLine->length + 1);
-                ReplaceLine((*ioLine)->prev, theNewLine, &iPlainLineListHead);
+                [self replaceLine:(*ioLine)->prev withLine:theNewLine inList:&iPlainLineListHead];
             }
             else
             {   // theMethName sux, add '\n' to otool's method name.
@@ -971,15 +956,15 @@
             }
         }
 
-        ResetRegisters(*ioLine);
+        [self resetRegisters:*ioLine];
     }   // if ((*ioLine)->info.isFunction)
 
     // Find a comment if necessary.
     if (!theCommentCString[0])
     {
-        CommentForLine(*ioLine);
+        [self commentForLine:*ioLine];
 
-        uint32_t  origCommentLength   = strlen(iLineCommentCString);
+        size_t origCommentLength = strlen(iLineCommentCString);
 
         if (origCommentLength)
         {
@@ -1012,11 +997,9 @@
             tempComment[j]  = 0;
 
             if (iLineOperandsCString[0])
-                strncpy(theCommentCString, tempComment,
-                    strlen(tempComment) + 1);
+                snprintf(theCommentCString, MAX_COMMENT_LENGTH, "%s", tempComment);
             else
-                strncpy(iLineOperandsCString, tempComment,
-                    strlen(tempComment) + 1);
+                snprintf(iLineOperandsCString, MAX_COMMENT_LENGTH, "%s", tempComment);
 
             // Terminate commentSpaces based on operands field width.
             size_t opLength = strlen(iLineOperandsCString);
@@ -1037,7 +1020,7 @@
     {
         // Optionally modify otool's comment.
         if (iOpts.verboseMsgSends)
-            CommentForMsgSendFromLine(theCommentCString, *ioLine);
+            [self commentForMsgSend:theCommentCString fromLine:*ioLine];
     }
 
     // Demangle operands if necessary.
@@ -1078,7 +1061,7 @@
 
                 if (demangledStringLength < demangledDataLength)
                     NSLog(@"otx: demangled C++ name is too large. Increase MAX_OPERANDS_LENGTH to %lu.\n"
-                           "Name demangling will now go off the rails.", demangledDataLength);
+                           "Name demangling will now go off the rails.", (unsigned long)demangledDataLength);
 
                 [readData getBytes: demangledName
                             length: demangledStringLength];
@@ -1133,7 +1116,7 @@
 
                 if (demangledStringLength < demangledDataLength)
                     NSLog(@"otx: demangled C++ name is too large. Increase MAX_COMMENT_LENGTH to %lu.\n"
-                           "Name demangling will now go off the rails.", demangledDataLength);
+                           "Name demangling will now go off the rails.", (unsigned long)demangledDataLength);
 
                 [readData getBytes: demangledName
                             length: demangledStringLength];
@@ -1155,7 +1138,7 @@
     {
         // Build a right-aligned string  with a '+' in it.
         snprintf((char*)&localOffsetString, iFieldWidths.offset,
-            "%6u", iLocalOffset);
+            "%6llu", (unsigned long long) ((*ioLine)->info.address) - iCurrentFunctionStart);
 
         // Find the space that's followed by a nonspace.
         // *Reverse count to optimize for short functions.
@@ -1168,9 +1151,6 @@
                 break;
             }
         }
-
-        if (theCodeCString)
-            iLocalOffset += strlen(theCodeCString) / 2;
 
         // Terminate addrSpaces based on offset field width.
         i   = iFieldWidths.offset - 6;
@@ -1206,7 +1186,7 @@
             funcName->length    = snprintf(funcName->chars, maxlength,
                 "\n%s???:\n", ANON_FUNC_BASE);
 
-        InsertLineBefore(funcName, *ioLine, &iPlainLineListHead);
+        [self insertLine:funcName before:*ioLine inList:&iPlainLineListHead];
     }
 
     // Finally, assemble the new string.
@@ -1242,7 +1222,7 @@
     char    theFinalCString[MAX_LINE_LENGTH] = "";
 
     if (iOpts.localOffsets)
-        snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
+        snprintf(theFinalCString, MAX_LINE_LENGTH,
             finalFormatCString, localOffsetString,
             addrSpaces, theAddressCString,
             instSpaces, theCodeCString,
@@ -1250,7 +1230,7 @@
             opSpaces, iLineOperandsCString,
             commentSpaces, theCommentCString);
     else
-        snprintf(theFinalCString, MAX_LINE_LENGTH - 1,
+        snprintf(theFinalCString, MAX_LINE_LENGTH,
             finalFormatCString, theAddressCString,
             instSpaces, theCodeCString,
             mnemSpaces, theMnemonicCString,
@@ -1278,11 +1258,11 @@
     // should reset it here instead.
     iEnteringNewBlock = NO;
 
-    UpdateRegisters(*ioLine);
-    PostProcessCodeLine(ioLine);
+    [self updateRegisters:*ioLine];
+    [self postProcessCodeLine:ioLine];
 
     // Possibly prepend a \n to the following line.
-    if (CodeIsBlockJump((*ioLine)->info.code))
+    if ([self codeIsBlockJump:(*ioLine)->info.code])
         iEnteringNewBlock = YES;
 }
 
@@ -1508,7 +1488,7 @@
     newLine->chars  = malloc(newLine->length + 1);
     strncpy(newLine->chars, utf8String, newLine->length + 1);
 
-    InsertLineAfter(newLine, iPlainLineListHead, &iPlainLineListHead);
+    [self insertLine:newLine after:iPlainLineListHead inList:&iPlainLineListHead];
 }
 
 #pragma mark -
@@ -1538,7 +1518,7 @@
     }
 
     char    entabbedLine[MAX_LINE_LENGTH];
-    uint32_t  theOrigLength   = ioLine->length;
+    size_t  theOrigLength   = ioLine->length;
 
     // If 1st char is '\n', skip it.
     uint32_t  firstChar   = (ioLine->chars[0] == '\n');
@@ -1677,6 +1657,24 @@
                 *outType = TextConstType;
         }
     }
+    else    // (__TEXT,__objc_methname) (char*)
+    if (inAddr >= iObjcMethnameSect.s.addr &&
+        inAddr < iObjcMethnameSect.s.addr + iObjcMethnameSect.size)
+    {
+        thePtr  = (iObjcMethnameSect.contents + (inAddr - iObjcMethnameSect.s.addr));
+    }
+    else    // (__TEXT,__objc_methtype) (char*)
+    if (inAddr >= iObjcMethtypeSect.s.addr &&
+        inAddr < iObjcMethtypeSect.s.addr + iObjcMethtypeSect.size)
+    {
+        thePtr  = (iObjcMethtypeSect.contents + (inAddr - iObjcMethtypeSect.s.addr));
+    }
+    else    // (__TEXT,__objc_classname) (char*)
+    if (inAddr >= iObjcClassnameSect.s.addr &&
+        inAddr < iObjcClassnameSect.s.addr + iObjcClassnameSect.size)
+    {
+        thePtr  = (iObjcClassnameSect.contents + (inAddr - iObjcClassnameSect.s.addr));
+    }
     else    // (__TEXT,__literal4) (float)
     if (inAddr >= iLit4Sect.s.addr &&
         inAddr < iLit4Sect.s.addr + iLit4Sect.size)
@@ -1743,7 +1741,7 @@
                     break;
                 }
 
-                thePtr = GetPointer(theValue, &theType);
+                thePtr = [self getPointer:theValue type:&theType];
 
                 if (!thePtr)
                 {
@@ -1804,27 +1802,35 @@
             UInt64 classRef = *(UInt64*)(iObjcClassRefsSect.contents +
                 (inAddr - iObjcClassRefsSect.s.addr));
 
-            if (classRef != 0)
+            if (classRef &&
+                classRef >= iObjcClassRefsSect.s.addr &&
+                classRef < iObjcClassRefsSect.s.addr + iObjcClassRefsSect.s.size)
             {
                 if (iSwapped)
                     classRef = OSSwapInt64(classRef);
 
-                objc2_class_t swappedClass = *(objc2_class_t*)(iObjcClassRefsSect.contents +
+                objc2_64_class_t swappedClass = *(objc2_64_class_t*)(iObjcClassRefsSect.contents +
                     (classRef - iObjcClassRefsSect.s.addr));
 
                 if (iSwapped)
-                    swap_objc2_class(&swappedClass);
+                    swap_objc2_64_class(&swappedClass);
 
-                objc2_class_ro_t roData = *(objc2_class_ro_t*)(iDataSect.contents +
-                    (swappedClass.data - iDataSect.s.addr));
+                if (swappedClass.data &&
+                    swappedClass.data >= iObjcConstSect.s.addr &&
+                    swappedClass.data < iObjcConstSect.s.addr + iObjcConstSect.s.size)
+                {
+                    objc2_64_class_ro_t roData = *(objc2_64_class_ro_t*)(iObjcConstSect.contents +
+                        (swappedClass.data - iObjcConstSect.s.addr));
 
-                if (iSwapped)
-                    roData.name = OSSwapInt64(roData.name);
+                    if (iSwapped)
+                        roData.name = OSSwapInt64(roData.name);
 
-                thePtr = GetPointer(roData.name, NULL);
+                    thePtr = [self getPointer:roData.name type:NULL];
 
-                if (outType)
-                    *outType = OCClassRefType;
+                    if (outType)
+                        *outType = OCClassRefType;
+                }
+
             }
         }
     }
@@ -1832,13 +1838,13 @@
     if (inAddr >= iObjcMsgRefsSect.s.addr &&
         inAddr < iObjcMsgRefsSect.s.addr + iObjcMsgRefsSect.size)
     {
-        objc2_message_ref_t ref = *(objc2_message_ref_t*)(iObjcMsgRefsSect.contents +
+        objc2_64_message_ref_t ref = *(objc2_64_message_ref_t*)(iObjcMsgRefsSect.contents +
             (inAddr - iObjcMsgRefsSect.s.addr));
 
         if (iSwapped)
             ref.sel = OSSwapInt64(ref.sel);
 
-        thePtr = GetPointer(ref.sel, NULL);
+        thePtr = [self getPointer:ref.sel type:NULL];
 
         if (outType)
             *outType = OCMsgRefType;
@@ -1858,18 +1864,22 @@
         if (iSwapped)
             superAddy = OSSwapInt64(superAddy);
 
-        if (superAddy != 0)
+        if (superAddy &&
+            superAddy >= iObjcDataSect.s.addr &&
+            superAddy < iObjcDataSect.s.addr + iObjcDataSect.s.size)
         {
-            objc2_class_t swappedClass = *(objc2_class_t*)(iDataSect.contents +
-                (superAddy - iDataSect.s.addr));
+            objc2_64_class_t swappedClass = *(objc2_64_class_t*)(iObjcDataSect.contents +
+                (superAddy - iObjcDataSect.s.addr));
 
             if (iSwapped)
-                swap_objc2_class(&swappedClass);
+                swap_objc2_64_class(&swappedClass);
 
-            if (swappedClass.data != 0)
+            if (swappedClass.data &&
+                swappedClass.data >= iObjcConstSect.s.addr &&
+                swappedClass.data < iObjcConstSect.s.addr + iObjcConstSect.s.size)
             {
-                objc2_class_ro_t* roPtr = (objc2_class_ro_t*)(iDataSect.contents +
-                    (swappedClass.data - iDataSect.s.addr));
+                objc2_64_class_ro_t* roPtr = (objc2_64_class_ro_t*)(iObjcConstSect.contents +
+                    (swappedClass.data - iObjcConstSect.s.addr));
                 UInt64 namePtr = roPtr->name;
 
                 if (iSwapped)
@@ -1877,7 +1887,7 @@
 
                 if (namePtr != 0)
                 {
-                    thePtr = GetPointer(namePtr, NULL);
+                    thePtr = [self getPointer:namePtr type:NULL];
 
                     if (outType)
                         *outType = OCSuperRefType;
@@ -1897,7 +1907,7 @@
 
         if (selAddy != 0)
         {
-            thePtr = GetPointer(selAddy, NULL);
+            thePtr = [self getPointer:selAddy type:NULL];
 
             if (outType)
                 *outType = OCSelRefType;
@@ -1932,7 +1942,7 @@
         if (protoAddy != 0 &&
             (protoAddy >= iDataSect.s.addr && protoAddy < (iDataSect.s.addr + iDataSect.size)))
         {
-            objc2_protocol_t* proto = (objc2_protocol_t*)(iDataSect.contents +
+            objc2_64_protocol_t* proto = (objc2_64_protocol_t*)(iDataSect.contents +
                 (protoAddy - iDataSect.s.addr));
             UInt64 protoName = proto->name;
 
@@ -1941,7 +1951,7 @@
 
             if (protoName != 0)
             {
-                thePtr = GetPointer(protoName, NULL);
+                thePtr = [self getPointer:protoName type:NULL];
 
                 if (outType)
                     *outType = tempType;
@@ -1994,85 +2004,6 @@
     return thePtr;
 }
 
-#pragma mark -
-//  speedyDelivery
-// ----------------------------------------------------------------------------
-
-- (void)speedyDelivery
-{
-    [super speedyDelivery];
-
-    LineIsCode                      = LineIsCode64FuncType
-        [self methodForSelector: LineIsCodeSel];
-    LineIsFunction                  = LineIsFunction64FuncType
-        [self methodForSelector: LineIsFunctionSel];
-    CodeIsBlockJump                 = CodeIsBlockJump64FuncType
-        [self methodForSelector: CodeIsBlockJumpSel];
-    AddressFromLine                 = AddressFromLine64FuncType
-        [self methodForSelector: AddressFromLineSel];
-    CodeFromLine                    = CodeFromLine64FuncType
-        [self methodForSelector: CodeFromLineSel];
-    CheckThunk                      = CheckThunk64FuncType
-        [self methodForSelector : CheckThunkSel];
-    ProcessLine                     = ProcessLine64FuncType
-        [self methodForSelector: ProcessLineSel];
-    ProcessCodeLine                 = ProcessCodeLine64FuncType
-        [self methodForSelector: ProcessCodeLineSel];
-    PostProcessCodeLine             = PostProcessCodeLine64FuncType
-        [self methodForSelector: PostProcessCodeLineSel];
-    ChooseLine                      = ChooseLine64FuncType
-        [self methodForSelector: ChooseLineSel];
-    EntabLine                       = EntabLine64FuncType
-        [self methodForSelector: EntabLineSel];
-    GetPointer                      = GetPointer64FuncType
-        [self methodForSelector: GetPointerSel];
-    CommentForLine                  = CommentForLine64FuncType
-        [self methodForSelector: CommentForLineSel];
-    CommentForSystemCall            = CommentForSystemCall64FuncType
-        [self methodForSelector: CommentForSystemCallSel];
-    CommentForMsgSendFromLine       = CommentForMsgSendFromLine64FuncType
-        [self methodForSelector: CommentForMsgSendFromLineSel];
-    SelectorForMsgSend              = SelectorForMsgSend64FuncType
-        [self methodForSelector: SelectorForMsgSendSel];
-    ResetRegisters                  = ResetRegisters64FuncType
-        [self methodForSelector: ResetRegistersSel];
-    UpdateRegisters                 = UpdateRegisters64FuncType
-        [self methodForSelector: UpdateRegistersSel];
-    RestoreRegisters                = RestoreRegisters64FuncType
-        [self methodForSelector: RestoreRegistersSel];
-    SendTypeFromMsgSend             = SendTypeFromMsgSend64FuncType
-        [self methodForSelector: SendTypeFromMsgSendSel];
-    PrepareNameForDemangling        = PrepareNameForDemangling64FuncType
-        [self methodForSelector: PrepareNameForDemanglingSel];
-    GetObjcClassPtrFromMethod       = GetObjcClassPtrFromMethod64FuncType
-        [self methodForSelector: GetObjcClassPtrFromMethodSel];
-    GetObjcMethodFromAddress        = GetObjcMethodFromAddress64FuncType
-        [self methodForSelector: GetObjcMethodFromAddressSel];
-    GetObjcClassFromName            = GetObjcClassFromName64FuncType
-        [self methodForSelector: GetObjcClassFromNameSel];
-    GetObjcClassPtrFromName         = GetObjcClassPtrFromName64FuncType
-        [self methodForSelector: GetObjcClassPtrFromNameSel];
-    GetObjcDescriptionFromObject    = GetObjcDescriptionFromObject64FuncType
-        [self methodForSelector: GetObjcDescriptionFromObjectSel];
-    GetObjcMetaClassFromClass       = GetObjcMetaClassFromClass64FuncType
-        [self methodForSelector: GetObjcMetaClassFromClassSel];
-    InsertLineBefore                = InsertLineBefore64FuncType
-        [self methodForSelector: InsertLineBeforeSel];
-    InsertLineAfter                 = InsertLineAfter64FuncType
-        [self methodForSelector: InsertLineAfterSel];
-    ReplaceLine                     = ReplaceLine64FuncType
-        [self methodForSelector: ReplaceLineSel];
-    DeleteLinesBefore               = DeleteLinesBefore64FuncType
-        [self methodForSelector: DeleteLinesBeforeSel];
-    FindSymbolByAddress             = FindSymbolByAddress64FuncType
-        [self methodForSelector: FindSymbolByAddressSel];
-    FindClassMethodByAddress        = FindClassMethodByAddress64FuncType
-        [self methodForSelector: FindClassMethodByAddressSel];
-    FindCatMethodByAddress          = FindCatMethodByAddress64FuncType
-        [self methodForSelector: FindCatMethodByAddressSel];
-    FindIvar                        = FindIvar64FuncType
-        [self methodForSelector: FindIvarSel];
-}
 
 #ifdef OTX_DEBUG
 //  printSymbol:
@@ -2102,7 +2033,7 @@
         UInt8   theNType    = inSym.n_type & N_TYPE;
         UInt16  theRefType  = inSym.n_desc & REFERENCE_TYPE;
 
-        fprintf(stderr, "Symbol name: %s\n", (char*)((uint32_t)iMachHeaderPtr + iStringTableOffset + inSym.n_un.n_strx));
+        fprintf(stderr, "Symbol name: %s\n", (char*)((char *)iMachHeaderPtr + iStringTableOffset + inSym.n_un.n_strx));
         fprintf(stderr, "Symbol type: ");
 
         if (theNType == N_ABS)

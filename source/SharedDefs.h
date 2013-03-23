@@ -16,6 +16,7 @@
 typedef struct
 {                                   // CLI flags
     BOOL    localOffsets;           // l
+    BOOL    showCode;               // C
     BOOL    entabOutput;            // e
     BOOL    dataSections;           // d
     BOOL    checksum;               // c
@@ -25,5 +26,6 @@ typedef struct
     BOOL    returnTypes;            // r
     BOOL    variableTypes;          // v
     BOOL    returnStatements;       // R
+    BOOL    debugMode;              // -debug
 }
 ProcOptions;

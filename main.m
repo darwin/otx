@@ -27,20 +27,18 @@ int main(
     int result  = 1;
 
 #ifdef OTX_CLI
-    NSAutoreleasePool*  pool        = [[NSAutoreleasePool alloc] init];
-    CLIController*      controller  =
+    @autoreleasepool {
+        CLIController*      controller  =
         [[CLIController alloc] initWithArgs: argv count: argc];
 
-    if (controller)
-    {
-        [controller processFile];
-        [controller release];
-        result  = noErr;
+        if (controller)
+        {
+            [controller processFile];
+            result  = noErr;
+        }
+        else
+            result  = -1;
     }
-    else
-        result  = -1;
-
-    [pool release];
 #else
     result  = NSApplicationMain(argc, (const char**)argv);
 #endif

@@ -14,7 +14,6 @@
 #import "ListUtils.h"
 #import "ObjcAccessors.h"
 #import "ObjectLoader.h"
-#import "Optimizations.h"
 #import "SysUtils.h"
 #import "UserDefaultKeys.h"
 
@@ -97,8 +96,6 @@
         [iCPFiltTask setStandardOutput: iCPFiltOutputPipe];
         [iCPFiltTask launch];
     }
-
-    [self speedyDelivery];
 
     return self;
 }
@@ -235,8 +232,7 @@
         {
             if (inTypeCode[theNextChar + 1] == '"')
             {
-                uint32_t  classNameLength =
-                    strlen(&inTypeCode[theNextChar + 2]);
+                size_t classNameLength = strlen(&inTypeCode[theNextChar + 2]);
 
                 memcpy(theTypeCString, &inTypeCode[theNextChar + 2],
                     classNameLength - 1);
@@ -347,11 +343,10 @@
             theCType[0] = 0;
 
             isArray = YES;
-            GetDescription(theCType, &inTypeCode[theNextChar]);
+            [self getDescription:theCType forType:&inTypeCode[theNextChar]];
             isArray = NO;
 
-            snprintf(theTypeCString, MAX_TYPE_STRING_LENGTH + 1, "%s[%s]",
-                theCType, theArrayCCount);
+            snprintf(theTypeCString, MAX_TYPE_STRING_LENGTH, "%s[%s]", theCType, theArrayCCount);
 
             break;
         }
@@ -389,6 +384,7 @@
 
     [md5Task setLaunchPath: md5Path];
     [md5Task setArguments: args];
+    [md5Task setStandardInput: [NSPipe pipe]];
     [md5Task setStandardOutput: md5Pipe];
     [md5Task setStandardError: errorPipe];
 
@@ -501,19 +497,9 @@
             break;
     }
 
-    GetDescription(outCString, &inTypeCode[theNextChar]);
+    [self getDescription:outCString forType:&inTypeCode[theNextChar]];
 }
 
-#pragma mark -
-
-//  speedyDelivery
-// ----------------------------------------------------------------------------
-
-- (void)speedyDelivery
-{
-    GetDescription = GetDescriptionFuncType
-        [self methodForSelector: GetDescriptionSel];
-}
 
 #ifdef OTX_DEBUG
 //  printSymbol:
@@ -595,5 +581,11 @@
 - (void)printBlocks: (uint32_t)inFuncIndex;
 {}
 #endif  // OTX_DEBUG
+
+- (void) printSummary
+{
+    unsigned percentage = (iMatchedSelectorCount * 100) / (iMatchedSelectorCount + iMissedSelectorCount);
+    fprintf(stderr, "%u selectors matched, %u missed, %u%%\n", iMatchedSelectorCount, iMissedSelectorCount, percentage);
+}
 
 @end

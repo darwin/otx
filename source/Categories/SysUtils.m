@@ -22,6 +22,7 @@
     NSPipe* silence = [NSPipe pipe];
 
     [otoolTask setLaunchPath: otoolPath];
+    [otoolTask setStandardInput: [NSPipe pipe]];
     [otoolTask setStandardOutput: silence];
     [otoolTask setStandardError: silence];
     [otoolTask launch];
@@ -45,6 +46,7 @@
 
     [selectTask setLaunchPath: selectToolPath];
     [selectTask setArguments: args];
+    [selectTask setStandardInput: [NSPipe pipe]];
     [selectTask setStandardOutput: selectPipe];
     [selectTask launch];
     [selectTask waitUntilExit];

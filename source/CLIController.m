@@ -63,6 +63,7 @@
     // Assign default options.
     iOpts   = (ProcOptions){
         SHOW_LOCAL_OFFSETS,
+        SHOW_CODE,
         DONT_ENTAB_OUTPUT,
         DONT_SHOW_DATA_SECTIONS,
         SHOW_CHECKSUM,
@@ -71,7 +72,8 @@
         DEMANGLE_CPP_NAMES,
         SHOW_METHOD_RETURN_TYPES,
         SHOW_VARIABLE_TYPES,
-        SHOW_RETURN_STATEMENTS
+        SHOW_RETURN_STATEMENTS,
+        0
     };
 
     // Parse options.
@@ -111,6 +113,10 @@
                     return nil;
                 }
             }
+            else if (!strncmp(&argv[i][1], "debug", 6))
+            {
+                iOpts.debugMode = YES;
+            }
             else
             {
                 for (j = 1; argv[i][j] != '\0'; j++)
@@ -119,6 +125,9 @@
                     {
                         case 'l':
                             iOpts.localOffsets = !SHOW_LOCAL_OFFSETS;
+                            break;
+                        case 'C':
+                            iOpts.showCode = !SHOW_CODE;
                             break;
                         case 'e':
                             iOpts.entabOutput = !DONT_ENTAB_OUTPUT;
@@ -294,6 +303,7 @@
         "Usage: otx [-bcdelmnoprv] [-arch <arch type>] <object file>\n"
         "\t-b             separate logical blocks\n"
         "\t-c             don't show md5 checksum\n"
+        "\t-C             don't show binary code\n"
         "\t-d             show data sections\n"
         "\t-e             don't entab output\n"
         "\t-l             don't show local offsets\n"
@@ -453,6 +463,11 @@
             "possible permission error\n");
         [theProcessor release];
         return;
+    }
+    
+    if (iOpts.debugMode)
+    {
+        [theProcessor printSummary];
     }
 
     [theProcessor release];

@@ -160,13 +160,13 @@
 
         // Save methods, ivars, and protocols
         // Don't call getPointer here, its __DATA logic doesn't fit
-        objc2_class_t workingClass = *(objc2_class_t*)(iDataSect.contents +
+        objc2_64_class_t workingClass = *(objc2_64_class_t*)(iDataSect.contents +
             (fileClassPtr - iDataSect.s.addr));
 
         if (iSwapped)
-            swap_objc2_class(&workingClass);
+            swap_objc2_64_class(&workingClass);
 
-        objc2_class_ro_t* roData;
+        objc2_64_class_ro_t* roData;
         UInt64 methodBase;
         UInt64 ivarBase;
 
@@ -175,7 +175,7 @@
             uint32_t count;
             uint32_t i;
 
-            roData = (objc2_class_ro_t*)(iDataSect.contents +
+            roData = (objc2_64_class_ro_t*)(iDataSect.contents +
                 (uintptr_t)(workingClass.data - iDataSect.s.addr));
             methodBase = roData->baseMethods;
             ivarBase = roData->ivars;
@@ -188,9 +188,9 @@
 
             if (methodBase != 0)
             {
-                objc2_method_list_t* methods = (objc2_method_list_t*)(iDataSect.contents +
+                objc2_64_method_list_t* methods = (objc2_64_method_list_t*)(iDataSect.contents +
                     (uintptr_t)(methodBase - iDataSect.s.addr));
-                objc2_method_t* methodArray = &methods->first;
+                objc2_64_method_t* methodArray = &methods->first;
                 count = methods->count;
 
                 if (iSwapped)
@@ -198,10 +198,10 @@
 
                 for (i = 0; i < count; i++)
                 {
-                    objc2_method_t swappedMethod = methodArray[i];
+                    objc2_64_method_t swappedMethod = methodArray[i];
 
                     if (iSwapped)
-                        swap_objc2_method(&swappedMethod);
+                        swap_objc2_64_method(&swappedMethod);
 
                     Method64Info methodInfo = {swappedMethod, workingClass, YES};
 
@@ -214,9 +214,9 @@
 
             if (ivarBase != 0)
             {
-                objc2_ivar_list_t* ivars = (objc2_ivar_list_t*)(iDataSect.contents +
+                objc2_64_ivar_list_t* ivars = (objc2_64_ivar_list_t*)(iDataSect.contents +
                     (uintptr_t)(ivarBase - iDataSect.s.addr));
-                objc2_ivar_t* ivarArray = &ivars->first;
+                objc2_64_ivar_t* ivarArray = &ivars->first;
                 count = ivars->count;
 
                 if (iSwapped)
@@ -224,14 +224,14 @@
 
                 for (i = 0; i < count; i++)
                 {
-                    objc2_ivar_t swappedIvar = ivarArray[i];
+                    objc2_64_ivar_t swappedIvar = ivarArray[i];
 
                     if (iSwapped)
-                        swap_objc2_ivar(&swappedIvar);
+                        swap_objc2_64_ivar(&swappedIvar);
 
                     iNumClassIvars++;
                     iClassIvars = realloc(iClassIvars,
-                        iNumClassIvars * sizeof(objc2_ivar_t));
+                        iNumClassIvars * sizeof(objc2_64_ivar_t));
                     iClassIvars[iNumClassIvars - 1] = swappedIvar;
                 }
             }
@@ -240,15 +240,15 @@
         // Get metaclass methods
         if (workingClass.isa != 0)
         {
-            workingClass = *(objc2_class_t*)(iDataSect.contents +
+            workingClass = *(objc2_64_class_t*)(iDataSect.contents +
                 (workingClass.isa - iDataSect.s.addr));
 
             if (iSwapped)
-                swap_objc2_class(&workingClass);
+                swap_objc2_64_class(&workingClass);
 
             if (workingClass.data != 0)
             {
-                roData = (objc2_class_ro_t*)(iDataSect.contents +
+                roData = (objc2_64_class_ro_t*)(iDataSect.contents +
                     (uintptr_t)(workingClass.data - iDataSect.s.addr));
                 methodBase = roData->baseMethods;
 
@@ -257,9 +257,9 @@
 
                 if (methodBase != 0)
                 {
-                    objc2_method_list_t* methods = (objc2_method_list_t*)(iDataSect.contents +
+                    objc2_64_method_list_t* methods = (objc2_64_method_list_t*)(iDataSect.contents +
                         (uintptr_t)(methodBase - iDataSect.s.addr));
-                    objc2_method_t* methodArray = &methods->first;
+                    objc2_64_method_t* methodArray = &methods->first;
                     uint32_t count = methods->count;
                     uint32_t i;
 
@@ -268,10 +268,10 @@
 
                     for (i = 0; i < count; i++)
                     {
-                        objc2_method_t swappedMethod = methodArray[i];
+                        objc2_64_method_t swappedMethod = methodArray[i];
 
                         if (iSwapped)
-                            swap_objc2_method(&swappedMethod);
+                            swap_objc2_64_method(&swappedMethod);
 
                         Method64Info methodInfo = {swappedMethod, workingClass, NO};
 
@@ -288,8 +288,8 @@
     qsort(iClassMethodInfos, iNumClassMethodInfos, sizeof(Method64Info),
         (COMPARISON_FUNC_TYPE)
         (iSwapped ? Method64Info_Compare_Swapped : Method64Info_Compare));
-    qsort(iClassIvars, iNumClassIvars, sizeof(objc2_ivar_t),
-        (COMPARISON_FUNC_TYPE)objc2_ivar_t_Compare);
+    qsort(iClassIvars, iNumClassIvars, sizeof(objc2_64_ivar_t),
+        (COMPARISON_FUNC_TYPE)objc2_64_ivar_t_Compare);
 }
 
 //  loadSegment:
@@ -327,6 +327,12 @@
                 [self loadCoalTextNTSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__const") == 0)
                 [self loadConstTextSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_methname") == 0)
+                [self loadObjcMethnameSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_methtype") == 0)
+                [self loadObjcMethtypeSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_classname") == 0)
+                [self loadObjcClassnameSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__cstring") == 0)
                 [self loadCStringSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__literal4") == 0)
@@ -358,8 +364,8 @@
                 [self loadObjcMsgRefsSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_catlist") == 0)
                 [self loadObjcCatListSection: sectionPtr];
-            else if (strcmp_sectname(sectionPtr->sectname, "__objc_catlist") == 0)
-                [self loadObjcCatListSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_const") == 0)
+                [self loadObjcConstSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_protolist") == 0)
                 [self loadObjcProtoListSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_protorefs") == 0)
@@ -368,6 +374,8 @@
                 [self loadObjcSuperRefsSection: sectionPtr];
             else if (strcmp_sectname(sectionPtr->sectname, "__objc_selrefs") == 0)
                 [self loadObjcSelRefsSection: sectionPtr];
+            else if (strcmp_sectname(sectionPtr->sectname, "__objc_data") == 0)
+                [self loadObjcDataSection: sectionPtr];
         }
         else if (strcmp_sectname(sectionPtr->segname, "__IMPORT") == 0)
         {
@@ -516,6 +524,48 @@
 
     iConstTextSect.contents = (char*)iMachHeaderPtr + iConstTextSect.s.offset;
     iConstTextSect.size     = iConstTextSect.s.size;
+}
+
+//  loadObjcMethnameSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcMethnameSection: (section_64*)inSect
+{
+    iObjcMethnameSect.s    = *inSect;
+    
+    if (iSwapped)
+        swap_section_64(&iObjcMethnameSect.s, 1, OSHostByteOrder());
+    
+    iObjcMethnameSect.contents = (char*)iMachHeaderPtr + iObjcMethnameSect.s.offset;
+    iObjcMethnameSect.size     = iObjcMethnameSect.s.size;
+}
+
+//  loadObjcMethTypeSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcMethtypeSection: (section_64*)inSect
+{
+    iObjcMethtypeSect.s  = *inSect;
+
+    if (iSwapped)
+        swap_section_64(&iObjcMethtypeSect.s, 1, OSHostByteOrder());
+
+    iObjcMethtypeSect.contents   = (char*)iMachHeaderPtr + iObjcMethtypeSect.s.offset;
+    iObjcMethtypeSect.size       = iObjcMethtypeSect.s.size;
+}
+
+//  loadObjcClassnameSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcClassnameSection: (section_64*)inSect
+{
+    iObjcClassnameSect.s    = *inSect;
+    
+    if (iSwapped)
+        swap_section_64(&iObjcClassnameSect.s, 1, OSHostByteOrder());
+    
+    iObjcClassnameSect.contents = (char*)iMachHeaderPtr + iObjcClassnameSect.s.offset;
+    iObjcClassnameSect.size     = iObjcClassnameSect.s.size;
 }
 
 //  loadCoalTextSection:
@@ -682,6 +732,20 @@
     iObjcCatListSect.size = iObjcCatListSect.s.size;
 }
 
+//  loadObjcConstSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcConstSection: (section_64*)inSect
+{
+    iObjcConstSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section_64(&iObjcConstSect.s, 1, OSHostByteOrder());
+
+    iObjcConstSect.contents = (char*)iMachHeaderPtr + iObjcConstSect.s.offset;
+    iObjcConstSect.size = iObjcConstSect.s.size;
+}
+
 //  loadObjcProtoListSection:
 // ----------------------------------------------------------------------------
 
@@ -765,6 +829,22 @@
     iObjcSelRefsSect.contents = (char*)iMachHeaderPtr + iObjcSelRefsSect.s.offset;
     iObjcSelRefsSect.size = iObjcSelRefsSect.s.size;
 }
+
+
+//  loadObjcSelRefsSection:
+// ----------------------------------------------------------------------------
+
+- (void)loadObjcDataSection: (section_64*)inSect
+{
+    iObjcDataSect.s = *inSect;
+
+    if (iSwapped)
+        swap_section_64(&iObjcDataSect.s, 1, OSHostByteOrder());
+
+    iObjcDataSect.contents = (char*)iMachHeaderPtr + iObjcSelRefsSect.s.offset;
+    iObjcDataSect.size = iObjcSelRefsSect.s.size;
+}
+
 
 //  loadImpPtrSection:
 // ----------------------------------------------------------------------------

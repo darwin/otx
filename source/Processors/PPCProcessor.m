@@ -13,6 +13,7 @@
 #import "ListUtils.h"
 #import "ObjcAccessors.h"
 #import "ObjectLoader.h"
+#import "Searchers.h"
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
@@ -125,7 +126,7 @@ extern BOOL gCancel;
         }
 
         case 0x11:  // sc
-            CommentForSystemCall();
+            [self commentForSystemCall];
 
             break;
 
@@ -154,7 +155,7 @@ extern BOOL gCancel;
                             strlen(kRTName_objc_msgSend) + 1);
 
                         if (iOpts.verboseMsgSends)
-                            CommentForMsgSendFromLine(tempComment, inLine);
+                            [self commentForMsgSend:tempComment fromLine:inLine];
 
                         strncpy(iLineCommentCString, tempComment,
                             strlen(tempComment) + 1);
@@ -179,34 +180,31 @@ extern BOOL gCancel;
 
                         if (iRegInfos[5].isValid)
                         {
-                            objc_ivar   theIvar         = {0};
-                            objc_class  swappedClass    = *iCurrentClass;
+                            objc1_32_ivar   theIvar         = {0};
+                            objc1_32_class  swappedClass    = *(objc1_32_class *)iCurrentClass;
 
                             #if __LITTLE_ENDIAN__
-                                swap_objc_class(&swappedClass);
+                                swap_objc1_32_class(&swappedClass);
                             #endif
 
                             if (!iIsInstanceMethod)
                             {
-                                if (!GetObjcMetaClassFromClass(
-                                    &swappedClass, &swappedClass))
+                                if (![self getObjc1MetaClass:&swappedClass fromClass:&swappedClass])
                                     break;
 
                                 #if __LITTLE_ENDIAN__
-                                    swap_objc_class(&swappedClass);
+                                    swap_objc1_32_class(&swappedClass);
                                 #endif
                             }
 
-                            if (!FindIvar(&theIvar,
-                                &swappedClass, iRegInfos[5].value))
+                            if (![self findIvar:&theIvar inClass:&swappedClass withOffset:iRegInfos[5].value])
                             {
                                 strncpy(iLineCommentCString, tempComment,
                                     strlen(tempComment) + 1);
                                 break;
                             }
 
-                            theSymPtr   = GetPointer(
-                                (uint32_t)theIvar.ivar_name, NULL);
+                            theSymPtr   = [self getPointer:theIvar.ivar_name type:NULL];
 
                             if (!theSymPtr)
                             {
@@ -221,20 +219,16 @@ extern BOOL gCancel;
 
                                 theTypeCString[0]   = 0;
 
-                                GetDescription(theTypeCString,
-                                    GetPointer((uint32_t)theIvar.ivar_type, NULL));
-                                snprintf(iLineCommentCString,
-                                    MAX_COMMENT_LENGTH - 1, "%s (%s)%s",
-                                    tempComment, theTypeCString, theSymPtr);
+                                [self getDescription: theTypeCString
+                                             forType: [self getPointer:theIvar.ivar_type type:NULL]];
+
+                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s (%s)%s", tempComment, theTypeCString, theSymPtr);
                             }
                             else
-                                snprintf(iLineCommentCString,
-                                    MAX_COMMENT_LENGTH - 1, "%s %s",
-                                    tempComment, theSymPtr);
+                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s %s", tempComment, theSymPtr);
                         }
                         else    // !mReginfos[5].isValid
-                            strncpy(iLineCommentCString, tempComment,
-                                strlen(tempComment) + 1);
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", tempComment);
 
                         break;
                     }
@@ -325,30 +319,12 @@ extern BOOL gCancel;
 
             if (iRegInfos[RA(theCode)].classPtr)
             {   // search instance vars
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[RA(theCode)].classPtr;
+                objc_32_class_ptr classPtr = iRegInfos[RA(theCode)].classPtr;
 
-                #if __LITTLE_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (!GetObjcMetaClassFromClass(
-                        &swappedClass, &swappedClass))
-                        break;
-
-                    #if __LITTLE_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-                }
-
-                if (!FindIvar(&theIvar, &swappedClass, UIMM(theCode)))
+                uint32_t offset = UIMM(theCode);
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
                     break;
-
-                theSymPtr   = GetPointer(
-                    (uint32_t)theIvar.ivar_name, NULL);
 
                 if (theSymPtr)
                 {
@@ -358,21 +334,17 @@ extern BOOL gCancel;
 
                         theTypeCString[0]   = 0;
 
-                        GetDescription(theTypeCString,
-                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        [self getDescription:theTypeCString forType:typePtr];
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else
             {
                 localAddy   = iRegInfos[RA(theCode)].value + SIMM(theCode);
-                theDummyPtr = GetPointer(localAddy, NULL);
+                theDummyPtr = [self getPointer:localAddy type:NULL];
 
                 if (!theDummyPtr)
                     break;
@@ -416,30 +388,12 @@ extern BOOL gCancel;
 
             if (iRegInfos[RA(theCode)].classPtr)    // relative to a class
             {   // search instance vars
-                objc_ivar   theIvar     = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[RA(theCode)].classPtr;
+                objc_32_class_ptr classPtr = iRegInfos[RA(theCode)].classPtr;
 
-                #if __LITTLE_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (!GetObjcMetaClassFromClass(
-                        &swappedClass, &swappedClass))
-                        break;
-
-                    #if __LITTLE_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-                }
-
-                if (!FindIvar(&theIvar, &swappedClass, UIMM(theCode)))
+                uint32_t offset = UIMM(theCode);
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
                     break;
-
-                theSymPtr   = GetPointer(
-                    (uint32_t)theIvar.ivar_name, NULL);
 
                 if (theSymPtr)
                 {
@@ -449,15 +403,11 @@ extern BOOL gCancel;
 
                         theTypeCString[0]   = 0;
 
-                        GetDescription(theTypeCString,
-                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        [self getDescription:theTypeCString forType:typePtr];
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else    // absolute address
@@ -472,7 +422,7 @@ extern BOOL gCancel;
                 UInt8   theType = PointerType;
                 uint32_t  theValue;
 
-                theSymPtr   = GetPointer(localAddy, &theType);
+                theSymPtr   = [self getPointer:localAddy type:&theType];
 
                 if (theSymPtr)
                 {
@@ -481,7 +431,7 @@ extern BOOL gCancel;
                         case DataGenericType:
                             theValue    = *(uint32_t*)theSymPtr;
                             theValue    = OSSwapBigToHostInt32(theValue);
-                            theDummyPtr = GetPointer(theValue, &theType);
+                            theDummyPtr = [self getPointer:theValue type:&theType];
 
                             switch (theType)
                             {
@@ -523,7 +473,7 @@ extern BOOL gCancel;
                             }
 
                             if (dyldComment)
-                                strcpy(iLineCommentCString, dyldComment);
+                                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", dyldComment);
 
                             break;
                         }
@@ -533,8 +483,7 @@ extern BOOL gCancel;
 
                         case CFStringType:
                         {
-                            cf_string_object    theCFString = 
-                                *(cf_string_object*)theSymPtr;
+                            cfstring_object theCFString =  *(cfstring_object*)theSymPtr;
 
                             if (theCFString.oc_string.length == 0)
                             {
@@ -542,11 +491,8 @@ extern BOOL gCancel;
                                 break;
                             }
 
-                            theCFString.oc_string.chars =
-                                (char*)OSSwapBigToHostInt32(
-                                (uint32_t)theCFString.oc_string.chars);
-                            theSymPtr   = GetPointer(
-                                (uint32_t)theCFString.oc_string.chars, NULL);
+                            theCFString.oc_string.chars = OSSwapBigToHostInt32(theCFString.oc_string.chars);
+                            theSymPtr   = [self getPointer:theCFString.oc_string.chars type:NULL];
 
                             break;
                         }
@@ -556,7 +502,7 @@ extern BOOL gCancel;
                         {
                             theValue    = *(uint32_t*)theSymPtr;
                             theValue    = OSSwapBigToHostInt32(theValue);
-                            theDummyPtr = GetPointer(theValue, NULL);
+                            theDummyPtr = [self getPointer:theValue type:NULL];
 
                             if (!theDummyPtr)
                             {
@@ -571,7 +517,7 @@ extern BOOL gCancel;
                             {
                                 theValue    = *(uint32_t*)theDummyPtr;
                                 theValue    = OSSwapBigToHostInt32(theValue);
-                                theDummyPtr = GetPointer(theValue, NULL);
+                                theDummyPtr = [self getPointer:theValue type:NULL];
 
                                 if (!theDummyPtr)
                                 {
@@ -580,8 +526,7 @@ extern BOOL gCancel;
                                 }
                             }
 
-                            cf_string_object    theCFString = 
-                                *(cf_string_object*)theDummyPtr;
+                            cfstring_object theCFString = *(cfstring_object*)theDummyPtr;
 
                             if (theCFString.oc_string.length == 0)
                             {
@@ -589,11 +534,8 @@ extern BOOL gCancel;
                                 break;
                             }
 
-                            theCFString.oc_string.chars =
-                                (char*)OSSwapBigToHostInt32(
-                                (uint32_t)theCFString.oc_string.chars);
-                            theSymPtr   = GetPointer(
-                                (uint32_t)theCFString.oc_string.chars, NULL);
+                            theCFString.oc_string.chars = OSSwapBigToHostInt32(theCFString.oc_string.chars);
+                            theSymPtr   = [self getPointer:theCFString.oc_string.chars type:NULL];
 
                             break;
                         }
@@ -602,8 +544,7 @@ extern BOOL gCancel;
                         case OCStrObjectType:
                         case OCClassType:
                         case OCModType:
-                            if (!GetObjcDescriptionFromObject(
-                                &theDummyPtr, theSymPtr, theType))
+                            if (![self getObjc1Description:&theDummyPtr fromObject:theSymPtr type:theType]) 
                                 break;
 
                             if (theDummyPtr)
@@ -612,7 +553,7 @@ extern BOOL gCancel;
                                 {
                                     case OCClassType:
                                         iRegInfos[RT(theCode)].classPtr =
-                                            (objc_class*)theSymPtr;
+                                            (objc_32_class_ptr)theSymPtr;
                                         break;
 
                                     default:
@@ -633,8 +574,7 @@ extern BOOL gCancel;
                             snprintf(iLineCommentCString, 255,
                                 "%*s", theSymPtr[0], theSymPtr + 1);
                         else
-                            snprintf(iLineCommentCString,
-                                MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                     }
                 }   // if (theSymPtr)
                 else
@@ -710,14 +650,12 @@ extern BOOL gCancel;
                 snprintf(iLineCommentCString, 40, "%s(%s)",
                     theTempComment, "PT_DENY_ATTACH");
             else
-                strncpy(iLineCommentCString, theTempComment,
-                    strlen(theTempComment) + 1);
+                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theTempComment);
 
             break;
 
         default:
-            strncpy(iLineCommentCString, theTempComment,
-                strlen(theTempComment) + 1);
+            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theTempComment);
 
             break;
     }
@@ -742,7 +680,7 @@ extern BOOL gCancel;
     if (memcmp(outComment, "_objc_msgSend", 13))
         return NULL;
 
-    UInt8   sendType        = SendTypeFromMsgSend(outComment);
+    UInt8   sendType        = [self sendTypeFromMsgSend:outComment];
     uint32_t  selectorRegNum  =
         (sendType == sendSuper_stret || sendType == send_stret) ? 5 : 4;
 
@@ -752,8 +690,7 @@ extern BOOL gCancel;
 
     // Get at the selector.
     UInt8   selType     = PointerType;
-    char*   selPtr      = GetPointer(
-        iRegInfos[selectorRegNum].value, &selType);
+    char*   selPtr      = [self getPointer:iRegInfos[selectorRegNum].value type:&selType];
 
     switch (selType)
     {
@@ -768,7 +705,7 @@ extern BOOL gCancel;
                 uint32_t  selPtrValue = *(uint32_t*)selPtr;
 
                 selPtrValue = OSSwapBigToHostInt32(selPtrValue);
-                selString   = GetPointer(selPtrValue, NULL);
+                selString   = [self getPointer:selPtrValue type:NULL];
             }
 
             break;
@@ -790,13 +727,18 @@ extern BOOL gCancel;
 - (void)commentForMsgSend: (char*)ioComment
                  fromLine: (Line*)inLine
 {
-    char*   selString   = SelectorForMsgSend(ioComment, inLine);
+    char* selString = [self selectorForMsgSend:ioComment fromLine:inLine];
 
     // Bail if we couldn't find the selector.
     if (!selString)
+    {
+        iMissedSelectorCount++;
         return;
+    }
+    
+    iMatchedSelectorCount++;
 
-    UInt8   sendType    = SendTypeFromMsgSend(ioComment);
+    UInt8   sendType    = [self sendTypeFromMsgSend:ioComment];
 
     // Get the address of the class name string, if this a class method.
     uint32_t  classNameAddy   = 0;
@@ -825,8 +767,7 @@ extern BOOL gCancel;
     {
         // Get at the class name
         UInt8   classNameType   = PointerType;
-        char*   classNamePtr    =
-            GetPointer(classNameAddy, &classNameType);
+        char*   classNamePtr    = [self getPointer:classNameAddy type:&classNameType];
 
         switch (classNameType)
         {
@@ -848,19 +789,18 @@ extern BOOL gCancel;
                     uint32_t	namePtrValue	= *(uint32_t*)classNamePtr;
 
                     namePtrValue	= OSSwapBigToHostInt32(namePtrValue);
-                    classNamePtr    = GetPointer(namePtrValue, &classNameType);
+                    classNamePtr    = [self getPointer:namePtrValue type:&classNameType];
 
                     switch (classNameType)
                     {
                         case CFStringType:
                             if (classNamePtr != NULL)
                             {
-                                cf_string_object    classNameCFString   =
-                                    *(cf_string_object*)classNamePtr;
+                                cfstring_object classNameCFString = *(cfstring_object*)classNamePtr;
 
-                                namePtrValue	= (uint32_t)classNameCFString.oc_string.chars;
+                                namePtrValue	= classNameCFString.oc_string.chars;
                                 namePtrValue	= OSSwapBigToHostInt32(namePtrValue);
-                                classNamePtr    = GetPointer(namePtrValue, NULL);
+                                classNamePtr    = [self getPointer:namePtrValue type:NULL];
                                 className       = classNamePtr;
                             }
 
@@ -890,15 +830,15 @@ extern BOOL gCancel;
                     uint32_t  namePtrValue    = *(uint32_t*)classNamePtr;
 
                     namePtrValue    = OSSwapBigToHostInt32(namePtrValue);
-                    className       = GetPointer(namePtrValue, NULL);
+                    className       = [self getPointer:namePtrValue type:NULL];
                 }
 
                 break;
 
             case OCClassType:
                 if (classNamePtr)
-                    GetObjcDescriptionFromObject(
-                        &className, classNamePtr, OCClassType);
+                    [self getObjc1Description:&className fromObject:classNamePtr type:OCClassType];
+
                 break;
 
             default:
@@ -912,7 +852,7 @@ extern BOOL gCancel;
 
     if (className)
     {
-        snprintf(tempComment, MAX_COMMENT_LENGTH - 1,
+        snprintf(tempComment, MAX_COMMENT_LENGTH,
             ((sendType == sendSuper || sendType == sendSuper_stret) ?
             "+%s[[%s super] %s]" : "+%s[%s %s]"),
             returnTypeString, className, selString);
@@ -924,19 +864,19 @@ extern BOOL gCancel;
             case send:
             case send_rtp:
             case send_variadic:
-                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[r3 %s]", returnTypeString, selString);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, "-%s[r3 %s]", returnTypeString, selString);
                 break;
 
             case sendSuper:
-                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[[r3 super] %s]", returnTypeString, selString);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, "-%s[[r3 super] %s]", returnTypeString, selString);
                 break;
 
             case send_stret:
-                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[r4 %s]", returnTypeString, selString);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, "-%s[r4 %s]", returnTypeString, selString);
                 break;
 
             case sendSuper_stret:
-                snprintf(tempComment, MAX_COMMENT_LENGTH - 1, "-%s[[r4 super] %s]", returnTypeString, selString);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, "-%s[[r4 super] %s]", returnTypeString, selString);
                 break;
 
             default:
@@ -971,8 +911,8 @@ extern BOOL gCancel;
             theNewLine->length + 1);
 
         // Swap in the verbose line and free the previous verbose lines.
-        DeleteLinesBefore((*ioLine)->alt, &iVerboseLineListHead);
-        ReplaceLine(*ioLine, theNewLine, &iPlainLineListHead);
+        [self deleteLinesBefore:(*ioLine)->alt fromList:&iVerboseLineListHead];
+        [self replaceLine:*ioLine withLine:theNewLine inList:&iPlainLineListHead];
         *ioLine = theNewLine;
     }
 }
@@ -994,22 +934,21 @@ extern BOOL gCancel;
     // of any Obj-C method, and r12 holds the address of the 1st instruction
     // if the function was called indirectly. In the case of direct calls,
     // r12 will be overwritten before it is used, if it is used at all.
-    GetObjcClassPtrFromMethod(&iCurrentClass, inLine->info.address);
-    GetObjcCatPtrFromMethod(&iCurrentCat, inLine->info.address);
+    [self getObjcClassPtr:&iCurrentClass fromMethod:inLine->info.address];
+    [self getObjc1CatPtr:&iCurrentCat fromMethod:inLine->info.address];
     memset(iRegInfos, 0, sizeof(GPRegisterInfo) * 32);
 
     // If we didn't get the class from the method, try to get it from the
     // category.
     if (!iCurrentClass && iCurrentCat)
     {
-        objc_category   swappedCat  = *iCurrentCat;
+        objc1_32_category swappedCat = *iCurrentCat;
 
         #if __LITTLE_ENDIAN__
-            swap_objc_category(&swappedCat);
+            swap_objc1_32_category(&swappedCat);
         #endif
 
-        GetObjcClassPtrFromName(&iCurrentClass,
-            GetPointer((uint32_t)swappedCat.class_name, NULL));
+        [self getObjcClassPtr:&iCurrentClass fromName:[self getPointer:swappedCat.class_name type:NULL]];
     }
 
     iRegInfos[3].classPtr   = iCurrentClass;
@@ -1023,7 +962,7 @@ extern BOOL gCancel;
     // Try to find out whether this is a class or instance method.
     MethodInfo* thisMethod  = NULL;
 
-    if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
+    if ([self getObjcMethod:&thisMethod fromAddress:inLine->info.address])
         iIsInstanceMethod   = thisMethod->inst;
 
     if (iLocalSelves)
@@ -1408,8 +1347,7 @@ extern BOOL gCancel;
             }
             else if (iRegInfos[RA(theCode)].isValid)
             {
-                uint32_t  tempPtr = (uint32_t)GetPointer(
-                    iRegInfos[RA(theCode)].value + SIMM(theCode), NULL);
+                void *tempPtr = [self getPointer:iRegInfos[RA(theCode)].value + SIMM(theCode) type:NULL];
 
                 if (tempPtr)
                 {
@@ -1590,14 +1528,14 @@ extern BOOL gCancel;
 
     // In Obj-C apps, the majority of funcs will have Obj-C symbols, so check
     // those first.
-    if (FindClassMethodByAddress(&theDummyInfo, theAddy))
+    if ([self findClassMethod:&theDummyInfo byAddress:theAddy])
         return YES;
 
-    if (FindCatMethodByAddress(&theDummyInfo, theAddy))
+    if ([self findCatMethod:&theDummyInfo byAddress:theAddy])
         return YES;
 
     // If it's not an Obj-C method, maybe there's an nlist.
-    if (FindSymbolByAddress(theAddy))
+    if ([self findSymbolByAddress:theAddy])
         return YES;
 
     // If otool gave us a function name...
@@ -1738,12 +1676,12 @@ extern BOOL gCancel;
         if (theLine->info.isFunction)
         {
             iCurrentFuncPtr = theLine->info.address;
-            ResetRegisters(theLine);
+            [self resetRegisters:theLine];
         }
         else
-            RestoreRegisters(theLine);
+            [self restoreRegisters:theLine];
 
-        UpdateRegisters(theLine);
+        [self updateRegisters:theLine];
 
         // Check if we need to save the machine state.
         if (IS_BLOCK_BRANCH(theCode) && iCurrentFuncInfoIndex >= 0 &&

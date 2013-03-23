@@ -13,10 +13,18 @@
 #import "ListUtils.h"
 #import "ObjcAccessors.h"
 #import "ObjectLoader.h"
+#import "Searchers.h"
 #import "SyscallStrings.h"
 #import "UserDefaultKeys.h"
 
 #define REUSE_BLOCKS    1
+
+//For debugging -updateRegisters:
+// #define UPDATE_REGISTERS_START_DEBUG 0x00000000
+// #define UPDATE_REGISTERS_END_DEBUG   0x00000000
+
+// For debugging -commentForLine:
+// #define COMMENT_FOR_LINE_DEBUG       0x1999d5
 
 @implementation X86Processor
 
@@ -100,7 +108,7 @@
 
     if (nextLine)
     {
-        uint32_t newNextAddy = AddressFromLine(nextLine->chars);
+        uint32_t newNextAddy = [self addressFromLine:nextLine->chars];
 
         if (newNextAddy > thisAddy && newNextAddy <= thisAddy + 15)
             nextAddy = newNextAddy;
@@ -239,6 +247,13 @@
 
     iLineCommentCString[0]  = 0;
 
+#ifdef COMMENT_FOR_LINE_DEBUG
+    if (inLine->info.address == COMMENT_FOR_LINE_DEBUG)
+    {
+        raise(SIGINT);
+    }
+#endif
+
     switch (opcode)
     {
         case 0x0f:  // 2-byte and SSE opcodes   **add sysenter support here
@@ -248,8 +263,8 @@
                 localAddy = *(uint32_t*)&inLine->info.code[3];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
 
-                theDummyPtr = GetPointer(localAddy, NULL);
-
+                theDummyPtr = [self getPointer:localAddy type:NULL];
+                
                 if (theDummyPtr)
                 {
                     uint32_t  theInt32    = *(uint32_t*)theDummyPtr;
@@ -309,7 +324,7 @@
 
             localAddy = *(uint32_t*)&inLine->info.code[4];
             localAddy = OSSwapLittleToHostInt32(localAddy);
-            theDummyPtr = GetPointer(localAddy, NULL);
+            theDummyPtr = [self getPointer:localAddy type:NULL];
 
             if (theDummyPtr)
             {
@@ -382,32 +397,12 @@
                 if (MOD(modRM) == MODx)
                     break;
 
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[REG2(modRM)].classPtr;
-
-                #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (!GetObjcMetaClassFromClass(
-                        &swappedClass, &swappedClass))
-                        break;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-                }
-
+                objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
                 immOffset = inLine->info.code[2];
 
-                if (!FindIvar(&theIvar, &swappedClass, immOffset))
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:immOffset inClass:classPtr])
                     break;
-
-                theSymPtr   = GetPointer(
-                    (uint32_t)theIvar.ivar_name, NULL);
 
                 if (theSymPtr)
                 {
@@ -417,16 +412,11 @@
 
                         theTypeCString[0]   = 0;
 
-                        GetDescription(theTypeCString,
-                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        [self getDescription:theTypeCString forType:typePtr];
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s",
-                            theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else
@@ -469,42 +459,22 @@
                     if (MOD(modRM) == MODx)
                         break;
 
-                    objc_ivar   theIvar         = {0};
-                    objc_class  swappedClass    =
-                        *iRegInfos[REG2(modRM)].classPtr;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-
-                    if (!iIsInstanceMethod)
-                    {
-                        if (!GetObjcMetaClassFromClass(
-                            &swappedClass, &swappedClass))
-                            break;
-
-                        #if __BIG_ENDIAN__
-                            swap_objc_class(&swappedClass);
-                        #endif
-                    }
+                    objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
+                    uint32 offset = 0;
 
                     if (MOD(modRM) == MOD8)
                     {
-                        UInt8 theSymOffset = inLine->info.code[2];
-
-                        if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
-                            break;
+                        offset = (SInt8)inLine->info.code[2];
                     }
                     else if (MOD(modRM) == MOD32)
                     {
-                        uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[2];
-                        theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
-
-                        if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
-                            break;
+                        offset = *(uint32_t*)&inLine->info.code[2];
+                        offset = OSSwapLittleToHostInt32(offset);
                     }
 
-                    theSymPtr = GetPointer((uint32_t)theIvar.ivar_name, NULL);
+                    char *typePtr = NULL;
+                    if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
+                        break;
 
                     if (theSymPtr)
                     {
@@ -514,16 +484,11 @@
 
                             theTypeCString[0] = 0;
 
-                            GetDescription(theTypeCString,
-                                GetPointer((uint32_t)theIvar.ivar_type, NULL));
-                            snprintf(iLineCommentCString,
-                                MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                                theTypeCString, theSymPtr);
+                            [self getDescription:theTypeCString forType:typePtr];
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                         }
                         else
-                            snprintf(iLineCommentCString,
-                                MAX_COMMENT_LENGTH - 1, "%s",
-                                theSymPtr);
+                            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                     }
                 }
                 else if (MOD(modRM) == MOD32)   // absolute address
@@ -531,17 +496,22 @@
                     if (HAS_SIB(modRM))
                         break;
 
-                    if (REG2(modRM) == iCurrentThunk &&
-                        iRegInfos[iCurrentThunk].isValid)
+                    if (iRegInfos[REG2(modRM)].isValid)
                     {
                         uint32_t imm = *(uint32_t*)&inLine->info.code[2];
                         imm = OSSwapLittleToHostInt32(imm);
-                        localAddy = iRegInfos[iCurrentThunk].value + imm;
+                        localAddy = iRegInfos[REG2(modRM)].value + imm;
                     }
-                    else
+                }
+                else if (MOD(modRM) == MOD8)   // absolute address
+                {
+                    if (HAS_SIB(modRM))
+                        break;
+
+                    if (iRegInfos[REG2(modRM)].isValid)
                     {
-                        localAddy = *(uint32_t*)&inLine->info.code[2];
-                        localAddy = OSSwapLittleToHostInt32(localAddy);
+                        SInt8 imm = (SInt8)inLine->info.code[2];
+                        localAddy = iRegInfos[REG2(modRM)].value + imm;
                     }
                 }
             }
@@ -560,44 +530,22 @@
                 if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                     break;
 
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[REG2(modRM)].classPtr;
-
-                #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (!GetObjcMetaClassFromClass(
-                        &swappedClass, &swappedClass))
-                        break;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-                }
+                objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
+                uint32 offset = 0;
 
                 if (MOD(modRM) == MOD8)
                 {
-                    UInt8 theSymOffset = inLine->info.code[2];
-
-                    if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
-                        break;
+                    offset = (sint8)inLine->info.code[2];
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[2];
-
-                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
-
-                    if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
-                        break;
+                    offset = *(uint32_t*)&inLine->info.code[2];
+                    offset = OSSwapLittleToHostInt32(offset);
                 }
 
-                theSymPtr   = GetPointer(
-                    (uint32_t)theIvar.ivar_name, NULL);
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
+                    break;
 
                 if (theSymPtr)
                 {
@@ -607,24 +555,19 @@
 
                         theTypeCString[0]   = 0;
 
-                        GetDescription(theTypeCString,
-                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        [self getDescription:theTypeCString forType:typePtr];
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s",
-                            theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
-            else if (REG2(modRM) == iCurrentThunk)
+            else if (iRegInfos[REG2(modRM)].isValid)
             {
                 uint32_t imm = *(uint32_t*)&inLine->info.code[2];
 
                 imm = OSSwapLittleToHostInt32(imm);
-                localAddy = iRegInfos[iCurrentThunk].value + imm;
+                localAddy = iRegInfos[REG2(modRM)].value + imm;
             }
             else
             {
@@ -719,42 +662,21 @@
                 if (HAS_SIB(modRM))
                     immOffset += 1;
 
-                objc_ivar theIvar = {0};
-                objc_class swappedClass = *iRegInfos[REG2(modRM)].classPtr;
-
-                #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (!GetObjcMetaClassFromClass(
-                        &swappedClass, &swappedClass))
-                        break;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-                }
+                objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
+                uint32_t offset = 0;
 
                 if (MOD(modRM) == MOD8)
                 {
-                    // offset precedes immediate value
-                    UInt8 theSymOffset = inLine->info.code[immOffset - 1];
-
-                    if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
-                        break;
+                    offset = (SInt8)inLine->info.code[immOffset - 1];
                 }
                 else if (MOD(modRM) == MOD32)
                 {
                     uint32_t imm = *(uint32_t*)&inLine->info.code[immOffset];
-                    uint32_t theSymOffset;
-
                     imm = OSSwapLittleToHostInt32(imm);
 
                     // offset precedes immediate value
-                    theSymOffset = *(uint32_t*)&inLine->info.code[immOffset - 4];
-                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
+                    offset = *(uint32_t*)&inLine->info.code[immOffset - 4];
+                    offset = OSSwapLittleToHostInt32(offset);
 
                     // Check for a four char code.
                     if (imm >= 0x20202020 && imm < 0x7f7f7f7f)
@@ -778,12 +700,11 @@
                     {
                         snprintf(fcc, 4, "'%c'", imm);
                     }
-
-                    FindIvar(&theIvar, &swappedClass, theSymOffset);
                 }
 
-                theSymPtr   = GetPointer(
-                    (uint32_t)theIvar.ivar_name, NULL);
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
+                    break;
 
                 char    tempComment[MAX_COMMENT_LENGTH];
 
@@ -798,7 +719,7 @@
                     if (fcc[0])
                         strncat(tempComment, " ", 2);
 
-                    uint32_t  tempCommentLength   = strlen(tempComment);
+                    size_t tempCommentLength = strlen(tempComment);
 
                     if (iOpts.variableTypes)
                     {
@@ -806,8 +727,7 @@
 
                         theTypeCString[0]   = 0;
 
-                        GetDescription(theTypeCString,
-                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
+                        [self getDescription:theTypeCString forType:typePtr];
                         snprintf(&tempComment[tempCommentLength],
                             MAX_COMMENT_LENGTH - tempCommentLength - 1,
                             "(%s)%s", theTypeCString, theSymPtr);
@@ -818,8 +738,7 @@
                 }
 
                 if (tempComment[0])
-                    strncpy(iLineCommentCString, tempComment,
-                        MAX_COMMENT_LENGTH - 1);
+                    snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", tempComment);
             }
             else    // absolute address
             {
@@ -864,7 +783,7 @@
             modRM = inLine->info.code[1];
 
             if (modRM == 0x80)
-                CommentForSystemCall();
+                [self commentForSystemCall];
 
             break;
 
@@ -881,44 +800,22 @@
                 if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                     break;
 
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[REG2(modRM)].classPtr;
-
-                #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (!GetObjcMetaClassFromClass(
-                        &swappedClass, &swappedClass))
-                        break;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-                }
+                objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
+                uint32 offset = 0;
 
                 if (MOD(modRM) == MOD8)
                 {
-                    UInt8 theSymOffset = inLine->info.code[2];
-
-                    if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
-                        break;
+                    offset = (SInt8)inLine->info.code[2];
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[2];
-
-                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
-
-                    if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
-                        break;
+                    offset = *(uint32_t*)&inLine->info.code[2];
+                    offset = OSSwapLittleToHostInt32(offset);
                 }
 
-                theSymPtr   = GetPointer(
-                    (uint32_t)theIvar.ivar_name, NULL);
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
+                    break;
 
                 if (theSymPtr)
                 {
@@ -928,16 +825,11 @@
 
                         theTypeCString[0]   = 0;
 
-                        GetDescription(theTypeCString,
-                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        [self getDescription:theTypeCString forType:typePtr];
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s",
-                            theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else    // absolute address
@@ -952,7 +844,7 @@
 
                 localAddy = *(uint32_t*)&inLine->info.code[immOffset];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
-                theDummyPtr = GetPointer(localAddy, NULL);
+                theDummyPtr = [self getPointer:localAddy type:NULL];
 
                 if (!theDummyPtr)
                     break;
@@ -1026,44 +918,22 @@
                 if (MOD(modRM) == MODimm || MOD(modRM) == MODx)
                     break;
 
-                objc_ivar   theIvar         = {0};
-                objc_class  swappedClass    =
-                    *iRegInfos[REG2(modRM)].classPtr;
-
-                #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-
-                if (!iIsInstanceMethod)
-                {
-                    if (!GetObjcMetaClassFromClass(
-                        &swappedClass, &swappedClass))
-                        break;
-
-                    #if __BIG_ENDIAN__
-                        swap_objc_class(&swappedClass);
-                    #endif
-                }
+                objc_32_class_ptr classPtr = iRegInfos[REG2(modRM)].classPtr;
+                uint32 offset = 0;
 
                 if (MOD(modRM) == MOD8)
                 {
-                    UInt8 theSymOffset = inLine->info.code[4];
-
-                    if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
-                        break;
+                    offset = (SInt8)inLine->info.code[2];
                 }
                 else if (MOD(modRM) == MOD32)
                 {
-                    uint32_t theSymOffset = *(uint32_t*)&inLine->info.code[4];
-
-                    theSymOffset = OSSwapLittleToHostInt32(theSymOffset);
-
-                    if (!FindIvar(&theIvar, &swappedClass, theSymOffset))
-                        break;
+                    offset = *(uint32_t*)&inLine->info.code[2];
+                    offset = OSSwapLittleToHostInt32(offset);
                 }
 
-                theSymPtr   = GetPointer(
-                    (uint32_t)theIvar.ivar_name, NULL);
+                char *typePtr = NULL;
+                if (![self getIvarName:&theSymPtr type:&typePtr withOffset:offset inClass:classPtr])
+                    break;
 
                 if (theSymPtr)
                 {
@@ -1073,23 +943,19 @@
 
                         theTypeCString[0]   = 0;
 
-                        GetDescription(theTypeCString,
-                            GetPointer((uint32_t)theIvar.ivar_type, NULL));
+                        [self getDescription:theTypeCString forType:typePtr];
 
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "(%s)%s",
-                            theTypeCString, theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "(%s)%s", theTypeCString, theSymPtr);
                     }
                     else
-                        snprintf(iLineCommentCString,
-                            MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                        snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
                 }
             }
             else    // absolute address
             {
                 localAddy = *(uint32_t*)&inLine->info.code[4];
                 localAddy = OSSwapLittleToHostInt32(localAddy);
-                theDummyPtr = GetPointer(localAddy, NULL);
+                theDummyPtr = [self getPointer:localAddy type:NULL];
 
                 if (theDummyPtr)
                 {
@@ -1124,9 +990,9 @@
         UInt8   theType     = PointerType;
         uint32_t  theValue;
 
-        theSymPtr = FindSymbolByAddress(localAddy);
+        theSymPtr = [self findSymbolByAddress:localAddy];
 
-        theDummyPtr = GetPointer(localAddy, &theType);
+        theDummyPtr = [self getPointer:localAddy type:&theType];
 
         if (theDummyPtr)
         {
@@ -1135,7 +1001,7 @@
                 case DataGenericType:
                     theValue    = *(uint32_t*)theDummyPtr;
                     theValue    = OSSwapLittleToHostInt32(theValue);
-                    theDummyPtr = GetPointer(theValue, &theType);
+                    theDummyPtr = [self getPointer:theValue type:&theType];
 
                     switch (theType)
                     {
@@ -1152,14 +1018,17 @@
 
                 case PStringType:
                 case PointerType:
+                case OCClassRefType:
+                case OCMsgRefType:
+                case OCSelRefType:
+                case OCSuperRefType:
                     theSymPtr   = theDummyPtr;
 
                     break;
 
                 case CFStringType:
                 {
-                    cf_string_object    theCFString = 
-                        *(cf_string_object*)theDummyPtr;
+                    cfstring_object theCFString =  *(cfstring_object*)theDummyPtr;
 
                     if (theCFString.oc_string.length == 0)
                     {
@@ -1167,9 +1036,9 @@
                         break;
                     }
 
-                    theValue    = (uint32_t)theCFString.oc_string.chars;
+                    theValue    = theCFString.oc_string.chars;
                     theValue    = OSSwapLittleToHostInt32(theValue);
-                    theSymPtr   = GetPointer(theValue, NULL);
+                    theSymPtr   = [self getPointer:theValue type:NULL];
 
                     break;
                 }
@@ -1178,7 +1047,7 @@
                 {
                     theValue    = *(uint32_t*)theDummyPtr;
                     theValue    = OSSwapLittleToHostInt32(theValue);
-                    theDummyPtr = GetPointer(theValue, NULL);
+                    theDummyPtr = [self getPointer:theValue type:NULL];
 
                     if (!theDummyPtr)
                     {
@@ -1193,7 +1062,7 @@
                     {
                         theValue    = *(uint32_t*)theDummyPtr;
                         theValue    = OSSwapLittleToHostInt32(theValue);
-                        theDummyPtr = GetPointer(theValue, NULL);
+                        theDummyPtr = [self getPointer:theValue type:NULL];
 
                         if (!theDummyPtr)
                         {
@@ -1202,8 +1071,7 @@
                         }
                     }
 
-                    cf_string_object    theCFString = 
-                        *(cf_string_object*)theDummyPtr;
+                    cfstring_object theCFString = *(cfstring_object*)theDummyPtr;
 
                     if (theCFString.oc_string.length == 0)
                     {
@@ -1211,9 +1079,9 @@
                         break;
                     }
 
-                    theValue    = (uint32_t)theCFString.oc_string.chars;
+                    theValue    = theCFString.oc_string.chars;
                     theValue    = OSSwapLittleToHostInt32(theValue);
-                    theSymPtr   = GetPointer( theValue, NULL);
+                    theSymPtr   = [self getPointer:theValue type:NULL];
 
                     break;
                 }
@@ -1222,8 +1090,7 @@
                 case OCStrObjectType:
                 case OCClassType:
                 case OCModType:
-                    GetObjcDescriptionFromObject(
-                        &theSymPtr, theDummyPtr, theType);
+                    [self getObjc1Description:&theSymPtr fromObject:theDummyPtr type:theType];
 
                     break;
 
@@ -1238,8 +1105,7 @@
                 snprintf(iLineCommentCString, 255,
                     "%*s", theSymPtr[0], theSymPtr + 1);
             else
-                snprintf(iLineCommentCString,
-                    MAX_COMMENT_LENGTH - 1, "%s", theSymPtr);
+                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theSymPtr);
         }
     }
 }
@@ -1290,14 +1156,12 @@
                 snprintf(iLineCommentCString, 40, "%s(%s)",
                     theTempComment, "PT_DENY_ATTACH");
             else
-                strncpy(iLineCommentCString, theTempComment,
-                    strlen(theTempComment) + 1);
+                snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theTempComment);
 
             break;
 
         default:
-            strncpy(iLineCommentCString, theTempComment,
-                strlen(theTempComment) + 1);
+            snprintf(iLineCommentCString, MAX_COMMENT_LENGTH, "%s", theTempComment);
 
             break;
     }
@@ -1323,7 +1187,7 @@
         return NULL;
 
     // Store the variant type locally to reduce string comparisons.
-    uint32_t  sendType    = SendTypeFromMsgSend(outComment);
+    uint32_t  sendType    = [self sendTypeFromMsgSend:outComment];
 //    uint32_t  receiverAddy;
     uint32_t  selectorAddy;
 
@@ -1337,7 +1201,12 @@
 //                iStack[1].value : 0;
         }
         else
+        {
+            if (iOpts.debugMode)
+                fprintf(stderr, "%x: selector match: iStack[2].isValid == NO\n", inLine->info.address);
+
             return NULL;
+        }
     }
     else
     {
@@ -1348,23 +1217,33 @@
 //                iStack[0].value : 0;
         }
         else
+        {
+            if (iOpts.debugMode)
+                fprintf(stderr, "%x: selector match: iStack[1].isValid == NO\n", inLine->info.address);
+
             return NULL;
+        }
     }
 
     // sanity check
     if (!selectorAddy)
+    {
+        if (iOpts.debugMode)
+            fprintf(stderr, "%x: selector match: selectorAddy == nil\n", inLine->info.address);
+
         return NULL;
+    }
 
     // Get at the selector.
     if (iStack[ESI].isValid)
         selectorAddy += iStack[ESI].value;  // add the esi register
-    
     UInt8   selType = PointerType;
-    char*   selPtr  = GetPointer(selectorAddy, &selType);
+    char*   selPtr  = [self getPointer:selectorAddy type:&selType];
 
     switch (selType)
     {
         case PointerType:
+        case OCSelRefType:
             selString   = selPtr;
 
             break;
@@ -1375,7 +1254,10 @@
                 uint32_t  selPtrValue = *(uint32_t*)selPtr;
 
                 selPtrValue = OSSwapLittleToHostInt32(selPtrValue);
-                selString   = GetPointer(selPtrValue, NULL);
+                selString   = [self getPointer:selPtrValue type:NULL];
+
+                if (!selString && iOpts.debugMode)
+                    fprintf(stderr, "%x: selector match returning nil.  selectorAddy=0x%x, selPtrValue=0x%x\n", inLine->info.address, (unsigned int)selectorAddy, selPtrValue);
             }
 
             break;
@@ -1387,6 +1269,13 @@
 
             break;
     }
+    
+    if (!selString && (!selPtr || (selType != OCGenericType)))
+    {
+        if (iOpts.debugMode)
+            fprintf(stderr, "%x: selector match returning nil.  selectorAddy=0x%x, selType=%d\n", inLine->info.address, (unsigned int)selectorAddy, selType);
+    }
+
 
     return selString;
 }
@@ -1403,13 +1292,18 @@
 
     if (!strncmp(ioComment, "_objc_msgSend", 13))
     {
-        char*   selString   = SelectorForMsgSend(ioComment, inLine);
+        char* selString = [self selectorForMsgSend:ioComment fromLine:inLine];
 
         // Bail if we couldn't find the selector.
         if (!selString)
+        {
+            iMissedSelectorCount++;
             return;
+        }
+        
+        iMatchedSelectorCount++;
 
-        UInt8   sendType    = SendTypeFromMsgSend(ioComment);
+        UInt8   sendType    = [self sendTypeFromMsgSend:ioComment];
 
         // Get the address of the class name string, if this a class method.
         uint32_t  classNameAddy   = 0;
@@ -1436,7 +1330,7 @@
         {
             // Get at the class name
             UInt8   classNameType   = PointerType;
-            char*   classNamePtr    = GetPointer(classNameAddy, &classNameType);
+            char*   classNamePtr    = [self getPointer:classNameAddy type:&classNameType];
 
             switch (classNameType)
             {
@@ -1446,10 +1340,12 @@
                 case DataConstType:
                 case CFStringType:
                 case ImpPtrType:
+                case NLSymType:
                 case OCStrObjectType:
                     break;
 
                 case PointerType:
+                case OCClassRefType:
                     className   = classNamePtr;
                     break;
 
@@ -1459,15 +1355,14 @@
                         uint32_t  namePtrValue    = *(uint32_t*)classNamePtr;
 
                         namePtrValue    = OSSwapLittleToHostInt32(namePtrValue);
-                        className   = GetPointer(namePtrValue, NULL);
+                        className   = [self getPointer:namePtrValue type:NULL];
                     }
 
                     break;
 
                 case OCClassType:
                     if (classNamePtr)
-                        GetObjcDescriptionFromObject(
-                            &className, classNamePtr, OCClassType);
+                        [self getObjc1Description:&className fromObject:classNamePtr type:OCClassType];
 
                     break;
 
@@ -1482,7 +1377,7 @@
 
         if (className)
         {
-            snprintf(ioComment, MAX_COMMENT_LENGTH - 1,
+            snprintf(ioComment, MAX_COMMENT_LENGTH,
                 ((sendType == sendSuper || sendType == sendSuper_stret) ?
                 "+%s[[%s super] %s]" : "+%s[%s %s]"),
                 returnTypeString, className, selString);
@@ -1494,19 +1389,19 @@
                 case send:
                 case send_fpret:
                 case send_variadic:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[(%%esp,1) %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH, "-%s[(%%esp,1) %s]", returnTypeString, selString);
                     break;
 
                 case sendSuper:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[(%%esp,1) super] %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH, "-%s[[(%%esp,1) super] %s]", returnTypeString, selString);
                     break;
 
                 case send_stret:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[0x04(%%esp,1) %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH, "-%s[0x04(%%esp,1) %s]", returnTypeString, selString);
                     break;
 
                 case sendSuper_stret:
-                    snprintf(ioComment, MAX_COMMENT_LENGTH - 1, "-%s[[0x04(%%esp,1) super] %s]", returnTypeString, selString);
+                    snprintf(ioComment, MAX_COMMENT_LENGTH, "-%s[[0x04(%%esp,1) super] %s]", returnTypeString, selString);
                     break;
 
                 default:
@@ -1518,31 +1413,10 @@
     {
         if (iCurrentClass && iStack[2].isValid)
         {
-            char*       theSymPtr       = NULL;
-            objc_ivar   theIvar         = {0};
-            objc_class  swappedClass    = *iCurrentClass;
+            char *name = NULL;
+            char *type = NULL;
 
-            #if __BIG_ENDIAN__
-                swap_objc_class(&swappedClass);
-            #endif
-
-            if (!iIsInstanceMethod)
-            {
-                if (!GetObjcMetaClassFromClass(
-                    &swappedClass, &swappedClass))
-                    return;
-
-                #if __BIG_ENDIAN__
-                    swap_objc_class(&swappedClass);
-                #endif
-            }
-
-            if (!FindIvar(&theIvar, &swappedClass, iStack[2].value))
-                return;
-
-            theSymPtr   = GetPointer((uint32_t)theIvar.ivar_name, NULL);
-
-            if (!theSymPtr)
+            if (![self getIvarName:&name type:&type withOffset:iStack[2].value inClass:iCurrentClass])
                 return;
 
             if (iOpts.variableTypes)
@@ -1551,15 +1425,11 @@
 
                 theTypeCString[0]   = 0;
 
-                GetDescription(theTypeCString,
-                    GetPointer((uint32_t)theIvar.ivar_type, NULL));
-                snprintf(tempComment,
-                    MAX_COMMENT_LENGTH - 1, " (%s)%s",
-                    theTypeCString, theSymPtr);
+                [self getDescription:theTypeCString forType:type];
+                snprintf(tempComment, MAX_COMMENT_LENGTH, " (%s)%s", theTypeCString, name);
             }
             else
-                snprintf(tempComment,
-                    MAX_COMMENT_LENGTH - 1, " %s", theSymPtr);
+                snprintf(tempComment, MAX_COMMENT_LENGTH, " %s", name);
 
             strncat(ioComment, tempComment, strlen(tempComment));
         }
@@ -1577,7 +1447,7 @@
 
     UInt8 theCode = (*ioLine)->info.code[0];
 
-    if (theCode == 0xe8 || theCode == 0xff || theCode == 0x9a)
+    if (theCode == 0xe8 || theCode == 0xe9 || theCode == 0xff || theCode == 0x9a)
     {
         Line*   theNewLine  = malloc(sizeof(Line));
 
@@ -1587,8 +1457,8 @@
             theNewLine->length + 1);
 
         // Swap in the verbose line and free the previous verbose lines.
-        DeleteLinesBefore((*ioLine)->alt, &iVerboseLineListHead);
-        ReplaceLine(*ioLine, theNewLine, &iPlainLineListHead);
+        [self deleteLinesBefore:(*ioLine)->alt fromList:&iVerboseLineListHead];
+        [self replaceLine:*ioLine withLine:theNewLine inList:&iPlainLineListHead];
         *ioLine = theNewLine;
     }
 }
@@ -1607,29 +1477,27 @@
 
     if (theSubstring)   // otool knew this was a thunk call
     {
-        BOOL applyThunk = YES;
+        SInt8 thunkReg = NO_REG;
 
         if (!strncmp(&theSubstring[18], "ax", 2))
-            iCurrentThunk = EAX;
+            thunkReg = EAX;
         else if (!strncmp(&theSubstring[18], "bx", 2))
-            iCurrentThunk = EBX;
+            thunkReg = EBX;
         else if (!strncmp(&theSubstring[18], "cx", 2))
-            iCurrentThunk = ECX;
+            thunkReg = ECX;
         else if (!strncmp(&theSubstring[18], "dx", 2))
-            iCurrentThunk = EDX;
-        else
-            applyThunk = NO;
+            thunkReg = EDX;
 
-        if (applyThunk)
+        if (thunkReg != NO_REG)
         {
-            iRegInfos[iCurrentThunk].value      =
-                (*ioLine)->next->info.address;
-            iRegInfos[iCurrentThunk].isValid    = YES;
+            iRegInfos[thunkReg].value   = (*ioLine)->next->info.address;
+            iRegInfos[thunkReg].isValid = YES;
         }
     }
     else if (iThunks)   // otool didn't spot it, maybe we did earlier...
     {
-        uint32_t  i, target;
+        uint32_t i;
+        size_t target;
 
         for (i = 0; i < iNumThunks; i++)
         {
@@ -1637,11 +1505,13 @@
 
             if (target == iThunks[i].address)
             {
-                iCurrentThunk   = iThunks[i].reg;
+                SInt8 thunkReg = iThunks[i].reg;
 
-                iRegInfos[iCurrentThunk].value      =
-                    (*ioLine)->next->info.address;
-                iRegInfos[iCurrentThunk].isValid    = YES;
+                if (thunkReg != NO_REG) {
+                    iRegInfos[thunkReg].value      =
+                        (*ioLine)->next->info.address;
+                    iRegInfos[thunkReg].isValid    = YES;
+                }
 
                 return;
             }
@@ -1662,30 +1532,30 @@
         return;
     }
 
-    GetObjcClassPtrFromMethod(&iCurrentClass, inLine->info.address);
-    GetObjcCatPtrFromMethod(&iCurrentCat, inLine->info.address);
+    [self getObjcClassPtr:&iCurrentClass fromMethod:inLine->info.address];
+    [self getObjc1CatPtr:&iCurrentCat fromMethod:inLine->info.address];
 
-    iCurrentThunk   = NO_REG;
     memset(iRegInfos, 0, sizeof(GPRegisterInfo) * 8);
 
     // If we didn't get the class from the method, try to get it from the
     // category.
-    if (!iCurrentClass && iCurrentCat)
-    {
-        objc_category   swappedCat  = *iCurrentCat;
+    if (iObjcVersion == 1) {
+        if (!iCurrentClass && iCurrentCat)
+        {
+            objc1_32_category swappedCat = *iCurrentCat;
 
-        #if __BIG_ENDIAN__
-            swap_objc_category(&swappedCat);
-        #endif
+            #if __BIG_ENDIAN__
+                swap_objc1_32_category(&swappedCat);
+            #endif
 
-        GetObjcClassPtrFromName(&iCurrentClass,
-            GetPointer((uint32_t)swappedCat.class_name, NULL));
+            [self getObjcClassPtr:&iCurrentClass fromName:[self getPointer:swappedCat.class_name type:NULL]];
+        }
     }
 
     // Try to find out whether this is a class or instance method.
     MethodInfo* thisMethod  = NULL;
 
-    if (GetObjcMethodFromAddress(&thisMethod, inLine->info.address))
+    if ([self getObjcMethod:&thisMethod fromAddress:inLine->info.address])
         iIsInstanceMethod   = thisMethod->inst;
 
     if (iLocalSelves)
@@ -1716,24 +1586,34 @@
     UInt8 opcode = inLine->info.code[0];
     UInt8 modRM;
 
+#if OTX_DEBUG
+#if UPDATE_REGISTERS_START_DEBUG
+#if UPDATE_REGISTERS_END_DEBUG
+    {
+        static BOOL sIsInDebugMode = NO;
+
+        if (inLine->info.address == UPDATE_REGISTERS_START_DEBUG) {
+            sIsInDebugMode = YES;
+            [self printBlocks:(uint32_t)iCurrentFuncInfoIndex];
+        }
+        
+        if (sIsInDebugMode) {
+            [self printCurrentState:inLine->info.address];
+            if (inLine->info.address == UPDATE_REGISTERS_END_DEBUG) {
+                sIsInDebugMode = NO;
+            }
+        }
+    }
+#endif
+#endif
+#endif 
+
     switch (opcode)
     {
         // pop stack into thunk registers.
         case 0x5e:  // esi
-				if (inLine->prev &&
-                	(inLine->prev->info.code[0] == 0xe8) &&
-                	(*(uint32_t*)&inLine->prev->info.code[2] == 0))
-            	{
-            	    iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
-                    iRegInfos[REG2(opcode)].value = inLine->info.address;
-            	    iRegInfos[REG2(opcode)].isValid = YES;
-                    iCurrentThunk = REG2(opcode);
-            	}
-                else{
-                    iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
-                }
-            break;
-		case 0x58:  // eax
+        case 0x5f:  // edi
+        case 0x58:  // eax
         case 0x59:  // ecx
         case 0x5a:  // edx
         case 0x5b:  // ebx
@@ -1744,9 +1624,11 @@
                 iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
                 iRegInfos[REG2(opcode)].value = inLine->info.address;
                 iRegInfos[REG2(opcode)].isValid = YES;
-                iCurrentThunk = REG2(opcode);
             }
-
+            else
+            {
+                iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
+            }
             break;
 
         // pop stack into non-thunk registers. Wipe em.
@@ -1771,37 +1653,37 @@
             switch (OPEXT(modRM))
             {
                 case 0: // add
-                    iRegInfos[REG1(modRM)].value    += (SInt32)imm;
-                    iRegInfos[REG1(modRM)].classPtr = NULL;
-                    iRegInfos[REG1(modRM)].catPtr   = NULL;
+                    iRegInfos[REG2(modRM)].value    += (SInt32)imm;
+                    iRegInfos[REG2(modRM)].classPtr = NULL;
+                    iRegInfos[REG2(modRM)].catPtr   = NULL;
 
                     break;
 
                 case 1: // or
-                    iRegInfos[REG1(modRM)].value    |= (SInt32)imm;
-                    iRegInfos[REG1(modRM)].classPtr = NULL;
-                    iRegInfos[REG1(modRM)].catPtr   = NULL;
+                    iRegInfos[REG2(modRM)].value    |= (SInt32)imm;
+                    iRegInfos[REG2(modRM)].classPtr = NULL;
+                    iRegInfos[REG2(modRM)].catPtr   = NULL;
 
                     break;
 
                 case 4: // and
-                    iRegInfos[REG1(modRM)].value    &= (SInt32)imm;
-                    iRegInfos[REG1(modRM)].classPtr = NULL;
-                    iRegInfos[REG1(modRM)].catPtr   = NULL;
+                    iRegInfos[REG2(modRM)].value    &= (SInt32)imm;
+                    iRegInfos[REG2(modRM)].classPtr = NULL;
+                    iRegInfos[REG2(modRM)].catPtr   = NULL;
 
                     break;
 
                 case 5: // sub
-                    iRegInfos[REG1(modRM)].value    -= (SInt32)imm;
-                    iRegInfos[REG1(modRM)].classPtr = NULL;
-                    iRegInfos[REG1(modRM)].catPtr   = NULL;
+                    iRegInfos[REG2(modRM)].value    -= (SInt32)imm;
+                    iRegInfos[REG2(modRM)].classPtr = NULL;
+                    iRegInfos[REG2(modRM)].catPtr   = NULL;
 
                     break;
 
                 case 6: // xor
-                    iRegInfos[REG1(modRM)].value    ^= (SInt32)imm;
-                    iRegInfos[REG1(modRM)].classPtr = NULL;
-                    iRegInfos[REG1(modRM)].catPtr   = NULL;
+                    iRegInfos[REG2(modRM)].value    ^= (SInt32)imm;
+                    iRegInfos[REG2(modRM)].classPtr = NULL;
+                    iRegInfos[REG2(modRM)].catPtr   = NULL;
 
                     break;
 
@@ -1819,11 +1701,14 @@
             if (MOD(modRM) == MODx) // reg to reg
             {
                 if (!iRegInfos[REG1(modRM)].isValid)
+                {
                     iRegInfos[REG2(modRM)]  = (GPRegisterInfo){0};
+                }
                 else
+                {
                     memcpy(&iRegInfos[REG2(modRM)], &iRegInfos[REG1(modRM)],
                         sizeof(GPRegisterInfo));
-
+                }
                 break;
             }
 
@@ -1867,17 +1752,37 @@
                     iLocalSelves[iNumLocalSelves - 1]   = (VarInfo)
                         {iRegInfos[REG1(modRM)], offset};
                 }
-                else if (iRegInfos[REG1(modRM)].isValid && MOD(modRM) == MOD32)
+                else if (iRegInfos[REG1(modRM)].isValid)
                 {
-                    SInt32 varOffset = *(SInt32*)&inLine->info.code[2];
+                    SInt32 varOffset = 0;
 
-                    varOffset = OSSwapLittleToHostInt32(varOffset);
-
-                    iNumLocalVars++;
-                    iLocalVars  = realloc(iLocalVars,
-                        iNumLocalVars * sizeof(VarInfo));
-                    iLocalVars[iNumLocalVars - 1]   = (VarInfo)
-                        {iRegInfos[REG1(modRM)], varOffset};
+                    if (MOD(modRM) == MOD32)
+                    {
+                        varOffset = *(SInt32*)&inLine->info.code[2];
+                        varOffset = OSSwapLittleToHostInt32(varOffset);
+                    }
+                    else if (MOD(modRM) == MOD8)
+                    {
+                        varOffset = (SInt8)inLine->info.code[2];
+                    }
+                
+                    VarInfo *localVarToUse = NULL;
+                    for (SInt32 i = 0; i < iNumLocalVars; i++)
+                    {
+                        if (iLocalVars[i].offset == varOffset)
+                        {
+                            localVarToUse = &iLocalVars[i];
+                        }
+                    }
+                    
+                    if (!localVarToUse)
+                    {
+                        iNumLocalVars++;
+                        iLocalVars  = realloc(iLocalVars, iNumLocalVars * sizeof(VarInfo));
+                        localVarToUse = &iLocalVars[iNumLocalVars - 1];
+                    }
+                    
+                    *localVarToUse = (VarInfo) {iRegInfos[REG1(modRM)], varOffset};
                 }
             }
 
@@ -1921,20 +1826,36 @@
                     // Zero the destination regardless.
                     iRegInfos[REG1(modRM)] = (GPRegisterInfo){0};
 
-                    if (iLocalSelves && REG2(modRM) == EBP && offset < 0)
+                    if (REG2(modRM) == EBP && offset < 0)
                     {
                         uint32_t i;
 
-                        // If we're accessing a local var copy of self,
-                        // copy that info back to the reg in question.
-                        for (i = 0; i < iNumLocalSelves; i++)
+                        if (iLocalSelves)
                         {
-                            if (iLocalSelves[i].offset != offset)
-                                continue;
+                            // If we're accessing a local var copy of self,
+                            // copy that info back to the reg in question.
+                            for (i = 0; i < iNumLocalSelves; i++)
+                            {
+                                if (iLocalSelves[i].offset != offset)
+                                    continue;
 
-                            iRegInfos[REG1(modRM)] = iLocalSelves[i].regInfo;
+                                iRegInfos[REG1(modRM)] = iLocalSelves[i].regInfo;
 
-                            break;
+                                break;
+                            }
+                        }
+                        
+                        if (!iRegInfos[REG1(modRM)].isValid)
+                        {
+                            for (i = 0; i < iNumLocalVars; i++)
+                            {
+                                if (iLocalVars[i].offset != offset)
+                                    continue;
+
+                                iRegInfos[REG1(modRM)] = iLocalVars[i].regInfo;
+
+                                break;
+                            }
                         }
                     }
                 }
@@ -2181,14 +2102,14 @@
 
     // In Obj-C apps, the majority of funcs will have Obj-C symbols, so check
     // those first.
-    if (FindClassMethodByAddress(&theDummyInfo, theAddy))
+    if ([self findClassMethod:&theDummyInfo byAddress:theAddy])
         return YES;
 
-    if (FindCatMethodByAddress(&theDummyInfo, theAddy))
+    if ([self findCatMethod:&theDummyInfo byAddress:theAddy])
         return YES;
 
     // If it's not an Obj-C method, maybe there's an nlist.
-    if (FindSymbolByAddress(theAddy))
+    if ([self findSymbolByAddress:theAddy])
         return YES;
 
     // If otool gave us a function name, but it came from a dynamic symbol...
@@ -2315,12 +2236,12 @@
         if (theLine->info.isFunction)
         {
             iCurrentFuncPtr = theLine->info.address;
-            ResetRegisters(theLine);
+            [self resetRegisters:theLine];
         }
         else
         {
-            RestoreRegisters(theLine);
-            UpdateRegisters(theLine);
+            [self restoreRegisters:theLine];
+            [self updateRegisters:theLine];
 
             ThunkInfo   theInfo;
 
@@ -2328,7 +2249,6 @@
             {
                 iRegInfos[theInfo.reg].value    = theLine->next->info.address;
                 iRegInfos[theInfo.reg].isValid  = YES;
-                iCurrentThunk                   = theInfo.reg;
             }
         }
 
@@ -2348,13 +2268,20 @@
                 jumpTarget  = theLine->info.address + 2 + (SInt8)opcode2;
                 validTarget = YES;
             }
-            else if (opcode == 0xe9 ||
-                (opcode == 0x0f && opcode2 >= 0x81 && opcode2 <= 0x8f))
+            else if (opcode == 0xe9)
             {
                 SInt32 rel32 = *(SInt32*)&theLine->info.code[1];
 
                 rel32 = OSSwapLittleToHostInt32(rel32);
                 jumpTarget = theLine->info.address + 5 + rel32;
+                validTarget = YES;
+            }
+            else if (opcode == 0x0f && opcode2 >= 0x81 && opcode2 <= 0x8f)
+            {
+                SInt32 rel32 = *(SInt32*)&theLine->info.code[2];
+
+                rel32 = OSSwapLittleToHostInt32(rel32);
+                jumpTarget = theLine->info.address + 6 + rel32;
                 validTarget = YES;
             }
 
@@ -2486,7 +2413,7 @@
 
             MachineState    machState   =
                 {savedRegs, savedSelves, iNumLocalSelves,
-                    savedVars, iNumLocalVars};
+                    savedVars, iNumLocalVars };
 
             // Store the new BlockInfo.
             BlockInfo   blockInfo   =
@@ -2760,8 +2687,7 @@
 
     // Copy original app's permissions to new file.
     NSFileManager*  fileMan     = [NSFileManager defaultManager];
-    NSDictionary*   fileAttrs   = [fileMan fileAttributesAtPath:
-        [iOFile path] traverseLink: NO];
+    NSDictionary*   fileAttrs   = [fileMan attributesOfItemAtPath:[iOFile path] error:nil];
 
     if (!fileAttrs)
     {
@@ -2771,10 +2697,10 @@
     }
 
     NSDictionary*   permsDict   = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithUnsignedInt: [fileAttrs filePosixPermissions]],
+        [NSNumber numberWithUnsignedInteger: [fileAttrs filePosixPermissions]],
         NSFilePosixPermissions, nil];
 
-    if (![fileMan changeFileAttributes: permsDict atPath: [newURL path]])
+    if (![fileMan setAttributes:permsDict ofItemAtPath:[newURL path] error:nil])
     {
         fprintf(stderr, "otx: -[X86Processor fixNops]: "
             "unable to change file permissions for fixed executable.\n");
@@ -2782,6 +2708,54 @@
 
     // Return fixed file.
     return newURL;
+}
+
+
+- (void) printCurrentState: (uint32_t)currentAddress
+{
+    char r[8 ][20];
+    char s[MAX_STACK_SIZE][20];
+    char v[MAX_STACK_SIZE][20];
+    
+    bzero(r, sizeof(r));
+    bzero(s, sizeof(s));
+    bzero(v, sizeof(v));
+    
+    BOOL srow[8] = { NO, NO, NO, NO, NO, NO, NO, NO };
+
+    for (int i = 0; i < 8; i++) {
+        if (iRegInfos[i].isValid) {
+            snprintf(r[i], 20, "%08x", iRegInfos[i].value);
+        } else {
+            snprintf(r[i], 20, "--------");
+        }
+    }
+
+    for (int i = 0; i < MAX_STACK_SIZE; i++) {
+        if (iStack[i].isValid) {
+            srow[i / 8] = YES;
+            snprintf(s[i], 20, "%08x", iStack[i].value);
+        } else {
+            snprintf(s[i], 20, "--------");
+        }
+    }
+
+    
+    printf("---[ 0x%08x ]---\n", currentAddress);
+    printf("EAX:%s  EBX:%s  ECX:%s  EDX:%s  ESI:%s  EDI:%s  EBP:%s  ESP:%s\n", r[EAX],  r[EBX],  r[ECX],  r[EDX],  r[ESI],  r[EDI],  r[EBP],  r[ESP]  );
+    if (srow[0]) printf(" s0:%s   s1:%s   s2:%s   s3:%s   s4:%s   s5:%s   s6:%s   s7:%s\n", s[0],  s[1],  s[2],  s[3],  s[4],  s[5],  s[6],  s[7]  );
+    if (srow[1]) printf(" s8:%s   s9:%s  s10:%s  s11:%s  s12:%s  s13:%s  s14:%s  s15:%s\n", s[8],  s[9],  s[10], s[11], s[12], s[13], s[14], s[15] );
+    if (srow[2]) printf("s16:%s  s17:%s  s18:%s  s19:%s  s20:%s  s21:%s  s22:%s  s23:%s\n", s[16], s[17], s[18], s[19], s[20], s[21], s[22], s[23] );
+    if (srow[3]) printf("s24:%s  s25:%s  s26:%s  s27:%s  s28:%s  s29:%s  s30:%s  s31:%s\n", s[24], s[25], s[26], s[27], s[28], s[29], s[30], s[31] );
+    if (srow[4]) printf("s32:%s  s33:%s  s34:%s  s35:%s  s36:%s  s37:%s  s38:%s  s39:%s\n", s[32], s[33], s[34], s[35], s[36], s[37], s[38], s[39] );
+
+    for (int i = 0; i < iNumLocalVars; i++) {
+        printf(" var %x: %08x\n", (unsigned int)iLocalVars[i].offset, iLocalVars[i].regInfo.value);
+    }
+
+    for (int i = 0; i < iNumLocalSelves; i++) {
+        printf("self %x: %08x\n", (unsigned int)iLocalSelves[i].offset, iLocalSelves[i].regInfo.value);
+    }
 }
 
 @end

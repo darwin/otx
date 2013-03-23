@@ -7,8 +7,6 @@
 #import <Cocoa/Cocoa.h>
 
 #import "ExeProcessor.h"
-#import "ObjcSwap.h"
-#import "Optimizations32.h"
 
 /*  MethodInfo
 
@@ -16,10 +14,18 @@
 */
 typedef struct
 {
-    objc_method     m;
-    objc_class      oc_class;
-    objc_category   oc_cat;
-    BOOL            inst;       // to determine '+' or '-'
+    union {
+    struct {
+        objc1_32_method     m;
+        objc1_32_class      oc_class;
+        objc1_32_category   oc_cat;
+    };
+    struct {
+        objc2_32_method_t   m2;
+        objc2_32_class_t    oc_class2;
+    };
+    };
+    BOOL                inst;       // to determine '+' or '-'
 }
 MethodInfo;
 
@@ -31,10 +37,10 @@ MethodInfo;
 */
 typedef struct
 {
-    uint32_t          value;
-    BOOL            isValid;        // value can be trusted
-    objc_class*     classPtr;
-    objc_category*  catPtr;
+    uint32_t            value;
+    BOOL                isValid;        // value can be trusted
+    objc_32_class_ptr   classPtr;
+    objc1_32_category*  catPtr;
 }
 GPRegisterInfo;
 
@@ -96,7 +102,7 @@ LineInfo;
 struct Line
 {
     char*           chars;      // C string
-    uint32_t          length;     // C string length
+    size_t          length;     // C string length
     struct Line*    next;       // next line in this list
     struct Line*    prev;       // previous line in this list
     struct Line*    alt;        // "this" line in the other list
@@ -164,9 +170,9 @@ FunctionInfo;
     uint32_t              iNumLines;
     uint32_t              iNumCodeLines;
     cpu_type_t          iArchSelector;
+    uint32_t            iCurrentFunctionStart;
 
     // base pointers for indirect addressing
-    SInt8               iCurrentThunk;      // x86 register identifier
     uint32_t              iCurrentFuncPtr;    // PPC function address
 
     // symbols that point to functions
@@ -182,11 +188,21 @@ FunctionInfo;
     uint32_t              iNumObjcSects;
     MethodInfo*         iClassMethodInfos;
     uint32_t              iNumClassMethodInfos;
+    BOOL                iIsInstanceMethod;
+    uint8_t             iObjcVersion;       // 1 for objc1
+
+    // When iObjcVersion=1, this points to a objc1_32_class
+    // When iObjcVersion=2, this points to a objc2_32_class_t
+    objc_32_class_ptr   iCurrentClass;      
+
+    // Only valid when iObjcVersion=1 
+    objc1_32_category*  iCurrentCat;
     MethodInfo*         iCatMethodInfos;
     uint32_t              iNumCatMethodInfos;
-    objc_class*         iCurrentClass;
-    objc_category*      iCurrentCat;
-    BOOL                iIsInstanceMethod;
+
+    // Only valid when iObjcVersion=2
+    objc2_32_ivar_t*    iClassIvars;
+    uint32_t              iNumClassIvars;
 
     // Mach-O sections
     section_info        iCStringSect;
@@ -196,6 +212,19 @@ FunctionInfo;
     section_info        iIVarSect;
     section_info        iObjcModSect;
     section_info        iObjcSymSect;
+    section_info        iObjcMethnameSect;
+    section_info        iObjcMethtypeSect;
+    section_info        iObjcClassnameSect;
+    section_info        iObjcClassListSect;
+    section_info        iObjcCatListSect;
+    section_info        iObjcConstSect;
+    section_info        iObjcProtoListSect;
+    section_info        iObjcSuperRefsSect;
+    section_info        iObjcClassRefsSect;
+    section_info        iObjcProtoRefsSect;
+    section_info        iObjcMsgRefsSect;
+    section_info        iObjcSelRefsSect;
+    section_info        iObjcDataSect;
     section_info        iLit4Sect;
     section_info        iLit8Sect;
     section_info        iTextSect;
@@ -212,47 +241,6 @@ FunctionInfo;
     section_info        iImpPtrSect;
     uint32_t              iTextOffset;
     uint32_t              iEndOfText;
-
-    // C function pointers- see Optimizations.h and speedyDelivery
-    BOOL    (*LineIsCode)                   (id, SEL, const char*);
-    BOOL    (*LineIsFunction)               (id, SEL, Line*);
-    BOOL    (*CodeIsBlockJump)              (id, SEL, UInt8*);
-    uint32_t  (*AddressFromLine)              (id, SEL, const char*);
-    void    (*CodeFromLine)                 (id, SEL, Line*);
-    void    (*CheckThunk)                   (id, SEL, Line*);
-    void    (*ProcessLine)                  (id, SEL, Line*);
-    void    (*ProcessCodeLine)              (id, SEL, Line**);
-    void    (*PostProcessCodeLine)          (id, SEL, Line**);
-    void    (*ChooseLine)                   (id, SEL, Line**);
-    void    (*EntabLine)                    (id, SEL, Line*);
-    char*   (*GetPointer)                   (id, SEL, uint32_t, UInt8*);
-    void    (*CommentForLine)               (id, SEL, Line*);
-    void    (*CommentForSystemCall)         (id, SEL);
-    void    (*CommentForMsgSendFromLine)    (id, SEL, char*, Line*);
-    void    (*ResetRegisters)               (id, SEL, Line*);
-    void    (*UpdateRegisters)              (id, SEL, Line*);
-    BOOL    (*RestoreRegisters)             (id, SEL, Line*);
-    char*   (*SelectorForMsgSend)           (id, SEL, char*, Line*);
-    UInt8   (*SendTypeFromMsgSend)          (id, SEL, char*);
-    char*   (*PrepareNameForDemangling)     (id, SEL, char*);
-
-    BOOL    (*GetObjcClassPtrFromMethod)    (id, SEL, objc_class**, uint32_t);
-    BOOL    (*GetObjcCatPtrFromMethod)      (id, SEL, objc_category**, uint32_t);
-    BOOL    (*GetObjcMethodFromAddress)     (id, SEL, MethodInfo**, uint32_t);
-    BOOL    (*GetObjcClassFromName)         (id, SEL, objc_class*, const char*);
-    BOOL    (*GetObjcClassPtrFromName)      (id, SEL, objc_class**, const char*);
-    BOOL    (*GetObjcDescriptionFromObject) (id, SEL, char**, const char*, UInt8);
-    BOOL    (*GetObjcMetaClassFromClass)    (id, SEL, objc_class*, objc_class*);
-
-    void    (*InsertLineBefore)     (id, SEL, Line*, Line*, Line**);
-    void    (*InsertLineAfter)      (id, SEL, Line*, Line*, Line**);
-    void    (*ReplaceLine)          (id, SEL, Line*, Line*, Line**);
-    void    (*DeleteLinesBefore)    (id, SEL, Line*, Line**);
-
-    char*   (*FindSymbolByAddress)      (id, SEL, uint32_t);
-    BOOL    (*FindClassMethodByAddress) (id, SEL, MethodInfo**, uint32_t);
-    BOOL    (*FindCatMethodByAddress)   (id, SEL, MethodInfo**, uint32_t);
-    BOOL    (*FindIvar)                 (id, SEL, objc_ivar*, objc_class*, uint32_t);
 }
 
 - (id)initWithURL: (NSURL*)inURL
@@ -281,6 +269,7 @@ FunctionInfo;
 - (void)processCodeLine: (Line**)ioLine;
 - (void)chooseLine: (Line**)ioLine;
 - (void)entabLine: (Line*)ioLine;
+- (BOOL)getIvarName:(char **)outName type:(char **)outType withOffset:(uint32_t)offset inClass:(objc_32_class_ptr)classPtr;
 - (char*)getPointer: (uint32_t)inAddr
                type: (UInt8*)outType;
 
@@ -288,8 +277,6 @@ FunctionInfo;
                    fromLine: (Line*)inLine;
 
 - (void)insertMD5;
-
-- (void)speedyDelivery;
 
 #ifdef OTX_DEBUG
 - (void)printSymbol: (nlist)inSym;
@@ -328,10 +315,10 @@ MethodInfo_Compare(
     MethodInfo* mi1,
     MethodInfo* mi2)
 {
-    if ((uint32_t)mi1->m.method_imp < (uint32_t)mi2->m.method_imp)
+    if (mi1->m.method_imp < mi2->m.method_imp)
         return -1;
 
-    return ((uint32_t)mi1->m.method_imp > (uint32_t)mi2->m.method_imp);
+    return (mi1->m.method_imp > mi2->m.method_imp);
 }
 
 static int
@@ -339,8 +326,8 @@ MethodInfo_Compare_Swapped(
     MethodInfo* mi1,
     MethodInfo* mi2)
 {
-    uint32_t  imp1    = (uint32_t)mi1->m.method_imp;
-    uint32_t  imp2    = (uint32_t)mi2->m.method_imp;
+    uint32_t  imp1 = mi1->m.method_imp;
+    uint32_t  imp2 = mi2->m.method_imp;
 
     imp1    = OSSwapInt32(imp1);
     imp2    = OSSwapInt32(imp2);
@@ -349,16 +336,4 @@ MethodInfo_Compare_Swapped(
         return -1;
 
     return (imp1 > imp2);
-}
-
-// ----------------------------------------------------------------------------
-// Utils
-
-static void
-swap_method_info(
-    MethodInfo* mi)
-{
-    swap_objc_method(&mi->m);
-    swap_objc_class(&mi->oc_class);
-    swap_objc_category(&mi->oc_cat);
 }
