@@ -731,15 +731,27 @@
             sscanf((*ioLine)->chars, "%s\t%s\t%[^\t\n]s", dummyAddressCString,
                 dummyMnemonicCString, iLineOperandsCString);
         }
-        else    // regular comment
-        {
-            size_t  origCommentLength   = theOrigLength - consumedAfterOp - 1;
-
-            strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
-                origCommentLength);
-
-            // Add the null terminator.
-            theOrigCommentCString[origCommentLength - 1]    = 0;
+        else {
+            
+            size_t operandsCstringLength = strlen(iLineOperandsCString);
+            if (operandsCstringLength && iLineOperandsCString[operandsCstringLength-1]==','){
+                char    dummyAddressCString[17] = {0};
+                char    dummyMnemonicCString[20] = {0};
+                
+                
+                sscanf((*ioLine)->chars, "%s\t%s\t%[^\t\n]s", dummyAddressCString,
+                       dummyMnemonicCString, iLineOperandsCString);
+            }
+            else    // regular comment
+            {
+                size_t  origCommentLength   = theOrigLength - consumedAfterOp - 1;
+                
+                strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
+                        origCommentLength);
+                
+                // Add the null terminator.
+                theOrigCommentCString[origCommentLength - 1]    = 0;
+            }
         }
     }
 
