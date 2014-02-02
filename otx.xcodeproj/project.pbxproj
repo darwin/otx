@@ -64,6 +64,7 @@
 		E1FA34030B100D060060060A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA34020B100D060060060A /* main.m */; };
 		E1FA34500B105E4F0060060A /* CLIController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA344F0B105E4E0060060A /* CLIController.m */; };
 		E1FA36570B12EE0A0060060A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA34020B100D060060060A /* main.m */; };
+		FF0973EA189DB7D200457312 /* ObjcTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 55E1267C14DE46F3003B4A16 /* ObjcTypes.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -435,6 +436,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF0973EA189DB7D200457312 /* ObjcTypes.m in Sources */,
 				E182007209AE4CD800584B07 /* AppController.m in Sources */,
 				E1FA34030B100D060060060A /* main.m in Sources */,
 				E1B132600B180B25002EB674 /* ExeProcessor.m in Sources */,
@@ -533,6 +535,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = otx;
+				SDKROOT = macosx10.8;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -552,6 +555,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = otx;
+				SDKROOT = macosx10.8;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -573,7 +577,8 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
+				SYMROOT = /Users/kureta/Documents;
 				WARNING_CFLAGS = "-wall";
 			};
 			name = Debug;
@@ -593,7 +598,8 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
+				SYMROOT = /Users/kureta/Documents;
 			};
 			name = Release;
 		};
@@ -610,6 +616,7 @@
 				);
 				INSTALL_PATH = "$(HOME)/bin";
 				PRODUCT_NAME = otx;
+				SDKROOT = macosx10.8;
 			};
 			name = Debug;
 		};
@@ -623,6 +630,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = OTX_CLI;
 				INSTALL_PATH = "$(HOME)/bin";
 				PRODUCT_NAME = otx;
+				SDKROOT = macosx10.8;
 			};
 			name = Release;
 		};
