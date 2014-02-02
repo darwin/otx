@@ -1509,7 +1509,7 @@
 - (void)nudgeIndeterminateProgBar: (NSTimer*)timer
 {
     if ([iProgBar isIndeterminate])
-        [iProgBar animate: self];
+        [iProgBar startAnimation: self];
 }
 
 #pragma mark -
