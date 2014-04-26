@@ -12,7 +12,6 @@
 
 // Default ProcOptions values
 #define SHOW_LOCAL_OFFSETS              YES
-#define SHOW_CODE                       YES
 #define DONT_ENTAB_OUTPUT               NO
 #define DONT_SHOW_DATA_SECTIONS         NO
 #define SHOW_CHECKSUM                   YES

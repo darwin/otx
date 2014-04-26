@@ -1269,42 +1269,24 @@
         formatMarker += snprintf(&finalFormatCString[formatMarker],
             10, "%s", "%s %s");
 
-    if (iOpts.showCode)
-        formatMarker += snprintf(&finalFormatCString[formatMarker],
-            10, "%s", "%s %s");
-
     if (iLineOperandsCString[0])
     {
         if (theCommentCString[0])
             snprintf(&finalFormatCString[formatMarker],
-                30, "%s", "%s %s%s %s%s %s%s\n");
+                30, "%s", "%s %s%s %s%s %s%s %s%s\n");
         else
             snprintf(&finalFormatCString[formatMarker],
-                30, "%s", "%s %s%s %s%s\n");
+                30, "%s", "%s %s%s %s%s %s%s\n");
     }
     else
         snprintf(&finalFormatCString[formatMarker],
-            30, "%s", "%s %s%s\n");
+            30, "%s", "%s %s%s %s%s\n");
 
     char    theFinalCString[MAX_LINE_LENGTH] = "";
 
-    if (iOpts.localOffsets && iOpts.showCode)
+    if (iOpts.localOffsets)
         snprintf(theFinalCString, MAX_LINE_LENGTH,
             finalFormatCString, localOffsetString,
-            addrSpaces, theAddressCString,
-            instSpaces, theCodeCString,
-            mnemSpaces, theMnemonicCString,
-            opSpaces, iLineOperandsCString,
-            commentSpaces, theCommentCString);
-    else if (iOpts.localOffsets)
-        snprintf(theFinalCString, MAX_LINE_LENGTH,
-            finalFormatCString, localOffsetString,
-            addrSpaces, theAddressCString,
-            instSpaces, theMnemonicCString,
-            opSpaces, iLineOperandsCString,
-            commentSpaces, theCommentCString);
-    else if (iOpts.showCode)
-        snprintf(theFinalCString, MAX_LINE_LENGTH,
             addrSpaces, theAddressCString,
             instSpaces, theCodeCString,
             mnemSpaces, theMnemonicCString,
@@ -1313,7 +1295,8 @@
     else
         snprintf(theFinalCString, MAX_LINE_LENGTH,
             finalFormatCString, theAddressCString,
-            instSpaces, theMnemonicCString,
+            instSpaces, theCodeCString,
+            mnemSpaces, theMnemonicCString,
             opSpaces, iLineOperandsCString,
             commentSpaces, theCommentCString);
 
