@@ -39,31 +39,30 @@
     NSString* relToolBase = [NSString pathWithComponents:
         [NSArray arrayWithObjects: @"/", @"usr", @"bin", nil]];
     NSString* relToolPath = [relToolBase stringByAppendingPathComponent: toolName];
-    NSString* selectToolPath = [relToolBase stringByAppendingPathComponent: @"xcode-select"];
-    NSTask* selectTask = [[[NSTask alloc] init] autorelease];
-    NSPipe* selectPipe = [NSPipe pipe];
-    NSArray* args = [NSArray arrayWithObject: @"--print-path"];
+    NSString* xcrunToolPath = [relToolBase stringByAppendingPathComponent: @"xcrun"];
+    NSTask* xcrunTask = [[[NSTask alloc] init] autorelease];
+    NSPipe* xcrunPipe = [NSPipe pipe];
+    NSArray* args = [NSArray arrayWithObjects: @"--find", toolName, nil];
 
-    [selectTask setLaunchPath: selectToolPath];
-    [selectTask setArguments: args];
-    [selectTask setStandardInput: [NSPipe pipe]];
-    [selectTask setStandardOutput: selectPipe];
-    [selectTask launch];
-    [selectTask waitUntilExit];
+    [xcrunTask setLaunchPath: xcrunToolPath];
+    [xcrunTask setArguments: args];
+    [xcrunTask setStandardInput: [NSPipe pipe]];
+    [xcrunTask setStandardOutput: xcrunPipe];
+    [xcrunTask launch];
+    [xcrunTask waitUntilExit];
 
-    int selectStatus = [selectTask terminationStatus];
+    int xcrunStatus = [xcrunTask terminationStatus];
 
-    if (selectStatus == -1)
+    if (xcrunStatus == -1)
         return relToolPath;
 
-    NSData* selectData = [[selectPipe fileHandleForReading] availableData];
-    NSString* absToolPath = [[[NSString alloc] initWithBytes: [selectData bytes]
-                                                      length: [selectData length]
+    NSData* xcrunData = [[xcrunPipe fileHandleForReading] availableData];
+    NSString* absToolPath = [[[NSString alloc] initWithBytes: [xcrunData bytes]
+                                                      length: [xcrunData length]
                                                     encoding: NSUTF8StringEncoding] autorelease];
 
-    return [[absToolPath stringByTrimmingCharactersInSet:
-        [NSCharacterSet whitespaceAndNewlineCharacterSet]]
-        stringByAppendingPathComponent: relToolPath];
+    return [absToolPath stringByTrimmingCharactersInSet:
+        [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 @end
