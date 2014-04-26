@@ -736,13 +736,37 @@
     // remaining. Copy it, starting after the preceding tab.
     if (consumedAfterOp && consumedAfterOp < theOrigLength - 1)
     {
-        size_t  origCommentLength   = theOrigLength - consumedAfterOp - 1;
-
-        strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
-            origCommentLength);
-
-        // Add the null terminator.
-        theOrigCommentCString[origCommentLength - 1]    = 0;
+        if (iLineOperandsCString[0] == '*' &&
+            (iLineOperandsCString[1] == '+' || iLineOperandsCString[1] == '-'))
+        {   // ObjC method call with whitespace
+            char    dummyAddressCString[9] = {0};
+            char    dummyMnemonicCString[20] = {0};
+            
+            sscanf((*ioLine)->chars, "%s\t%s\t%[^\t\n]s", dummyAddressCString,
+                   dummyMnemonicCString, iLineOperandsCString);
+        }
+        else {
+            
+            size_t operandsCstringLength = strlen(iLineOperandsCString);
+            if (operandsCstringLength && iLineOperandsCString[operandsCstringLength-1]==','){
+                char    dummyAddressCString[9] = {0};
+                char    dummyMnemonicCString[20] = {0};
+                
+                
+                sscanf((*ioLine)->chars, "%s\t%s\t%[^\t\n]s", dummyAddressCString,
+                       dummyMnemonicCString, iLineOperandsCString);
+            }
+            else    // regular comment
+            {
+                size_t  origCommentLength   = theOrigLength - consumedAfterOp - 1;
+                
+                strncpy(theOrigCommentCString, (*ioLine)->chars + consumedAfterOp + 1,
+                        origCommentLength);
+                
+                // Add the null terminator.
+                theOrigCommentCString[origCommentLength - 1]    = 0;
+            }
+        }
     }
 
     char theCodeCString[32] = {0};
