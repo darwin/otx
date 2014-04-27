@@ -1634,7 +1634,6 @@
         // pop stack into non-thunk registers. Wipe em.
         case 0x5c:  // esp
         case 0x5d:  // ebp
-        case 0x5f:  // edi
             iRegInfos[REG2(opcode)] = (GPRegisterInfo){0};
 
             break;

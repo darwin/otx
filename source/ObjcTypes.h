@@ -165,7 +165,7 @@ typedef struct {
 typedef struct {
     uint64_t ivar_name;    /* char * */
     uint64_t ivar_type;    /* char * */
-    uint32_t ivar_offset;
+    uint64_t ivar_offset;
     uint32_t space;
 } objc1_64_ivar;
 
@@ -186,7 +186,7 @@ typedef struct {
 
 typedef struct {                                                  
     int64_t  obsolete;               /* struct objc_method_list *  */
-    int32_t  method_count;           /* int                        */
+    int64_t  method_count;           /* int                        */
     int32_t  space;                  /* int                        */
     objc1_64_method method_list[1];  /* variable length structure  */
 } objc1_64_method_list;

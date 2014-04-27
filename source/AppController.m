@@ -114,10 +114,10 @@
 
     [thePanel setTreatsFilePackagesAsDirectories: YES];
 
-    if ([thePanel runModalForTypes: nil] != NSFileHandlingPanelOKButton)
+    if ([thePanel runModal] != NSFileHandlingPanelOKButton)
         return;
 
-    NSString*   theName = [[thePanel filenames] objectAtIndex: 0];
+    NSString*   theName = [[thePanel URL] path];
 
     [self newOFile: [NSURL fileURLWithPath: theName] needsPath: YES];
 }
@@ -203,8 +203,8 @@
     if (OS_IS_POST_TIGER)
     {   // Adjust main window for Leopard.
         // Save the resize masks and apply new ones.
-        uint32_t  origMainViewMask    = [iMainView autoresizingMask];
-        uint32_t  origProgViewMask    = [iProgView autoresizingMask];
+        NSUInteger  origMainViewMask    = [iMainView autoresizingMask];
+        NSUInteger  origProgViewMask    = [iProgView autoresizingMask];
 
         [iMainView setAutoresizingMask: NSViewMaxYMargin];
         [iProgView setAutoresizingMask: NSViewMaxYMargin];
@@ -367,7 +367,6 @@
     if (iIndeterminateProgBarMainThreadTimer)
     {
         [iIndeterminateProgBarMainThreadTimer invalidate];
-        [iIndeterminateProgBarMainThreadTimer release];
     }
 
     iIndeterminateProgBarMainThreadTimer = [NSTimer scheduledTimerWithTimeInterval: interval
@@ -395,16 +394,16 @@
     {
         NSSavePanel*    thePanel    = [NSSavePanel savePanel];
 
+        [thePanel setNameFieldStringValue:iOutputFileName];
         [thePanel setTreatsFilePackagesAsDirectories: YES];
 
-        if ([thePanel runModalForDirectory: nil
-            file: iOutputFileName]  != NSFileHandlingPanelOKButton)
+        if ([thePanel runModal]  != NSFileHandlingPanelOKButton)
             return;
 
         if (iOutputFilePath)
             [iOutputFilePath release];
 
-        iOutputFilePath = [thePanel filename];
+        iOutputFilePath = [[thePanel URL] path];
     }
     else
     {
@@ -415,33 +414,8 @@
 
     [iOutputFilePath retain];
     [theTempOutputFilePath release];
-
-    // Check if the output file exists.
-    if ([[NSFileManager defaultManager] fileExistsAtPath: iOutputFilePath])
-    {
-        NSString*   fileName    = [iOutputFilePath lastPathComponent];
-        NSString*   folderName  =
-            [[iOutputFilePath stringByDeletingLastPathComponent]
-            lastPathComponent];
-        NSAlert*    alert       = [[[NSAlert alloc] init] autorelease];
-
-        [alert addButtonWithTitle: @"Replace"];
-        [alert addButtonWithTitle: @"Cancel"];
-        [alert setMessageText: [NSString stringWithFormat:
-            @"\"%@\" already exists. Do you want to replace it?", fileName]];
-        [alert setInformativeText:
-            [NSString stringWithFormat: @"A file or folder"
-            @" with the same name already exists in %@."
-            @" Replacing it will overwrite its current contents.", folderName]];
-        [alert beginSheetModalForWindow: iMainWindow
-            modalDelegate: self
-            didEndSelector: @selector(dupeFileAlertDidEnd:returnCode:contextInfo:)
-            contextInfo: nil];
-    }
-    else
-    {
-        [self processFile];
-    }
+    
+    [self processFile];
 }
 
 //  processFile
@@ -643,8 +617,8 @@
     targetWindowFrame.size.height   += progViewFrame.size.height;
 
     // Save the resize masks and apply new ones.
-    uint32_t  origMainViewMask    = [iMainView autoresizingMask];
-    uint32_t  origProgViewMask    = [iProgView autoresizingMask];
+    NSUInteger  origMainViewMask    = [iMainView autoresizingMask];
+    NSUInteger  origProgViewMask    = [iProgView autoresizingMask];
 
     [iMainView setAutoresizingMask: NSViewMinYMargin];
     [iProgView setAutoresizingMask: NSViewMinYMargin];
@@ -663,9 +637,9 @@
         (NSXViewAnimationUpdateResizeMasksAtEndEffect       |
         NSXViewAnimationUpdateWindowMinMaxSizesAtEndEffect  |
         NSXViewAnimationPerformSelectorAtEndEffect)];
-    NSNumber*   origMainMask    = [NSNumber numberWithUnsignedInt:
+    NSNumber*   origMainMask    = [NSNumber numberWithUnsignedLong:
         origMainViewMask];
-    NSNumber*   origProgMask    = [NSNumber numberWithUnsignedInt:
+    NSNumber*   origProgMask    = [NSNumber numberWithUnsignedLong:
         origProgViewMask];
 
     // Custom keys
@@ -726,12 +700,12 @@
     targetWindowFrame.origin.y      += progViewFrame.size.height;
     targetWindowFrame.size.height   -= progViewFrame.size.height;
 
-    uint32_t  origMainViewMask    = [iMainView autoresizingMask];
-    uint32_t  origProgViewMask    = [iProgView autoresizingMask];
+    NSUInteger  origMainViewMask    = [iMainView autoresizingMask];
+    NSUInteger  origProgViewMask    = [iProgView autoresizingMask];
 
-    NSNumber*   origMainMask    = [NSNumber numberWithUnsignedInt:
+    NSNumber*   origMainMask    = [NSNumber numberWithUnsignedLong:
         origMainViewMask];
-    NSNumber*   origProgMask    = [NSNumber numberWithUnsignedInt:
+    NSNumber*   origProgMask    = [NSNumber numberWithUnsignedLong:
         origProgViewMask];
 
     [iMainView setAutoresizingMask: NSViewMinYMargin];
@@ -847,13 +821,13 @@
         NSString*       theFileName =
             [iExeName stringByAppendingString: archExt];
 
+        [thePanel setNameFieldStringValue:theFileName];
         [thePanel setTreatsFilePackagesAsDirectories: YES];
 
-        if ([thePanel runModalForDirectory: nil
-            file: theFileName]  != NSFileHandlingPanelOKButton)
+        if ([thePanel runModal]  != NSFileHandlingPanelOKButton)
             return;
 
-        theThinOutputPath   = [thePanel filename];
+        theThinOutputPath   = [[thePanel URL] path];
     }
     else
     {
@@ -1026,8 +1000,7 @@
         NSUserDefaults* theDefaults = [NSUserDefaults standardUserDefaults];
 
         if ([theDefaults boolForKey: AskOutputDirKey])
-            [menuItem setTitle: [NSString stringWithCString: "Save…"
-                      encoding: NSMacOSRomanStringEncoding]];
+            [menuItem setTitle: [NSString stringWithFormat: @"Save..."]];
         else
             [menuItem setTitle: @"Save"];
 
@@ -1118,7 +1091,7 @@
     {
         fat_header* fhp = (fat_header*)fileBytes;
         fat_arch*   fap = (fat_arch*)(fhp + 1);
-        uint32_t      i;
+        NSUInteger      i;
 
         fat_header  fatHeader   = *fhp;
         fat_arch    fatArch;
@@ -1394,8 +1367,8 @@
     [iPrefsWindow setShowsToolbarButton: NO];
 
     // Load views.
-    uint32_t  numViews    = [[toolbar items] count];
-    uint32_t  i;
+    NSUInteger  numViews    = [[toolbar items] count];
+    NSUInteger  i;
 
     iPrefsViews     = calloc(numViews, sizeof(NSView*));
     iPrefsViews[0]  = iPrefsGeneralView;
@@ -1433,7 +1406,7 @@
 - (IBAction)switchPrefsViews: (id)sender
 {
     NSToolbarItem*  item        = (NSToolbarItem*)sender;
-    uint32_t          newIndex    = [item tag];
+    NSInteger          newIndex    = [item tag];
 
     if (newIndex == iPrefsCurrentViewIndex)
         return;
@@ -1509,7 +1482,7 @@
 - (void)nudgeIndeterminateProgBar: (NSTimer*)timer
 {
     if ([iProgBar isIndeterminate])
-        [iProgBar animate: self];
+        [iProgBar startAnimation: self];
 }
 
 #pragma mark -
@@ -1711,8 +1684,8 @@
         animatingWindow != iPrefsWindow)
         return YES;
 
-    uint32_t i;
-    uint32_t numAnimations = [animatedViews count];
+    NSUInteger i;
+    NSUInteger numAnimations = [animatedViews count];
     id animObject = nil;
 
     for (i = 0; i < numAnimations; i++)
@@ -1801,8 +1774,8 @@
         animatingWindow != iPrefsWindow)
         return;
 
-    uint32_t  i;
-    uint32_t  numAnimations   = [animatedViews count];
+    NSUInteger  i;
+    NSUInteger  numAnimations   = [animatedViews count];
     id      animObject      = nil;
 
     for (i = 0; i < numAnimations; i++)
@@ -1856,9 +1829,9 @@
 
             NSView*     view;
             NSNumber*   mask;
-            uint32_t      i;
-            uint32_t      numMasks    = [masks count];
-            uint32_t      numViews    = [views count];
+            NSUInteger      i;
+            NSUInteger      numMasks    = [masks count];
+            NSUInteger      numViews    = [views count];
 
             if (numMasks != numViews)
                 continue;
