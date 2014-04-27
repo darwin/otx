@@ -1,7 +1,7 @@
 /*
     ObjcTypes.m
 
-    Definitions shared by GUI and CLI ttargets.
+    Definitions shared by GUI and CLI targets.
 
     This file is in the public domain.
 */

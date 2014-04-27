@@ -2145,32 +2145,29 @@
         case 0x55:
         {
             isFunction = YES;
-
-            if (thePrevLine->info.isCode == YES)
-            {
-                while (thePrevLine)
-                {   // Search the previous lines in this function...
-                    if (thePrevLine->info.isCode)
-                    {
-                        if (thePrevLine->info.isFunction)
-                        {
-                            isFunction = NO;
-                            break;
-                        }
-
-                        if (thePrevLine->info.isFunctionEnd)
-                            break;
-                    }
-                    else
+            
+            while (thePrevLine)
+            {   // Search the previous lines in this function...
+                if (thePrevLine->info.isCode)
+                {
+                    if (thePrevLine->info.isFunction)
                     {
                         isFunction = NO;
                         break;
                     }
-
-                    thePrevLine = thePrevLine->prev;
+                    
+                    if (thePrevLine->info.isFunctionEnd)
+                        break;
                 }
+                else
+                {
+                    isFunction = NO;
+                    break;
+                }
+                
+                thePrevLine = thePrevLine->prev;
             }
-
+            
             break;
         }
 
